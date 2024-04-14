@@ -2,8 +2,11 @@ import { Button } from '@/components/ui/button'
 import { showToast, superAction } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { createStreamableUI } from 'ai/rsc'
+import { promises as fs } from 'fs'
 import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
+import path from 'path'
+import { Markdown } from './Markdown'
 
 export const PartyButton = () => {
   return (
@@ -48,15 +51,38 @@ export const PartyButton = () => {
               description: (
                 <>
                   {/* This is a Server Component, have fun ;) */}
-                  <Link
-                    href="https://github.com/rechenberger/party-starter/blob/main/src/components/demo/PartyButton.tsx"
-                    target="_blank"
+                  <ActionButton
+                    action={async () => {
+                      'use server'
+                      return superAction(async () => {
+                        const filePath = path.join(
+                          process.cwd(),
+                          '/src/components/demo/PartyButton.tsx',
+                        )
+                        const file = await fs.readFile(filePath, 'utf8')
+
+                        showToast({
+                          title: 'How it works',
+                          description: (
+                            <>
+                              <Markdown className="text-[4px]">{`\`\`\`tsx\n${file}\n\`\`\``}</Markdown>
+                              <Link
+                                href="https://github.com/rechenberger/party-starter/blob/main/src/components/demo/PartyButton.tsx"
+                                target="_blank"
+                              >
+                                <Button>
+                                  Goto Source
+                                  <ExternalLink className="w-4 h-4 ml-1" />
+                                </Button>
+                              </Link>
+                            </>
+                          ),
+                        })
+                      })
+                    }}
                   >
-                    <Button>
-                      How?
-                      <ExternalLink className="w-4 h-4 ml-1" />
-                    </Button>
-                  </Link>
+                    How?
+                  </ActionButton>
                 </>
               ),
             })
