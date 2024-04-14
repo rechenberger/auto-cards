@@ -11,7 +11,7 @@ export const LoginDialog = () => {
           await signIn('credentials', credentials)
         }}
       />
-      <div className="flex flex-row items-center">
+      <div className="flex flex-row items-center my-4">
         <hr className="flex-1" />
         <span className="mx-4 text-border">or</span>
         <hr className="flex-1" />

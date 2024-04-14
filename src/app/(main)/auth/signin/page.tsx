@@ -8,7 +8,7 @@ export default async function Page() {
         <CardHeader>
           <CardTitle>Sign In</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex flex-col gap-4">
           <LoginDialog />
         </CardContent>
       </Card>
