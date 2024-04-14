@@ -27,7 +27,7 @@
   - Goto OAuth2
   - `AUTH_DISCORD_ID`: Copy Client ID
   - `AUTH_DISCORD_SECRET`: Reset Secret
-  - Add Redirect:
+  - Add Redirects:
   - `http://localhost:3000/api/auth/callback/discord`
   - `https://your-app.com/api/auth/callback/discord`
 
