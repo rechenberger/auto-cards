@@ -1,4 +1,5 @@
 import { ActionButton } from '@/super-action/button/ActionButton'
+import { revalidatePath } from 'next/cache'
 import { CredentialsForm } from './CredentialsForm'
 import { signIn } from './auth'
 
@@ -8,7 +9,12 @@ export const LoginDialog = () => {
       <CredentialsForm
         onSubmit={async (credentials) => {
           'use server'
-          await signIn('credentials', credentials)
+          const result = await signIn('credentials', {
+            ...credentials,
+            redirect: false,
+          })
+          console.log(result)
+          revalidatePath('/', 'layout')
         }}
       />
 
@@ -26,6 +32,15 @@ export const LoginDialog = () => {
         }}
       >
         Sign in with Discord
+      </ActionButton>
+      <ActionButton
+        variant={'outline'}
+        action={async () => {
+          'use server'
+          await signIn()
+        }}
+      >
+        Sign in Page
       </ActionButton>
     </>
   )
