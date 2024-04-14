@@ -1,0 +1,6 @@
+{
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "@radix-ui/*",
+    "next/router"
+  ]
+}
