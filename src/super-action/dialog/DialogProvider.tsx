@@ -1,0 +1,35 @@
+'use client'
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { ReactNode } from 'react'
+import { SuperActionDialog } from '../action/createSuperAction'
+
+const renderAtom = atom<ReactNode>(null)
+
+export const DialogProvider = () => {
+  const render = useAtomValue(renderAtom)
+  return <>{render}</>
+}
+
+export const useShowDialog = () => {
+  const setRender = useSetAtom(renderAtom)
+  return (dialog: SuperActionDialog) =>
+    setRender(() => (
+      <>
+        <Dialog defaultOpen={true}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{dialog.title}</DialogTitle>
+            </DialogHeader>
+            {dialog.content}
+          </DialogContent>
+        </Dialog>
+      </>
+    ))
+}

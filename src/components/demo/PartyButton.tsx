@@ -1,5 +1,9 @@
 import { Button } from '@/components/ui/button'
-import { showToast, superAction } from '@/super-action/action/createSuperAction'
+import {
+  showDialog,
+  showToast,
+  superAction,
+} from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { createStreamableUI } from 'ai/rsc'
 import { promises as fs } from 'fs'
@@ -61,11 +65,11 @@ export const PartyButton = () => {
                         )
                         const file = await fs.readFile(filePath, 'utf8')
 
-                        showToast({
+                        showDialog({
                           title: 'How it works',
-                          description: (
+                          content: (
                             <>
-                              <Markdown className="text-[4px]">{`\`\`\`tsx\n${file}\n\`\`\``}</Markdown>
+                              <Markdown>{`\`\`\`tsx\n${file}\n\`\`\``}</Markdown>
                               <Link
                                 href="https://github.com/rechenberger/party-starter/blob/main/src/components/demo/PartyButton.tsx"
                                 target="_blank"

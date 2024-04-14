@@ -7,6 +7,11 @@ export type SuperActionToast = {
   description?: ReactNode
 }
 
+export type SuperActionDialog = {
+  title?: string
+  content?: ReactNode
+}
+
 export type SuperActionError = {
   message?: string
 }
@@ -15,11 +20,11 @@ export type SuperActionResponse<T> = {
   result?: T
   next?: Promise<SuperActionResponse<T>>
   toast?: SuperActionToast
+  dialog?: SuperActionDialog
   error?: SuperActionError
 }
 
 type SuperActionContext = {
-  showToast: (toast: SuperActionToast) => void
   chain: (val: SuperActionResponse<any>) => void
 }
 
@@ -38,12 +43,7 @@ export const superAction = <T>(action: () => Promise<T>) => {
     next.resolve(val)
   }
 
-  const showToast = (toast: SuperActionToast) => {
-    chain({ toast })
-  }
-
   const ctx: SuperActionContext = {
-    showToast,
     chain,
   }
 
@@ -71,5 +71,10 @@ export type SuperAction<T = any> = () => Promise<{
 
 export const showToast = (toast: SuperActionToast) => {
   const ctx = serverContext.getOrThrow()
-  ctx.showToast(toast)
+  ctx.chain({ toast })
+}
+
+export const showDialog = (dialog: SuperActionDialog) => {
+  const ctx = serverContext.getOrThrow()
+  ctx.chain({ dialog })
 }

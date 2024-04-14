@@ -1,6 +1,7 @@
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
 import { Toaster } from '@/components/ui/toaster'
 import { ActionCommandProvider } from '@/super-action/command/ActionCommandProvider'
+import { DialogProvider } from '@/super-action/dialog/DialogProvider'
 import type { Metadata } from 'next'
 import './globals.css'
 
@@ -21,6 +22,7 @@ export default function RootLayout({
           {children}
           <ActionCommandProvider />
           <Toaster />
+          <DialogProvider />
         </ThemeProvider>
       </body>
     </html>
