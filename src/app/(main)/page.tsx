@@ -1,9 +1,11 @@
 import { Markdown } from '@/components/demo/Markdown'
 import { Card, CardContent } from '@/components/ui/card'
 import { promises as fs } from 'fs'
+import path from 'path'
 
 export default async function Page() {
-  const readme = await fs.readFile(process.cwd() + '/README.md', 'utf8')
+  const p = path.join(process.cwd(), '/README.md')
+  const readme = await fs.readFile(p, 'utf8')
   return (
     <>
       <div className="flex-1 flex flex-col items-center justify-center gap-12 py-8">
