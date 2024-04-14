@@ -49,6 +49,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.12",
     "@types/lodash-es": "^4.17.12",
     "@types/react": "18.2.78",
     "@types/react-dom": "18.2.25",
