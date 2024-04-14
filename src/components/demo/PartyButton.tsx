@@ -10,6 +10,7 @@ export const PartyButton = () => {
     <>
       {/* ActionButton can handle streaming from superActions: */}
       <ActionButton
+        command={{}} // enables the action to be shown in CMD+K menu
         action={async () => {
           'use server'
 
