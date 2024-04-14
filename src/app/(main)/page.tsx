@@ -27,7 +27,7 @@ const PartyButton = () => {
           return superAction(async () => {
             const ui = createStreamableUI('🎉')
             showToast({
-              title: 'Stream Party!',
+              title: 'Streaming Party...',
               description: ui.value,
             })
             for (let i = 0; i < 10; i++) {
@@ -38,7 +38,7 @@ const PartyButton = () => {
           })
         }}
       >
-        Stream Party!
+        Party!
       </ActionButton>
     </>
   )
