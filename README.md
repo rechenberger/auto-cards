@@ -29,6 +29,7 @@
   - Add Redirects:
   - `http://localhost:3000/api/auth/callback/discord`
   - `https://your-app.com/api/auth/callback/discord`
+- `pnpm db:push` to push schema to DB
 
 ## Run
 
