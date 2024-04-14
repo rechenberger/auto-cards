@@ -9,8 +9,7 @@
 - [@teampilot/sdk](https://sdk.teampilot.ai/)
 - [drizzle](https://orm.drizzle.team/)
 - [Auth.js](https://authjs.dev/)
-- [next-server-context](https://github.com/rechenberger/next-server-context)
-- [next-super-action](https://github.com/rechenberger/next-super-action)
+- [@sodefa/next-server-context](https://github.com/rechenberger/next-server-context)
 
 ## Setup
 
