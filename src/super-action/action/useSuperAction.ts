@@ -32,23 +32,27 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
       }
       setIsLoading(true)
 
-      await consumeSuperActionResponse({
-        response: action(),
-        onToast: (t) => {
-          toast({
-            title: t.title,
-            description: t.description,
-          })
-        },
-        catch: catchToast
-          ? (e) => {
-              toast({
-                variant: 'destructive',
-                title: e.message,
-              })
-            }
-          : undefined,
-      })
+      const response = await action()
+
+      if (response && 'superAction' in response) {
+        await consumeSuperActionResponse({
+          response: Promise.resolve(response.superAction),
+          onToast: (t) => {
+            toast({
+              title: t.title,
+              description: t.description,
+            })
+          },
+          catch: catchToast
+            ? (e) => {
+                toast({
+                  variant: 'destructive',
+                  title: e.message,
+                })
+              }
+            : undefined,
+        })
+      }
 
       setIsLoading(false)
     },

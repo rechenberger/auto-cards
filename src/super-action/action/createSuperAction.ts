@@ -62,10 +62,12 @@ export const superAction = <T>(action: () => Promise<T>) => {
       })
     })
 
-  return firstPromise
+  return firstPromise.then((superAction) => ({ superAction }))
 }
 
-export type SuperAction<T = any> = () => Promise<SuperActionResponse<T>>
+export type SuperAction<T = any> = () => Promise<{
+  superAction: SuperActionResponse<T>
+} | void>
 
 export const showToast = (toast: SuperActionToast) => {
   const ctx = serverContext.getOrThrow()

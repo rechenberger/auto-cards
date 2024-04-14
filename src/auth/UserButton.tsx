@@ -8,7 +8,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { superAction } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { ChevronDown, LogOut } from 'lucide-react'
 import { auth, signIn, signOut } from './auth'
@@ -42,9 +41,7 @@ export const UserButton = async () => {
                 size={'sm'}
                 action={async () => {
                   'use server'
-                  return superAction(async () => {
-                    await signOut()
-                  })
+                  await signOut()
                 }}
               >
                 <LogOut className="w-4 h-4 mr-2" />
@@ -64,9 +61,7 @@ export const UserButton = async () => {
         hideIcon
         action={async () => {
           'use server'
-          return superAction(async () => {
-            await signIn('discord')
-          })
+          await signIn('discord')
         }}
       >
         Sign In
