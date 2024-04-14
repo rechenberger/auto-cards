@@ -2,6 +2,7 @@ import { Markdown } from '@/components/demo/Markdown'
 import { Card, CardContent } from '@/components/ui/card'
 import { showToast, superAction } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
+import { createStreamableUI } from 'ai/rsc'
 import { promises as fs } from 'fs'
 import path from 'path'
 
@@ -24,13 +25,16 @@ const PartyButton = () => {
         action={async () => {
           'use server'
           return superAction(async () => {
+            const ui = createStreamableUI('🎉')
+            showToast({
+              title: 'Stream Party!',
+              description: ui.value,
+            })
             for (let i = 0; i < 10; i++) {
-              showToast({
-                title: 'Stream Party!',
-                description: new Array(i + 1).fill('🎉').join(''),
-              })
-              await new Promise((resolve) => setTimeout(resolve, 400))
+              ui.append('🎉')
+              await new Promise((resolve) => setTimeout(resolve, 500))
             }
+            ui.done()
           })
         }}
       >
