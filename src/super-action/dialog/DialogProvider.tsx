@@ -20,16 +20,28 @@ export const DialogProvider = () => {
 export const useShowDialog = () => {
   const setRender = useSetAtom(renderAtom)
   return (dialog: SuperActionDialog) =>
-    setRender(() => (
-      <>
-        <Dialog defaultOpen={true}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{dialog.title}</DialogTitle>
-            </DialogHeader>
-            {dialog.content}
-          </DialogContent>
-        </Dialog>
-      </>
-    ))
+    setRender(() => <SuperDialog dialog={dialog} />)
+}
+
+const SuperDialog = ({ dialog }: { dialog: SuperActionDialog }) => {
+  const setRender = useSetAtom(renderAtom)
+  return (
+    <>
+      <Dialog
+        defaultOpen={true}
+        onOpenChange={(open) => {
+          if (!open) {
+            setRender(null)
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{dialog.title}</DialogTitle>
+          </DialogHeader>
+          {dialog.content}
+        </DialogContent>
+      </Dialog>
+    </>
+  )
 }

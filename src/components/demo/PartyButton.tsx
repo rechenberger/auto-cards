@@ -66,10 +66,12 @@ export const PartyButton = () => {
                         const file = await fs.readFile(filePath, 'utf8')
 
                         showDialog({
-                          title: 'How it works',
+                          title: 'PartyButton.tsx',
                           content: (
                             <>
-                              <Markdown>{`\`\`\`tsx\n${file}\n\`\`\``}</Markdown>
+                              <div className="flex max-h-[60vh] max-w-full overflow-scroll text-xs">
+                                <Markdown className="max-w-none">{`\`\`\`tsx\n${file}\n\`\`\``}</Markdown>
+                              </div>
                               <Link
                                 href="https://github.com/rechenberger/party-starter/blob/main/src/components/demo/PartyButton.tsx"
                                 target="_blank"
