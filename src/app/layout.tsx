@@ -1,5 +1,7 @@
 import { MainTop } from '@/components/layout/MainTop'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
+import { Toaster } from '@/components/ui/toaster'
+import { ActionCommandProvider } from '@/super-action/command/ActionCommandProvider'
 import type { Metadata } from 'next'
 import './globals.css'
 
@@ -22,6 +24,8 @@ export default function RootLayout({
           <div className="container flex flex-col gap-8 py-8 flex-1">
             {children}
           </div>
+          <ActionCommandProvider />
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
