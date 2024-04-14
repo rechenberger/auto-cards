@@ -54,11 +54,12 @@ export const PartyButton = () => {
               title: 'Party Streamed!',
               description: (
                 <>
-                  {/* This is a Server Component, have fun ;) */}
+                  {/* Yes they can be nested, if you are a madman like me */}
                   <ActionButton
                     action={async () => {
                       'use server'
                       return superAction(async () => {
+                        // Read the source code of this file
                         const filePath = path.join(
                           process.cwd(),
                           '/src/components/demo/PartyButton.tsx',
