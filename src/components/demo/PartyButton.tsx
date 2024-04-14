@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import {
-  showDialog,
-  showToast,
+  streamDialog,
+  streamToast,
   superAction,
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
@@ -31,7 +31,7 @@ export const PartyButton = () => {
             const ui = createStreamableUI('🎉')
 
             // Stream a toast to the client:
-            showToast({
+            streamToast({
               title: 'Party Streaming...',
               description: ui.value,
             })
@@ -48,7 +48,7 @@ export const PartyButton = () => {
             ui.done()
 
             // Stream another toast to the client:
-            showToast({
+            streamToast({
               title: 'Party Streamed!',
               description: (
                 <>
@@ -57,12 +57,13 @@ export const PartyButton = () => {
                     action={async () => {
                       'use server'
                       return superAction(async () => {
-                        // Read the source code of this file
+                        // Fetch the source code of this file
                         const file = await fetch(
                           'https://raw.githubusercontent.com/rechenberger/party-starter/main/src/components/demo/PartyButton.tsx',
                         ).then((res) => res.text())
 
-                        showDialog({
+                        // We can also Stream a dialog to the client:
+                        streamDialog({
                           title: 'PartyButton.tsx',
                           content: (
                             <>

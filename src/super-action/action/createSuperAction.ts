@@ -69,12 +69,12 @@ export type SuperAction<T = any> = () => Promise<{
   superAction: SuperActionResponse<T>
 } | void>
 
-export const showToast = (toast: SuperActionToast) => {
+export const streamToast = (toast: SuperActionToast) => {
   const ctx = serverContext.getOrThrow()
   ctx.chain({ toast })
 }
 
-export const showDialog = (dialog: SuperActionDialog) => {
+export const streamDialog = (dialog: SuperActionDialog) => {
   const ctx = serverContext.getOrThrow()
   ctx.chain({ dialog })
 }

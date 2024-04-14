@@ -17,7 +17,7 @@ export const DialogProvider = () => {
   return <>{render}</>
 }
 
-export const useShowDialog = () => {
+export const usestreamDialog = () => {
   const setRender = useSetAtom(renderAtom)
   return (dialog: SuperActionDialog) =>
     setRender(() => <SuperDialog dialog={dialog} />)

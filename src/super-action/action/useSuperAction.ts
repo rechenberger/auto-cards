@@ -2,7 +2,7 @@
 
 import { toast } from '@/components/ui/use-toast'
 import { useCallback, useState } from 'react'
-import { useShowDialog } from '../dialog/DialogProvider'
+import { usestreamDialog } from '../dialog/DialogProvider'
 import { consumeSuperActionResponse } from './consumeSuperActionResponse'
 import { SuperAction } from './createSuperAction'
 
@@ -20,7 +20,7 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
   const { action, disabled, catchToast, askForConfirmation, stopPropagation } =
     options
 
-  const showDialog = useShowDialog()
+  const streamDialog = usestreamDialog()
 
   const trigger = useCallback(
     async (evt: MouseEvent) => {
@@ -47,7 +47,7 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
             })
           },
           onDialog: (d) => {
-            showDialog(d)
+            streamDialog(d)
           },
           catch: catchToast
             ? (e) => {
