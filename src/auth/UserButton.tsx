@@ -8,9 +8,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import {
+  streamDialog,
+  superAction,
+} from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { ChevronDown, LogOut } from 'lucide-react'
-import { auth, signIn, signOut } from './auth'
+import { LoginDialog } from './LoginDialog'
+import { auth, signOut } from './auth'
 
 export const UserButton = async () => {
   const session = await auth()
@@ -61,7 +66,12 @@ export const UserButton = async () => {
         hideIcon
         action={async () => {
           'use server'
-          await signIn('discord')
+          return superAction(async () => {
+            streamDialog({
+              title: 'Sign In',
+              content: <LoginDialog />,
+            })
+          })
         }}
       >
         Sign In

@@ -8,9 +8,11 @@ import {
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { eq } from 'drizzle-orm'
+import { omit } from 'lodash-es'
 import { Metadata } from 'next'
 import { revalidatePath } from 'next/cache'
 import { Fragment } from 'react'
+import { CreateUserButton } from './CreateUserButton'
 
 export const metadata: Metadata = {
   title: 'Users',
@@ -21,12 +23,13 @@ export default async function Page() {
   const users = await db.query.users.findMany({})
   return (
     <>
+      <CreateUserButton />
       <div className="grid grid-cols-[1fr_auto] gap-4">
         {users.map((user) => {
           const isAdmin = !!user.isAdmin
           return (
             <Fragment key={user.id}>
-              <SimpleDataCard data={user} />
+              <SimpleDataCard data={omit(user, ['passwordHash'])} />
               <div>
                 <ActionButton
                   variant={isAdmin ? 'destructive' : 'default'}
