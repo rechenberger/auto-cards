@@ -6,10 +6,8 @@ import {
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { createStreamableUI } from 'ai/rsc'
-import { promises as fs } from 'fs'
 import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
-import path from 'path'
 import { Markdown } from './Markdown'
 
 export const PartyButton = () => {
@@ -60,11 +58,9 @@ export const PartyButton = () => {
                       'use server'
                       return superAction(async () => {
                         // Read the source code of this file
-                        const filePath = path.join(
-                          process.cwd(),
-                          '/src/components/demo/PartyButton.tsx',
-                        )
-                        const file = await fs.readFile(filePath, 'utf8')
+                        const file = await fetch(
+                          'https://raw.githubusercontent.com/rechenberger/party-starter/main/src/components/demo/PartyButton.tsx',
+                        ).then((res) => res.text())
 
                         showDialog({
                           title: 'PartyButton.tsx',
