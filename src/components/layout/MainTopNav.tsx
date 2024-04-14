@@ -4,17 +4,18 @@ import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-const entries = [
-  {
-    name: 'Home',
-    href: '/',
-  },
-]
+export type MainTopNavEntry = {
+  name: string
+  href: string
+}
 
 export function MainTopNav({
   className,
-  ...props
-}: React.HTMLAttributes<HTMLElement>) {
+  entries,
+}: {
+  className?: string
+  entries: MainTopNavEntry[]
+}) {
   const pathname = usePathname()
 
   return (
@@ -23,7 +24,6 @@ export function MainTopNav({
         'flex flex-1 flex-wrap items-center gap-4 lg:gap-6',
         className,
       )}
-      {...props}
     >
       {entries.map((entry) => {
         const isActive =
@@ -43,8 +43,8 @@ export function MainTopNav({
           </Link>
         )
       })}
-      {/* <div className="flex-1" />
-      <Link
+      <div className="flex-1" />
+      {/* <Link
         href={'https://teampilot.ai'}
         target="_blank"
         className={cn(

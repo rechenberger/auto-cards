@@ -16,10 +16,15 @@ pnpm dev
 ## Setup
 
 - Create [.env.local](.env.local)
-- Create DB @ [Turso](https://turso.tech/app/databases)
+- Generate Auth Secret
+  - run `npx auth secret`
+  - copy `AUTH_SECRET` to [.env.local](.env.local)
+- Connect DB
+  - [Create Turso Database](https://turso.tech/app/databases)
   - `DB_URL`: looks like libsql://your-app.you.turso.io
   - `DB_TOKEN`: looks like a JWT eyeyey
-- Create App @ [Discord](https://discord.com/developers/applications)
+- Connect PAuth
+  - [Create Discord Developer App](https://discord.com/developers/applications)
   - Goto OAuth2
   - `AUTH_DISCORD_ID`: Copy Client ID
   - `AUTH_DISCORD_SECRET`: Reset Secret

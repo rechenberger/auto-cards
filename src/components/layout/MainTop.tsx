@@ -1,10 +1,26 @@
+import { UserButton } from '@/auth/UserButton'
+import { getIsAdmin } from '@/auth/getIsAdmin'
 import { DarkModeToggle } from '@/components/layout/DarkModeToggle'
 import { Button } from '@/components/ui/button'
 import { Github } from 'lucide-react'
 import Link from 'next/link'
 import { MainTopNav } from './MainTopNav'
 
-export const MainTop = () => {
+export const MainTop = async () => {
+  const isAdminOrDev = await getIsAdmin({ allowDev: true })
+
+  const entries = [
+    {
+      name: 'Home',
+      href: '/',
+    },
+    {
+      name: 'Users',
+      href: '/users',
+      hidden: !isAdminOrDev,
+    },
+  ].filter((entry) => !entry.hidden)
+
   return (
     <>
       <div className="container flex flex-row items-center justify-between gap-6 py-6">
@@ -16,7 +32,8 @@ export const MainTop = () => {
           </div>
         </Link>
         <div className="hidden flex-1 xl:flex">
-          <MainTopNav />
+          <MainTopNav entries={entries} />
+          <UserButton />
         </div>
         <div className="flex flex-row">
           <Link
@@ -31,7 +48,8 @@ export const MainTop = () => {
         </div>
       </div>
       <div className="container flex pb-6 xl:hidden">
-        <MainTopNav />
+        <MainTopNav entries={entries} />
+        <UserButton />
       </div>
     </>
   )

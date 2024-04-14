@@ -3,19 +3,29 @@ import { getMyUser } from './getMyUser'
 
 export const isDev = () => process.env.NODE_ENV === 'development'
 
-export const getIsAdmin = async () => {
-  const user = await getMyUser()
-  return !!user?.isAdmin
+type IsAdminOptions = {
+  allowDev?: boolean
 }
 
-export const throwIfNotAdmin = async () => {
-  if (!(await getIsAdmin())) {
+export const getIsAdmin = async (options: IsAdminOptions = {}) => {
+  const user = await getMyUser()
+  if (!!user?.isAdmin) {
+    return true
+  }
+  if (options.allowDev && isDev()) {
+    return true
+  }
+  return false
+}
+
+export const throwIfNotAdmin = async (options: IsAdminOptions = {}) => {
+  if (!(await getIsAdmin(options))) {
     throw new Error('Forbidden: You are not an admin.')
   }
 }
 
-export const notFoundIfNotAdmin = async () => {
-  if (!(await getIsAdmin())) {
+export const notFoundIfNotAdmin = async (options: IsAdminOptions = {}) => {
+  if (!(await getIsAdmin(options))) {
     notFound()
   }
 }
