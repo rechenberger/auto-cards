@@ -11,7 +11,7 @@ export const MainTop = () => {
         <Link href="/" className="flex flex-row items-center gap-3">
           <div className="text-xl">
             <strong>
-              Teampilot <span className="text-primary">Starter</span>
+              Party <span className="text-primary">Starter</span>
             </strong>
           </div>
         </Link>
@@ -20,7 +20,7 @@ export const MainTop = () => {
         </div>
         <div className="flex flex-row">
           <Link
-            href="https://github.com/SODEFA-GmbH-Co-KG/teampilot-starter"
+            href="https://github.com/rechenberger/party-starter"
             target="_blank"
           >
             <Button variant={'ghost'} size="icon">

@@ -8,7 +8,7 @@ import { Suspense } from 'react'
 import { LocalDateTime } from './LocalDateTime'
 import { Markdown } from './Markdown'
 
-type TestCaseProps = {
+type TeampilotTestCaseProps = {
   prompt: string
   title: string
   customFunctions?: TeampilotCustomFunction<any>[]
@@ -17,7 +17,7 @@ type TestCaseProps = {
 
 const isDev = () => process.env.NODE_ENV === 'development'
 
-export const TestCase = (props: TestCaseProps) => {
+export const TeampilotTestCase = (props: TeampilotTestCaseProps) => {
   const { title, prompt, customFunctions } = props
   const launchpadSlugId =
     props.launchpadSlugId ||
@@ -63,7 +63,7 @@ export const TestCase = (props: TestCaseProps) => {
                 </>
               }
             >
-              <TestCaseResult {...props} />
+              <TeampilotTestCaseResult {...props} />
             </Suspense>
           </div>
         </CardContent>
@@ -72,11 +72,11 @@ export const TestCase = (props: TestCaseProps) => {
   )
 }
 
-const TestCaseResult = async ({
+const TeampilotTestCaseResult = async ({
   prompt,
   customFunctions,
   launchpadSlugId,
-}: TestCaseProps) => {
+}: TeampilotTestCaseProps) => {
   const result = await fetchTeampilot({
     message: prompt,
     accessLevel: 'LINK_WRITE',

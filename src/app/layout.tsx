@@ -4,8 +4,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Teampilot Starter',
-  description: 'powered by teampilot.ai',
+  title: 'Party Starter',
+  description: 'by Tristan Rechenberger',
 }
 
 export default function RootLayout({
