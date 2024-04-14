@@ -43,6 +43,11 @@ export default async function Page() {
                       revalidatePath('/users')
                     })
                   }}
+                  command={{
+                    label: `${isAdmin ? 'Remove' : 'Make'} admin: ${
+                      user.email
+                    }`,
+                  }}
                 >
                   {isAdmin ? 'Remove admin' : 'Make admin'}
                 </ActionButton>
