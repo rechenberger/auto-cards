@@ -26,8 +26,8 @@ export const ChangePasswordForm = async ({
             })
 
             const description = redirectUrl
-              ? 'Your password has been changed'
-              : 'Redirecting...'
+              ? 'Redirecting...'
+              : 'Your password has been changed'
 
             streamToast({
               title: 'Password Changed!',

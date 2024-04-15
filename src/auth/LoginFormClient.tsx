@@ -66,13 +66,15 @@ export const LoginFormClient = ({
     catchToast: true,
   })
 
+  const disabled = isLoading
+
   const form = useLoginForm({
     defaultValues: {
       type: 'login',
       email: 'you@example.com',
       password: 'your-password',
     },
-    disabled: isLoading,
+    disabled,
   })
 
   const registering = form.watch('type') === 'register'
@@ -173,10 +175,11 @@ export const LoginFormClient = ({
               type="button"
               className={cn('flex-1')}
               onClick={() => setRegistering(!registering)}
+              disabled={disabled}
             >
               {registering ? 'Back to Login' : 'Register'}
             </Button>
-            <Button type="submit" className="flex-1">
+            <Button type="submit" className="flex-1" disabled={disabled}>
               {registering ? 'Register' : 'Login'}
             </Button>
           </div>

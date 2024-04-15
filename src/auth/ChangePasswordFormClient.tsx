@@ -52,9 +52,11 @@ export const ChangePasswordFormClient = ({
     catchToast: true,
   })
 
+  const disabled = isLoading
+
   const form = useLoginForm({
     defaultValues: {},
-    disabled: isLoading,
+    disabled,
   })
 
   return (
@@ -109,12 +111,14 @@ export const ChangePasswordFormClient = ({
           <div className="flex flex-row gap-2 mt-4 justify-end">
             {!!redirectUrl && (
               <Link href={redirectUrl} passHref>
-                <Button variant={'outline'} type="button">
+                <Button variant={'outline'} type="button" disabled={disabled}>
                   Skip
                 </Button>
               </Link>
             )}
-            <Button type="submit">Change Password</Button>
+            <Button type="submit" disabled={disabled}>
+              Change Password
+            </Button>
           </div>
         </form>
       </Form>
