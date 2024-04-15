@@ -19,21 +19,26 @@ import { useSuperAction } from '@/super-action/action/useSuperAction'
 import { ArrowLeft } from 'lucide-react'
 import { ReactNode } from 'react'
 import { z } from 'zod'
-import { credentialsSchema } from './credentialsSchema'
 
-const LoginDataSchema = credentialsSchema
-  .and(
-    z.discriminatedUnion('type', [
-      z.object({
-        type: z.literal('login'),
-      }),
-      z.object({
-        type: z.literal('register'),
-        confirmPassword: z.string().min(1),
-        acceptTerms: z.boolean().refine((v) => !!v, 'required'),
-      }),
-    ]),
-  )
+const LoginDataSchema = z
+  .discriminatedUnion('type', [
+    z.object({
+      type: z.literal('login'),
+      email: z.string().email().min(1),
+      password: z.string().min(1),
+    }),
+    z.object({
+      type: z.literal('register'),
+      email: z.string().email().min(1),
+      password: z.string().min(1),
+      confirmPassword: z.string().min(1),
+      acceptTerms: z.boolean().refine((v) => !!v, 'required'),
+    }),
+    z.object({
+      type: z.literal('forgotPassword'),
+      email: z.string().email().min(1),
+    }),
+  ])
   .superRefine((data, ctx) => {
     if (data.type === 'register') {
       if (data.password !== data.confirmPassword) {
@@ -47,6 +52,7 @@ const LoginDataSchema = credentialsSchema
   })
 
 type LoginData = z.infer<typeof LoginDataSchema>
+type LoginType = LoginData['type']
 
 const [useLoginForm] = createZodForm(LoginDataSchema)
 
@@ -77,30 +83,36 @@ export const LoginFormClient = ({
     disabled,
   })
 
-  const registering = form.watch('type') === 'register'
-  const setRegistering = (r: boolean) => {
-    form.setValue('type', r ? 'register' : 'login')
+  const type = form.watch('type')
+  const registering = type === 'register'
+
+  const setType = (t: LoginType) => {
+    form.setValue('type', t)
   }
+
+  const mainLabel =
+    type === 'forgotPassword'
+      ? 'Forgot Password'
+      : type === 'register'
+        ? 'Register'
+        : 'Login'
 
   return (
     <>
       <div className="mb-2 flex flex-row gap-4 items-center">
-        {registering ? (
+        {type !== 'login' && (
           <>
             <Button
               variant={'ghost'}
               size="icon"
               className="-m-2.5"
-              onClick={() => setRegistering(false)}
+              onClick={() => setType('login')}
             >
               <ArrowLeft className="size-4" />
-              {/* <CardTitle>Register</CardTitle> */}
             </Button>
           </>
-        ) : (
-          <></>
         )}
-        <CardTitle>{registering ? 'Register' : 'Login'}</CardTitle>
+        <CardTitle>{mainLabel}</CardTitle>
       </div>
       <Form {...form}>
         <form
@@ -122,19 +134,36 @@ export const LoginFormClient = ({
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input type="password" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {type !== 'forgotPassword' && (
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex flex-row gap-4 items-end">
+                    <FormLabel className="flex-1">Password</FormLabel>
+                    {type === 'login' && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant={'link'}
+                        className="-m-2.5 -mb-3"
+                        onClick={() => {
+                          setType('forgotPassword')
+                        }}
+                      >
+                        Forgot Password?
+                      </Button>
+                    )}
+                  </div>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
           {registering && (
             <>
               <FormField
@@ -174,28 +203,32 @@ export const LoginFormClient = ({
               variant={'outline'}
               type="button"
               className={cn('flex-1')}
-              onClick={() => setRegistering(!registering)}
+              onClick={() => {
+                setType(type === 'login' ? 'register' : 'login')
+              }}
               disabled={disabled}
             >
-              {registering ? 'Back to Login' : 'Register'}
+              {type === 'login' ? 'Register' : 'Back to Login'}
             </Button>
             <Button type="submit" className="flex-1" disabled={disabled}>
-              {registering ? 'Register' : 'Login'}
+              {mainLabel}
             </Button>
           </div>
         </form>
       </Form>
 
-      {alternatives && (!registering || showAlternativesOnRegister) && (
-        <>
-          <div className="flex flex-row items-center my-4">
-            <hr className="flex-1" />
-            <span className="mx-4 text-border">or</span>
-            <hr className="flex-1" />
-          </div>
-          {alternatives}
-        </>
-      )}
+      {alternatives &&
+        (type === 'login' ||
+          (type === 'register' && showAlternativesOnRegister)) && (
+          <>
+            <div className="flex flex-row items-center my-4">
+              <hr className="flex-1" />
+              <span className="mx-4 text-border">or</span>
+              <hr className="flex-1" />
+            </div>
+            {alternatives}
+          </>
+        )}
     </>
   )
 }

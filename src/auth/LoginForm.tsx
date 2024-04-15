@@ -24,10 +24,17 @@ export const LoginForm = () => {
                 }
               }
               return
-            } else {
+            } else if (data.type === 'register') {
               // REGISTER
               await registerUser(data)
               await signIn('resend', data)
+            } else if (data.type === 'forgotPassword') {
+              // CHANGE PASSWORD
+              await signIn('resend', {
+                email: data.email,
+              })
+            } else {
+              const exhaustiveCheck: never = data
             }
           })
         }}
