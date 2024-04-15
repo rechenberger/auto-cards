@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Switch } from '@/components/ui/switch'
 import { db } from '@/db/db'
 import { users as usersTable } from '@/db/schema-auth'
 import {
@@ -59,9 +60,11 @@ export default async function Page() {
                       )}
                     </div>
                   </div>
-                  <div className="flex flex-row gap-2 items-center">
+                  <label className="">
+                    <div className="flex-1">Admin</div>
                     <ActionButton
-                      variant={isAdmin ? 'destructive' : 'default'}
+                      component={Switch}
+                      checked={isAdmin}
                       action={async () => {
                         'use server'
                         return superAction(async () => {
@@ -83,9 +86,9 @@ export default async function Page() {
                           user.email
                         }`,
                       }}
-                    >
-                      {isAdmin ? 'Remove admin' : 'Make admin'}
-                    </ActionButton>
+                    />
+                  </label>
+                  <div className="flex flex-row gap-2 items-center">
                     <ActionButton
                       variant={'outline'}
                       askForConfirmation

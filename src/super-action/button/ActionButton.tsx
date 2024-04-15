@@ -1,16 +1,16 @@
 'use client'
 
-import { Button, type ButtonProps } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { ArrowRight, Loader2 } from 'lucide-react'
-import { ReactNode } from 'react'
+import { ComponentPropsWithoutRef, ReactNode } from 'react'
 import { UseSuperActionOptions, useSuperAction } from '../action/useSuperAction'
 import { ActionCommand } from '../command/ActionCommand'
 import { type ActionCommandConfig } from '../command/ActionCommandProvider'
 
-export type ActionButtonProps = {
+export type ActionButtonProps<Comp extends typeof Button = typeof Button> = {
   children?: React.ReactNode
-  component?: React.ElementType | typeof Button
+  component?: Comp
   hideIcon?: boolean
   hideButton?: boolean
   command?: Omit<
@@ -20,9 +20,11 @@ export type ActionButtonProps = {
     label?: ReactNode
   }
 } & UseSuperActionOptions &
-  ButtonProps
+  ComponentPropsWithoutRef<Comp>
 
-export const ActionButton = (props: ActionButtonProps) => {
+export const ActionButton = <Comp extends typeof Button = typeof Button>(
+  props: ActionButtonProps<Comp>,
+) => {
   const {
     action,
     disabled,
