@@ -1,5 +1,4 @@
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { revalidatePath } from 'next/cache'
 import { CredentialsForm } from './CredentialsForm'
 import { signIn } from './auth'
 
@@ -9,12 +8,10 @@ export const LoginDialog = () => {
       <CredentialsForm
         onSubmit={async (credentials) => {
           'use server'
-          const result = await signIn('credentials', {
+          await signIn('credentials', {
             ...credentials,
-            redirect: false,
+            // redirect: false,
           })
-          console.log(result)
-          revalidatePath('/', 'layout')
         }}
       />
 
