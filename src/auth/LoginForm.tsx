@@ -54,7 +54,7 @@ export const LoginForm = ({ redirectUrl }: { redirectUrl?: string }) => {
             >
               Sign in with Discord
             </ActionButton>
-            <ActionButton
+            {/* <ActionButton
               variant={'outline'}
               action={async () => {
                 'use server'
@@ -62,7 +62,7 @@ export const LoginForm = ({ redirectUrl }: { redirectUrl?: string }) => {
               }}
             >
               Sign in Page
-            </ActionButton>
+            </ActionButton> */}
           </>
         }
       />
