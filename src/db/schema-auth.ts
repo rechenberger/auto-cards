@@ -1,4 +1,5 @@
 import type { AdapterAccount } from '@auth/core/adapters'
+import { relations } from 'drizzle-orm'
 import { integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
 export const users = sqliteTable('user', {
@@ -8,7 +9,12 @@ export const users = sqliteTable('user', {
   emailVerified: integer('emailVerified', { mode: 'timestamp_ms' }),
   image: text('image'),
   isAdmin: integer('isAdmin', { mode: 'boolean' }),
+  passwordHash: text('passwordHash'),
 })
+
+export const usersRelations = relations(users, ({ many }) => ({
+  accounts: many(accounts),
+}))
 
 export const accounts = sqliteTable(
   'account',
@@ -33,6 +39,13 @@ export const accounts = sqliteTable(
     }),
   }),
 )
+
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  user: one(users, {
+    fields: [accounts.userId],
+    references: [users.id],
+  }),
+}))
 
 export const sessions = sqliteTable('session', {
   sessionToken: text('sessionToken').notNull().primaryKey(),

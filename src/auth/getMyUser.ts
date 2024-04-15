@@ -1,7 +1,9 @@
 import { db } from '@/db/db'
 import { users } from '@/db/schema-auth'
 import { eq } from 'drizzle-orm'
+import { omit } from 'lodash-es'
 import { auth } from './auth'
+import { loginWithRedirect } from './loginWithRedirect'
 
 export const getMyUserId = async () => {
   const session = await auth()
@@ -24,14 +26,24 @@ export const getIsLoggedIn = async () => {
 export const getMyUser = async () => {
   const userId = await getMyUserId()
   if (!userId) return null
-  const user = db.query.users.findFirst({
+  const user = await db.query.users.findFirst({
     where: eq(users.id, userId),
   })
-  return user
+  const parsed = omit(user, ['passwordHash'])
+  return parsed
 }
 
 export const getMyUserOrThrow = async () => {
   const user = await getMyUser()
   if (!user) throw new Error('User not found')
+  return user
+}
+
+export const getMyUserOrLogin = async () => {
+  const user = await getMyUser()
+  if (!user) {
+    await loginWithRedirect()
+    throw new Error('User not found')
+  }
   return user
 }
