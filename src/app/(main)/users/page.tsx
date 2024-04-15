@@ -28,7 +28,12 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   await notFoundIfNotAdmin({ allowDev: true })
-  const users = await db.query.users.findMany({})
+  const users = await db.query.users.findMany({
+    with: {
+      accounts: true,
+    },
+  })
+
   return (
     <>
       <div className="flex flex-row gap-2 items-center">
@@ -38,12 +43,28 @@ export default async function Page() {
       <div className="grid lg:grid-cols-3 gap-4">
         {users.map((user) => {
           const isAdmin = !!user.isAdmin
+          const tags: string[] = []
+          if (user.passwordHash) tags.push('password')
+          for (const account of user.accounts) {
+            tags.push(account.provider)
+          }
           return (
             <Fragment key={user.id}>
               <Card>
                 <CardHeader>
                   <CardTitle>{user.name ?? user.email}</CardTitle>
                   <CardDescription>{user.id}</CardDescription>
+                  {tags.length && (
+                    <div className="flex flex-row gap-2">
+                      {tags.map((tag) => (
+                        <Fragment key={tag}>
+                          <div className="bg-muted text-muted-foreground rounded-full px-2.5 py-0.5 text-xs">
+                            {tag}
+                          </div>
+                        </Fragment>
+                      ))}
+                    </div>
+                  )}
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
                   <div>
