@@ -1,4 +1,5 @@
 import { createServerContext } from '@sodefa/next-server-context'
+import { isRedirectError } from 'next/dist/client/components/redirect'
 import { ReactNode } from 'react'
 import { createResolvablePromise } from './createResolvablePromise'
 
@@ -49,25 +50,30 @@ export const superAction = <T>(action: () => Promise<T>) => {
 
   serverContext.set(ctx)
 
-  action()
-    .then((result) => complete({ result }))
-    .catch((error) => {
-      // console.error('SOME ERROR', {
-      //   message: error?.message,
-      // })
+  // Execute Action:
+  ;(async () => {
+    try {
+      const result = await action()
+      complete({ result })
+    } catch (error: any) {
+      if (isRedirectError(error)) {
+        next.reject(error)
+      }
       complete({
         error: {
           message: error?.message,
         },
       })
-    })
+    }
+  })()
 
   return firstPromise.then((superAction) => ({ superAction }))
 }
 
-export type SuperAction<T = any> = () => Promise<{
+export type SuperActionPromise<T = any> = Promise<{
   superAction: SuperActionResponse<T>
 } | void>
+export type SuperAction<T = any> = () => SuperActionPromise<T>
 
 export const streamToast = (toast: SuperActionToast) => {
   const ctx = serverContext.getOrThrow()

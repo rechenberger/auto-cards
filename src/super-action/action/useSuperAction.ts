@@ -23,12 +23,12 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
   const streamDialog = useShowDialog()
 
   const trigger = useCallback(
-    async (evt: MouseEvent) => {
+    async (evt?: MouseEvent) => {
       if (isLoading) return
       if (disabled) return
       if (stopPropagation) {
-        evt.stopPropagation()
-        evt.preventDefault()
+        evt?.stopPropagation()
+        evt?.preventDefault()
       }
       if (askForConfirmation) {
         if (!confirm('Are you sure?')) return

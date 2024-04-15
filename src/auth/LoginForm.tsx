@@ -14,6 +14,8 @@ import {
 import { Input } from '@/components/ui/input'
 import { createZodForm } from '@/lib/useZodForm'
 import { cn } from '@/lib/utils'
+import { SuperActionPromise } from '@/super-action/action/createSuperAction'
+import { useSuperAction } from '@/super-action/action/useSuperAction'
 import { ArrowLeft } from 'lucide-react'
 import { ReactNode } from 'react'
 import { z } from 'zod'
@@ -49,24 +51,34 @@ type LoginData = z.infer<typeof LoginDataSchema>
 const [useLoginForm] = createZodForm(LoginDataSchema)
 
 export const LoginForm = ({
-  onSubmit,
+  action,
   alternatives,
   showAlternativesOnRegister = false,
 }: {
-  onSubmit: (data: LoginData) => Promise<void>
+  action: (data: LoginData) => SuperActionPromise
   alternatives?: ReactNode
   showAlternativesOnRegister?: boolean
 }) => {
+  const { trigger, isLoading } = useSuperAction({
+    action: async () => {
+      return action(form.getValues())
+    },
+    catchToast: true,
+  })
+
   const form = useLoginForm({
     defaultValues: {
       type: 'login',
       email: 'you@example.com',
       password: 'your-password',
     },
+    disabled: isLoading,
   })
+
   const registering = form.watch('type') === 'register'
-  const setRegistering = (r: boolean) =>
+  const setRegistering = (r: boolean) => {
     form.setValue('type', r ? 'register' : 'login')
+  }
 
   return (
     <>
@@ -90,8 +102,8 @@ export const LoginForm = ({
       </div>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(async (data) => {
-            await onSubmit(data)
+          onSubmit={form.handleSubmit(async () => {
+            await trigger()
           })}
           className="flex flex-col gap-4"
         >

@@ -1,4 +1,9 @@
+import {
+  streamToast,
+  superAction,
+} from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
+import { CredentialsSignin } from 'next-auth'
 import { LoginForm } from './LoginForm'
 import { signIn } from './auth'
 
@@ -6,11 +11,30 @@ export const LoginDialog = () => {
   return (
     <>
       <LoginForm
-        onSubmit={async (credentials) => {
+        action={async (data) => {
           'use server'
-          await signIn('credentials', {
-            ...credentials,
-            // redirect: false,
+          return superAction(async () => {
+            if (data.type === 'login') {
+              // LOGIN
+              try {
+                await signIn('credentials', data)
+              } catch (error) {
+                if (error instanceof CredentialsSignin) {
+                  throw new Error('Invalid credentials')
+                } else {
+                  throw error
+                }
+              }
+              return
+            } else {
+              // REGISTER
+              await new Promise((resolve) => setTimeout(resolve, 1000))
+              streamToast({
+                title: 'Registered',
+                description: 'You have been registered',
+              })
+              throw new Error('Not implemented')
+            }
           })
         }}
         alternatives={

@@ -21,7 +21,7 @@ export const CreateUserButton = () => {
               content: (
                 <>
                   <LoginForm
-                    onSubmit={async (credentials) => {
+                    action={async (credentials) => {
                       'use server'
                       const existingUser = await db.query.users.findFirst({
                         where: (s, { eq }) => eq(s.email, credentials.email),
