@@ -2,6 +2,7 @@ import { db } from '@/db/db'
 import { users } from '@/db/schema-auth'
 import { eq } from 'drizzle-orm'
 import { auth } from './auth'
+import { loginWithRedirect } from './loginWithRedirect'
 
 export const getMyUserId = async () => {
   const session = await auth()
@@ -33,5 +34,14 @@ export const getMyUser = async () => {
 export const getMyUserOrThrow = async () => {
   const user = await getMyUser()
   if (!user) throw new Error('User not found')
+  return user
+}
+
+export const getMyUserOrLogin = async () => {
+  const user = await getMyUser()
+  if (!user) {
+    await loginWithRedirect()
+    throw new Error('User not found')
+  }
   return user
 }
