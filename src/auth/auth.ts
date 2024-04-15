@@ -4,6 +4,7 @@ import NextAuth from 'next-auth'
 import Discord from 'next-auth/providers/discord'
 import Resend from 'next-auth/providers/resend'
 import { CredentialsProvider } from './CredentialsProvider'
+import { ImpersonateProvider } from './ImpersonateProvider'
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db),
@@ -13,6 +14,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       from: process.env.EMAIL_FROM,
     }),
     CredentialsProvider,
+    ImpersonateProvider,
   ],
   session: {
     strategy: 'jwt',

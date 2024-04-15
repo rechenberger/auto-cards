@@ -1,4 +1,5 @@
-import { notFoundIfNotAdmin } from '@/auth/getIsAdmin'
+import { signIn } from '@/auth/auth'
+import { notFoundIfNotAdmin, throwIfNotAdmin } from '@/auth/getIsAdmin'
 import { LocalDateTime } from '@/components/demo/LocalDateTime'
 import {
   Card,
@@ -88,13 +89,14 @@ export default async function Page() {
                       }}
                     />
                   </label>
-                  <div className="flex flex-row gap-2 items-center">
+                  <div className="flex flex-row gap-2 items-center justify-end">
                     <ActionButton
                       variant={'outline'}
                       askForConfirmation
                       action={async () => {
                         'use server'
                         return superAction(async () => {
+                          await throwIfNotAdmin({ allowDev: true })
                           await db
                             .delete(usersTable)
                             .where(eq(usersTable.id, user.id))
@@ -113,6 +115,21 @@ export default async function Page() {
                       }}
                     >
                       Delete
+                    </ActionButton>
+                    <ActionButton
+                      variant={'outline'}
+                      action={async () => {
+                        'use server'
+                        return superAction(async () => {
+                          await throwIfNotAdmin({ allowDev: true })
+                          await signIn('impersonate', {
+                            email: user.email,
+                            secret: process.env.AUTH_SECRET!,
+                          })
+                        })
+                      }}
+                    >
+                      Login as
                     </ActionButton>
                   </div>
                 </CardContent>
