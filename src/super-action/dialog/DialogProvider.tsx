@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import { ReactNode } from 'react'
+import { ReactNode, useCallback } from 'react'
 import { SuperActionDialog } from '../action/createSuperAction'
 
 const renderAtom = atom<ReactNode>(null)
@@ -19,8 +19,11 @@ export const DialogProvider = () => {
 
 export const useShowDialog = () => {
   const setRender = useSetAtom(renderAtom)
-  return (dialog: SuperActionDialog) =>
-    setRender(() => <SuperDialog dialog={dialog} />)
+  return useCallback(
+    (dialog: SuperActionDialog) =>
+      setRender(() => <SuperDialog dialog={dialog} />),
+    [setRender],
+  )
 }
 
 const SuperDialog = ({ dialog }: { dialog: SuperActionDialog }) => {
