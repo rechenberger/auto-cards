@@ -1,6 +1,7 @@
 import { superAction } from '@/super-action/action/createSuperAction'
 import { ChangePasswordFormClient } from './ChangePasswordFormClient'
-import { getMyUser, getMyUserId } from './getMyUser'
+import { changePassword } from './changePassword'
+import { getMyUser, getMyUserIdOrThrow } from './getMyUser'
 
 export const ChangePasswordForm = async ({
   redirectUrl,
@@ -14,9 +15,11 @@ export const ChangePasswordForm = async ({
         action={async (data) => {
           'use server'
           return superAction(async () => {
-            const userId = await getMyUserId()
-            // const passwordHash = await db.query.users
-            // db.update(schema.users).set()
+            const userId = await getMyUserIdOrThrow()
+            await changePassword({
+              password: data.password,
+              userId,
+            })
           })
         }}
         email={user?.email}
