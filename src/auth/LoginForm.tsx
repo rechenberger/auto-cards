@@ -30,7 +30,7 @@ const LoginDataSchema = credentialsSchema
       z.object({
         type: z.literal('register'),
         confirmPassword: z.string().min(1),
-        acceptTerms: z.literal(true),
+        acceptTerms: z.boolean().refine((v) => !!v, 'required'),
       }),
     ]),
   )
