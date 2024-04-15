@@ -5,7 +5,7 @@ import { LoginFormClient } from './LoginFormClient'
 import { signIn } from './auth'
 import { registerUser } from './registerUser'
 
-export const LoginForm = () => {
+export const LoginForm = ({ redirectUrl }: { redirectUrl?: string }) => {
   return (
     <>
       <LoginFormClient
@@ -30,8 +30,13 @@ export const LoginForm = () => {
               await signIn('resend', data)
             } else if (data.type === 'forgotPassword') {
               // CHANGE PASSWORD
+              let redirectTo = '/auth/change-password'
+              if (redirectUrl) {
+                redirectTo += `?redirect=${encodeURIComponent(redirectUrl)}`
+              }
               await signIn('resend', {
                 email: data.email,
+                redirectTo,
               })
             } else {
               const exhaustiveCheck: never = data
