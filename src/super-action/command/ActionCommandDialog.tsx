@@ -41,11 +41,7 @@ export const ActionCommandDialog = ({
   <>
     <CommandDialog open={open} onOpenChange={setOpen}>
       <CommandInput placeholder="Type a command or search..." />
-      <CommandList
-        onSelect={() => {
-          console.log('selected')
-        }}
-      >
+      <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         {children}
       </CommandList>

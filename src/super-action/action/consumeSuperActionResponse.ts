@@ -14,7 +14,6 @@ export const consumeSuperActionResponse = async <T>(options: {
   catch?: (error: SuperActionError) => void
 }): Promise<T | undefined> => {
   const r = await options.response
-  // console.log('consumeSuperActionResponse', r)
   if (r.toast && options.onToast) {
     options.onToast(r.toast)
   }
