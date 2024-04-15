@@ -1,5 +1,5 @@
-import { signIn } from '@/auth/auth'
 import { notFoundIfNotAdmin, throwIfNotAdmin } from '@/auth/getIsAdmin'
+import { impersonate } from '@/auth/impersonate'
 import { LocalDateTime } from '@/components/demo/LocalDateTime'
 import {
   Card,
@@ -122,10 +122,7 @@ export default async function Page() {
                         'use server'
                         return superAction(async () => {
                           await throwIfNotAdmin({ allowDev: true })
-                          await signIn('impersonate', {
-                            email: user.email,
-                            secret: process.env.AUTH_SECRET!,
-                          })
+                          await impersonate({ userId: user.id })
                         })
                       }}
                     >

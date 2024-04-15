@@ -6,13 +6,13 @@ import { z } from 'zod'
 export const ImpersonateProvider = Credentials({
   id: 'impersonate',
   credentials: {
-    email: {},
+    userId: {},
     secret: {},
   },
   authorize: async (credentialsRaw) => {
     const parsed = z
       .object({
-        email: z.string().email(),
+        userId: z.string().min(1),
         secret: z.string().min(1),
       })
       .safeParse(credentialsRaw)
@@ -26,8 +26,7 @@ export const ImpersonateProvider = Credentials({
     }
 
     const user = await db.query.users.findFirst({
-      where: (s, { eq, and, isNotNull }) =>
-        and(eq(s.email, credentials.email), isNotNull(s.passwordHash)),
+      where: (s, { eq }) => eq(s.id, credentials.userId),
     })
 
     if (!user) {
