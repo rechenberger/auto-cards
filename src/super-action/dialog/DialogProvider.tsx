@@ -36,9 +36,11 @@ const SuperDialog = ({ dialog }: { dialog: SuperActionDialog }) => {
         }}
       >
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{dialog.title}</DialogTitle>
-          </DialogHeader>
+          {dialog.title && (
+            <DialogHeader>
+              <DialogTitle>{dialog.title}</DialogTitle>
+            </DialogHeader>
+          )}
           {dialog.content}
         </DialogContent>
       </Dialog>

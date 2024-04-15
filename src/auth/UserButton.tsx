@@ -68,7 +68,7 @@ export const UserButton = async () => {
           'use server'
           return superAction(async () => {
             streamDialog({
-              title: 'Sign In',
+              // title: 'Sign In',
               content: <LoginDialog />,
             })
           })
