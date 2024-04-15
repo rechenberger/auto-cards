@@ -3,7 +3,7 @@
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-export const loginAction = async () => {
+export const loginWithRedirect = async () => {
   let url = `/auth/signin`
 
   const h = headers()

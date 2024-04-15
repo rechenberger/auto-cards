@@ -1,7 +1,6 @@
-import { LoginForm } from '@/auth/LoginForm'
 import { getIsLoggedIn } from '@/auth/getMyUser'
-import { Card, CardContent } from '@/components/ui/card'
-import { redirect } from 'next/navigation'
+import { loginWithRedirect } from '@/auth/loginWithRedirect'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default async function Page({
   searchParams: { redirect: redirectUrl },
@@ -9,15 +8,17 @@ export default async function Page({
   searchParams: { redirect?: string }
 }) {
   const isLoggedIn = await getIsLoggedIn()
-  if (isLoggedIn) {
-    redirect(redirectUrl ? decodeURIComponent(redirectUrl) : '/')
+  if (!isLoggedIn) {
+    await loginWithRedirect()
   }
 
   return (
     <>
       <Card className="self-center w-full max-w-md flex flex-col gap-4">
         <CardContent className="flex flex-col gap-4 pt-6">
-          <LoginForm />
+          <CardHeader>
+            <CardTitle>Change your password</CardTitle>
+          </CardHeader>
         </CardContent>
       </Card>
     </>

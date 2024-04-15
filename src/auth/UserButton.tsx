@@ -11,7 +11,7 @@ import {
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { ChevronDown, LogOut } from 'lucide-react'
 import { auth, signOut } from './auth'
-import { loginAction } from './loginAction'
+import { loginWithRedirect } from './loginWithRedirect'
 
 export const UserButton = async () => {
   const session = await auth()
@@ -57,7 +57,7 @@ export const UserButton = async () => {
 
   return (
     <>
-      <ActionButton variant={'outline'} hideIcon action={loginAction}>
+      <ActionButton variant={'outline'} hideIcon action={loginWithRedirect}>
         Sign In
       </ActionButton>
     </>
