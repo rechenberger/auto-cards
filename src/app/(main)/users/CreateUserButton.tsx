@@ -21,11 +21,13 @@ export const CreateUserButton = () => {
                   <LoginFormClient
                     action={async (credentials) => {
                       'use server'
-                      if (credentials.type === 'forgotPassword') {
-                        throw new Error('Invalid type')
-                      }
-                      await registerUser(credentials)
-                      revalidatePath('/users')
+                      return superAction(async () => {
+                        if (credentials.type === 'forgotPassword') {
+                          throw new Error('Invalid type')
+                        }
+                        await registerUser(credentials)
+                        revalidatePath('/users')
+                      })
                     }}
                   />
                 </>
