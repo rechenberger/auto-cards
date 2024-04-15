@@ -167,7 +167,7 @@ export const LoginFormClient = ({
               />
             </>
           )}
-          <div className="flex flex-row gap-2 mt-4">
+          <div className="flex flex-row gap-2 mt-4 justify-end">
             <Button
               variant={'outline'}
               type="button"

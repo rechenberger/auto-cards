@@ -2,7 +2,11 @@ import { superAction } from '@/super-action/action/createSuperAction'
 import { ChangePasswordFormClient } from './ChangePasswordFormClient'
 import { getMyUser } from './getMyUser'
 
-export const ChangePasswordForm = async () => {
+export const ChangePasswordForm = async ({
+  redirectUrl,
+}: {
+  redirectUrl?: string
+}) => {
   const user = await getMyUser()
   return (
     <>
@@ -14,6 +18,7 @@ export const ChangePasswordForm = async () => {
           })
         }}
         email={user?.email}
+        redirectUrl={redirectUrl}
       />
     </>
   )

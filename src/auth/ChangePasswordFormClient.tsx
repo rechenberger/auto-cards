@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input'
 import { createZodForm } from '@/lib/useZodForm'
 import { SuperActionPromise } from '@/super-action/action/createSuperAction'
 import { useSuperAction } from '@/super-action/action/useSuperAction'
+import Link from 'next/link'
 import { z } from 'zod'
 
 const ChangePasswordSchema = z
@@ -38,9 +39,11 @@ const [useLoginForm] = createZodForm(ChangePasswordSchema)
 export const ChangePasswordFormClient = ({
   action,
   email,
+  redirectUrl,
 }: {
   action: (data: ChangePasswordSchema) => SuperActionPromise
   email?: string
+  redirectUrl?: string
 }) => {
   const { trigger, isLoading } = useSuperAction({
     action: async () => {
@@ -103,13 +106,15 @@ export const ChangePasswordFormClient = ({
               </FormItem>
             )}
           />
-          <div className="flex flex-row gap-2 mt-4">
-            <Button variant={'outline'} type="button" className="flex-1">
-              Skip
-            </Button>
-            <Button type="submit" className="flex-1">
-              Change Password
-            </Button>
+          <div className="flex flex-row gap-2 mt-4 justify-end">
+            {!!redirectUrl && (
+              <Link href={redirectUrl} passHref>
+                <Button variant={'outline'} type="button">
+                  Skip
+                </Button>
+              </Link>
+            )}
+            <Button type="submit">Change Password</Button>
           </div>
         </form>
       </Form>
