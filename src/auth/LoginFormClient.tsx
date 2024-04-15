@@ -77,8 +77,8 @@ export const LoginFormClient = ({
   const form = useLoginForm({
     defaultValues: {
       type: 'login',
-      email: 'you@example.com',
-      password: 'your-password',
+      email: process.env.NEXT_PUBLIC_AUTH_DEFAULT_EMAIL,
+      password: process.env.NEXT_PUBLIC_AUTH_DEFAULT_PASSWORD,
     },
     disabled,
   })
