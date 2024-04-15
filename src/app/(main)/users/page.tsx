@@ -59,7 +59,7 @@ export default async function Page() {
                       )}
                     </div>
                   </div>
-                  <div className="">
+                  <div className="flex flex-row gap-2 items-center">
                     <ActionButton
                       variant={isAdmin ? 'destructive' : 'default'}
                       action={async () => {
@@ -85,6 +85,31 @@ export default async function Page() {
                       }}
                     >
                       {isAdmin ? 'Remove admin' : 'Make admin'}
+                    </ActionButton>
+                    <ActionButton
+                      variant={'outline'}
+                      askForConfirmation
+                      action={async () => {
+                        'use server'
+                        return superAction(async () => {
+                          await db
+                            .delete(usersTable)
+                            .where(eq(usersTable.id, user.id))
+                            .execute()
+                          streamToast({
+                            title: 'User deleted',
+                            description: `Bye ${user.email} 👋`,
+                          })
+                          revalidatePath('/users')
+                        })
+                      }}
+                      command={{
+                        label: `${isAdmin ? 'Remove' : 'Make'} admin: ${
+                          user.email
+                        }`,
+                      }}
+                    >
+                      Delete
                     </ActionButton>
                   </div>
                 </CardContent>
