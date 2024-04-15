@@ -21,8 +21,8 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
   const { action, disabled, catchToast, askForConfirmation, stopPropagation } =
     options
 
-  const streamDialog = useShowDialog()
   const router = useRouter()
+  const showDialog = useShowDialog()
 
   const trigger = useCallback(
     async (evt?: MouseEvent) => {
@@ -49,7 +49,7 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
             })
           },
           onDialog: (d) => {
-            streamDialog(d)
+            showDialog(d)
           },
           onRedirect: (r) => {
             if (r.type === 'push') {
@@ -72,12 +72,14 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
       setIsLoading(false)
     },
     [
-      action,
-      askForConfirmation,
-      disabled,
       isLoading,
+      disabled,
       stopPropagation,
+      askForConfirmation,
+      action,
       catchToast,
+      showDialog,
+      router,
     ],
   )
 
