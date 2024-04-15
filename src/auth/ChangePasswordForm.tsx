@@ -1,4 +1,8 @@
-import { superAction } from '@/super-action/action/createSuperAction'
+import {
+  streamToast,
+  superAction,
+} from '@/super-action/action/createSuperAction'
+import { redirect } from 'next/navigation'
 import { ChangePasswordFormClient } from './ChangePasswordFormClient'
 import { changePassword } from './changePassword'
 import { getMyUser, getMyUserIdOrThrow } from './getMyUser'
@@ -20,6 +24,20 @@ export const ChangePasswordForm = async ({
               password: data.password,
               userId,
             })
+
+            const description = redirectUrl
+              ? 'Your password has been changed'
+              : 'Redirecting...'
+
+            streamToast({
+              title: 'Password Changed!',
+              description,
+            })
+
+            if (redirectUrl) {
+              await new Promise((res) => setTimeout(res, 2000))
+            }
+            redirect(redirectUrl || '/')
           })
         }}
         email={user?.email}
