@@ -62,7 +62,7 @@ export const UserButton = async () => {
                 }}
               >
                 <LogOut className="w-4 h-4 mr-2" />
-                Sign Out
+                Logout
               </ActionButton>
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -74,7 +74,7 @@ export const UserButton = async () => {
   return (
     <>
       <ActionButton variant={'outline'} hideIcon action={loginWithRedirect}>
-        Sign In
+        Login
       </ActionButton>
     </>
   )

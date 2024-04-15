@@ -4,7 +4,7 @@ import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 export const loginWithRedirect = async () => {
-  let url = `/auth/signin`
+  let url = `/auth/login`
 
   const h = headers()
   const redirectUrl = h.get('Referer')

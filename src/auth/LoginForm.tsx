@@ -52,7 +52,7 @@ export const LoginForm = ({ redirectUrl }: { redirectUrl?: string }) => {
                 await signIn('discord')
               }}
             >
-              Sign in with Discord
+              Continue with Discord
             </ActionButton>
             {/* <ActionButton
               variant={'outline'}
