@@ -51,11 +51,11 @@ export const superAction = <T>(action: () => Promise<T>) => {
   serverContext.set(ctx)
 
   // Execute Action:
-  ;(async () => {
-    try {
-      const result = await action()
+  action()
+    .then((result) => {
       complete({ result })
-    } catch (error: any) {
+    })
+    .catch((error: any) => {
       if (isRedirectError(error)) {
         next.reject(error)
       }
@@ -64,8 +64,7 @@ export const superAction = <T>(action: () => Promise<T>) => {
           message: error?.message,
         },
       })
-    }
-  })()
+    })
 
   return firstPromise.then((superAction) => ({ superAction }))
 }
