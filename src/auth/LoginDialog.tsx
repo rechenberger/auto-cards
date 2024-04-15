@@ -1,11 +1,9 @@
-import {
-  streamToast,
-  superAction,
-} from '@/super-action/action/createSuperAction'
+import { superAction } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { CredentialsSignin } from 'next-auth'
 import { LoginForm } from './LoginForm'
 import { signIn } from './auth'
+import { registerUser } from './registerUser'
 
 export const LoginDialog = () => {
   return (
@@ -28,12 +26,8 @@ export const LoginDialog = () => {
               return
             } else {
               // REGISTER
-              await new Promise((resolve) => setTimeout(resolve, 1000))
-              streamToast({
-                title: 'Registered',
-                description: 'You have been registered',
-              })
-              throw new Error('Not implemented')
+              await registerUser(data)
+              await signIn('resend', data)
             }
           })
         }}
