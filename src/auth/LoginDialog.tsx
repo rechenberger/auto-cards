@@ -1,11 +1,11 @@
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { CredentialsForm } from './CredentialsForm'
+import { LoginForm } from './LoginForm'
 import { signIn } from './auth'
 
 export const LoginDialog = () => {
   return (
     <>
-      <CredentialsForm
+      <LoginForm
         onSubmit={async (credentials) => {
           'use server'
           await signIn('credentials', {

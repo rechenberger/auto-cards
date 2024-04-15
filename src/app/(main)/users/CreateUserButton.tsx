@@ -1,4 +1,4 @@
-import { CredentialsForm } from '@/auth/CredentialsForm'
+import { LoginForm } from '@/auth/LoginForm'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import {
@@ -20,7 +20,7 @@ export const CreateUserButton = () => {
               title: 'Create User',
               content: (
                 <>
-                  <CredentialsForm
+                  <LoginForm
                     onSubmit={async (credentials) => {
                       'use server'
                       const existingUser = await db.query.users.findFirst({

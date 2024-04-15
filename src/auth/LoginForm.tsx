@@ -19,7 +19,7 @@ import { ReactNode } from 'react'
 import { z } from 'zod'
 import { credentialsSchema } from './credentialsSchema'
 
-export const LoginRegisterSchema = credentialsSchema
+const LoginDataSchema = credentialsSchema
   .and(
     z.discriminatedUnion('type', [
       z.object({
@@ -44,21 +44,20 @@ export const LoginRegisterSchema = credentialsSchema
     }
   })
 
-export type LoginRegister = z.infer<typeof LoginRegisterSchema>
+type LoginData = z.infer<typeof LoginDataSchema>
 
-export const [useCredentialsForm, useCredentialsFormContext] =
-  createZodForm(LoginRegisterSchema)
+const [useLoginForm] = createZodForm(LoginDataSchema)
 
-export const CredentialsForm = ({
+export const LoginForm = ({
   onSubmit,
   alternatives,
   showAlternativesOnRegister = false,
 }: {
-  onSubmit: (credentials: LoginRegister) => Promise<void>
+  onSubmit: (data: LoginData) => Promise<void>
   alternatives?: ReactNode
   showAlternativesOnRegister?: boolean
 }) => {
-  const form = useCredentialsForm({
+  const form = useLoginForm({
     defaultValues: {
       type: 'login',
       email: 'you@example.com',
@@ -91,8 +90,8 @@ export const CredentialsForm = ({
       </div>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(async (credentials) => {
-            await onSubmit(credentials)
+          onSubmit={form.handleSubmit(async (data) => {
+            await onSubmit(data)
           })}
           className="flex flex-col gap-4"
         >
