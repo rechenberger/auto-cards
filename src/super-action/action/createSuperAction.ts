@@ -69,6 +69,11 @@ export const superAction = <T>(action: () => Promise<T>) => {
     })
     .catch((error: any) => {
       if (isRedirectError(error)) {
+        if (firstPromise === next.promise) {
+          next.reject(error)
+        }
+        // We already streamed something, so can't throw the Next.js redirect
+        // We send the redirect as a response instead for the client to handle
         complete({
           redirect: {
             url: getURLFromRedirectError(error),
@@ -76,6 +81,7 @@ export const superAction = <T>(action: () => Promise<T>) => {
             statusCode: getRedirectStatusCodeFromError(error),
           },
         })
+        return
       }
       complete({
         error: {
