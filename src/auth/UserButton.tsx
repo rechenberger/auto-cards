@@ -22,7 +22,7 @@ export const UserButton = async () => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline">
-              <span>{session.user?.name || 'User'}</span>
+              <span>{session.user?.name ?? session.user?.email ?? 'You'}</span>
               <ChevronDown className="w-4 h-4 ml-2" />
             </Button>
           </DropdownMenuTrigger>

@@ -1,4 +1,4 @@
-import { LoginForm } from '@/auth/LoginForm'
+import { LoginFormClient } from '@/auth/LoginFormClient'
 import { registerUser } from '@/auth/registerUser'
 import {
   streamDialog,
@@ -18,7 +18,7 @@ export const CreateUserButton = () => {
               title: 'Create User',
               content: (
                 <>
-                  <LoginForm
+                  <LoginFormClient
                     action={async (credentials) => {
                       'use server'
                       await registerUser(credentials)
