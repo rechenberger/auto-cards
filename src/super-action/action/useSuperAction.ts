@@ -1,6 +1,7 @@
 'use client'
 
 import { toast } from '@/components/ui/use-toast'
+import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { useShowDialog } from '../dialog/DialogProvider'
 import { consumeSuperActionResponse } from './consumeSuperActionResponse'
@@ -21,6 +22,7 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
     options
 
   const streamDialog = useShowDialog()
+  const router = useRouter()
 
   const trigger = useCallback(
     async (evt?: MouseEvent) => {
@@ -48,6 +50,13 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
           },
           onDialog: (d) => {
             streamDialog(d)
+          },
+          onRedirect: (r) => {
+            if (r.type === 'push') {
+              router.push(r.url)
+            } else {
+              router.replace(r.url)
+            }
           },
           catch: catchToast
             ? (e) => {

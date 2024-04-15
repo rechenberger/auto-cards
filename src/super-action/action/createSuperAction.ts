@@ -1,5 +1,10 @@
 import { createServerContext } from '@sodefa/next-server-context'
-import { isRedirectError } from 'next/dist/client/components/redirect'
+import {
+  getRedirectStatusCodeFromError,
+  getRedirectTypeFromError,
+  getURLFromRedirectError,
+  isRedirectError,
+} from 'next/dist/client/components/redirect'
 import { ReactNode } from 'react'
 import { createResolvablePromise } from './createResolvablePromise'
 
@@ -17,12 +22,19 @@ export type SuperActionError = {
   message?: string
 }
 
+export type SuperActionRedirect = {
+  url: string
+  type: 'push' | 'replace'
+  statusCode: number
+}
+
 export type SuperActionResponse<T> = {
   result?: T
   next?: Promise<SuperActionResponse<T>>
   toast?: SuperActionToast
   dialog?: SuperActionDialog
   error?: SuperActionError
+  redirect?: SuperActionRedirect
 }
 
 type SuperActionContext = {
@@ -57,7 +69,13 @@ export const superAction = <T>(action: () => Promise<T>) => {
     })
     .catch((error: any) => {
       if (isRedirectError(error)) {
-        next.reject(error)
+        complete({
+          redirect: {
+            url: getURLFromRedirectError(error),
+            type: getRedirectTypeFromError(error),
+            statusCode: getRedirectStatusCodeFromError(error),
+          },
+        })
       }
       complete({
         error: {
