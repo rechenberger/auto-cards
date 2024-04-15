@@ -1,6 +1,7 @@
+import { ChangePasswordForm } from '@/auth/ChangePasswordForm'
 import { getIsLoggedIn } from '@/auth/getMyUser'
 import { loginWithRedirect } from '@/auth/loginWithRedirect'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 
 export default async function Page({
   searchParams: { redirect: redirectUrl },
@@ -16,9 +17,7 @@ export default async function Page({
     <>
       <Card className="self-center w-full max-w-md flex flex-col gap-4">
         <CardContent className="flex flex-col gap-4 pt-6">
-          <CardHeader>
-            <CardTitle>Change your password</CardTitle>
-          </CardHeader>
+          <ChangePasswordForm />
         </CardContent>
       </Card>
     </>
