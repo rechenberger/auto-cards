@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input'
 import { createZodForm } from '@/lib/useZodForm'
 import { cn } from '@/lib/utils'
 import { ArrowLeft } from 'lucide-react'
+import { ReactNode } from 'react'
 import { z } from 'zod'
 import { credentialsSchema } from './credentialsSchema'
 
@@ -50,8 +51,12 @@ export const [useCredentialsForm, useCredentialsFormContext] =
 
 export const CredentialsForm = ({
   onSubmit,
+  alternatives,
+  showAlternativesOnRegister = false,
 }: {
   onSubmit: (credentials: LoginRegister) => Promise<void>
+  alternatives?: ReactNode
+  showAlternativesOnRegister?: boolean
 }) => {
   const form = useCredentialsForm({
     defaultValues: {
@@ -166,6 +171,17 @@ export const CredentialsForm = ({
           </div>
         </form>
       </Form>
+
+      {alternatives && (!registering || showAlternativesOnRegister) && (
+        <>
+          <div className="flex flex-row items-center my-4">
+            <hr className="flex-1" />
+            <span className="mx-4 text-border">or</span>
+            <hr className="flex-1" />
+          </div>
+          {alternatives}
+        </>
+      )}
     </>
   )
 }
