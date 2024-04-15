@@ -1,8 +1,8 @@
 import { db } from '@/db/db'
 import Credentials from '@auth/core/providers/credentials'
-import bcrypt from 'bcrypt'
 import { CredentialsSignin } from 'next-auth'
 import { credentialsSchema } from './credentialsSchema'
+import { comparePasswords } from './password'
 
 export const CredentialsProvider = Credentials({
   credentials: {
@@ -25,10 +25,10 @@ export const CredentialsProvider = Credentials({
       throw new CredentialsSignin()
     }
 
-    const correctPassword = await bcrypt.compare(
-      credentials.password,
-      user.passwordHash,
-    )
+    const correctPassword = await comparePasswords({
+      password: credentials.password,
+      hash: user.passwordHash,
+    })
     if (!correctPassword) {
       throw new CredentialsSignin()
     }

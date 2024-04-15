@@ -1,7 +1,7 @@
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
-import bcrypt from 'bcrypt'
 import { Credentials } from './credentialsSchema'
+import { hashPassword } from './password'
 
 export const registerUser = async (credentials: Credentials) => {
   const existingUser = await db.query.users.findFirst({
@@ -11,7 +11,7 @@ export const registerUser = async (credentials: Credentials) => {
     throw new Error('Email already taken')
   }
 
-  const passwordHash = await bcrypt.hash(credentials.password, 10)
+  const passwordHash = await hashPassword({ password: credentials.password })
 
   await db.insert(schema.users).values({
     id: crypto.randomUUID(),
