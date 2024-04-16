@@ -1,9 +1,12 @@
 import { db } from '@/db/db'
 import Credentials from '@auth/core/providers/credentials'
-import { CredentialsSignin } from 'next-auth'
+import { AuthError, CredentialsSignin } from 'next-auth'
 import { credentialsSchema } from './credentialsSchema'
 import { comparePasswords } from './password'
 
+export class EmailNotVerifiedAuthorizeError extends AuthError {
+  code = 'EmailNotVerified'
+}
 export const CredentialsProvider = Credentials({
   credentials: {
     email: {},
@@ -25,12 +28,16 @@ export const CredentialsProvider = Credentials({
       throw new CredentialsSignin()
     }
 
+    if (!user.emailVerified) {
+      throw new EmailNotVerifiedAuthorizeError()
+    }
+
     const correctPassword = await comparePasswords({
       password: credentials.password,
       hash: user.passwordHash,
     })
     if (!correctPassword) {
-      throw new CredentialsSignin()
+      throw new CredentialsSignin('Invalid password. Please try again.')
     }
 
     return {

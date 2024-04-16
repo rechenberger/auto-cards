@@ -1,6 +1,7 @@
 import { superAction } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { CredentialsSignin } from 'next-auth'
+import { EmailNotVerifiedAuthorizeError } from './CredentialsProvider'
 import { LoginFormClient } from './LoginFormClient'
 import { signIn } from './auth'
 import { registerUser } from './registerUser'
@@ -19,6 +20,8 @@ export const LoginForm = ({ redirectUrl }: { redirectUrl?: string }) => {
               } catch (error) {
                 if (error instanceof CredentialsSignin) {
                   throw new Error('Invalid credentials')
+                } else if (error instanceof EmailNotVerifiedAuthorizeError) {
+                  throw new Error('Email not verified')
                 } else {
                   throw error
                 }
