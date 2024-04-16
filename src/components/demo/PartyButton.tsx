@@ -28,18 +28,20 @@ export const PartyButton = () => {
           // We have to wrap the action in a superAction to enable fun stuff:
           return superAction(async () => {
             // Create a streamable UI for in-toast-streaming
-            const ui = createStreamableUI('🎉')
+            const ui = createStreamableUI(
+              <div className="animate-spin">🎉</div>,
+            )
 
             // Stream a toast to the client:
             streamToast({
               title: 'Party Streaming...',
-              description: ui.value,
+              description: <div className="flex gap-2">{ui.value}</div>,
             })
 
             // LOOP:
             for (let i = 0; i < 10; i++) {
               // Update the streamable UI:
-              ui.append('🎉')
+              ui.append(<div className="animate-spin">🎉</div>)
               // Wait a bit to simulate work:
               await new Promise((resolve) => setTimeout(resolve, 500))
             }
