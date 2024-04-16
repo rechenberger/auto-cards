@@ -8,6 +8,9 @@ export const loginWithRedirect = async () => {
 
   const h = headers()
   const redirectUrl = h.get('Referer')
+
+  if (redirectUrl?.includes(url)) return
+
   if (redirectUrl) {
     url += `?redirect=${encodeURIComponent(redirectUrl)}`
   }
@@ -20,6 +23,9 @@ export const changePasswordWithRedirect = async () => {
 
   const h = headers()
   const redirectUrl = h.get('Referer')
+
+  if (redirectUrl?.includes(url)) return
+
   if (redirectUrl) {
     url += `?redirect=${encodeURIComponent(redirectUrl)}`
   }
