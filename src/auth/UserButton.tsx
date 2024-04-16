@@ -58,7 +58,7 @@ export const UserButton = async () => {
                 size={'sm'}
                 action={async () => {
                   'use server'
-                  await signOut()
+                  await signOut({ redirectTo: '/' })
                 }}
               >
                 <LogOut className="w-4 h-4 mr-2" />
