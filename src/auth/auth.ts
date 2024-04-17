@@ -3,6 +3,7 @@ import { DrizzleAdapter } from '@auth/drizzle-adapter'
 import NextAuth from 'next-auth'
 import Discord from 'next-auth/providers/discord'
 import Resend from 'next-auth/providers/resend'
+import { headers } from 'next/headers'
 import { CredentialsProvider } from './CredentialsProvider'
 import { ImpersonateProvider } from './ImpersonateProvider'
 import { sendVerificationRequestEmail } from './sendVerificationRequestEmail'
@@ -16,9 +17,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       apiKey: process.env.AUTH_RESEND_KEY,
 
       sendVerificationRequest: async (params) => {
-        const url = `${
-          process.env.BASE_URL
-        }/auth/verify-email?redirect=${encodeURIComponent(params.url)}`
+        const h = headers()
+        const baseUrl = h.get('Origin')
+
+        const url = `${baseUrl}/auth/verify-email?redirect=${encodeURIComponent(
+          params.url,
+        )}`
 
         await sendVerificationRequestEmail({
           ...params,
