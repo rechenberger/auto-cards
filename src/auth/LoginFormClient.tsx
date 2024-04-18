@@ -145,6 +145,7 @@ export const LoginFormClient = ({
                     {type === 'login' && (
                       <Button
                         type="button"
+                        tabIndex={1}
                         size="sm"
                         variant={'link'}
                         className="-m-2.5 -mb-3"
