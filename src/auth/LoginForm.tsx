@@ -1,5 +1,5 @@
 import {
-  streamToast,
+  streamDialog,
   superAction,
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
@@ -25,12 +25,22 @@ export const LoginForm = ({ redirectUrl }: { redirectUrl?: string }) => {
                   throw new Error('Invalid credentials')
                 } else if (error instanceof EmailNotVerifiedAuthorizeError) {
                   // throw new Error('Email not verified')
-                  streamToast({
+                  streamDialog({
                     title: 'Email not verified',
-                    description: `Sending you a new verification email...`,
+                    content: (
+                      <>
+                        <p>
+                          We sent you another verification email to
+                          {data.email}.
+                        </p>
+                        <p>
+                          Please open the email and click sign in to verify your
+                          email.
+                        </p>
+                      </>
+                    ),
                   })
-                  await new Promise((resolve) => setTimeout(resolve, 2000))
-                  await signIn('resend', { email: data.email })
+                  await signIn('resend', { email: data.email, redirect: false })
                 } else {
                   throw error
                 }
