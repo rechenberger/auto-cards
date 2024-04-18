@@ -16,10 +16,12 @@ export const sendVerificationRequestEmail = async (
   } = params
   try {
     const resend = new Resend(apiKey)
+    const host = new URL(url).host
+
     await resend.emails.send({
       from: from,
       to: email,
-      subject: 'Login Link to your Account',
+      subject: `Login to ${host}`,
       html: getDefaultSignInEmailHtml({ theme, url }),
       text: getDefaultSignInEmailText({ url }),
     })
