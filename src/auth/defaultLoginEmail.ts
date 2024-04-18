@@ -1,3 +1,5 @@
+// FROM: https://authjs.dev/getting-started/providers/resend#customization
+
 import { Theme } from '@auth/core/types'
 
 export const getDefaultSignInEmailHtml = (params: {
