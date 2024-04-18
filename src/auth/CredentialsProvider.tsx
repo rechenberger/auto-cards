@@ -28,16 +28,16 @@ export const CredentialsProvider = Credentials({
       throw new CredentialsSignin()
     }
 
-    if (!user.emailVerified) {
-      throw new EmailNotVerifiedAuthorizeError()
-    }
-
     const correctPassword = await comparePasswords({
       password: credentials.password,
       hash: user.passwordHash,
     })
     if (!correctPassword) {
       throw new CredentialsSignin('Invalid password. Please try again.')
+    }
+
+    if (!user.emailVerified) {
+      throw new EmailNotVerifiedAuthorizeError()
     }
 
     return {
