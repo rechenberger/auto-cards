@@ -10,7 +10,7 @@ const Home = ({
     <Card className="self-center w-full max-w-md flex flex-col gap-4">
       <CardContent className="flex flex-col gap-4 pt-6 items-center">
         <div>Click to complete email login</div>
-        <a href={decodeURIComponent(redirectUrl)}>
+        <a href={redirectUrl}>
           <Button variant="default">Continue</Button>
         </a>
       </CardContent>
