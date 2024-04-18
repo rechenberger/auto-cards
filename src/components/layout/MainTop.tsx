@@ -43,14 +43,14 @@ export const MainTop = async () => {
           <UserButton />
         </div>
         <div className="flex flex-row">
-          <Link
-            href="https://github.com/rechenberger/party-starter"
-            target="_blank"
-          >
-            <Button variant={'ghost'} size="icon">
+          <Button variant={'ghost'} size="icon" asChild>
+            <Link
+              href="https://github.com/rechenberger/party-starter"
+              target="_blank"
+            >
               <Github />
-            </Button>
-          </Link>
+            </Link>
+          </Button>
           <DarkModeToggle />
         </div>
       </div>
