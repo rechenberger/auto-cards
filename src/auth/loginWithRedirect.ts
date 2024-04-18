@@ -9,6 +9,7 @@ export const loginWithRedirect = async () => {
   const h = headers()
   const redirectUrl = h.get('Referer')
 
+  // Prevent unnecessary redirects:
   if (redirectUrl?.includes(url)) return
 
   if (redirectUrl) {
@@ -24,6 +25,7 @@ export const changePasswordWithRedirect = async () => {
   const h = headers()
   const redirectUrl = h.get('Referer')
 
+  // Prevent unnecessary redirects:
   if (redirectUrl?.includes(url)) return
 
   if (redirectUrl) {
