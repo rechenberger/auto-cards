@@ -33,7 +33,7 @@ export const CredentialsProvider = Credentials({
       hash: user.passwordHash,
     })
     if (!correctPassword) {
-      throw new CredentialsSignin('Invalid password. Please try again.')
+      throw new CredentialsSignin()
     }
 
     if (!user.emailVerified) {
