@@ -26,6 +26,7 @@ export const CreateUserButton = () => {
                           throw new Error('Invalid type')
                         }
                         await registerUser(credentials)
+                        streamDialog(null)
                         revalidatePath('/users')
                       })
                     }}

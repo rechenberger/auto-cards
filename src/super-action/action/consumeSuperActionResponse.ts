@@ -17,7 +17,7 @@ export const consumeSuperActionResponse = async <T>(options: {
   if (r.toast && options.onToast) {
     options.onToast(r.toast)
   }
-  if (r.dialog && options.onDialog) {
+  if (r.dialog !== undefined && options.onDialog) {
     options.onDialog(r.dialog)
   }
   if (r.redirect && options.onRedirect) {

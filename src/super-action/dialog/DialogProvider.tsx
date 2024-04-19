@@ -20,13 +20,19 @@ export const DialogProvider = () => {
 export const useShowDialog = () => {
   const setRender = useSetAtom(renderAtom)
   return useCallback(
-    (dialog: SuperActionDialog) =>
-      setRender(() => <SuperDialog dialog={dialog} />),
+    (dialog: SuperActionDialog) => {
+      const newRender = dialog && <SuperDialog dialog={dialog} />
+      setRender(newRender)
+    },
     [setRender],
   )
 }
 
-const SuperDialog = ({ dialog }: { dialog: SuperActionDialog }) => {
+const SuperDialog = ({
+  dialog,
+}: {
+  dialog: NonNullable<SuperActionDialog>
+}) => {
   const setRender = useSetAtom(renderAtom)
   return (
     <>
