@@ -49,3 +49,15 @@ pnpm dev
 - [Auth.js](https://authjs.dev/)
 - [@sodefa/next-server-context](https://github.com/rechenberger/next-server-context)
 - [Vercel AI SDK](https://sdk.vercel.ai/docs)
+
+## Update
+
+You can get the latest changes from the template by running:
+
+```bash
+git remote add template https://github.com/rechenberger/party-starter.git
+git fetch --all
+git merge template/main --allow-unrelated-histories
+```
+
+You might have to resolve a few merge conflicts, but that's it!
