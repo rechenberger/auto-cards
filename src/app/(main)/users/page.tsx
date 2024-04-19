@@ -87,6 +87,7 @@ export default async function Page() {
                     <ActionButton
                       component={Switch}
                       checked={isAdmin}
+                      askForConfirmation
                       action={async () => {
                         'use server'
                         return superAction(async () => {
