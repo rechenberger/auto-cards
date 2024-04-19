@@ -1,6 +1,10 @@
-import { superAction } from '@/super-action/action/createSuperAction'
+import {
+  streamDialog,
+  superAction,
+} from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { CredentialsSignin } from 'next-auth'
+import { EmailNotVerifiedAuthorizeError } from './CredentialsProvider'
 import { LoginFormClient } from './LoginFormClient'
 import { signIn } from './auth'
 import { registerUser } from './registerUser'
@@ -19,6 +23,24 @@ export const LoginForm = ({ redirectUrl }: { redirectUrl?: string }) => {
               } catch (error) {
                 if (error instanceof CredentialsSignin) {
                   throw new Error('Invalid credentials')
+                } else if (error instanceof EmailNotVerifiedAuthorizeError) {
+                  // throw new Error('Email not verified')
+                  streamDialog({
+                    title: 'Email not verified',
+                    content: (
+                      <>
+                        <p>
+                          We sent you another verification email to
+                          {data.email}.
+                        </p>
+                        <p>
+                          Please open the email and click sign in to verify your
+                          email.
+                        </p>
+                      </>
+                    ),
+                  })
+                  await signIn('resend', { email: data.email, redirect: false })
                 } else {
                   throw error
                 }
