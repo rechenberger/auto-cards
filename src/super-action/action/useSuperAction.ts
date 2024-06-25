@@ -12,6 +12,11 @@ export type UseSuperActionOptions = {
   disabled?: boolean
   catchToast?: boolean
   askForConfirmation?: boolean
+  customAskForConfirmationMessage?: {
+    title?: string
+    description?: string
+    buttonLabel?: string
+  }
   stopPropagation?: boolean
 }
 
@@ -33,7 +38,19 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
         evt?.preventDefault()
       }
       if (askForConfirmation) {
-        if (!confirm('Are you sure?')) return
+        const res = await showDialog(
+          {
+            title:
+              options.customAskForConfirmationMessage?.title ?? 'Are you sure?',
+            content: options.customAskForConfirmationMessage?.description ?? '',
+          },
+          {
+            confirmLabel: options.customAskForConfirmationMessage?.buttonLabel,
+          },
+        )
+
+        showDialog(null)
+        if (!res) return
       }
       setIsLoading(true)
 
@@ -77,8 +94,11 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
       stopPropagation,
       askForConfirmation,
       action,
-      catchToast,
       showDialog,
+      options.customAskForConfirmationMessage?.title,
+      options.customAskForConfirmationMessage?.description,
+      options.customAskForConfirmationMessage?.buttonLabel,
+      catchToast,
       router,
     ],
   )

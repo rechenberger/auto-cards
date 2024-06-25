@@ -1,8 +1,10 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
@@ -20,9 +22,21 @@ export const DialogProvider = () => {
 export const useShowDialog = () => {
   const setRender = useSetAtom(renderAtom)
   return useCallback(
-    (dialog: SuperActionDialog) => {
-      const newRender = dialog && <SuperDialog dialog={dialog} />
-      setRender(newRender)
+    async (
+      dialog: SuperActionDialog,
+      withConfirm?: { confirmLabel?: string },
+    ) => {
+      const confirm = await new Promise<boolean>((res) => {
+        const newRender = dialog && (
+          <SuperDialog
+            dialog={dialog}
+            confirm={res}
+            withConfirm={withConfirm}
+          />
+        )
+        setRender(newRender)
+      })
+      return confirm
     },
     [setRender],
   )
@@ -30,8 +44,12 @@ export const useShowDialog = () => {
 
 const SuperDialog = ({
   dialog,
+  confirm,
+  withConfirm,
 }: {
   dialog: NonNullable<SuperActionDialog>
+  confirm?: (value: boolean) => void
+  withConfirm?: { confirmLabel?: string }
 }) => {
   const setRender = useSetAtom(renderAtom)
   return (
@@ -51,6 +69,16 @@ const SuperDialog = ({
             </DialogHeader>
           )}
           {dialog.content}
+          {withConfirm && (
+            <DialogFooter>
+              <Button variant={'outline'} onClick={() => confirm?.(false)}>
+                Abbrechen
+              </Button>
+              <Button onClick={() => confirm?.(true)}>
+                {withConfirm?.confirmLabel ?? 'Ja'}
+              </Button>
+            </DialogFooter>
+          )}
         </DialogContent>
       </Dialog>
     </>

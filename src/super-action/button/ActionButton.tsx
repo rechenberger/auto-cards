@@ -34,6 +34,7 @@ export const ActionButton = <Comp extends typeof Button = typeof Button>(
     hideButton,
     catchToast,
     askForConfirmation,
+    customAskForConfirmationMessage,
     stopPropagation,
     command,
     ...buttonProps
@@ -43,6 +44,7 @@ export const ActionButton = <Comp extends typeof Button = typeof Button>(
     disabled,
     catchToast,
     askForConfirmation,
+    customAskForConfirmationMessage,
     stopPropagation,
   })
   const Icon = isLoading ? Loader2 : ArrowRight

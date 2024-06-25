@@ -115,6 +115,11 @@ export default async function Page() {
                     <ActionButton
                       variant={'outline'}
                       askForConfirmation
+                      customAskForConfirmationMessage={{
+                        title: 'Really delete?',
+                        description: `This will delete the user ${user.email}`,
+                        buttonLabel: 'Delete user',
+                      }}
                       action={async () => {
                         'use server'
                         return superAction(async () => {
