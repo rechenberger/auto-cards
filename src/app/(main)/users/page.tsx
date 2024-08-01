@@ -114,7 +114,12 @@ export default async function Page() {
                   <div className="flex flex-row gap-2 items-center justify-end">
                     <ActionButton
                       variant={'outline'}
-                      askForConfirmation
+                      askForConfirmation={{
+                        title: 'Really delete?',
+                        content: `This will delete the user ${user.email}`,
+                        confirm: 'Delete user',
+                        cancel: 'Cancel',
+                      }}
                       action={async () => {
                         'use server'
                         return superAction(async () => {

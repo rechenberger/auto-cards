@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { useShowDialog } from '../dialog/DialogProvider'
 import { consumeSuperActionResponse } from './consumeSuperActionResponse'
-import { SuperAction } from './createSuperAction'
+import { SuperAction, SuperActionDialog } from './createSuperAction'
 
 export type UseSuperActionOptions = {
   action: SuperAction
   disabled?: boolean
   catchToast?: boolean
-  askForConfirmation?: boolean
+  askForConfirmation?: boolean | SuperActionDialog
   stopPropagation?: boolean
 }
 
@@ -33,7 +33,15 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
         evt?.preventDefault()
       }
       if (askForConfirmation) {
-        if (!confirm('Are you sure?')) return
+        const dialogOptions =
+          typeof askForConfirmation === 'object' ? askForConfirmation : {}
+        const res = await showDialog({
+          title: 'Are you sure?',
+          confirm: 'Yes',
+          cancel: 'No',
+          ...dialogOptions,
+        })
+        if (!res) return
       }
       setIsLoading(true)
 
@@ -77,8 +85,8 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
       stopPropagation,
       askForConfirmation,
       action,
-      catchToast,
       showDialog,
+      catchToast,
       router,
     ],
   )
