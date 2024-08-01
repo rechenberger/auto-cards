@@ -5,18 +5,13 @@ import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { useShowDialog } from '../dialog/DialogProvider'
 import { consumeSuperActionResponse } from './consumeSuperActionResponse'
-import { SuperAction } from './createSuperAction'
+import { SuperAction, SuperActionDialog } from './createSuperAction'
 
 export type UseSuperActionOptions = {
   action: SuperAction
   disabled?: boolean
   catchToast?: boolean
-  askForConfirmation?: boolean
-  customAskForConfirmationMessage?: {
-    title?: string
-    description?: string
-    buttonLabel?: string
-  }
+  askForConfirmation?: boolean | SuperActionDialog
   stopPropagation?: boolean
 }
 
@@ -38,18 +33,14 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
         evt?.preventDefault()
       }
       if (askForConfirmation) {
-        const res = await showDialog(
-          {
-            title:
-              options.customAskForConfirmationMessage?.title ?? 'Are you sure?',
-            content: options.customAskForConfirmationMessage?.description ?? '',
-          },
-          {
-            confirmLabel: options.customAskForConfirmationMessage?.buttonLabel,
-          },
-        )
-
-        showDialog(null)
+        const dialogOptions =
+          typeof askForConfirmation === 'object' ? askForConfirmation : {}
+        const res = await showDialog({
+          title: 'Are you sure?',
+          confirm: 'Yes',
+          cancel: 'No',
+          ...dialogOptions,
+        })
         if (!res) return
       }
       setIsLoading(true)
@@ -95,9 +86,6 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
       askForConfirmation,
       action,
       showDialog,
-      options.customAskForConfirmationMessage?.title,
-      options.customAskForConfirmationMessage?.description,
-      options.customAskForConfirmationMessage?.buttonLabel,
       catchToast,
       router,
     ],

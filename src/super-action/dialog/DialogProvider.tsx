@@ -22,21 +22,15 @@ export const DialogProvider = () => {
 export const useShowDialog = () => {
   const setRender = useSetAtom(renderAtom)
   return useCallback(
-    async (
-      dialog: SuperActionDialog,
-      withConfirm?: { confirmLabel?: string },
-    ) => {
-      const confirm = await new Promise<boolean>((res) => {
+    async (dialog: SuperActionDialog) => {
+      const confirmed = await new Promise<boolean>((res) => {
         const newRender = dialog && (
-          <SuperDialog
-            dialog={dialog}
-            confirm={res}
-            withConfirm={withConfirm}
-          />
+          <SuperDialog dialog={dialog} onConfirm={res} />
         )
         setRender(newRender)
       })
-      return confirm
+      setRender(null) // close dialog on confirm
+      return confirmed
     },
     [setRender],
   )
@@ -44,12 +38,10 @@ export const useShowDialog = () => {
 
 const SuperDialog = ({
   dialog,
-  confirm,
-  withConfirm,
+  onConfirm: confirm,
 }: {
   dialog: NonNullable<SuperActionDialog>
-  confirm?: (value: boolean) => void
-  withConfirm?: { confirmLabel?: string }
+  onConfirm?: (value: boolean) => void
 }) => {
   const setRender = useSetAtom(renderAtom)
   return (
@@ -69,14 +61,18 @@ const SuperDialog = ({
             </DialogHeader>
           )}
           {dialog.content}
-          {withConfirm && (
+          {(!!dialog.confirm || !!dialog.cancel) && (
             <DialogFooter>
-              <Button variant={'outline'} onClick={() => confirm?.(false)}>
-                Abbrechen
-              </Button>
-              <Button onClick={() => confirm?.(true)}>
-                {withConfirm?.confirmLabel ?? 'Ja'}
-              </Button>
+              {dialog.cancel && (
+                <Button variant={'outline'} onClick={() => confirm?.(false)}>
+                  {dialog.cancel}
+                </Button>
+              )}
+              {dialog.confirm && (
+                <Button onClick={() => confirm?.(true)}>
+                  {dialog.confirm}
+                </Button>
+              )}
             </DialogFooter>
           )}
         </DialogContent>

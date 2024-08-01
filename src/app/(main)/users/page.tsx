@@ -114,11 +114,11 @@ export default async function Page() {
                   <div className="flex flex-row gap-2 items-center justify-end">
                     <ActionButton
                       variant={'outline'}
-                      askForConfirmation
-                      customAskForConfirmationMessage={{
+                      askForConfirmation={{
                         title: 'Really delete?',
-                        description: `This will delete the user ${user.email}`,
-                        buttonLabel: 'Delete user',
+                        content: `This will delete the user ${user.email}`,
+                        confirm: 'Delete user',
+                        cancel: 'Cancel',
                       }}
                       action={async () => {
                         'use server'

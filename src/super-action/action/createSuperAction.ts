@@ -16,6 +16,8 @@ export type SuperActionToast = {
 export type SuperActionDialog = {
   title?: string
   content?: ReactNode
+  confirm?: string
+  cancel?: string
 } | null
 
 export type SuperActionError = {
