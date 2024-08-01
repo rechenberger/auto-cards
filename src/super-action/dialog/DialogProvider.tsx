@@ -38,7 +38,7 @@ export const useShowDialog = () => {
 
 const SuperDialog = ({
   dialog,
-  onConfirm: confirm,
+  onConfirm,
 }: {
   dialog: NonNullable<SuperActionDialog>
   onConfirm?: (value: boolean) => void
@@ -64,12 +64,12 @@ const SuperDialog = ({
           {(!!dialog.confirm || !!dialog.cancel) && (
             <DialogFooter>
               {dialog.cancel && (
-                <Button variant={'outline'} onClick={() => confirm?.(false)}>
+                <Button variant={'outline'} onClick={() => onConfirm?.(false)}>
                   {dialog.cancel}
                 </Button>
               )}
               {dialog.confirm && (
-                <Button onClick={() => confirm?.(true)}>
+                <Button onClick={() => onConfirm?.(true)}>
                   {dialog.confirm}
                 </Button>
               )}
