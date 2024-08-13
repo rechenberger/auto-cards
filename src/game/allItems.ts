@@ -1,6 +1,6 @@
 import { ItemDefinition } from './zod-schema'
 
-export const allItems: ItemDefinition[] = [
+const allItems: ItemDefinition[] = [
   {
     name: 'hero',
     tags: ['hero'],
@@ -77,3 +77,12 @@ export const allItems: ItemDefinition[] = [
     ],
   },
 ]
+
+export const getAllItems = async () => allItems
+export const getItemByName = async (name: string) => {
+  const item = allItems.find((item) => item.name === name)
+  if (!item) {
+    throw new Error(`Item not found: ${name}`)
+  }
+  return item
+}

@@ -7,6 +7,7 @@ import { typedParse } from '@/lib/typedParse'
 import { createId } from '@paralleldrive/cuid2'
 import { first } from 'lodash-es'
 import { GAME_DATA_VERSION } from './config'
+import { generateShopItems } from './generateShopItems'
 
 export const createGame = async ({ userId }: { userId: string }) => {
   const id = createId()
@@ -21,6 +22,8 @@ export const createGame = async ({ userId }: { userId: string }) => {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   }
+
+  game.data.shopItems = await generateShopItems({ game })
 
   const gameSaved = await db
     .insert(schema.game)
