@@ -9,9 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Game } from '@/db/GameData'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
+import { Game } from '@/db/schema-zod'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
@@ -23,8 +23,8 @@ import { NewGameButton } from './NewGameButton'
 export default async function Page() {
   const userId = await getMyUserIdOrLogin()
 
-  const gamesRaw = await db.query.games.findMany({
-    // where: (s, { eq }) => eq(s.userId, userId),
+  const gamesRaw = await db.query.game.findMany({
+    where: (s, { eq }) => eq(s.userId, userId),
   })
   const games = z.array(Game).parse(gamesRaw)
   const isAdmin = await getIsAdmin()
@@ -40,7 +40,7 @@ export default async function Page() {
             action={async () => {
               'use server'
               await db
-                .delete(schema.games)
+                .delete(schema.game)
                 // .where(eq(schema.games.userId, userId))
                 .execute()
               revalidatePath('/game', 'layout')
@@ -73,8 +73,8 @@ export default async function Page() {
                       action={async () => {
                         'use server'
                         await db
-                          .delete(schema.games)
-                          .where(eq(schema.games.id, game.id))
+                          .delete(schema.game)
+                          .where(eq(schema.game.id, game.id))
                           .execute()
                         revalidatePath('/game', 'layout')
                       }}

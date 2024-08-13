@@ -2,6 +2,7 @@ import { createId } from '@paralleldrive/cuid2'
 import { relations } from 'drizzle-orm'
 import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 import { users } from './schema-auth'
+import { GameData, LoadoutData, MatchData } from './schema-zod'
 
 export * from './schema-auth'
 
@@ -14,15 +15,15 @@ const baseStats = () => ({
   updatedAt: text('updatedAt'),
 })
 
-export const games = sqliteTable('game', {
+export const game = sqliteTable('game', {
   ...baseStats(),
   userId: text('userId').notNull(),
-  data: text('data', { mode: 'json' }).$type<object>().notNull(),
+  data: text('data', { mode: 'json' }).$type<GameData>().notNull(),
 })
 
-export const gameRelations = relations(games, ({ one, many }) => ({
+export const gameRelations = relations(game, ({ one, many }) => ({
   user: one(users, {
-    fields: [games.userId],
+    fields: [game.userId],
     references: [users.id],
   }),
   loadouts: many(loadout),
@@ -32,7 +33,7 @@ export const gameRelations = relations(games, ({ one, many }) => ({
 export const loadout = sqliteTable('loadout', {
   ...baseStats(),
   userId: text('userId').notNull(),
-  data: text('data', { mode: 'json' }).$type<object>().notNull(),
+  data: text('data', { mode: 'json' }).$type<LoadoutData>().notNull(),
   gameId: text('gameId').notNull(),
   roundNo: int('roundNo').notNull(),
   primaryMatchParticipationId: text('primaryMatchParticipationId'),
@@ -43,9 +44,9 @@ export const loadoutRelations = relations(loadout, ({ one, many }) => ({
     fields: [loadout.userId],
     references: [users.id],
   }),
-  game: one(games, {
+  game: one(game, {
     fields: [loadout.gameId],
-    references: [games.id],
+    references: [game.id],
   }),
   matchParticipations: many(matchParticipation),
   primaryMatchParticipation: one(matchParticipation, {
@@ -56,13 +57,13 @@ export const loadoutRelations = relations(loadout, ({ one, many }) => ({
 
 export const match = sqliteTable('match', {
   ...baseStats(),
-  data: text('data', { mode: 'json' }).$type<object>().notNull(),
+  data: text('data', { mode: 'json' }).$type<MatchData>().notNull(),
 })
 
 export const matchRelations = relations(match, ({ one, many }) => ({
-  game: one(games, {
+  game: one(game, {
     fields: [match.id],
-    references: [games.id],
+    references: [game.id],
   }),
   matchParticipations: many(matchParticipation),
 }))

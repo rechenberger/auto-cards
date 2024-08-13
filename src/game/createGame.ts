@@ -1,7 +1,7 @@
 import { getMyUser } from '@/auth/getMyUser'
-import { GameData } from '@/db/GameData'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
+import { GameData } from '@/db/schema-zod'
 import { sendDiscordMessage } from '@/lib/discord'
 import { typedParse } from '@/lib/typedParse'
 import { createId } from '@paralleldrive/cuid2'
@@ -22,7 +22,7 @@ export const createGame = async ({ userId }: { userId: string }) => {
   }
 
   const gameSaved = await db
-    .insert(schema.games)
+    .insert(schema.game)
     .values(game)
     .returning()
     .execute()
