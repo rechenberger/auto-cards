@@ -1,6 +1,6 @@
 import { Item } from './zod-schema'
 
-const items: Item[] = [
+export const allItems: Item[] = [
   {
     id: 'hero',
     tags: ['hero'],
