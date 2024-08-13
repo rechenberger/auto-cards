@@ -1,20 +1,19 @@
-import { Item } from './zod-schema'
+import { ItemDefinition } from './zod-schema'
 
-export const allItems: Item[] = [
+export const allItems: ItemDefinition[] = [
   {
-    id: 'hero',
+    name: 'hero',
     tags: ['hero'],
     price: 0,
     stats: {
       health: 20,
       stamina: 5,
       staminaRegen: 1,
-      gold: 10,
       space: 5,
     },
   },
   {
-    id: 'banana',
+    name: 'banana',
     tags: ['food'],
     price: 3,
     stats: {
@@ -32,7 +31,7 @@ export const allItems: Item[] = [
     ],
   },
   {
-    id: 'woodenSword',
+    name: 'woodenSword',
     tags: ['weapon'],
     price: 3,
     stats: {
@@ -53,7 +52,7 @@ export const allItems: Item[] = [
     ],
   },
   {
-    id: 'leatherBag',
+    name: 'leatherBag',
     tags: ['bag'],
     price: 4,
     stats: {
@@ -61,7 +60,7 @@ export const allItems: Item[] = [
     },
   },
   {
-    id: 'woodenBuckler',
+    name: 'woodenBuckler',
     tags: ['shield'],
     price: 4,
     stats: {

@@ -1,7 +1,6 @@
 import { z } from 'zod'
 
 export const Stats = z.object({
-  gold: z.number().optional(),
   health: z.number().optional(),
   stamina: z.number().optional(),
   staminaRegen: z.number().optional(),
@@ -33,31 +32,11 @@ export const Trigger = z.object({
 
 export const ItemTag = z.enum(['hero', 'weapon', 'food', 'bag', 'shield'])
 
-export const Item = z.object({
-  id: z.string(),
-  name: z.string().optional(),
+export const ItemDefinition = z.object({
+  name: z.string(),
   tags: z.array(ItemTag).optional(),
   triggers: z.array(Trigger).optional(),
   price: z.number(),
   stats: Stats.optional(),
 })
-export type Item = z.infer<typeof Item>
-
-export const RoundState = z.object({
-  roundNo: z.number(),
-  itemIds: z.array(z.string()),
-  gold: z.number(),
-})
-
-export const MatchState = z.object({
-  logs: z.array(
-    z.object({
-      message: z.string(),
-    }),
-  ),
-})
-
-export const GameState = z.object({
-  rounds: z.array(RoundState),
-  matches: z.array(MatchState),
-})
+export type ItemDefinition = z.infer<typeof ItemDefinition>

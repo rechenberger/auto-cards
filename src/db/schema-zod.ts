@@ -9,7 +9,15 @@ export const GameData = z.object({
   version: z.number().default(1),
   seed,
   roundNo: z.number().default(0),
+  gold: z.number().default(0),
   shopRerolls: z.number().default(0),
+  shopItems: z.array(
+    z.object({
+      name: z.string(),
+      isOnSale: z.boolean().optional(),
+      isReserved: z.boolean().optional(),
+    }),
+  ),
 })
 export type GameData = z.infer<typeof GameData>
 
@@ -18,7 +26,9 @@ export const Game = createSelectSchema(schema.game, {
 })
 export type Game = z.infer<typeof Game>
 
-export const LoadoutData = z.object({})
+export const LoadoutData = z.object({
+  items: z.array(z.object({ name: z.string() })),
+})
 export type LoadoutData = z.infer<typeof LoadoutData>
 
 export const Loadout = createSelectSchema(schema.loadout, {
