@@ -61,11 +61,20 @@ const items: Item[] = [
     },
   },
   {
-    id: 'leatherBag',
-    tags: ['bag'],
+    id: 'woodenBuckler',
+    tags: ['shield'],
     price: 4,
     stats: {
-      space: 4,
+      space: -4,
     },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        statsSelf: {
+          block: 3,
+        },
+      },
+    ],
   },
 ]

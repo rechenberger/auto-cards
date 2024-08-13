@@ -25,13 +25,13 @@ export const Attack = z.object({
 
 export const Trigger = z.object({
   type: z.enum(['interval', 'onSelfStun', 'onEnemyStun']),
-  cooldown: z.number().optional(),
+  cooldown: z.number(),
   statsSelf: Stats.optional(),
   statsEnemy: Stats.optional(),
   attack: Attack.optional(),
 })
 
-export const ItemTag = z.enum(['hero', 'weapon', 'food', 'bag'])
+export const ItemTag = z.enum(['hero', 'weapon', 'food', 'bag', 'shield'])
 
 export const Item = z.object({
   id: z.string(),
