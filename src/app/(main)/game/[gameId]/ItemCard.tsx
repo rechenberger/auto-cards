@@ -6,10 +6,14 @@ import { capitalCase } from 'change-case'
 
 export const ItemCard = async ({ name }: { name: string }) => {
   const def = await getItemByName(name)
+  const title = capitalCase(name)
   return (
     <>
       <Card className="p-4 flex flex-col gap-2">
-        <h2>{capitalCase(name)}</h2>
+        <h2>{title}</h2>
+        {/* <AiImage
+          prompt={`A beatiful but simple icon of ${title}. With a dark background.`}
+        /> */}
         <div className="opacity-60 text-sm">{def.tags?.join(',')}</div>
         <SimpleDataCard data={[def.stats, ...(def.triggers ?? [])]} />
         <div className="flex-1" />
