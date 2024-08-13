@@ -1,8 +1,8 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { getMyUserIdOrLogin } from '@/auth/getMyUser'
-import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import { getGameFromDb } from '@/game/getGame'
 import { notFound } from 'next/navigation'
+import { ShopView } from './ShopView'
 
 export default async function Page({
   params: { gameId },
@@ -21,7 +21,7 @@ export default async function Page({
 
   return (
     <>
-      <SimpleDataCard data={game} />
+      <ShopView game={game} />
     </>
   )
 }
