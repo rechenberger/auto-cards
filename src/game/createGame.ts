@@ -18,6 +18,9 @@ export const createGame = async ({ userId }: { userId: string }) => {
     data: typedParse(GameData, {
       version: GAME_DATA_VERSION,
       shopItems: [],
+      currentLoadout: {
+        items: [],
+      },
     }),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),

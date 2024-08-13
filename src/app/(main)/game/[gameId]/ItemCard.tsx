@@ -2,8 +2,14 @@ import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import { Card } from '@/components/ui/card'
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
+import { updateGame } from '@/game/updateGame'
+import {
+  streamToast,
+  superAction,
+} from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
+import { revalidatePath } from 'next/cache'
 
 export const ItemCard = async ({
   game,
@@ -34,18 +40,45 @@ export const ItemCard = async ({
         <div className="flex-1" />
         <div className="flex flex-row gap-2 justify-end">
           {!!shopItem && (
-            <ActionButton
-              hideIcon
-              catchToast
-              action={async () => {
-                'use server'
-                const gold = game.data.gold
-                console.log('buying', name, game)
-              }}
-            >
-              ${price}
-              {shopItem.isOnSale && ' (SALE)'}
-            </ActionButton>
+            <>
+              <ActionButton
+                hideIcon
+                catchToast
+                disabled={shopItem.isSold}
+                action={async () => {
+                  'use server'
+                  return superAction(async () => {
+                    if (game.data.gold < price) {
+                      throw new Error('Not enough gold')
+                    }
+                    game.data.gold -= price
+                    const s = game.data.shopItems[shopItem.idx]
+                    if (s.isSold) {
+                      throw new Error('Already sold')
+                    }
+                    s.isSold = true
+                    s.isReserved = false
+
+                    game.data.currentLoadout.items = [
+                      ...game.data.currentLoadout.items,
+                      { name },
+                    ]
+
+                    await updateGame({
+                      game,
+                    })
+                    revalidatePath('/', 'layout')
+                    streamToast({
+                      title: 'Item sold',
+                      description: `You bought ${title} for ${price} gold`,
+                    })
+                  })
+                }}
+              >
+                ${price}
+                {shopItem.isOnSale && ' (SALE)'}
+              </ActionButton>
+            </>
           )}
         </div>
       </Card>
