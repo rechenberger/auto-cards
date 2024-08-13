@@ -1,12 +1,27 @@
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import { Card } from '@/components/ui/card'
+import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
 
-export const ItemCard = async ({ name }: { name: string }) => {
+export const ItemCard = async ({
+  game,
+  name,
+  shopItem,
+}: {
+  game: Game
+  name: string
+  shopItem?: Game['data']['shopItems'][number] & { idx: number }
+}) => {
   const def = await getItemByName(name)
   const title = capitalCase(name)
+
+  let price = def.price
+  if (shopItem?.isOnSale) {
+    price = Math.ceil(price * 0.5)
+  }
+
   return (
     <>
       <Card className="p-4 flex flex-col gap-2">
@@ -18,15 +33,20 @@ export const ItemCard = async ({ name }: { name: string }) => {
         <SimpleDataCard data={[def.stats, ...(def.triggers ?? [])]} />
         <div className="flex-1" />
         <div className="flex flex-row gap-2 justify-end">
-          <ActionButton
-            hideIcon
-            catchToast
-            action={async () => {
-              'use server'
-            }}
-          >
-            ${def.price}
-          </ActionButton>
+          {!!shopItem && (
+            <ActionButton
+              hideIcon
+              catchToast
+              action={async () => {
+                'use server'
+                const gold = game.data.gold
+                console.log('buying', name, game)
+              }}
+            >
+              ${price}
+              {shopItem.isOnSale && ' (SALE)'}
+            </ActionButton>
+          )}
         </div>
       </Card>
     </>
