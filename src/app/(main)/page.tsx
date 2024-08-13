@@ -1,27 +1,21 @@
-import { PartyButton } from '@/components/demo/PartyButton'
-import { Readme } from '@/components/demo/Readme'
-import { Button } from '@/components/ui/button'
-import { ExternalLink } from 'lucide-react'
-import Link from 'next/link'
+import { getIsLoggedIn } from '@/auth/getMyUser'
+import { UserButton } from '@/auth/UserButton'
+import { cn } from '@/lib/utils'
+import { redirect } from 'next/navigation'
 
 export default async function Page() {
+  const isLoggedIn = await getIsLoggedIn()
+  if (isLoggedIn) {
+    redirect('/game')
+  }
+
   return (
     <>
-      <div className="flex-1 flex flex-col items-center justify-center gap-12 py-8">
-        <h1 className="text-2xl lg:text-6xl">🎉 Welcome to the Party 🥳</h1>
-        <div className="flex flex-col gap-2">
-          <PartyButton />
-          <Link
-            href="https://github.com/new?template_name=party-starter&template_owner=rechenberger"
-            target="_blank"
-          >
-            <Button variant={'outline'}>
-              Use this template
-              <ExternalLink className="w-4 h-4 ml-1" />
-            </Button>
-          </Link>
-        </div>
-        <Readme />
+      <div className="flex-1 flex flex-col items-center justify-center gap-4 py-8 mb-80">
+        <h1 className={cn('font-bold text-2xl lg:text-6xl')}>
+          Auto <span className="text-primary">Cards</span>
+        </h1>
+        <UserButton />
       </div>
     </>
   )
