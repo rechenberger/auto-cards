@@ -5,7 +5,7 @@ import {
   superAction,
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { SimpleDataCard } from '../simple/SimpleDataCard'
+import { MatchReportDisplay } from './MatchReportDisplay'
 
 export const FightButton = ({ game }: { game: Game }) => {
   return (
@@ -28,7 +28,11 @@ export const FightButton = ({ game }: { game: Game }) => {
             })
             streamDialog({
               title: 'Match report',
-              content: <SimpleDataCard data={matchReport.logs} />,
+              content: (
+                <div className="overflow-auto max-h-96">
+                  <MatchReportDisplay matchReport={matchReport} />
+                </div>
+              ),
             })
           })
         }}

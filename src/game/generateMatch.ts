@@ -16,6 +16,8 @@ export type MatchLog = {
   targetSideIdx?: number
 }
 
+export type MatchReport = Awaited<ReturnType<typeof generateMatch>>
+
 export const generateMatch = async ({
   participants,
   seed,
@@ -182,5 +184,7 @@ export const generateMatch = async ({
       log({ msg: 'MAX_MATCH_TIME', sideIdx: -1 })
       return endOfMatch()
     }
+
+    time++
   }
 }
