@@ -24,6 +24,7 @@ export const Shop = ({ game }: { game: Game }) => {
         <div>${game.data.gold}</div>
         <ActionButton
           catchToast
+          hideIcon
           action={async () => {
             'use server'
             return gameAction({
@@ -38,6 +39,7 @@ export const Shop = ({ game }: { game: Game }) => {
         </ActionButton>
         <ActionButton
           catchToast
+          hideIcon
           action={async () => {
             'use server'
             return gameAction({
