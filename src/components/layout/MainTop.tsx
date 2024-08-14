@@ -5,6 +5,7 @@ import { DarkModeToggle } from '@/components/layout/DarkModeToggle'
 import { Button } from '@/components/ui/button'
 import { Github } from 'lucide-react'
 import Link from 'next/link'
+import { MainLogo } from './MainLogo'
 import { MainTopNav } from './MainTopNav'
 
 export const MainTop = async () => {
@@ -36,13 +37,7 @@ export const MainTop = async () => {
   return (
     <>
       <div className="container flex flex-row items-center justify-between gap-6 py-6">
-        <Link href="/" className="flex flex-row items-center gap-3">
-          <div className="text-xl">
-            <strong>
-              Party <span className="text-primary">Starter</span>
-            </strong>
-          </div>
-        </Link>
+        <MainLogo />
         <div className="hidden flex-1 xl:flex">
           <MainTopNav entries={entries} />
           <UserButton />

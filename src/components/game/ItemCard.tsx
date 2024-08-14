@@ -2,6 +2,7 @@ import { AiImage } from '@/components/ai/AiImage'
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
 import { gameAction } from '@/game/gameAction'
+import { fontHeading } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
@@ -58,7 +59,7 @@ export const ItemCard = async ({
             // 'text-amber-400',
             'font-bold',
             '[text-shadow:_1px_1px_4px_rgb(0_0_0_/_80%)]',
-            // fontHeading.className,
+            fontHeading.className,
           )}
         >
           <div className="relative rounded-tr-lg rounded-b-lg overflow-hidden">
