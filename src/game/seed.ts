@@ -12,7 +12,7 @@ export type Seed = string | SeedArray
 
 export const rng = ({ seed }: { seed: Seed }) => {
   const seedString = isArray(seed)
-    ? seed.map((s) => (typeof s === 'object' ? hash(s) : 0)).join('~')
+    ? seed.map((s) => (typeof s === 'object' ? hash(s) : s)).join('~')
     : seed
   const generator = seedrandom(seedString)
   return generator()
