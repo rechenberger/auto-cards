@@ -1,11 +1,8 @@
 import { Game } from '@/db/schema-zod'
 import { getGameFromDb } from '@/game/getGame'
 import { updateGame } from '@/game/updateGame'
-import {
-  streamAction,
-  superAction,
-} from '@/super-action/action/createSuperAction'
-import { revalidatePath } from 'next/cache'
+import { superAction } from '@/super-action/action/createSuperAction'
+import { streamRevalidatePath } from '@/super-action/action/streamRevalidatePath'
 
 type GameActionContext = {
   game: Game
@@ -26,10 +23,7 @@ export const gameAction = async ({
     await action({ ctx })
     await updateGame({ game: ctx.game })
 
-    streamAction(async () => {
-      'use server'
-      revalidatePath('/game')
-      revalidatePath(`/game/${gameId}`)
-    })
+    streamRevalidatePath('/game')
+    streamRevalidatePath(`/game/${gameId}`)
   })
 }
