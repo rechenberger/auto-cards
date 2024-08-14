@@ -12,10 +12,12 @@ export const StatsDisplay = ({
   stats,
   relative,
   showZero,
+  size = 'default',
 }: {
   stats: Stats
   relative?: boolean
   showZero?: boolean
+  size?: 'sm' | 'default'
 }) => {
   return (
     <>
@@ -34,8 +36,17 @@ export const StatsDisplay = ({
                       stat.bgClass,
                     )}
                   >
-                    <stat.icon className="w-4 h-4" />
-                    <div className="text-sm px-1 font-bold">{value}</div>
+                    <stat.icon
+                      className={cn('size-4', size === 'sm' && 'size-3')}
+                    />
+                    <div
+                      className={cn(
+                        'text-sm px-1 font-bold',
+                        size === 'sm' && 'text-xs',
+                      )}
+                    >
+                      {value}
+                    </div>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent className="bg-none border-none shadow-none p-0">

@@ -1,8 +1,9 @@
 import { MatchReport } from '@/game/generateMatch'
+import { cn } from '@/lib/utils'
 import { capitalCase } from 'change-case'
-import { map, omitBy } from 'lodash-es'
 import { ArrowRight } from 'lucide-react'
 import { Fragment } from 'react'
+import { StatsDisplay } from './StatsDisplay'
 
 export const MatchReportDisplay = ({
   matchReport,
@@ -11,27 +12,34 @@ export const MatchReportDisplay = ({
 }) => {
   return (
     <>
-      <div className="flex flex-col text-xs">
-        {matchReport.logs.map((log, idx) => (
-          <Fragment key={idx}>
-            <div className="flex flex-row gap-1">
-              <div className="flex flex-row gap-0">
+      <div className="grid grid-cols-[auto,auto,auto,1fr,auto] border text-xs rounded">
+        {matchReport.logs.map((log, idx) => {
+          const cell = 'border px-2 py-0.5 flex flex-row items-center'
+          const hasStats = !!log.stats
+          return (
+            <Fragment key={idx}>
+              <div className={cn(cell)}>{(log.time / 1000).toFixed(3)}</div>
+              <div className={cn(cell, 'flex flex-row gap 1 items-center')}>
                 <div>{log.sideIdx}</div>
                 <>
                   <ArrowRight className="size-3" />
                   <div>{log.targetSideIdx}</div>
                 </>
               </div>
-              <div>{log.msg}</div>
-              <div>
-                {map(
-                  omitBy(log.stats, (s) => !s),
-                  (v, k) => `${v} ${capitalCase(k)}`,
-                ).join(', ')}
+              {hasStats && (
+                <div className={cn(cell)}>
+                  <StatsDisplay stats={log.stats || {}} size="sm" />
+                </div>
+              )}
+              <div className={cn(cell, !hasStats && 'col-span-2')}>
+                {log.msg}
               </div>
-            </div>
-          </Fragment>
-        ))}
+              <div className={cn(cell)}>
+                {log.itemName && <>with {capitalCase(log.itemName)}</>}
+              </div>
+            </Fragment>
+          )
+        })}
       </div>
     </>
   )

@@ -11,6 +11,7 @@ export type MatchLog = {
   msg?: string
   sideIdx: number
   itemIdx?: number
+  itemName?: string
   triggerIdx?: number
   stats?: Stats
   targetSideIdx?: number
@@ -54,8 +55,12 @@ export const generateMatch = async ({
   )
 
   const logs: MatchLog[] = []
-  const log = (log: Omit<MatchLog, 'time'>) => {
-    logs.push({ ...log, time })
+  const log = (log: Omit<MatchLog, 'time' | 'itemName'>) => {
+    const itemName =
+      log.itemIdx !== undefined
+        ? sides[log.sideIdx].items[log.itemIdx].name
+        : undefined
+    logs.push({ ...log, time, itemName })
   }
 
   const endOfMatch = () => {
