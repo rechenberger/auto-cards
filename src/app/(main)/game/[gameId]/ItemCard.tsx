@@ -52,7 +52,7 @@ export const ItemCard = async ({
                   {title}
                 </div>
               </div>
-              <div className="absolute top-3 inset-x-0 flex flex-col items-end">
+              <div className="absolute top-6 inset-x-0 flex flex-col items-end">
                 <div
                   className={cn(
                     'bg-[#313130] pl-4 pr-3 py-1',
@@ -65,9 +65,11 @@ export const ItemCard = async ({
                   </div>
                 </div>
               </div>
-              <AiImage
-                prompt={`Cartoony cozy Image of ${title}. Background is a sunny track trough the mountains or woods whatever fits.`}
-              />
+              <div className="border-black border-2 rounded-lg overflow-hidden">
+                <AiImage
+                  prompt={`Cartoony cozy Image of ${title}. Background is a sunny track trough the mountains or woods whatever fits.`}
+                />
+              </div>
               {!!shopItem?.isSold && (
                 <>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
