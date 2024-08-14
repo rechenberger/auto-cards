@@ -1,6 +1,6 @@
+import { ItemCard } from '@/components/game/ItemCard'
 import { getAllItems } from '@/game/allItems'
 import { Fragment } from 'react'
-import { ItemCard } from '../game/[gameId]/ItemCard'
 
 export default async function Page() {
   const items = await getAllItems()
