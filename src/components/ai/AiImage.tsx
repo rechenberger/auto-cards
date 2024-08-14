@@ -68,15 +68,50 @@ export const AiImageRaw = async ({
   }
   return (
     <>
+      <ActionButton
+        catchToast
+        variant={'outline'}
+        action={async () => {
+          'use server'
+          const { url } = await generateImage({ prompt, force: true })
+          await db
+            .update(schema.aiImage)
+            .set({
+              prompt,
+              url,
+              itemId,
+            })
+            .where(
+              itemId
+                ? eq(schema.aiImage.itemId, itemId)
+                : eq(schema.aiImage.prompt, prompt),
+            )
+          revalidatePath('/', 'layout')
+        }}
+        title={prompt}
+        command={{
+          label: `Generate Image for ${itemId || prompt}`,
+        }}
+        hideButton
+      >
+        Generate
+      </ActionButton>
       <img src={aiImage.url} alt={prompt} className={className} />
     </>
   )
 }
 
-const generateImage = async ({ prompt }: { prompt: string }) => {
+const generateImage = async ({
+  prompt,
+  force,
+}: {
+  prompt: string
+  force?: boolean
+}) => {
   const response = await fetchTeampilot({
     message: `Generate an image: ${prompt}`,
     launchpadSlugId: process.env.LAUNCHPAD_IMAGES,
+    cacheTtlSeconds: force ? 0 : 'forever',
   })
   const media = first(response.mediaAttachments)
   if (media?.type !== 'IMAGE') {

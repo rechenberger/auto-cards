@@ -90,6 +90,7 @@ export const ItemCard = async ({
             <div className="border-black border-2 rounded-lg overflow-hidden">
               <AiImage
                 prompt={`Cartoony cozy Image of ${title}. Background is a sunny track trough the mountains or woods whatever fits.`}
+                itemId={item.name}
               />
             </div>
           </div>
