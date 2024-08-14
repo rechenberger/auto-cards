@@ -1,5 +1,6 @@
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
 import { Toaster } from '@/components/ui/toaster'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { ActionCommandProvider } from '@/super-action/command/ActionCommandProvider'
 import { DialogProvider } from '@/super-action/dialog/DialogProvider'
 import type { Metadata } from 'next'
@@ -19,10 +20,12 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-background min-h-[100svh] flex flex-col">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
-          <ActionCommandProvider />
-          <Toaster />
-          <DialogProvider />
+          <TooltipProvider>
+            {children}
+            <ActionCommandProvider />
+            <Toaster />
+            <DialogProvider />
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -1,7 +1,12 @@
-import { Stats } from '@/game/stats'
-import { map } from 'lodash-es'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { allStatsDefinition, Stats } from '@/game/stats'
+import { cn } from '@/lib/utils'
 import { Fragment } from 'react'
-import { StatDisplay } from './StatDisplay'
+import { CardTooltip } from './CardTooltip'
 
 export const StatsDisplay = ({
   stats,
@@ -12,12 +17,32 @@ export const StatsDisplay = ({
 }) => {
   return (
     <>
-      <div className="flex flex-row gap-2 flex-wrap">
-        {map(stats, (value, key) => (
-          <Fragment key={key}>
-            <StatDisplay label={key} value={value} relative={relative} />
-          </Fragment>
-        ))}
+      <div className="flex flex-row gap-2 justify-center">
+        {allStatsDefinition.map((stat) => {
+          const value = stats[stat.name]
+          if (!value) return null
+
+          return (
+            <Fragment key={stat.name}>
+              <Tooltip>
+                <TooltipTrigger>
+                  <div
+                    className={cn(
+                      'rounded-full border px-1 py-0.5 flex flex-row items-center',
+                      stat.bgClass,
+                    )}
+                  >
+                    <stat.icon className="w-4 h-4" />
+                    <div className="text-sm px-1 font-bold">{value}</div>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="bg-none border-none shadow-none p-0">
+                  <CardTooltip name={stat.name} text={stat.tooltip} />
+                </TooltipContent>
+              </Tooltip>
+            </Fragment>
+          )
+        })}
       </div>
     </>
   )
