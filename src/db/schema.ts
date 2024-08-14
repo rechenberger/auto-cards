@@ -94,3 +94,10 @@ export const matchParticipationRelations = relations(
     }),
   }),
 )
+
+export const aiImage = sqliteTable('aiImage', {
+  ...baseStats(),
+  prompt: text('prompt').notNull(),
+  url: text('url').notNull(),
+  itemId: text('itemId'),
+})
