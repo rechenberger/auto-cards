@@ -13,6 +13,7 @@ import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
 import { Lock, LockOpen } from 'lucide-react'
 import { BuyButton } from './BuyButton'
+import { StatsDisplay } from './StatsDisplay'
 
 export const ItemCard = async ({
   game,
@@ -125,7 +126,10 @@ export const ItemCard = async ({
           </div>
         </HoverCardTrigger>
         <HoverCardContent>
-          <SimpleDataCard data={[item.stats, ...(item.triggers ?? [])]} />
+          <div className="flex flex-col gap-4">
+            {item.stats && <StatsDisplay stats={item.stats} />}
+            {item.triggers && <SimpleDataCard data={item.triggers} />}
+          </div>
         </HoverCardContent>
       </HoverCard>
     </>
