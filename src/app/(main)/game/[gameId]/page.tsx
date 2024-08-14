@@ -1,8 +1,8 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { getMyUserIdOrLogin } from '@/auth/getMyUser'
+import { ShopView } from '@/components/game/ShopView'
 import { getGameFromDb } from '@/game/getGame'
 import { notFound } from 'next/navigation'
-import { ShopView } from './ShopView'
 
 export default async function Page({
   params: { gameId },
