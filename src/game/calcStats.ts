@@ -1,8 +1,8 @@
 import { LoadoutData } from '@/db/schema-zod'
-import { Stats } from '@/game/zod-schema'
 import { capitalCase } from 'change-case'
 import { keys, map, omitBy, sumBy, uniq } from 'lodash-es'
 import { getItemByName } from './allItems'
+import { Stats } from './stats'
 
 export const calcStats = async ({ loadout }: { loadout: LoadoutData }) => {
   const items = await Promise.all(

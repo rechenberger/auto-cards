@@ -1,18 +1,5 @@
 import { z } from 'zod'
-
-export const Stats = z.object({
-  health: z.number().optional(),
-  stamina: z.number().optional(),
-  staminaRegen: z.number().optional(),
-  block: z.number().optional(),
-  regen: z.number().optional(),
-  luck: z.number().optional(),
-  thorns: z.number().optional(),
-  poison: z.number().optional(),
-  space: z.number().optional(),
-  haste: z.number().optional(),
-})
-export type Stats = z.infer<typeof Stats>
+import { Stats } from './stats'
 
 export const Attack = z.object({
   damage: z.number().optional(),

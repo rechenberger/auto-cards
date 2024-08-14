@@ -1,4 +1,4 @@
-import { Stats } from '@/game/zod-schema'
+import { Stats } from '@/game/stats'
 import { map } from 'lodash-es'
 import { Fragment } from 'react'
 import { StatDisplay } from './StatDisplay'
