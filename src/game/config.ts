@@ -4,3 +4,5 @@ export const SALE_CHANCE = 0.2
 export const STARTING_GOLD = 10
 export const BASE_TICK_TIME = 1000
 export const MAX_MATCH_TIME = 10 * 60 * 1000
+
+export const FATIGUE_STARTS_AT = 15000

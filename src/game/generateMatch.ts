@@ -3,7 +3,7 @@ import { rngFloat, SeedArray } from '@/game/seed'
 import { cloneDeep, first, map, orderBy } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { calcStats, hasNegativeStats, sumStats } from './calcStats'
-import { BASE_TICK_TIME, MAX_MATCH_TIME } from './config'
+import { BASE_TICK_TIME, FATIGUE_STARTS_AT, MAX_MATCH_TIME } from './config'
 import { Stats } from './stats'
 
 export type MatchLog = {
@@ -119,6 +119,7 @@ export const generateMatch = async ({
     for (const action of actions) {
       if (action.type === 'baseTick') {
         for (const side of sides) {
+          // REGEN
           const regenStats = {
             health: side.stats.regen,
             stamina: side.stats.staminaRegen,
@@ -130,6 +131,24 @@ export const generateMatch = async ({
             stats: regenStats,
             targetSideIdx: side.sideIdx,
           })
+
+          // FATIGUE
+          const fatigue = Math.max(
+            1 + (time - FATIGUE_STARTS_AT) / BASE_TICK_TIME,
+            0,
+          )
+          if (fatigue > 0) {
+            const fatigueStats = {
+              health: -1 * fatigue,
+            }
+            side.stats = sumStats(side.stats, fatigueStats)
+            log({
+              msg: 'Fatigue',
+              sideIdx: side.sideIdx,
+              stats: fatigueStats,
+              targetSideIdx: side.sideIdx,
+            })
+          }
         }
       } else if (action.type === 'itemTrigger') {
         const seedAction = [...seedTick, action]
