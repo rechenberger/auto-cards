@@ -15,11 +15,16 @@ import { schema } from '@/db/schema-export'
 import { Game } from '@/db/schema-zod'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { eq } from 'drizzle-orm'
+import { Metadata } from 'next'
 import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
 import { Fragment } from 'react'
 import { z } from 'zod'
 import { NewGameButton } from './NewGameButton'
+
+export const metadata: Metadata = {
+  title: 'Games',
+}
 
 export default async function Page() {
   const userId = await getMyUserIdOrLogin()

@@ -106,6 +106,9 @@ const allItems: ItemDefinition[] = [
     name: 'pineapple',
     tags: ['food'],
     price: 7,
+    stats: {
+      space: -3,
+    },
     triggers: [
       {
         type: 'interval',
@@ -116,6 +119,15 @@ const allItems: ItemDefinition[] = [
         },
       },
     ],
+  },
+  {
+    name: 'syringe',
+    tags: [],
+    price: 4,
+    stats: {
+      space: -1,
+      lifeSteal: 10,
+    },
   },
 ]
 

@@ -2,7 +2,12 @@ import { getIsAdmin } from '@/auth/getIsAdmin'
 import { getMyUserIdOrLogin } from '@/auth/getMyUser'
 import { ShopView } from '@/components/game/ShopView'
 import { getGameFromDb } from '@/game/getGame'
+import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+
+export const metadata: Metadata = {
+  title: 'Game',
+}
 
 export default async function Page({
   params: { gameId },

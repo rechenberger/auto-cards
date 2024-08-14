@@ -220,6 +220,24 @@ export const generateMatch = async ({
               stats: targetStats,
             })
 
+            // LIFESTEAL
+            if (mySide.stats.lifeSteal) {
+              const lifeStealDamage = Math.ceil(
+                damage * (mySide.stats.lifeSteal / 100),
+              )
+              const lifeStealStats: Stats = {
+                health: lifeStealDamage,
+              }
+              mySide.stats = sumStats(mySide.stats, lifeStealStats)
+              log({
+                ...action,
+                sideIdx: mySide.sideIdx,
+                msg: `Life Steal`,
+                targetSideIdx: otherSide.sideIdx,
+                stats: lifeStealStats,
+              })
+            }
+
             // THORNS
             if (otherSide.stats.thorns) {
               const thornsDamage = otherSide.stats.thorns

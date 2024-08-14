@@ -2,7 +2,6 @@ import { constArrayMap } from '@/lib/constArrayMap'
 import {
   Backpack,
   Banana,
-  Bone,
   Carrot,
   Coins,
   Crosshair,
@@ -12,6 +11,7 @@ import {
   Shield,
   Skull,
   Sword,
+  Syringe,
 } from 'lucide-react'
 import { z } from 'zod'
 
@@ -59,9 +59,9 @@ const heroStats = [
     tooltip: 'Deal X Damage to attacker when attacked.',
   },
   {
-    name: 'vampirism',
-    icon: Bone,
-    bgClass: 'bg-gray-500',
+    name: 'lifeSteal',
+    icon: Syringe,
+    bgClass: 'bg-fuchsia-800',
     tooltip: 'Steal X Health when attacking.',
   },
   {
