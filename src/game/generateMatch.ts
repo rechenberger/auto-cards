@@ -172,9 +172,12 @@ export const generateMatch = async ({
           const accuracyRng = rngFloat({ seed: seedAction, max: 100 })
           const doesHit = accuracyRng <= (attack.accuracy ?? 0)
           if (doesHit) {
-            const damage = attack.damage ?? 0
-            const targetStats = {
+            let damage = attack.damage ?? 0
+            const blockedDamage = Math.min(damage, otherSide.stats.block ?? 0)
+            damage -= blockedDamage
+            const targetStats: Stats = {
               health: -1 * damage,
+              block: -1 * blockedDamage,
             }
             otherSide.stats = sumStats(otherSide.stats, targetStats)
             log({
