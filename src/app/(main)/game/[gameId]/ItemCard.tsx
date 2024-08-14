@@ -67,9 +67,18 @@ export const ItemCard = async ({
               <AiImage
                 prompt={`Cartoony cozy Image of ${title}. Background is a sunny track trough the mountains or woods whatever fits.`}
               />
+              {!!shopItem?.isSold && (
+                <>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <div className="text-red-500 border-8 border-red-500 font-black px-8 py-4 text-3xl bg-black/80 -rotate-12">
+                      SOLD
+                    </div>
+                  </div>
+                </>
+              )}
               <div className="absolute bottom-0 inset-x-0 p-1">
                 <div className="flex flex-row gap-2 justify-end items-center">
-                  {!!game && !!shopItem && (
+                  {!!game && !!shopItem && !shopItem.isSold && (
                     <>
                       <label className="flex flex-row gap-1">
                         <ActionButton
