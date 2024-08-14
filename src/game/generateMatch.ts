@@ -90,7 +90,7 @@ export const generateMatch = async ({
     ]
     futureActions = orderBy(futureActions, 'time', 'asc')
     const nextTime = first(futureActions)?.time
-    if (!nextTime) {
+    if (nextTime === undefined) {
       throw new Error('no next time')
     }
 
