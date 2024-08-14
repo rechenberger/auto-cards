@@ -25,6 +25,7 @@ export const BuyButton = ({
       <ActionButton
         hideIcon
         catchToast
+        variant="secondary"
         disabled={shopItem.isSold}
         action={async () => {
           'use server'
