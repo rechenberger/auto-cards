@@ -69,7 +69,7 @@ const SuperDialog = ({
                 </Button>
               )}
               {dialog.confirm && (
-                <Button onClick={() => onConfirm?.(true)}>
+                <Button onClick={() => onConfirm?.(true)} autoFocus>
                   {dialog.confirm}
                 </Button>
               )}
