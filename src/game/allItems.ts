@@ -102,6 +102,21 @@ const allItems: ItemDefinition[] = [
       regen: 2,
     },
   },
+  {
+    name: 'pineapple',
+    tags: ['food'],
+    price: 7,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        statsSelf: {
+          thorns: 2,
+          health: 6,
+        },
+      },
+    ],
+  },
 ]
 
 export const getAllItems = async () => allItems

@@ -2,12 +2,13 @@ import { constArrayMap } from '@/lib/constArrayMap'
 import {
   Backpack,
   Banana,
+  Bone,
   Carrot,
   Coins,
   Crosshair,
   Heart,
   HeartPulse,
-  HelpCircle,
+  Pyramid,
   Shield,
   Skull,
   Sword,
@@ -53,9 +54,15 @@ const heroStats = [
   },
   {
     name: 'thorns',
-    icon: HelpCircle,
-    bgClass: 'bg-gray-500',
+    icon: Pyramid,
+    bgClass: 'bg-orange-500',
     tooltip: 'Deal X Damage to attacker when attacked.',
+  },
+  {
+    name: 'vampirism',
+    icon: Bone,
+    bgClass: 'bg-gray-500',
+    tooltip: 'Steal X Health when attacking.',
   },
   {
     name: 'regen',

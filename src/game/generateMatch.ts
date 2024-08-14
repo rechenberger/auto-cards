@@ -219,6 +219,22 @@ export const generateMatch = async ({
               targetSideIdx: otherSide.sideIdx,
               stats: targetStats,
             })
+
+            // THORNS
+            if (otherSide.stats.thorns) {
+              const thornsDamage = otherSide.stats.thorns
+              const thornsStats: Stats = {
+                health: -1 * thornsDamage,
+              }
+              mySide.stats = sumStats(mySide.stats, thornsStats)
+              log({
+                ...action,
+                sideIdx: otherSide.sideIdx,
+                msg: `Thorns`,
+                targetSideIdx: mySide.sideIdx,
+                stats: thornsStats,
+              })
+            }
           } else {
             log({
               ...action,
