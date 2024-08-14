@@ -1,21 +1,12 @@
 import { z } from 'zod'
 import { Stats } from './stats'
 
-export const Attack = z.object({
-  damage: z.number().optional(),
-  accuracy: z.number().optional(),
-  critChance: z.number().optional(),
-  critDamage: z.number().optional(),
-  stunChance: z.number().optional(),
-  stunDuration: z.number().optional(),
-})
-
 export const Trigger = z.object({
   type: z.enum(['interval', 'onSelfStun', 'onEnemyStun']),
   cooldown: z.number(),
   statsSelf: Stats.optional(),
   statsEnemy: Stats.optional(),
-  attack: Attack.optional(),
+  attack: Stats.optional(),
 })
 export type Trigger = z.infer<typeof Trigger>
 

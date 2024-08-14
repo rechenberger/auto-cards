@@ -1,13 +1,28 @@
 import { constArrayMap } from '@/lib/constArrayMap'
-import { Banana, Carrot, Heart, HelpCircle, Shield, Sword } from 'lucide-react'
+import {
+  Backpack,
+  Banana,
+  Carrot,
+  Crosshair,
+  Heart,
+  HelpCircle,
+  Shield,
+  Sword,
+} from 'lucide-react'
 import { z } from 'zod'
 
-export const allStatsDefinition = [
+const heroStats = [
   {
     name: 'health',
     icon: Heart,
     bgClass: 'bg-red-500',
     tooltip: 'Health points.',
+  },
+  {
+    name: 'space',
+    icon: Backpack,
+    bgClass: 'bg-yellow-800',
+    tooltip: 'Space for cards.',
   },
   {
     name: 'stamina',
@@ -46,6 +61,23 @@ export const allStatsDefinition = [
     tooltip: 'Regenerate X health per second.',
   },
 ] as const
+
+const attackStats = [
+  {
+    name: 'damage',
+    icon: Sword,
+    bgClass: 'bg-red-500',
+    tooltip: 'Deal X damage.',
+  },
+  {
+    name: 'accuracy',
+    icon: Crosshair,
+    bgClass: 'bg-yellow-500',
+    tooltip: 'X% chance to hit.',
+  },
+] as const
+
+export const allStatsDefinition = [...heroStats, ...attackStats] as const
 
 export const getStatDefinition = (stat: Stat) => {
   const def = allStatsDefinition.find((b) => b.name === stat)
