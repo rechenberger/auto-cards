@@ -1,6 +1,6 @@
 import { LoadoutData } from '@/db/schema-zod'
 import { rngFloat, SeedArray } from '@/game/seed'
-import { first, map, orderBy } from 'lodash-es'
+import { cloneDeep, first, map, orderBy } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { calcStats, sumStats } from './calcStats'
 import { BASE_TICK_TIME, MAX_MATCH_TIME } from './config'
@@ -15,23 +15,21 @@ export type MatchLog = {
   triggerIdx?: number
   stats?: Stats
   targetSideIdx?: number
+  stateSnapshot: MatchState
 }
 
 export type MatchReport = Awaited<ReturnType<typeof generateMatch>>
 
-export const generateMatch = async ({
-  participants,
-  seed,
-}: {
+type GenerateMatchInput = {
   participants: {
     loadout: LoadoutData
   }[]
   seed: SeedArray
-}) => {
-  let time = 0
+}
 
+export const generateMatchState = async (input: GenerateMatchInput) => {
   const sides = await Promise.all(
-    participants.map(async (p, idx) => {
+    input.participants.map(async (p, idx) => {
       const itemDefs = await Promise.all(
         p.loadout.items.map((i) => getItemByName(i.name)),
       )
@@ -41,7 +39,7 @@ export const generateMatch = async ({
         ...item,
         triggers: map(item.triggers, (trigger) => ({
           ...trigger,
-          lastUsed: time,
+          lastUsed: 0,
           // nextUse: time + trigger.cooldown,
         })),
       }))
@@ -53,14 +51,27 @@ export const generateMatch = async ({
       }
     }),
   )
+  return { sides }
+}
+export type MatchState = Awaited<ReturnType<typeof generateMatchState>>
+
+export const generateMatch = async ({
+  participants,
+  seed,
+}: GenerateMatchInput) => {
+  let time = 0
+
+  const state = await generateMatchState({ participants, seed })
+  const { sides } = state
 
   const logs: MatchLog[] = []
-  const log = (log: Omit<MatchLog, 'time' | 'itemName'>) => {
+  const log = (log: Omit<MatchLog, 'time' | 'itemName' | 'stateSnapshot'>) => {
     const itemName =
       log.itemIdx !== undefined
         ? sides[log.sideIdx].items[log.itemIdx].name
         : undefined
-    logs.push({ ...log, time, itemName })
+    const stateSnapshot = cloneDeep(state)
+    logs.push({ ...log, time, itemName, stateSnapshot })
   }
 
   const endOfMatch = () => {
