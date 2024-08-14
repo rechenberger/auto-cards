@@ -15,7 +15,10 @@ export const LoadoutDisplay = async ({ game }: { game: Game }) => {
           </Fragment>
         ))}
       </div>
-      <StatsDisplay stats={stats} />
+
+      <div className="flex flex-col items-center">
+        <StatsDisplay stats={stats} />
+      </div>
     </>
   )
 }
