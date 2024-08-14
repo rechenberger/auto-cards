@@ -2,16 +2,11 @@ import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import { Card } from '@/components/ui/card'
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
-import { updateGame } from '@/game/updateGame'
+import { gameAction } from '@/game/gameAction'
 import { cn } from '@/lib/utils'
-import {
-  streamToast,
-  superAction,
-} from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
 import { Lock, LockOpen } from 'lucide-react'
-import { revalidatePath } from 'next/cache'
 
 export const ItemCard = async ({
   game,
@@ -51,13 +46,12 @@ export const ItemCard = async ({
                   hideIcon
                   action={async () => {
                     'use server'
-                    return superAction(async () => {
-                      const s = game.data.shopItems[shopItem.idx]
-                      s.isReserved = !s.isReserved
-                      await updateGame({
-                        game,
-                      })
-                      revalidatePath('/', 'layout')
+                    return gameAction({
+                      gameId: game.id,
+                      action: async ({ ctx }) => {
+                        const s = ctx.game.data.shopItems[shopItem.idx]
+                        s.isReserved = !s.isReserved
+                      },
                     })
                   }}
                 >
@@ -75,31 +69,30 @@ export const ItemCard = async ({
                 disabled={shopItem.isSold}
                 action={async () => {
                   'use server'
-                  return superAction(async () => {
-                    if (game.data.gold < price) {
-                      throw new Error('Not enough gold')
-                    }
-                    game.data.gold -= price
-                    const s = game.data.shopItems[shopItem.idx]
-                    if (s.isSold) {
-                      throw new Error('Already sold')
-                    }
-                    s.isSold = true
-                    s.isReserved = false
+                  return gameAction({
+                    gameId: game.id,
+                    action: async ({ ctx }) => {
+                      const game = ctx.game
+                      if (game.data.gold < price) {
+                        throw new Error('Not enough gold')
+                      }
+                      game.data.gold -= price
+                      const s = game.data.shopItems[shopItem.idx]
+                      if (s.isSold) {
+                        throw new Error('Already sold')
+                      }
+                      s.isSold = true
+                      s.isReserved = false
 
-                    game.data.currentLoadout.items = [
-                      ...game.data.currentLoadout.items,
-                      { name },
-                    ]
-
-                    await updateGame({
-                      game,
-                    })
-                    revalidatePath('/', 'layout')
-                    streamToast({
-                      title: 'Item sold',
-                      description: `You bought ${title} for ${price} gold`,
-                    })
+                      game.data.currentLoadout.items = [
+                        ...game.data.currentLoadout.items,
+                        { name },
+                      ]
+                      // streamToast({
+                      //   title: 'Item sold',
+                      //   description: `You bought ${title} for ${price} gold`,
+                      // })
+                    },
                   })
                 }}
               >
