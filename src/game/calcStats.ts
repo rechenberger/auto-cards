@@ -30,6 +30,10 @@ const getNegativeStats = ({ stats }: { stats: Stats }) => {
   return omitBy(stats, (v) => v === undefined || v >= 0) as Stats
 }
 
+export const hasNegativeStats = ({ stats }: { stats: Stats }) => {
+  return !!keys(getNegativeStats({ stats })).length
+}
+
 export const throwIfNegativeStats = ({ stats }: { stats: Stats }) => {
   const negativeStats = getNegativeStats({ stats })
   const isNegative = !!keys(negativeStats).length

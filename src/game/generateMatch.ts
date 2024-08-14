@@ -2,7 +2,7 @@ import { LoadoutData } from '@/db/schema-zod'
 import { rngFloat, SeedArray } from '@/game/seed'
 import { cloneDeep, first, map, orderBy } from 'lodash-es'
 import { getItemByName } from './allItems'
-import { calcStats, sumStats } from './calcStats'
+import { calcStats, hasNegativeStats, sumStats } from './calcStats'
 import { BASE_TICK_TIME, MAX_MATCH_TIME } from './config'
 import { Stats } from './stats'
 
@@ -143,7 +143,17 @@ export const generateMatch = async ({
 
         const { statsSelf, statsEnemy, attack } = trigger
         if (statsSelf) {
-          mySide.stats = sumStats(mySide.stats, statsSelf)
+          const newStats = sumStats(mySide.stats, statsSelf)
+          if (hasNegativeStats({ stats: newStats })) {
+            log({
+              ...action,
+              msg: 'Not enough',
+              targetSideIdx: mySide.sideIdx,
+              stats: statsSelf,
+            })
+            continue
+          }
+          mySide.stats = newStats
           log({
             ...action,
             stats: statsSelf,

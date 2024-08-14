@@ -55,7 +55,7 @@ export const MatchReportDisplay = ({
                 {statsAfter && (
                   <>
                     <ArrowRight className="size-3" />
-                    <StatsDisplay stats={statsAfter} size="sm" />
+                    <StatsDisplay stats={statsAfter} size="sm" showZero />
                   </>
                 )}
               </div>
