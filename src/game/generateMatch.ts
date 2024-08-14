@@ -102,8 +102,8 @@ export const generateMatch = async ({
       if (action.type === 'baseTick') {
         for (const side of sides) {
           const regenStats = {
-            health: side.stats.regen ?? 0,
-            stamina: side.stats.staminaRegen ?? 0,
+            health: side.stats.regen,
+            stamina: side.stats.staminaRegen,
           }
           side.stats = sumStats(side.stats, regenStats)
           log({
