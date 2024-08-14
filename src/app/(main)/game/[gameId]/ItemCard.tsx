@@ -70,8 +70,17 @@ export const ItemCard = async ({
               {!!shopItem?.isSold && (
                 <>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <div className="text-red-500 border-8 border-red-500 font-black px-8 py-4 text-3xl bg-black/80 -rotate-12">
+                    <div className="text-red-500 border-8 border-red-500 font-black px-4 py-2 text-3xl bg-black/80 -rotate-12">
                       SOLD
+                    </div>
+                  </div>
+                </>
+              )}
+              {!!shopItem?.isReserved && (
+                <>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <div className="text-green-500 border-8 border-green-500 font-black px-4 py-2 text-3xl bg-black/80 -rotate-12">
+                      RESERVED
                     </div>
                   </div>
                 </>
