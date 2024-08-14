@@ -12,19 +12,21 @@ export const MatchReportDisplay = ({
 }) => {
   return (
     <>
-      <div className="grid grid-cols-[auto,auto,auto,1fr,auto] border text-xs rounded">
+      <div className="grid grid-cols-[auto,auto,auto,1fr,auto] text-xs rounded-md overflow-hidden">
         {matchReport.logs.map((log, idx) => {
-          const cell = 'border px-2 py-0.5 flex flex-row items-center'
+          const cell = cn(
+            'px-2 py-0.5 flex flex-row items-center h-6',
+            log.sideIdx === 0 ? 'bg-blue-500/20' : 'bg-red-500/20',
+          )
           const hasStats = !!log.stats
           return (
             <Fragment key={idx}>
               <div className={cn(cell)}>{(log.time / 1000).toFixed(3)}</div>
               <div className={cn(cell, 'flex flex-row gap 1 items-center')}>
-                <div>{log.sideIdx}</div>
-                <>
+                {log.targetSideIdx === undefined ? null : log.sideIdx ===
+                  log.targetSideIdx ? null : (
                   <ArrowRight className="size-3" />
-                  <div>{log.targetSideIdx}</div>
-                </>
+                )}
               </div>
               {hasStats && (
                 <div className={cn(cell)}>
