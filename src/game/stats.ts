@@ -6,6 +6,7 @@ import {
   Coins,
   Crosshair,
   Heart,
+  HeartPulse,
   HelpCircle,
   Shield,
   Skull,
@@ -58,8 +59,8 @@ const heroStats = [
   },
   {
     name: 'regen',
-    icon: HelpCircle,
-    bgClass: 'bg-gray-500',
+    icon: HeartPulse,
+    bgClass: 'bg-red-500',
     tooltip: 'Regenerate X health per second.',
   },
   {

@@ -6,10 +6,10 @@ const allItems: ItemDefinition[] = [
     tags: ['hero'],
     price: 0,
     stats: {
-      health: 20,
+      health: 50,
       stamina: 5,
       staminaRegen: 1,
-      space: 5,
+      space: 8,
     },
   },
   {
@@ -24,7 +24,7 @@ const allItems: ItemDefinition[] = [
         type: 'interval',
         cooldown: 3_000,
         statsSelf: {
-          health: 3,
+          health: 6,
           stamina: 2,
         },
       },
@@ -45,7 +45,7 @@ const allItems: ItemDefinition[] = [
           stamina: -3,
         },
         attack: {
-          damage: 3,
+          damage: 6,
           accuracy: 70,
         },
       },
@@ -92,6 +92,15 @@ const allItems: ItemDefinition[] = [
         },
       },
     ],
+  },
+  {
+    name: 'healingHerbs',
+    tags: ['food'],
+    price: 4,
+    stats: {
+      space: -1,
+      regen: 2,
+    },
   },
 ]
 
