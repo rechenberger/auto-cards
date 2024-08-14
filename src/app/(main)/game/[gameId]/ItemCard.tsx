@@ -112,15 +112,13 @@ export const ItemCard = async ({
           )}
         </div>
         <div className="flex-1" />
-        <div className="text-center">
-          <div className="flex flex-col gap-4">
-            {item.stats && <StatsDisplay relative stats={item.stats} />}
-            {item.triggers?.map((trigger, idx) => (
-              <Fragment key={idx}>
-                <TriggerDisplay trigger={trigger} />
-              </Fragment>
-            ))}
-          </div>
+        <div className="flex flex-col items-center gap-2">
+          {item.stats && <StatsDisplay relative stats={item.stats} />}
+          {item.triggers?.map((trigger, idx) => (
+            <Fragment key={idx}>
+              <TriggerDisplay trigger={trigger} />
+            </Fragment>
+          ))}
         </div>
         <div className="flex-1" />
         <div>

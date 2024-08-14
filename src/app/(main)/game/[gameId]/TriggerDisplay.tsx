@@ -6,7 +6,7 @@ export const TriggerDisplay = ({ trigger }: { trigger: Trigger }) => {
   const seconds = `${trigger.cooldown / 1000}s`
   return (
     <>
-      <div className="p-2 border rounded-md flex flex-col gap-4">
+      <div className="px-2 py-1 bg-border rounded-md flex flex-col gap-2 items-center">
         <div>
           {trigger.type === 'interval'
             ? `Every ${seconds}`
@@ -16,7 +16,7 @@ export const TriggerDisplay = ({ trigger }: { trigger: Trigger }) => {
         </div>
         {trigger.statsSelf && (
           <div className="flex flex-row gap-2">
-            <div>Self:</div>
+            {/* <div>Self:</div> */}
             <StatsDisplay relative stats={trigger.statsSelf} />
           </div>
         )}
@@ -28,7 +28,7 @@ export const TriggerDisplay = ({ trigger }: { trigger: Trigger }) => {
         )}
         {trigger.attack && (
           <div className="flex flex-row gap-2">
-            <div>Attack:</div>
+            {/* <div>Attack:</div> */}
             <StatsDisplay stats={trigger.attack as any} />
           </div>
         )}
