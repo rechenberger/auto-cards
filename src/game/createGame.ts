@@ -6,7 +6,7 @@ import { sendDiscordMessage } from '@/lib/discord'
 import { typedParse } from '@/lib/typedParse'
 import { createId } from '@paralleldrive/cuid2'
 import { first } from 'lodash-es'
-import { GAME_DATA_VERSION } from './config'
+import { GAME_DATA_VERSION, STARTING_GOLD } from './config'
 import { generateShopItems } from './generateShopItems'
 
 export const createGame = async ({ userId }: { userId: string }) => {
@@ -17,9 +17,14 @@ export const createGame = async ({ userId }: { userId: string }) => {
     userId,
     data: typedParse(GameData, {
       version: GAME_DATA_VERSION,
+      gold: STARTING_GOLD,
       shopItems: [],
       currentLoadout: {
-        items: [],
+        items: [
+          {
+            name: 'hero',
+          },
+        ],
       },
     }),
     createdAt: new Date().toISOString(),
