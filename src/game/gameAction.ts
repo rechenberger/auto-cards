@@ -3,6 +3,7 @@ import { getGameFromDb } from '@/game/getGame'
 import { updateGame } from '@/game/updateGame'
 import { superAction } from '@/super-action/action/createSuperAction'
 import { streamRevalidatePath } from '@/super-action/action/streamRevalidatePath'
+import { cloneDeep } from 'lodash-es'
 
 type GameActionContext = {
   game: Game
@@ -18,7 +19,7 @@ export const gameAction = async ({
   action: GameAction
 }) => {
   return superAction(async () => {
-    const game = await getGameFromDb({ id: gameId })
+    const game = await getGameFromDb({ id: gameId }).then(cloneDeep)
     const ctx = { game }
     await action({ ctx })
     await updateGame({ game: ctx.game })

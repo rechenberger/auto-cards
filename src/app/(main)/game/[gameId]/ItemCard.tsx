@@ -4,10 +4,10 @@ import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
 import { gameAction } from '@/game/gameAction'
 import { cn } from '@/lib/utils'
-import { streamToast } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
 import { Lock, LockOpen } from 'lucide-react'
+import { BuyButton } from './BuyButton'
 
 export const ItemCard = async ({
   game,
@@ -18,13 +18,8 @@ export const ItemCard = async ({
   name: string
   shopItem?: Game['data']['shopItems'][number] & { idx: number }
 }) => {
-  const def = await getItemByName(name)
+  const item = await getItemByName(name)
   const title = capitalCase(name)
-
-  let price = def.price
-  if (shopItem?.isOnSale) {
-    price = Math.ceil(price * 0.5)
-  }
 
   return (
     <>
@@ -33,8 +28,8 @@ export const ItemCard = async ({
         {/* <AiImage
           prompt={`A beatiful but simple icon of ${title}. With a dark background.`}
         /> */}
-        <div className="opacity-60 text-sm">{def.tags?.join(',')}</div>
-        <SimpleDataCard data={[def.stats, ...(def.triggers ?? [])]} />
+        <div className="opacity-60 text-sm">{item.tags?.join(',')}</div>
+        <SimpleDataCard data={[item.stats, ...(item.triggers ?? [])]} />
         <div className="flex-1" />
         <div className="flex flex-row gap-2 justify-end items-center">
           {!!shopItem && (
@@ -64,42 +59,7 @@ export const ItemCard = async ({
                 </ActionButton>
               </label>
               <div className="flex-1" />
-              <ActionButton
-                hideIcon
-                catchToast
-                disabled={shopItem.isSold}
-                action={async () => {
-                  'use server'
-                  return gameAction({
-                    gameId: game.id,
-                    action: async ({ ctx }) => {
-                      const game = ctx.game
-                      if (game.data.gold < price) {
-                        throw new Error('Not enough gold')
-                      }
-                      game.data.gold -= price
-                      const s = game.data.shopItems[shopItem.idx]
-                      if (s.isSold) {
-                        throw new Error('Already sold')
-                      }
-                      s.isSold = true
-                      s.isReserved = false
-
-                      game.data.currentLoadout.items = [
-                        ...game.data.currentLoadout.items,
-                        { name },
-                      ]
-                      streamToast({
-                        title: 'Item sold',
-                        description: `You bought ${title} for ${price} gold`,
-                      })
-                    },
-                  })
-                }}
-              >
-                ${price}
-                {shopItem.isOnSale && ' (SALE)'}
-              </ActionButton>
+              <BuyButton game={game} shopItem={{ ...shopItem, item }} />
             </>
           )}
         </div>
