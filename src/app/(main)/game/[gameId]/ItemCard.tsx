@@ -129,7 +129,7 @@ export const ItemCard = async ({
         </HoverCardTrigger>
         <HoverCardContent>
           <div className="flex flex-col gap-4">
-            {item.stats && <StatsDisplay stats={item.stats} />}
+            {item.stats && <StatsDisplay relative stats={item.stats} />}
             {item.triggers && <SimpleDataCard data={item.triggers} />}
           </div>
         </HoverCardContent>
