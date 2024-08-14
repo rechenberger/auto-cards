@@ -4,6 +4,7 @@ import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
 import { gameAction } from '@/game/gameAction'
 import { cn } from '@/lib/utils'
+import { streamToast } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
 import { Lock, LockOpen } from 'lucide-react'
@@ -88,10 +89,10 @@ export const ItemCard = async ({
                         ...game.data.currentLoadout.items,
                         { name },
                       ]
-                      // streamToast({
-                      //   title: 'Item sold',
-                      //   description: `You bought ${title} for ${price} gold`,
-                      // })
+                      streamToast({
+                        title: 'Item sold',
+                        description: `You bought ${title} for ${price} gold`,
+                      })
                     },
                   })
                 }}

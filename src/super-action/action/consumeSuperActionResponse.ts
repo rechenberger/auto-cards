@@ -31,6 +31,15 @@ export const consumeSuperActionResponse = async <T>(options: {
       throw new Error(r.error.message)
     }
   }
+  if (r.action) {
+    const response = await r.action()
+    if (response && 'superAction' in response) {
+      await consumeSuperActionResponse({
+        ...options,
+        response: Promise.resolve(response.superAction),
+      })
+    }
+  }
   if (r.next) {
     return await consumeSuperActionResponse({ ...options, response: r.next })
   }

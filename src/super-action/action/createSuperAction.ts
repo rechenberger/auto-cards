@@ -37,6 +37,7 @@ export type SuperActionResponse<T> = {
   dialog?: SuperActionDialog
   error?: SuperActionError
   redirect?: SuperActionRedirect
+  action?: SuperAction
 }
 
 type SuperActionContext = {
@@ -108,4 +109,9 @@ export const streamToast = (toast: SuperActionToast) => {
 export const streamDialog = (dialog: SuperActionDialog) => {
   const ctx = serverContext.getOrThrow()
   ctx.chain({ dialog })
+}
+
+export const streamAction = (action: SuperAction) => {
+  const ctx = serverContext.getOrThrow()
+  ctx.chain({ action })
 }
