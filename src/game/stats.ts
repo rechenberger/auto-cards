@@ -8,6 +8,7 @@ import {
   Heart,
   HelpCircle,
   Shield,
+  Skull,
   Sword,
 } from 'lucide-react'
 import { z } from 'zod'
@@ -60,6 +61,12 @@ const heroStats = [
     icon: HelpCircle,
     bgClass: 'bg-gray-500',
     tooltip: 'Regenerate X health per second.',
+  },
+  {
+    name: 'poison',
+    icon: Skull,
+    bgClass: 'bg-green-500',
+    tooltip: 'Lose X health per second.',
   },
 ] as const
 

@@ -76,6 +76,23 @@ const allItems: ItemDefinition[] = [
       },
     ],
   },
+  {
+    name: 'flyAgaric',
+    tags: ['food'],
+    price: 3,
+    stats: {
+      space: -2,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 5_000,
+        statsEnemy: {
+          poison: 1,
+        },
+      },
+    ],
+  },
 ]
 
 export const getAllItems = async () => allItems

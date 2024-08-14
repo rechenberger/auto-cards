@@ -132,6 +132,20 @@ export const generateMatch = async ({
             targetSideIdx: side.sideIdx,
           })
 
+          // POISON
+          if (side.stats.poison) {
+            const poisonStats = {
+              health: -1 * side.stats.poison ?? 0,
+            }
+            side.stats = sumStats(side.stats, poisonStats)
+            log({
+              msg: 'Poison',
+              sideIdx: side.sideIdx,
+              stats: poisonStats,
+              targetSideIdx: side.sideIdx,
+            })
+          }
+
           // FATIGUE
           const fatigue = Math.max(
             1 + (time - FATIGUE_STARTS_AT) / BASE_TICK_TIME,
