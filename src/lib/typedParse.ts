@@ -3,7 +3,7 @@ import { z } from 'zod'
 export const typedParse = <Schema extends z.Schema>(
   schema: Schema,
   data: z.input<Schema>,
-) => {
+): z.infer<Schema> => {
   return schema.parse(data)
 }
 

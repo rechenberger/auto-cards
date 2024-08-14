@@ -18,6 +18,15 @@ export const getMyUserIdOrThrow = async () => {
   return userId
 }
 
+export const getMyUserIdOrLogin = async () => {
+  const userId = await getMyUserId()
+  if (!userId) {
+    await loginWithRedirect()
+    throw new Error('User not found')
+  }
+  return userId
+}
+
 export const getIsLoggedIn = async () => {
   const userId = await getMyUserId()
   return !!userId
