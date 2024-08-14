@@ -1,4 +1,3 @@
-import { game } from '@/db/schema'
 import { getAllItems } from '@/game/allItems'
 import { Fragment } from 'react'
 import { ItemCard } from '../game/[gameId]/ItemCard'
@@ -8,10 +7,10 @@ export default async function Page() {
 
   return (
     <>
-      <div className="grid grid-cols-5 gap-4">
+      <div className="flex flex-row flex-wrap gap-2 justify-center">
         {items.map((item, idx) => (
           <Fragment key={idx}>
-            <ItemCard name={item.name} />
+            <ItemCard name={item.name} size="240" />
           </Fragment>
         ))}
       </div>

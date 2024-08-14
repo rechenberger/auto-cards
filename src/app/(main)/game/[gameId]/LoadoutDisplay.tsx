@@ -8,7 +8,7 @@ export const LoadoutDisplay = async ({ game }: { game: Game }) => {
   const stats = await calcStats({ loadout: game.data.currentLoadout })
   return (
     <>
-      <div className="grid grid-cols-5 gap-4">
+      <div className="flex flex-row flex-wrap gap-2 justify-center">
         {game.data.currentLoadout.items.map((item, idx) => (
           <Fragment key={idx}>
             <ItemCard game={game} name={item.name} />

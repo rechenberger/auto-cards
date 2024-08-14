@@ -59,7 +59,7 @@ export const Shop = async ({ game }: { game: Game }) => {
           Re-Roll Shop (${priceToReroll})
         </ActionButton>
       </div>
-      <div className="grid grid-cols-5 gap-4">
+      <div className="flex flex-row flex-wrap gap-2 justify-center">
         {game.data.shopItems.map((shopItem, idx) => (
           <Fragment key={idx}>
             <ItemCard
