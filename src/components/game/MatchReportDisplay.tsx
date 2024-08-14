@@ -16,7 +16,7 @@ export const MatchReportDisplay = ({
       <div className="grid grid-cols-[auto,auto,auto,1fr,auto,auto] text-xs rounded-md overflow-hidden">
         {matchReport.logs.map((log, idx) => {
           const cell = cn(
-            'px-2 py-0.5 flex flex-row items-center h-7',
+            'px-2 py-0.5 flex flex-row items-center h-8',
             log.sideIdx === 0 ? 'bg-blue-500/20' : 'bg-red-500/20',
           )
           const hasStats = !!log.stats
