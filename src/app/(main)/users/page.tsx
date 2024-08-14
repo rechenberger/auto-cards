@@ -136,9 +136,7 @@ export default async function Page() {
                         })
                       }}
                       command={{
-                        label: `${isAdmin ? 'Remove' : 'Make'} admin: ${
-                          user.email
-                        }`,
+                        label: `Delete user: ${user.email}`,
                       }}
                     >
                       Delete

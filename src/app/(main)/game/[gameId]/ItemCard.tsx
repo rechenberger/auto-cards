@@ -3,12 +3,14 @@ import { Card } from '@/components/ui/card'
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
 import { updateGame } from '@/game/updateGame'
+import { cn } from '@/lib/utils'
 import {
   streamToast,
   superAction,
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
+import { Lock, LockOpen } from 'lucide-react'
 import { revalidatePath } from 'next/cache'
 
 export const ItemCard = async ({
@@ -38,9 +40,35 @@ export const ItemCard = async ({
         <div className="opacity-60 text-sm">{def.tags?.join(',')}</div>
         <SimpleDataCard data={[def.stats, ...(def.triggers ?? [])]} />
         <div className="flex-1" />
-        <div className="flex flex-row gap-2 justify-end">
+        <div className="flex flex-row gap-2 justify-end items-center">
           {!!shopItem && (
             <>
+              <label className="flex flex-row gap-1">
+                <ActionButton
+                  variant={'ghost'}
+                  size={'icon'}
+                  className={cn(shopItem.isReserved && 'text-primary')}
+                  hideIcon
+                  action={async () => {
+                    'use server'
+                    return superAction(async () => {
+                      const s = game.data.shopItems[shopItem.idx]
+                      s.isReserved = !s.isReserved
+                      await updateGame({
+                        game,
+                      })
+                      revalidatePath('/', 'layout')
+                    })
+                  }}
+                >
+                  {shopItem.isReserved ? (
+                    <Lock className="size-4" />
+                  ) : (
+                    <LockOpen className="size-4" />
+                  )}
+                </ActionButton>
+              </label>
+              <div className="flex-1" />
               <ActionButton
                 hideIcon
                 catchToast
