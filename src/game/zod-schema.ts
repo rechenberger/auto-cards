@@ -30,6 +30,7 @@ export const Trigger = z.object({
   statsEnemy: Stats.optional(),
   attack: Attack.optional(),
 })
+export type Trigger = z.infer<typeof Trigger>
 
 export const ItemTag = z.enum(['hero', 'weapon', 'food', 'bag', 'shield'])
 

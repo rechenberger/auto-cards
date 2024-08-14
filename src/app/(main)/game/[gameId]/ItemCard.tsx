@@ -1,5 +1,4 @@
 import { AiImage } from '@/components/ai/AiImage'
-import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import {
   HoverCard,
   HoverCardContent,
@@ -12,8 +11,10 @@ import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
 import { Lock, LockOpen } from 'lucide-react'
+import { Fragment } from 'react'
 import { BuyButton } from './BuyButton'
 import { StatsDisplay } from './StatsDisplay'
+import { TriggerDisplay } from './TriggerDisplay'
 
 export const ItemCard = async ({
   game,
@@ -130,7 +131,11 @@ export const ItemCard = async ({
         <HoverCardContent>
           <div className="flex flex-col gap-4">
             {item.stats && <StatsDisplay relative stats={item.stats} />}
-            {item.triggers && <SimpleDataCard data={item.triggers} />}
+            {item.triggers?.map((trigger, idx) => (
+              <Fragment key={idx}>
+                <TriggerDisplay trigger={trigger} />
+              </Fragment>
+            ))}
           </div>
         </HoverCardContent>
       </HoverCard>
