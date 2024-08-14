@@ -1,4 +1,5 @@
 import { Game } from '@/db/schema-zod'
+import { generateShopItems } from '@/game/generateShopItems'
 import { updateGame } from '@/game/updateGame'
 import { superAction } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
@@ -7,6 +8,7 @@ import { Fragment } from 'react'
 import { ItemCard } from './ItemCard'
 
 export const Shop = ({ game }: { game: Game }) => {
+  const priceToReroll = 1 // TODO: make this dynamic
   return (
     <>
       <div className="grid grid-cols-5 gap-4">
@@ -35,6 +37,25 @@ export const Shop = ({ game }: { game: Game }) => {
           }}
         >
           +${10}
+        </ActionButton>
+        <ActionButton
+          action={async () => {
+            'use server'
+            return superAction(async () => {
+              game.data.shopRerolls += 1
+              if (game.data.gold < priceToReroll) {
+                throw new Error('not enough gold')
+              }
+              game.data.gold -= priceToReroll
+              game.data.shopItems = await generateShopItems({ game })
+              await updateGame({
+                game,
+              })
+              revalidatePath('/', 'layout')
+            })
+          }}
+        >
+          reroll (${priceToReroll})
         </ActionButton>
       </div>
     </>

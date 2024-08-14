@@ -8,6 +8,8 @@ export const generateShopItems = async ({ game }: { game: Game }) => {
   const allItems = await getAllItems()
   const itemsForSale = allItems.filter((item) => !!item.price)
 
+  const shopSeed = [game.data.seed, game.data.shopRerolls]
+
   const shopItems: GameData['shopItems'] = range(NO_OF_SHOP_ITEMS).map(
     (idx) => {
       const oldItem = game.data.shopItems[idx]
@@ -15,14 +17,16 @@ export const generateShopItems = async ({ game }: { game: Game }) => {
         return oldItem
       }
 
+      const itemSeed = [...shopSeed, 'shopItem', idx]
+
       const item = rngItem({
-        seed: [game.data.seed, 'shopItem', idx],
+        seed: itemSeed,
         items: itemsForSale,
       })
 
       const isOnSale =
         rngFloat({
-          seed: [game.data.seed, 'shopItem', idx, 'isOnSale'],
+          seed: [...itemSeed, 'isOnSale'],
         }) < SALE_CHANCE
 
       return {
