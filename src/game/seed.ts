@@ -1,15 +1,19 @@
 import { randomBytes } from 'crypto'
 import { isArray } from 'lodash-es'
+import hash from 'object-hash'
 import seedrandom from 'seedrandom'
 
 export const createSeed = () => {
   return randomBytes(16).toString('base64')
 }
 
-type RngSeed = string | (string | number)[]
+export type SeedArray = (string | number | object)[]
+export type Seed = string | SeedArray
 
-export const rng = ({ seed }: { seed: RngSeed }) => {
-  const seedString = isArray(seed) ? seed.join('~') : seed
+export const rng = ({ seed }: { seed: Seed }) => {
+  const seedString = isArray(seed)
+    ? seed.map((s) => (typeof s === 'object' ? hash(s) : 0)).join('~')
+    : seed
   const generator = seedrandom(seedString)
   return generator()
 }
@@ -19,7 +23,7 @@ export const rngFloat = ({
   min = 0,
   max = 1,
 }: {
-  seed: RngSeed
+  seed: Seed
   min?: number
   max?: number
 }) => {
@@ -32,7 +36,7 @@ export const rngInt = ({
   min = 0,
   max,
 }: {
-  seed: RngSeed
+  seed: Seed
   min?: number
   max: number
 }) => {
@@ -44,7 +48,7 @@ export const rngItem = <T>({
   seed,
   items,
 }: {
-  seed: RngSeed
+  seed: Seed
   items: readonly T[]
 }): T => {
   const idx = rngInt({ seed, max: items.length - 1 })
@@ -56,7 +60,7 @@ export const rngItems = <T>({
   items,
   count,
 }: {
-  seed: RngSeed
+  seed: Seed
   items: T[]
   count: number
 }): T[] => {
@@ -74,7 +78,7 @@ const rngItemWithWeightsRaw = <T>({
   seed,
   items,
 }: {
-  seed: RngSeed
+  seed: Seed
   items: { item: T; weight: number }[]
 }) => {
   const totalWeight = items.reduce((acc, item) => acc + item.weight, 0)
@@ -93,7 +97,7 @@ export const rngItemWithWeights = <T>({
   seed,
   items,
 }: {
-  seed: RngSeed
+  seed: Seed
   items: { item: T; weight: number }[]
 }): T => {
   return rngItemWithWeightsRaw({ seed, items }).item
@@ -104,7 +108,7 @@ export const rngItemsWithWeights = <T>({
   items,
   count,
 }: {
-  seed: RngSeed
+  seed: Seed
   items: { item: T; weight: number }[]
   count: number
 }): T[] => {
