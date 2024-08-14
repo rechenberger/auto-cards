@@ -93,7 +93,9 @@ export const ItemCard = async ({
                         <ActionButton
                           variant={'secondary'}
                           size={'icon'}
-                          className={cn(shopItem.isReserved && 'text-primary')}
+                          className={cn(
+                            shopItem.isReserved && 'text-green-500',
+                          )}
                           hideIcon
                           action={async () => {
                             'use server'
@@ -107,9 +109,9 @@ export const ItemCard = async ({
                           }}
                         >
                           {shopItem.isReserved ? (
-                            <Lock className="size-4" />
+                            <Lock className="size-4" strokeWidth={3} />
                           ) : (
-                            <LockOpen className="size-4" />
+                            <LockOpen className="size-4" strokeWidth={3} />
                           )}
                         </ActionButton>
                       </label>
