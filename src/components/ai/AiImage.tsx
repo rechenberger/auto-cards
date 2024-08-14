@@ -1,18 +1,31 @@
 import { fetchTeampilot } from '@teampilot/sdk'
 import { first } from 'lodash-es'
 import { Suspense } from 'react'
+import { Skeleton } from '../ui/skeleton'
 
-export const AiImage = (props: { prompt: string; className?: string }) => {
+export const AiImage = ({
+  prompt,
+  className = 'aspect-square',
+}: {
+  prompt: string
+  className?: string
+}) => {
   return (
     <>
-      <Suspense fallback={`Loading ${props.prompt}`}>
-        <AiImageRaw {...props} />
+      <Suspense fallback={<Skeleton className={className} />}>
+        <AiImageRaw prompt={prompt} className={className} />
       </Suspense>
     </>
   )
 }
 
-export const AiImageRaw = async ({ prompt }: { prompt: string }) => {
+export const AiImageRaw = async ({
+  prompt,
+  className,
+}: {
+  prompt: string
+  className?: string
+}) => {
   const response = await fetchTeampilot({
     message: `Generate an image: ${prompt}`,
     launchpadSlugId: process.env.LAUNCHPAD_IMAGES,
@@ -23,7 +36,7 @@ export const AiImageRaw = async ({ prompt }: { prompt: string }) => {
   }
   return (
     <>
-      <img src={media.url} alt={prompt} />
+      <img src={media.url} alt={prompt} className={className} />
     </>
   )
 }
