@@ -3,6 +3,7 @@ import {
   Backpack,
   Banana,
   Carrot,
+  Coins,
   Crosshair,
   Heart,
   HelpCircle,
@@ -77,7 +78,20 @@ const attackStats = [
   },
 ] as const
 
-export const allStatsDefinition = [...heroStats, ...attackStats] as const
+const otherStats = [
+  {
+    name: 'gold',
+    icon: Coins,
+    bgClass: 'bg-yellow-500',
+    tooltip: 'Money to buy stuff.',
+  },
+] as const
+
+export const allStatsDefinition = [
+  ...heroStats,
+  ...attackStats,
+  ...otherStats,
+] as const
 
 export const getStatDefinition = (stat: Stat) => {
   const def = allStatsDefinition.find((b) => b.name === stat)

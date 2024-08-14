@@ -6,7 +6,7 @@ import { ActionButton } from '@/super-action/button/ActionButton'
 import { RotateCw } from 'lucide-react'
 import { Fragment } from 'react'
 import { ItemCard } from './ItemCard'
-import { StatDisplay } from './StatDisplay'
+import { StatsDisplay } from './StatsDisplay'
 
 export const Shop = async ({ game }: { game: Game }) => {
   const priceToReroll = 1 // TODO: make this dynamic
@@ -14,7 +14,7 @@ export const Shop = async ({ game }: { game: Game }) => {
   return (
     <>
       <div className="flex flex-row gap-2 justify-center items-center">
-        <StatDisplay label="gold" value={game.data.gold} />
+        <StatsDisplay stats={{ gold: game.data.gold }} showZero />
         <div className="flex-1" />
         {isAdmin && (
           <ActionButton

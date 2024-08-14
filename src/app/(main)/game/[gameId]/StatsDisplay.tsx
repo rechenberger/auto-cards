@@ -11,16 +11,18 @@ import { CardTooltip } from './CardTooltip'
 export const StatsDisplay = ({
   stats,
   relative,
+  showZero,
 }: {
   stats: Stats
   relative?: boolean
+  showZero?: boolean
 }) => {
   return (
     <>
       <div className="flex flex-row gap-2 justify-center">
         {allStatsDefinition.map((stat) => {
           const value = stats[stat.name]
-          if (!value) return null
+          if (showZero ? value === undefined : !value) return null
 
           return (
             <Fragment key={stat.name}>
