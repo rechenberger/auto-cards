@@ -21,7 +21,7 @@ export const StatsDisplay = ({
 }) => {
   return (
     <>
-      <div className="flex flex-row gap-2 justify-center">
+      <div className="flex flex-row gap-2 justify-center dark text-white">
         {allStatsDefinition.map((stat) => {
           const value = stats[stat.name]
           if (showZero ? value === undefined : !value) return null
