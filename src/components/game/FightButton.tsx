@@ -29,7 +29,7 @@ export const FightButton = ({ game }: { game: Game }) => {
             streamDialog({
               title: 'Match report',
               content: (
-                <div className="overflow-auto max-h-96">
+                <div className="overflow-auto max-h-[calc(100vh-240px)]">
                   <MatchReportDisplay matchReport={matchReport} />
                 </div>
               ),

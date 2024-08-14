@@ -31,7 +31,9 @@ export const MatchReportDisplay = ({
 
           return (
             <Fragment key={idx}>
-              <div className={cn(cell)}>{(log.time / 1000).toFixed(3)}</div>
+              <div className={cn(cell, 'justify-end')}>
+                {(log.time / 1000).toFixed(1)}s
+              </div>
               <div className={cn(cell, 'flex flex-row gap 1 items-center')}>
                 {log.targetSideIdx !== undefined &&
                   log.sideIdx !== log.targetSideIdx && (
