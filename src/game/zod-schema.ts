@@ -12,6 +12,7 @@ export const Stats = z.object({
   space: z.number().optional(),
   haste: z.number().optional(),
 })
+export type Stats = z.infer<typeof Stats>
 
 export const Attack = z.object({
   damage: z.number().optional(),
