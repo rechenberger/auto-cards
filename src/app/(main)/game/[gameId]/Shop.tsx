@@ -1,45 +1,44 @@
+import { getIsAdmin } from '@/auth/getIsAdmin'
 import { Game } from '@/db/schema-zod'
 import { gameAction } from '@/game/gameAction'
 import { generateShopItems } from '@/game/generateShopItems'
 import { ActionButton } from '@/super-action/button/ActionButton'
+import { RotateCw } from 'lucide-react'
 import { Fragment } from 'react'
 import { ItemCard } from './ItemCard'
+import { StatDisplay } from './StatDisplay'
 
-export const Shop = ({ game }: { game: Game }) => {
+export const Shop = async ({ game }: { game: Game }) => {
   const priceToReroll = 1 // TODO: make this dynamic
+  const isAdmin = await getIsAdmin({ allowDev: true })
   return (
     <>
-      <div className="grid grid-cols-5 gap-4">
-        {game.data.shopItems.map((shopItem, idx) => (
-          <Fragment key={idx}>
-            <ItemCard
-              game={game}
-              name={shopItem.name}
-              shopItem={{ ...shopItem, idx }}
-            />
-          </Fragment>
-        ))}
-      </div>
       <div className="flex flex-row gap-2 justify-center items-center">
-        <div>${game.data.gold}</div>
+        <StatDisplay label="gold" value={game.data.gold} />
+        <div className="flex-1" />
+        {isAdmin && (
+          <ActionButton
+            catchToast
+            hideIcon
+            hideButton
+            command={{}}
+            action={async () => {
+              'use server'
+              return gameAction({
+                gameId: game.id,
+                action: async ({ ctx }) => {
+                  ctx.game.data.gold += 10
+                },
+              })
+            }}
+          >
+            +${10}
+          </ActionButton>
+        )}
         <ActionButton
           catchToast
           hideIcon
-          action={async () => {
-            'use server'
-            return gameAction({
-              gameId: game.id,
-              action: async ({ ctx }) => {
-                ctx.game.data.gold += 10
-              },
-            })
-          }}
-        >
-          +${10}
-        </ActionButton>
-        <ActionButton
-          catchToast
-          hideIcon
+          variant={'outline'}
           action={async () => {
             'use server'
             return gameAction({
@@ -56,8 +55,20 @@ export const Shop = ({ game }: { game: Game }) => {
             })
           }}
         >
-          reroll (${priceToReroll})
+          <RotateCw className="size-4 mr-2" />
+          Re-Roll Shop (${priceToReroll})
         </ActionButton>
+      </div>
+      <div className="grid grid-cols-5 gap-4">
+        {game.data.shopItems.map((shopItem, idx) => (
+          <Fragment key={idx}>
+            <ItemCard
+              game={game}
+              name={shopItem.name}
+              shopItem={{ ...shopItem, idx }}
+            />
+          </Fragment>
+        ))}
       </div>
     </>
   )
