@@ -1,5 +1,6 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { getMyUserIdOrLogin } from '@/auth/getMyUser'
+import { ItemCard } from '@/components/game/ItemCard'
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import { Button } from '@/components/ui/button'
 import {
@@ -54,17 +55,29 @@ export default async function Page() {
       <div className="grid lg:grid-cols-3 gap-4">
         {games.map((game) => (
           <Fragment key={game.id}>
-            <Card>
+            <Card className="flex flex-col">
               <CardHeader>
                 <CardTitle>Game</CardTitle>
                 <CardDescription>{game.id}</CardDescription>
               </CardHeader>
-              <CardContent className="flex flex-col gap-4">
+              <CardContent className="flex-1 flex flex-col gap-4">
                 <SimpleDataCard
                   data={{
-                    ...game.data,
+                    roundNo: game.data.roundNo,
                   }}
                 />
+                <div className="flex flex-row flex-wrap gap-1">
+                  {game.data.currentLoadout.items.map((item, idx) => {
+                    return (
+                      <Fragment key={idx}>
+                        <div className="relative">
+                          <ItemCard name={item.name} size={'80'} />
+                        </div>
+                      </Fragment>
+                    )
+                  })}
+                </div>
+                <div className="flex-1" />
                 <div className="flex flex-row justify-end gap-2">
                   {game.userId === userId && (
                     <ActionButton
