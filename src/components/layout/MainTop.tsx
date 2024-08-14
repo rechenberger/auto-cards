@@ -15,11 +15,16 @@ export const MainTop = async () => {
     {
       name: 'Home',
       href: '/',
+      hidden: isLoggedIn,
     },
     {
-      name: 'Me',
-      href: '/auth/me',
+      name: 'Game',
+      href: '/game',
       hidden: !isLoggedIn,
+    },
+    {
+      name: 'Items',
+      href: '/items',
     },
     {
       name: 'Users',

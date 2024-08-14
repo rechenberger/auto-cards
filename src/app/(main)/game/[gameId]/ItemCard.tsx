@@ -1,3 +1,4 @@
+import { AiImage } from '@/components/ai/AiImage'
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import { Card } from '@/components/ui/card'
 import { Game } from '@/db/schema-zod'
@@ -14,7 +15,7 @@ export const ItemCard = async ({
   name,
   shopItem,
 }: {
-  game: Game
+  game?: Game
   name: string
   shopItem?: Game['data']['shopItems'][number] & { idx: number }
 }) => {
@@ -25,14 +26,14 @@ export const ItemCard = async ({
     <>
       <Card className="p-4 flex flex-col gap-2">
         <h2>{title}</h2>
-        {/* <AiImage
-          prompt={`A beatiful but simple icon of ${title}. With a dark background.`}
-        /> */}
+        <AiImage
+          prompt={`Cartoony cozy Image of ${title}. Background is a sunny track trough the mountains or woods whatever fits.`}
+        />
         <div className="opacity-60 text-sm">{item.tags?.join(',')}</div>
         <SimpleDataCard data={[item.stats, ...(item.triggers ?? [])]} />
         <div className="flex-1" />
         <div className="flex flex-row gap-2 justify-end items-center">
-          {!!shopItem && (
+          {!!game && !!shopItem && (
             <>
               <label className="flex flex-row gap-1">
                 <ActionButton
