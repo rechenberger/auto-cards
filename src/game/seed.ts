@@ -11,9 +11,7 @@ export type SeedArray = (string | number | object)[]
 export type Seed = string | SeedArray
 
 export const rng = ({ seed }: { seed: Seed }) => {
-  const seedString = isArray(seed)
-    ? seed.map((s) => (typeof s === 'object' ? hash(s) : s)).join('~')
-    : seed
+  const seedString = seedToString({ seed })
   const generator = seedrandom(seedString)
   return generator()
 }
@@ -120,4 +118,12 @@ export const rngItemsWithWeights = <T>({
     results.push(item.item)
   }
   return results
+}
+
+export const seedToString = ({ seed }: { seed: Seed }) => {
+  const seedString = isArray(seed)
+    ? seed.map((s) => (typeof s === 'object' ? hash(s) : s)).join('~')
+    : seed
+
+  return seedString
 }
