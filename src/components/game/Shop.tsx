@@ -5,6 +5,7 @@ import { generateShopItems } from '@/game/generateShopItems'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { RotateCw } from 'lucide-react'
 import { Fragment } from 'react'
+import { CardRow } from './CardRow'
 import { ItemCard } from './ItemCard'
 import { StatsDisplay } from './StatsDisplay'
 
@@ -59,16 +60,18 @@ export const Shop = async ({ game }: { game: Game }) => {
           Re-Roll Shop (${priceToReroll})
         </ActionButton>
       </div>
-      <div className="flex flex-row flex-wrap gap-2 justify-center">
-        {game.data.shopItems.map((shopItem, idx) => (
-          <Fragment key={idx}>
-            <ItemCard
-              game={game}
-              name={shopItem.name}
-              shopItem={{ ...shopItem, idx }}
-            />
-          </Fragment>
-        ))}
+      <div className="self-center max-w-full">
+        <CardRow>
+          {game.data.shopItems.map((shopItem, idx) => (
+            <Fragment key={idx}>
+              <ItemCard
+                game={game}
+                name={shopItem.name}
+                shopItem={{ ...shopItem, idx }}
+              />
+            </Fragment>
+          ))}
+        </CardRow>
       </div>
     </>
   )

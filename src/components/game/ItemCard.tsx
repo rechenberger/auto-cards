@@ -37,6 +37,7 @@ export const ItemCard = async ({
       <div
         className={cn(
           'dark',
+          'shrink-0',
           'rounded-xl',
           'w-[320px] h-[500px]',
           'p-2',
