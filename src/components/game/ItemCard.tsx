@@ -47,7 +47,7 @@ export const ItemCard = async ({
           'bg-[#313130] text-white',
           'shadow-lg',
           'relative',
-          'flex flex-col gap-2',
+          'flex flex-col gap-1',
           // 'overflow-hidden',
           'group',
           size === '80' && 'scale-[25%] -mx-[120px] -my-[187.5px]',
@@ -133,8 +133,9 @@ export const ItemCard = async ({
         </div>
         <div
           className={cn(
-            'flex-1 flex flex-col justify-center rounded-b-md p-1',
+            'flex-1 flex flex-col justify-center rounded-md p-1',
             tag.bgClass,
+            tag.bgClass && 'border-2 border-black',
           )}
         >
           <div className="flex-1" />
