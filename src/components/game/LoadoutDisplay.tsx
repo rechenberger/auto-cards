@@ -26,7 +26,7 @@ export const LoadoutDisplay = async ({ game }: { game: Game }) => {
         <HandDisplay>
           {map(itemsGrouped, (count, itemName) => (
             <Fragment key={itemName}>
-              <ItemCard game={game} name={itemName} count={count} />
+              <ItemCard game={game} name={itemName} count={count} size="240" />
             </Fragment>
           ))}
         </HandDisplay>

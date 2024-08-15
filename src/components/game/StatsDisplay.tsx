@@ -29,7 +29,7 @@ export const StatsDisplay = ({
           return (
             <Fragment key={stat.name}>
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger className="cursor-help">
                   <div
                     className={cn(
                       'rounded-full border px-1 py-0.5 flex flex-row items-center',

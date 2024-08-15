@@ -52,6 +52,7 @@ export const ItemCard = async ({
           size === '200' && 'scale-[62.5%] -mx-[60px] -my-[93.75px]', // (500-500/1.6)/2 = 93.75
           size === '240' && 'scale-[75%] -mx-[40px] -my-[62.5px]', // (500-500*0,75)/2 = 62.5
           size === '480' && 'lg:scale-[150%] lg:mx-[80px] lg:my-[125px]', // (500-500*1,5)/2 = 15
+          'select-none',
           className,
         )}
       >
