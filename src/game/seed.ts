@@ -148,7 +148,11 @@ export const rngOrder = <T>({
   seed: Seed
   items: T[]
 }): T[] => {
-  // TODO: optimize this, it currently takes 30% of the match gen time
+  // tiny optimizations for n<=2
+  if (items.length < 2) return items
+  if (items.length === 2) {
+    return rng({ seed }) < 0.5 ? [items[0], items[1]] : [items[1], items[0]]
+  }
 
   const itemsWithRng = items.map((item, idx) => ({
     item,
@@ -157,6 +161,7 @@ export const rngOrder = <T>({
   const ordered = orderBy(itemsWithRng, 'rng', 'asc')
   return ordered.map((item) => item.item)
 
+  // Why no work?
   // return orderBy(
   //   items,
   //   (item, idx) => rngFloat({ seed: [seedToString({ seed }), idx] }),
