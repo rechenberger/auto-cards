@@ -2,6 +2,7 @@ import { getIsAdmin } from '@/auth/getIsAdmin'
 import { Game } from '@/db/schema-zod'
 import { gameAction } from '@/game/gameAction'
 import { generateShopItems } from '@/game/generateShopItems'
+import { orderItems } from '@/game/orderItems'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { RotateCw } from 'lucide-react'
 import { Fragment } from 'react'
@@ -12,6 +13,13 @@ import { StatsDisplay } from './StatsDisplay'
 export const Shop = async ({ game }: { game: Game }) => {
   const priceToReroll = 1 // TODO: make this dynamic
   const isAdmin = await getIsAdmin({ allowDev: true })
+
+  let shopItems = game.data.shopItems.map((shopItem, idx) => ({
+    ...shopItem,
+    idx,
+  }))
+  shopItems = await orderItems(shopItems)
+
   return (
     <>
       <div className="flex flex-row gap-2 justify-center items-center">
@@ -62,13 +70,9 @@ export const Shop = async ({ game }: { game: Game }) => {
       </div>
       <div className="self-center max-w-full">
         <CardRow>
-          {game.data.shopItems.map((shopItem, idx) => (
-            <Fragment key={idx}>
-              <ItemCard
-                game={game}
-                name={shopItem.name}
-                shopItem={{ ...shopItem, idx }}
-              />
+          {shopItems.map((shopItem) => (
+            <Fragment key={shopItem.idx}>
+              <ItemCard game={game} name={shopItem.name} shopItem={shopItem} />
             </Fragment>
           ))}
         </CardRow>

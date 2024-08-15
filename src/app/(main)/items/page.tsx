@@ -1,5 +1,6 @@
 import { ItemCard } from '@/components/game/ItemCard'
 import { getAllItems } from '@/game/allItems'
+import { orderItems } from '@/game/orderItems'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
 
@@ -8,7 +9,8 @@ export const metadata: Metadata = {
 }
 
 export default async function Page() {
-  const items = await getAllItems()
+  let items = await getAllItems()
+  items = await orderItems(items)
 
   return (
     <>
