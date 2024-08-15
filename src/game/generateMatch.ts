@@ -251,6 +251,7 @@ export const generateMatch = async ({
                 msg: `Thorns`,
                 targetSideIdx: mySide.sideIdx,
                 stats: thornsStats,
+                itemIdx: undefined,
               })
             }
           } else {
