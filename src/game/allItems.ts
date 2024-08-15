@@ -1,6 +1,6 @@
 import { ItemDefinition } from './zod-schema'
 
-const allItems = [
+const allItemsConst = [
   {
     name: 'hero',
     tags: ['hero'],
@@ -131,7 +131,8 @@ const allItems = [
   },
 ] as const satisfies ItemDefinition[]
 
-export type ItemName = (typeof allItems)[number]['name']
+export type ItemName = (typeof allItemsConst)[number]['name']
+const allItems: ItemDefinition[] = allItemsConst
 
 export const getAllItems = async () => allItems
 export const getItemByName = async (name: string) => {

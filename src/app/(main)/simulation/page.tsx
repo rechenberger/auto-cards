@@ -31,12 +31,14 @@ export default async function Page() {
   const noOfMatches = NO_OF_BOTS * noOfMatchesPerBot
   console.log(`Simulating ${noOfMatches} matches`)
 
+  console.time('generateBotsWithItems')
   const bots = await generateBotsWithItems({
     noOfBots: NO_OF_BOTS,
     simulationSeed,
     // startingItems: ['woodenSword'],
     // startingGold: 30,
   })
+  console.timeEnd('generateBotsWithItems')
 
   const now = Date.now()
   console.time('simulateBotMatches')
