@@ -2,7 +2,7 @@ import { StatsDisplay } from '@/components/game/StatsDisplay'
 import { calcStats } from '@/game/calcStats'
 import { generateMatch } from '@/game/generateMatch'
 import { SeedArray } from '@/game/seed'
-import { sumBy } from 'lodash-es'
+import { flatten, range, sumBy } from 'lodash-es'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
 import { generateBotsWithItems } from './generateBotsWithItems'
@@ -27,17 +27,23 @@ export default async function Page() {
 
       const matches = await Promise.all(
         others.map(async (other) => {
-          const matchReport = await generateMatch({
-            participants: [
-              { loadout: bot.game.data.currentLoadout },
-              { loadout: other.game.data.currentLoadout },
-            ],
-            seed: [...bot.seed, 'match', other.name],
-          })
+          const matchesPerOpponent = 5
 
-          return matchReport
+          return await Promise.all(
+            range(matchesPerOpponent).map(async (matchIdx) => {
+              const matchReport = await generateMatch({
+                participants: [
+                  { loadout: bot.game.data.currentLoadout },
+                  { loadout: other.game.data.currentLoadout },
+                ],
+                seed: [...bot.seed, 'match', matchIdx, other.name],
+              })
+
+              return matchReport
+            }),
+          )
         }),
-      )
+      ).then(flatten)
 
       const wins = sumBy(matches, (m) => (m.winner.sideIdx === 1 ? 1 : 0))
       const winRate = wins / matches.length
@@ -65,7 +71,9 @@ export default async function Page() {
                 ),
               )}
             </div>
-            <div>{Math.round(bot.winRate * 100)}%</div>
+            <div>
+              {bot.wins} ({Math.round(bot.winRate * 100)}%)
+            </div>
           </Fragment>
         ))}
       </div>
