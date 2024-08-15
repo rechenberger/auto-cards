@@ -1,3 +1,4 @@
+import { throwIfNotAdmin } from '@/auth/getIsAdmin'
 import { StatsDisplay } from '@/components/game/StatsDisplay'
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import {
@@ -28,6 +29,8 @@ const startingGold = 10
 const startingItems: ItemName[] = ['hero']
 
 export default async function Page() {
+  await throwIfNotAdmin({ allowDev: true })
+
   const noOfMatchesPerBot = (NO_OF_BOTS - 1) * NO_OF_MATCHES
   const noOfMatches = NO_OF_BOTS * noOfMatchesPerBot
   console.log(`Simulating ${noOfMatches} matches`)
