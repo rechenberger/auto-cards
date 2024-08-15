@@ -1,5 +1,5 @@
-import { randomBytes } from 'crypto'
-import { isArray } from 'lodash-es'
+import { createHash, randomBytes } from 'crypto'
+import { isArray, orderBy } from 'lodash-es'
 import hash from 'object-hash'
 import seedrandom from 'seedrandom'
 
@@ -10,10 +10,23 @@ export const createSeed = () => {
 export type SeedArray = (string | number | object)[]
 export type Seed = string | SeedArray
 
+const RNG_WITH_CRYPTO = false
+
 export const rng = ({ seed }: { seed: Seed }) => {
   const seedString = seedToString({ seed })
-  const generator = seedrandom(seedString)
-  return generator()
+
+  if (RNG_WITH_CRYPTO) {
+    // FROM: https://teampilot.ai/team/tristan/chat/621f61f01d1c2559a7bb75a1ecbe4b4f
+    const hash = createHash('sha256').update(seedString).digest('hex')
+    const hexSubstring = hash.substring(0, 8)
+    const numericValue = parseInt(hexSubstring, 16)
+    // Normalize the numeric value to a float between 0 and 1
+    const floatValue = numericValue / 0xffffffff
+    return floatValue
+  } else {
+    const generator = seedrandom(seedString)
+    return generator()
+  }
 }
 
 export const rngFloat = ({
@@ -126,4 +139,25 @@ export const seedToString = ({ seed }: { seed: Seed }) => {
     : seed
 
   return seedString
+}
+
+export const rngOrder = <T>({
+  seed,
+  items,
+}: {
+  seed: Seed
+  items: T[]
+}): T[] => {
+  const itemsWithRng = items.map((item, idx) => ({
+    item,
+    rng: rngFloat({ seed: [seedToString({ seed }), idx] }),
+  }))
+  const ordered = orderBy(itemsWithRng, 'rng', 'asc')
+  return ordered.map((item) => item.item)
+
+  // return orderBy(
+  //   items,
+  //   (item, idx) => rngFloat({ seed: [seedToString({ seed }), idx] }),
+  //   'asc',
+  // )
 }

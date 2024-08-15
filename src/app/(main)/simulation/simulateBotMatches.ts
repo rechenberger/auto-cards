@@ -25,19 +25,28 @@ export const simulateBotMatches = async ({
                 seed: [...bot.seed, 'match', matchIdx, other.name],
               })
 
-              return matchReport
+              const isDraw =
+                matchReport.winner.stats.health ===
+                matchReport.loser.stats.health
+
+              return { ...matchReport, isDraw }
             }),
           )
         }),
       ).then(flatten)
 
-      const wins = sumBy(matches, (m) => (m.winner.sideIdx === 1 ? 1 : 0))
+      const draws = sumBy(matches, (m) => (m.isDraw ? 1 : 0))
+      const drawRate = draws / matches.length
+
+      const wins = sumBy(matches, (m) => (m.winner.sideIdx === 0 ? 1 : 0))
       const winRate = wins / matches.length
 
       return {
         ...bot,
         wins,
         winRate,
+        draws,
+        drawRate,
       }
     }),
   )

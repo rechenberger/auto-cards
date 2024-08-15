@@ -1,5 +1,5 @@
 import { LoadoutData } from '@/db/schema-zod'
-import { rngFloat, SeedArray } from '@/game/seed'
+import { rngFloat, rngOrder, SeedArray } from '@/game/seed'
 import { cloneDeep, first, map, orderBy } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { calcStats, hasNegativeStats, sumStats } from './calcStats'
@@ -75,7 +75,12 @@ export const generateMatch = async ({
   }
 
   const endOfMatch = () => {
-    const sidesByHealth = orderBy(sides, (s) => s.stats.health ?? 0, 'asc')
+    const sidesRandom = rngOrder({ items: sides, seed: [...seed, 'end'] })
+    const sidesByHealth = orderBy(
+      sidesRandom,
+      (s) => s.stats.health ?? 0,
+      'asc',
+    )
     const [loser, winner] = sidesByHealth
     log({ msg: 'Game over', sideIdx: loser.sideIdx })
     log({ msg: 'Loses', sideIdx: loser.sideIdx })
@@ -91,14 +96,17 @@ export const generateMatch = async ({
         : time + BASE_TICK_TIME - (time % BASE_TICK_TIME)
     let futureActions = [
       { type: 'baseTick' as const, time: nextBaseTick },
-      ...sides.flatMap((side, sideIdx) => {
+      ...rngOrder({
+        items: sides,
+        seed: [...seedTick, 'futureActions'],
+      }).flatMap((side) => {
         return side.items.flatMap((item, itemIdx) => {
           return item.triggers.flatMap((trigger, triggerIdx) => {
             if (trigger.type !== 'interval') return []
             return {
               type: 'itemTrigger' as const,
               time: trigger.lastUsed + trigger.cooldown,
-              sideIdx,
+              sideIdx: side.sideIdx,
               itemIdx,
               triggerIdx,
             }
@@ -118,7 +126,10 @@ export const generateMatch = async ({
 
     for (const action of actions) {
       if (action.type === 'baseTick') {
-        for (const side of sides) {
+        for (const side of rngOrder({
+          items: sides,
+          seed: [...seedTick, 'actions'],
+        })) {
           // REGEN
           const regenStats = {
             health: side.stats.regen,

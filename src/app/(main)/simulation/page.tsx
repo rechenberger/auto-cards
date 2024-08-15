@@ -31,7 +31,7 @@ export default async function Page() {
 
   return (
     <>
-      <div className="grid grid-cols-[auto,auto,1fr,auto,auto] gap-2 justify-start">
+      <div className="grid grid-cols-[auto,auto,1fr,auto,auto,auto] gap-2 justify-start">
         {botResults.map((bot) => (
           <Fragment key={bot.name}>
             <div>{bot.name}</div>
@@ -43,6 +43,9 @@ export default async function Page() {
                   <StatsDisplay stats={stats} />
                 ),
               )}
+            </div>
+            <div>
+              {bot.draws} ({Math.round(bot.drawRate * 100)}%)
             </div>
             <div>
               {bot.wins} ({Math.round(bot.winRate * 100)}%)
