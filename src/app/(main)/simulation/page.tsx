@@ -11,13 +11,14 @@ export const metadata: Metadata = {
   title: 'Simulation',
 }
 
+const NO_OF_BOTS = 10
+const NO_OF_MATCHES = 5
+
 export default async function Page() {
   const simulationSeed: SeedArray = ['lol']
 
-  const noOfBots = 10
-
   const bots = await generateBotsWithItems({
-    noOfBots,
+    noOfBots: NO_OF_BOTS,
     simulationSeed,
   })
 
@@ -27,10 +28,8 @@ export default async function Page() {
 
       const matches = await Promise.all(
         others.map(async (other) => {
-          const matchesPerOpponent = 5
-
           return await Promise.all(
-            range(matchesPerOpponent).map(async (matchIdx) => {
+            range(NO_OF_MATCHES).map(async (matchIdx) => {
               const matchReport = await generateMatch({
                 participants: [
                   { loadout: bot.game.data.currentLoadout },
