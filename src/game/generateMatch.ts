@@ -80,7 +80,7 @@ export const generateMatch = async ({
     log({ msg: 'Game over', sideIdx: loser.sideIdx })
     log({ msg: 'Loses', sideIdx: loser.sideIdx })
     log({ msg: 'Wins!', sideIdx: winner.sideIdx })
-    return { logs }
+    return { logs, winner, loser }
   }
 
   while (true) {
