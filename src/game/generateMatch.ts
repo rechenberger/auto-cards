@@ -1,6 +1,6 @@
 import { LoadoutData } from '@/db/schema-zod'
 import { rngFloat, rngOrder, SeedArray } from '@/game/seed'
-import { cloneDeep, map, minBy, orderBy } from 'lodash-es'
+import { cloneDeep, minBy, orderBy } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { addStats, calcStats, hasNegativeStats, sumStats } from './calcStats'
 import { BASE_TICK_TIME, FATIGUE_STARTS_AT, MAX_MATCH_TIME } from './config'
@@ -31,19 +31,10 @@ type GenerateMatchInput = {
 export const generateMatchState = async (input: GenerateMatchInput) => {
   const sides = await Promise.all(
     input.participants.map(async (p, idx) => {
-      const itemDefs = await Promise.all(
+      const items = await Promise.all(
         p.loadout.items.map((i) => getItemByName(i.name)),
       )
       const stats = await calcStats({ loadout: p.loadout })
-
-      const items = itemDefs.map((item) => ({
-        ...item,
-        triggers: map(item.triggers, (trigger) => ({
-          ...trigger,
-          lastUsed: 0,
-          // nextUse: time + trigger.cooldown,
-        })),
-      }))
 
       return {
         items,
@@ -98,16 +89,19 @@ export const generateMatch = async ({
       seed: [...seed, 'futureActions'],
     }).flatMap((side) => {
       return side.items.flatMap((item, itemIdx) => {
-        return item.triggers.flatMap((trigger, triggerIdx) => {
-          if (trigger.type !== 'interval') return []
-          return {
-            type: 'itemTrigger' as const,
-            time: trigger.lastUsed + trigger.cooldown,
-            sideIdx: side.sideIdx,
-            itemIdx,
-            triggerIdx,
-          }
-        })
+        return (
+          item.triggers?.flatMap((trigger, triggerIdx) => {
+            if (trigger.type !== 'interval') return []
+            return {
+              type: 'itemTrigger' as const,
+              time: trigger.cooldown,
+              lastUsed: 0,
+              sideIdx: side.sideIdx,
+              itemIdx,
+              triggerIdx,
+            }
+          }) || []
+        )
       })
     }),
   ]
@@ -180,10 +174,10 @@ export const generateMatch = async ({
       } else if (action.type === 'itemTrigger') {
         const seedAction = [...seedTick, action]
         const trigger =
-          sides[action.sideIdx].items[action.itemIdx].triggers[
+          sides[action.sideIdx].items[action.itemIdx].triggers![
             action.triggerIdx
           ]
-        trigger.lastUsed = time
+        action.lastUsed = time
         action.time += trigger.cooldown
 
         const mySide = sides[action.sideIdx]
