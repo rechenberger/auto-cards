@@ -13,7 +13,7 @@ export const generateBotsWithItems = async ({
   noOfBots,
   simulationSeed,
   startingGold = 10,
-  startingItems = [],
+  startingItems = ['hero'],
 }: {
   noOfBots: number
   simulationSeed: SeedArray
@@ -29,10 +29,7 @@ export const generateBotsWithItems = async ({
 
   const botsWithGame = await Promise.all(
     bots.map(async (bot) => {
-      const items = [
-        { name: 'hero' },
-        ...startingItems.map((name) => ({ name })),
-      ]
+      const items = startingItems.map((name) => ({ name }))
 
       const game = typedParse(Game, {
         id: `simulation-${bot.name}`,

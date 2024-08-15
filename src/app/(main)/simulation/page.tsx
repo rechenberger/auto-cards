@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { getAllItems } from '@/game/allItems'
+import { getAllItems, ItemName } from '@/game/allItems'
 import { calcStats } from '@/game/calcStats'
 import { SeedArray } from '@/game/seed'
 import { orderBy, sum } from 'lodash-es'
@@ -23,10 +23,11 @@ export const metadata: Metadata = {
 
 const NO_OF_BOTS = 40
 const NO_OF_MATCHES = 1
+const simulationSeed: SeedArray = ['lol']
+const startingGold = 10
+const startingItems: ItemName[] = ['hero']
 
 export default async function Page() {
-  const simulationSeed: SeedArray = ['lol']
-
   const noOfMatchesPerBot = (NO_OF_BOTS - 1) * NO_OF_MATCHES
   const noOfMatches = NO_OF_BOTS * noOfMatchesPerBot
   console.log(`Simulating ${noOfMatches} matches`)
@@ -35,8 +36,8 @@ export default async function Page() {
   const bots = await generateBotsWithItems({
     noOfBots: NO_OF_BOTS,
     simulationSeed,
-    // startingItems: ['woodenSword'],
-    // startingGold: 30,
+    startingItems,
+    startingGold,
   })
   console.timeEnd('generateBotsWithItems')
 
@@ -61,6 +62,9 @@ export default async function Page() {
           NO_OF_MATCHES,
           noOfMatches,
           tookSeconds,
+          simulationSeed,
+          startingGold,
+          startingItems,
         }}
       />
       <div className="grid grid-cols-[auto,auto,1fr,auto,auto,auto] gap-2 justify-start">
