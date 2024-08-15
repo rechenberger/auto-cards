@@ -122,9 +122,10 @@ export const generateMatch = async ({
 
     // GOTO FUTURE
     time = nextTime
-    const actions = futureActions.filter((a) => a.time === time)
 
-    for (const action of actions) {
+    for (const action of futureActions) {
+      if (action.time !== time) continue
+
       if (action.type === 'baseTick') {
         action.time += BASE_TICK_TIME
         for (const side of rngOrder({
