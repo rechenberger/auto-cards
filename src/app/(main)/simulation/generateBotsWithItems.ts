@@ -54,22 +54,16 @@ export const generateBotsWithItems = async ({
 
       game.data.shopItems = await generateShopItems({ game })
 
-      const shopItems = await Promise.all(
-        game.data.shopItems.map(async (shopItem, idx) => ({
-          ...shopItem,
-          idx,
-          item: await getItemByName(shopItem.name),
-        })),
-      )
       while (true) {
-        let buyables = await Promise.all(
-          shopItems.map(async (shopItem) => {
+        const shopItems = await Promise.all(
+          game.data.shopItems.map(async (shopItem, idx) => {
+            const item = await getItemByName(shopItem.name)
             const buyable = await fn(async () => {
               if (shopItem.isSold) {
                 return false
               }
 
-              if (shopItem.item.price > game.data.gold) {
+              if (item.price > game.data.gold) {
                 return false
               }
 
@@ -82,7 +76,7 @@ export const generateBotsWithItems = async ({
                   ],
                 },
               })
-              if (await hasNegativeStats({ stats })) {
+              if (hasNegativeStats({ stats })) {
                 return false
               }
 
@@ -91,11 +85,13 @@ export const generateBotsWithItems = async ({
 
             return {
               ...shopItem,
+              idx,
+              item,
               buyable,
             }
           }),
         )
-        buyables = buyables.filter((b) => b.buyable)
+        const buyables = shopItems.filter((item) => item.buyable)
 
         const item = first(buyables)
         if (!item) {
@@ -122,6 +118,11 @@ export const generateBotsWithItems = async ({
         game,
       }
     }),
+  )
+  console.log(
+    botsWithGame.map((b) =>
+      b.game.data.currentLoadout.items.map((i) => i.name),
+    ),
   )
 
   return botsWithGame
