@@ -1,3 +1,4 @@
+import { throwIfNotAdmin } from '@/auth/getIsAdmin'
 import { rngFloat, rngOrder, SeedArray } from '@/game/seed'
 import { range } from 'lodash-es'
 import { Metadata } from 'next'
@@ -10,6 +11,8 @@ export const metadata: Metadata = {
 const NO_OF_TESTS = 100
 
 export default async function Page() {
+  await throwIfNotAdmin({ allowDev: true })
+
   const simulationSeed: SeedArray = range(100)
 
   const floats = range(NO_OF_TESTS).map((idx) =>
