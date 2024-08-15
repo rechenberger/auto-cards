@@ -11,7 +11,9 @@ import {
 } from '@/components/ui/table'
 import { getAllItems, ItemName } from '@/game/allItems'
 import { calcStats } from '@/game/calcStats'
+import { countifyItems } from '@/game/countifyItems'
 import { SeedArray } from '@/game/seed'
+import { capitalCase } from 'change-case'
 import { orderBy, sum, sumBy } from 'lodash-es'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
@@ -92,7 +94,12 @@ export default async function Page() {
             <div>{bot.name}</div>
             <div>{bot.game.data.currentLoadout.items.length}</div>
             <div>
-              {bot.game.data.currentLoadout.items.map((i) => i.name).join(', ')}
+              {countifyItems(bot.game.data.currentLoadout.items)
+                .map(
+                  (i) =>
+                    `${i.count > 1 ? `${i.count}x ` : ''}${capitalCase(i.name)}`,
+                )
+                .join(', ')}
             </div>
             <div>
               <div className="flex flex-row justify-start">
