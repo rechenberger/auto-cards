@@ -22,10 +22,12 @@ export default async function Page() {
     simulationSeed,
   })
 
+  console.time('simulateBotMatches')
   let botResults = await simulateBotMatches({
     bots,
     noOfMatches: NO_OF_MATCHES,
   })
+  console.timeEnd('simulateBotMatches')
 
   botResults = orderBy(botResults, ['winRate'], ['desc'])
 

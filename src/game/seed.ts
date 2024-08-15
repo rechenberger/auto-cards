@@ -10,7 +10,7 @@ export const createSeed = () => {
 export type SeedArray = (string | number | object)[]
 export type Seed = string | SeedArray
 
-const RNG_WITH_CRYPTO = false
+const RNG_WITH_CRYPTO = true
 
 export const rng = ({ seed }: { seed: Seed }) => {
   const seedString = seedToString({ seed })
