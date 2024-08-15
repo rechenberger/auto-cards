@@ -1,5 +1,5 @@
 import { generateMatch } from '@/game/generateMatch'
-import { flatten, range, sumBy } from 'lodash-es'
+import { flatten, range } from 'lodash-es'
 import { BotGame } from './generateBotsWithItems'
 
 export const simulateBotMatches = async ({
@@ -26,29 +26,31 @@ export const simulateBotMatches = async ({
                 skipLogs: true,
               })
 
+              bot.matches += 1
+              other.matches += 1
+
+              const isWinner = matchReport.winner.sideIdx === 0
+              if (isWinner) {
+                bot.wins += 1
+              } else {
+                other.wins += 1
+              }
+
               const isDraw =
                 matchReport.winner.stats.health ===
                 matchReport.loser.stats.health
+              if (isDraw) {
+                bot.draws += 1
+                other.draws += 1
+              }
 
-              return { ...matchReport, isDraw }
+              return matchReport
             }),
           )
         }),
       ).then(flatten)
 
-      const draws = sumBy(matches, (m) => (m.isDraw ? 1 : 0))
-      const drawRate = draws / matches.length
-
-      const wins = sumBy(matches, (m) => (m.winner.sideIdx === 0 ? 1 : 0))
-      const winRate = wins / matches.length
-
-      return {
-        ...bot,
-        wins,
-        winRate,
-        draws,
-        drawRate,
-      }
+      return bot
     }),
   )
   return botResults

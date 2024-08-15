@@ -24,6 +24,9 @@ export const generateBotsWithItems = async ({
     return {
       name: `Bot ${idx}`,
       seed: [...simulationSeed, 'bot', idx],
+      wins: 0,
+      matches: 0,
+      draws: 0,
     }
   })
 

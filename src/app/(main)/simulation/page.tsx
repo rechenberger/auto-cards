@@ -12,7 +12,7 @@ import {
 import { getAllItems, ItemName } from '@/game/allItems'
 import { calcStats } from '@/game/calcStats'
 import { SeedArray } from '@/game/seed'
-import { orderBy, sum } from 'lodash-es'
+import { orderBy, sum, sumBy } from 'lodash-es'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
 import { generateBotsWithItems } from './generateBotsWithItems'
@@ -53,7 +53,7 @@ export default async function Page() {
   console.timeEnd('simulateBotMatches')
   const tookSeconds = ((Date.now() - now) / 1000).toFixed(1)
 
-  botResults = orderBy(botResults, ['winRate'], ['desc'])
+  botResults = orderBy(botResults, (bot) => bot.wins / bot.matches, ['desc'])
 
   const allItems = await getAllItems()
 
@@ -88,10 +88,10 @@ export default async function Page() {
               </div>
             </div>
             <div>
-              {bot.draws} ({Math.round(bot.drawRate * 100)}%)
+              {bot.draws} ({Math.round((bot.draws / bot.matches) * 100)}%)
             </div>
             <div>
-              {bot.wins} ({Math.round(bot.winRate * 100)}%)
+              {bot.wins} ({Math.round((bot.wins / bot.matches) * 100)}%)
             </div>
           </Fragment>
         ))}
@@ -113,7 +113,7 @@ export default async function Page() {
                   .map((i) => i.name)
                   .includes(item.name),
               )
-              const winRates = botsWithItem.map((bot) => bot.winRate)
+              const winRates = botsWithItem.map((bot) => bot.wins / bot.matches)
               const winRate = sum(winRates) / winRates.length
               return (
                 <Fragment key={item.name}>
@@ -121,7 +121,7 @@ export default async function Page() {
                     <TableCell>{item.name}</TableCell>
                     <TableCell>{botsWithItem.length}</TableCell>
                     <TableCell>
-                      {botsWithItem.length * noOfMatchesPerBot}
+                      {sumBy(botsWithItem, (bot) => bot.matches)}
                     </TableCell>
                     <TableCell>{Math.round(winRate * 100)}%</TableCell>
                   </TableRow>
