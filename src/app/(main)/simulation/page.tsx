@@ -22,8 +22,8 @@ export const metadata: Metadata = {
   title: 'Simulation',
 }
 
-const NO_OF_BOTS = 40
-const NO_OF_MATCHES = 1
+const noOfBots = 40
+const noOfRepeats = 1
 const simulationSeed: SeedArray = ['lol']
 const startingGold = 10
 const startingItems: ItemName[] = ['hero']
@@ -31,13 +31,13 @@ const startingItems: ItemName[] = ['hero']
 export default async function Page() {
   await throwIfNotAdmin({ allowDev: true })
 
-  const noOfMatchesPerBot = (NO_OF_BOTS - 1) * NO_OF_MATCHES
-  const noOfMatches = NO_OF_BOTS * noOfMatchesPerBot
+  const noOfMatchesPerBot = (noOfBots - 1) * noOfRepeats
+  const noOfMatches = noOfBots * noOfMatchesPerBot
   console.log(`Simulating ${noOfMatches} matches`)
 
   console.time('generateBotsWithItems')
   const bots = await generateBotsWithItems({
-    noOfBots: NO_OF_BOTS,
+    noOfBots,
     simulationSeed,
     startingItems,
     startingGold,
@@ -48,7 +48,7 @@ export default async function Page() {
   console.time('simulateBotMatches')
   let botResults = await simulateBotMatches({
     bots,
-    noOfMatches: NO_OF_MATCHES,
+    noOfRepeats,
   })
   console.timeEnd('simulateBotMatches')
   const tookSeconds = ((Date.now() - now) / 1000).toFixed(1)
@@ -61,8 +61,8 @@ export default async function Page() {
     <>
       <SimpleDataCard
         data={{
-          NO_OF_BOTS,
-          NO_OF_MATCHES,
+          noOfBots,
+          noOfRepeats,
           noOfMatches,
           tookSeconds,
           simulationSeed,

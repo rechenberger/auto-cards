@@ -4,10 +4,10 @@ import { BotGame } from './generateBotsWithItems'
 
 export const simulateBotMatches = async ({
   bots,
-  noOfMatches,
+  noOfRepeats,
 }: {
   bots: BotGame[]
-  noOfMatches: number
+  noOfRepeats: number
 }) => {
   const botResults = await Promise.all(
     bots.map(async (bot) => {
@@ -16,7 +16,7 @@ export const simulateBotMatches = async ({
       const matches = await Promise.all(
         others.map(async (other) => {
           return await Promise.all(
-            range(noOfMatches).map(async (matchIdx) => {
+            range(noOfRepeats).map(async (matchIdx) => {
               const matchReport = await generateMatch({
                 participants: [
                   { loadout: bot.game.data.currentLoadout },
