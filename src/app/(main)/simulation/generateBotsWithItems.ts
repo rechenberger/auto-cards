@@ -7,6 +7,8 @@ import { fn } from '@/lib/fn'
 import { typedParse } from '@/lib/typedParse'
 import { first, range } from 'lodash-es'
 
+export type BotGame = Awaited<ReturnType<typeof generateBotsWithItems>>[number]
+
 export const generateBotsWithItems = async ({
   noOfBots,
   simulationSeed,

@@ -1,11 +1,10 @@
 import { StatsDisplay } from '@/components/game/StatsDisplay'
 import { calcStats } from '@/game/calcStats'
-import { generateMatch } from '@/game/generateMatch'
 import { SeedArray } from '@/game/seed'
-import { flatten, range, sumBy } from 'lodash-es'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
 import { generateBotsWithItems } from './generateBotsWithItems'
+import { simulateBotMatches } from './simulateBotMatches'
 
 export const metadata: Metadata = {
   title: 'Simulation',
@@ -22,38 +21,10 @@ export default async function Page() {
     simulationSeed,
   })
 
-  const botResults = await Promise.all(
-    bots.map(async (bot) => {
-      const others = bots.filter((b) => b.name !== bot.name)
-
-      const matches = await Promise.all(
-        others.map(async (other) => {
-          return await Promise.all(
-            range(NO_OF_MATCHES).map(async (matchIdx) => {
-              const matchReport = await generateMatch({
-                participants: [
-                  { loadout: bot.game.data.currentLoadout },
-                  { loadout: other.game.data.currentLoadout },
-                ],
-                seed: [...bot.seed, 'match', matchIdx, other.name],
-              })
-
-              return matchReport
-            }),
-          )
-        }),
-      ).then(flatten)
-
-      const wins = sumBy(matches, (m) => (m.winner.sideIdx === 1 ? 1 : 0))
-      const winRate = wins / matches.length
-
-      return {
-        ...bot,
-        wins,
-        winRate,
-      }
-    }),
-  )
+  const botResults = await simulateBotMatches({
+    bots,
+    noOfMatches: NO_OF_MATCHES,
+  })
 
   return (
     <>
