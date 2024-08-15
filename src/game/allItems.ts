@@ -122,7 +122,7 @@ const allItems: ItemDefinition[] = [
   },
   {
     name: 'syringe',
-    tags: [],
+    tags: ['accessory'],
     price: 4,
     stats: {
       space: -1,

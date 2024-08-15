@@ -2,10 +2,12 @@ import { AiImage } from '@/components/ai/AiImage'
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
 import { gameAction } from '@/game/gameAction'
+import { getTagDefinition } from '@/game/tags'
 import { fontHeading } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
+import { first } from 'lodash-es'
 import { Lock, LockOpen } from 'lucide-react'
 import { Fragment } from 'react'
 import { BuyButton } from './BuyButton'
@@ -29,6 +31,7 @@ export const ItemCard = async ({
 }) => {
   const item = await getItemByName(name)
   const title = capitalCase(name)
+  const tag = getTagDefinition(first(item.tags) ?? 'default')
 
   return (
     <>
@@ -79,17 +82,19 @@ export const ItemCard = async ({
               </div>
             </div>
             <div className="absolute top-3 inset-x-0 flex flex-col items-end">
-              <div
-                className={cn(
-                  'bg-[#313130] pl-4 pr-3 py-1',
-                  'rounded-l-full',
-                  'border-l-2 border-y-2 border-black',
-                )}
-              >
-                <div className="text-xs">
-                  {item.tags?.map((t) => capitalCase(t)).join(',')}
+              {!!item.tags?.length && (
+                <div
+                  className={cn(
+                    'bg-[#313130] pl-4 pr-3 py-1',
+                    'rounded-l-full',
+                    'border-l-2 border-y-2 border-black',
+                  )}
+                >
+                  <div className="text-xs">
+                    {item.tags?.map((t) => capitalCase(t)).join(',')}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             <div className="border-black border-2 rounded-lg overflow-hidden">
               <AiImage
@@ -126,48 +131,55 @@ export const ItemCard = async ({
             </>
           )}
         </div>
-        <div className="flex-1" />
-        <div className="flex flex-col items-center gap-2">
-          {item.stats && <StatsDisplay relative stats={item.stats} />}
-          {item.triggers?.map((trigger, idx) => (
-            <Fragment key={idx}>
-              <TriggerDisplay trigger={trigger} />
-            </Fragment>
-          ))}
-        </div>
-        <div className="flex-1" />
-        <div>
-          <div className="flex flex-row gap-2 justify-end items-center">
-            {!!game && !!shopItem && !shopItem.isSold && (
-              <>
-                <label className="flex flex-row gap-1">
-                  <ActionButton
-                    variant={'secondary'}
-                    size={'icon'}
-                    className={cn(shopItem.isReserved && 'text-green-500')}
-                    hideIcon
-                    action={async () => {
-                      'use server'
-                      return gameAction({
-                        gameId: game.id,
-                        action: async ({ ctx }) => {
-                          const s = ctx.game.data.shopItems[shopItem.idx]
-                          s.isReserved = !s.isReserved
-                        },
-                      })
-                    }}
-                  >
-                    {shopItem.isReserved ? (
-                      <Lock className="size-4" strokeWidth={3} />
-                    ) : (
-                      <LockOpen className="size-4" strokeWidth={3} />
-                    )}
-                  </ActionButton>
-                </label>
-                <div className="flex-1" />
-                <BuyButton game={game} shopItem={{ ...shopItem, item }} />
-              </>
-            )}
+        <div
+          className={cn(
+            'flex-1 flex flex-col justify-center rounded-b-md p-1',
+            tag.bgClass,
+          )}
+        >
+          <div className="flex-1" />
+          <div className="flex flex-col items-center gap-2">
+            {item.stats && <StatsDisplay relative stats={item.stats} />}
+            {item.triggers?.map((trigger, idx) => (
+              <Fragment key={idx}>
+                <TriggerDisplay trigger={trigger} />
+              </Fragment>
+            ))}
+          </div>
+          <div className="flex-1" />
+          <div>
+            <div className="flex flex-row gap-2 justify-end items-center">
+              {!!game && !!shopItem && !shopItem.isSold && (
+                <>
+                  <label className="flex flex-row gap-1">
+                    <ActionButton
+                      variant={'secondary'}
+                      size={'icon'}
+                      className={cn(shopItem.isReserved && 'text-green-500')}
+                      hideIcon
+                      action={async () => {
+                        'use server'
+                        return gameAction({
+                          gameId: game.id,
+                          action: async ({ ctx }) => {
+                            const s = ctx.game.data.shopItems[shopItem.idx]
+                            s.isReserved = !s.isReserved
+                          },
+                        })
+                      }}
+                    >
+                      {shopItem.isReserved ? (
+                        <Lock className="size-4" strokeWidth={3} />
+                      ) : (
+                        <LockOpen className="size-4" strokeWidth={3} />
+                      )}
+                    </ActionButton>
+                  </label>
+                  <div className="flex-1" />
+                  <BuyButton game={game} shopItem={{ ...shopItem, item }} />
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
