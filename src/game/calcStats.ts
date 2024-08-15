@@ -32,9 +32,9 @@ export const sumStats2 = (a: Stats, b: Stats) => {
 }
 
 export const addStats = (a: Stats, b: Stats) => {
-  for (const key of keys(b)) {
+  for (const key in b) {
     // @ts-expect-error
-    a[key] = (a[key] || 0) + b[key]!
+    a[key] = (a[key] || 0) + (b[key] || 0)
   }
   return a
 }
