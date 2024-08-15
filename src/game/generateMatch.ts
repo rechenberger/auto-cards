@@ -1,6 +1,6 @@
 import { LoadoutData } from '@/db/schema-zod'
 import { rngFloat, rngOrder, SeedArray } from '@/game/seed'
-import { cloneDeep, first, map, orderBy } from 'lodash-es'
+import { cloneDeep, map, minBy, orderBy } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { calcStats, hasNegativeStats, sumStats } from './calcStats'
 import { BASE_TICK_TIME, FATIGUE_STARTS_AT, MAX_MATCH_TIME } from './config'
@@ -91,34 +91,31 @@ export const generateMatch = async ({
     return { logs, winner, loser }
   }
 
+  const futureActions = [
+    { type: 'baseTick' as const, time: 0 },
+    ...rngOrder({
+      items: sides,
+      seed: [...seed, 'futureActions'],
+    }).flatMap((side) => {
+      return side.items.flatMap((item, itemIdx) => {
+        return item.triggers.flatMap((trigger, triggerIdx) => {
+          if (trigger.type !== 'interval') return []
+          return {
+            type: 'itemTrigger' as const,
+            time: trigger.lastUsed + trigger.cooldown,
+            sideIdx: side.sideIdx,
+            itemIdx,
+            triggerIdx,
+          }
+        })
+      })
+    }),
+  ]
+
   while (true) {
     const seedTick = [...seed, time]
-    const nextBaseTick =
-      time % BASE_TICK_TIME === 0
-        ? time
-        : time + BASE_TICK_TIME - (time % BASE_TICK_TIME)
-    let futureActions = [
-      { type: 'baseTick' as const, time: nextBaseTick },
-      ...rngOrder({
-        items: sides,
-        seed: [...seedTick, 'futureActions'],
-      }).flatMap((side) => {
-        return side.items.flatMap((item, itemIdx) => {
-          return item.triggers.flatMap((trigger, triggerIdx) => {
-            if (trigger.type !== 'interval') return []
-            return {
-              type: 'itemTrigger' as const,
-              time: trigger.lastUsed + trigger.cooldown,
-              sideIdx: side.sideIdx,
-              itemIdx,
-              triggerIdx,
-            }
-          })
-        })
-      }),
-    ]
-    futureActions = orderBy(futureActions, 'time', 'asc')
-    const nextTime = first(futureActions)?.time
+
+    const nextTime = minBy(futureActions, (a) => a.time)?.time
     if (nextTime === undefined) {
       throw new Error('no next time')
     }
@@ -129,6 +126,7 @@ export const generateMatch = async ({
 
     for (const action of actions) {
       if (action.type === 'baseTick') {
+        action.time += BASE_TICK_TIME
         for (const side of rngOrder({
           items: sides,
           seed: [...seedTick, 'actions'],
@@ -185,6 +183,8 @@ export const generateMatch = async ({
             action.triggerIdx
           ]
         trigger.lastUsed = time
+        action.time += trigger.cooldown
+
         const mySide = sides[action.sideIdx]
         const otherSide = sides[1 - action.sideIdx] // lol
 
