@@ -2,7 +2,7 @@ import { LoadoutData } from '@/db/schema-zod'
 import { rngFloat, rngOrder, SeedArray } from '@/game/seed'
 import { cloneDeep, map, minBy, orderBy } from 'lodash-es'
 import { getItemByName } from './allItems'
-import { calcStats, hasNegativeStats, sumStats } from './calcStats'
+import { addStats, calcStats, hasNegativeStats, sumStats } from './calcStats'
 import { BASE_TICK_TIME, FATIGUE_STARTS_AT, MAX_MATCH_TIME } from './config'
 import { Stats } from './stats'
 
@@ -137,7 +137,7 @@ export const generateMatch = async ({
             health: side.stats.regen,
             stamina: side.stats.staminaRegen,
           }
-          side.stats = sumStats(side.stats, regenStats)
+          addStats(side.stats, regenStats)
           log({
             msg: 'Regenerate',
             sideIdx: side.sideIdx,
@@ -150,7 +150,7 @@ export const generateMatch = async ({
             const poisonStats = {
               health: -1 * side.stats.poison ?? 0,
             }
-            side.stats = sumStats(side.stats, poisonStats)
+            addStats(side.stats, poisonStats)
             log({
               msg: 'Poison',
               sideIdx: side.sideIdx,
@@ -168,7 +168,7 @@ export const generateMatch = async ({
             const fatigueStats = {
               health: -1 * fatigue,
             }
-            side.stats = sumStats(side.stats, fatigueStats)
+            addStats(side.stats, fatigueStats)
             log({
               msg: 'Fatigue',
               sideIdx: side.sideIdx,
@@ -209,7 +209,7 @@ export const generateMatch = async ({
           })
         }
         if (statsEnemy) {
-          otherSide.stats = sumStats(otherSide.stats, statsEnemy)
+          addStats(otherSide.stats, statsEnemy)
           log({
             ...action,
             stats: statsEnemy,
@@ -227,7 +227,7 @@ export const generateMatch = async ({
               health: -1 * damage,
               block: -1 * blockedDamage,
             }
-            otherSide.stats = sumStats(otherSide.stats, targetStats)
+            addStats(otherSide.stats, targetStats)
             log({
               ...action,
               msg: `Hit`,
@@ -243,7 +243,7 @@ export const generateMatch = async ({
               const lifeStealStats: Stats = {
                 health: lifeStealDamage,
               }
-              mySide.stats = sumStats(mySide.stats, lifeStealStats)
+              addStats(mySide.stats, lifeStealStats)
               log({
                 ...action,
                 sideIdx: mySide.sideIdx,
@@ -259,7 +259,7 @@ export const generateMatch = async ({
               const thornsStats: Stats = {
                 health: -1 * thornsDamage,
               }
-              mySide.stats = sumStats(mySide.stats, thornsStats)
+              addStats(mySide.stats, thornsStats)
               log({
                 ...action,
                 sideIdx: otherSide.sideIdx,

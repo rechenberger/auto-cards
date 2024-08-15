@@ -1,6 +1,6 @@
 import { LoadoutData } from '@/db/schema-zod'
 import { capitalCase } from 'change-case'
-import { keys, map, omitBy, sumBy, uniq } from 'lodash-es'
+import { keys, map, mergeWith, omitBy, sum, sumBy, uniq } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { Stats } from './stats'
 
@@ -18,12 +18,21 @@ export const calcStats = async ({ loadout }: { loadout: LoadoutData }) => {
 }
 
 export const sumStats = (...allStats: Stats[]) => {
+  if (allStats.length === 2) return sumStats2(allStats[0], allStats[1])
   const allKeys = uniq(allStats.flatMap(keys)) as (keyof Stats)[]
   const result: Stats = {}
   for (const key of allKeys) {
     result[key] = sumBy(allStats, (stats) => stats[key] ?? 0)
   }
   return result
+}
+
+export const sumStats2 = (a: Stats, b: Stats) => {
+  return addStats({ ...a }, b)
+}
+
+export const addStats = (a: Stats, b: Stats) => {
+  return mergeWith(a, b, sum)
 }
 
 const getNegativeStats = ({ stats }: { stats: Stats }) => {
