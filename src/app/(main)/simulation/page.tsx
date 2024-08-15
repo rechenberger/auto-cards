@@ -1,6 +1,7 @@
 import { StatsDisplay } from '@/components/game/StatsDisplay'
 import { calcStats } from '@/game/calcStats'
 import { SeedArray } from '@/game/seed'
+import { orderBy } from 'lodash-es'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
 import { generateBotsWithItems } from './generateBotsWithItems'
@@ -21,10 +22,12 @@ export default async function Page() {
     simulationSeed,
   })
 
-  const botResults = await simulateBotMatches({
+  let botResults = await simulateBotMatches({
     bots,
     noOfMatches: NO_OF_MATCHES,
   })
+
+  botResults = orderBy(botResults, ['winRate'], ['desc'])
 
   return (
     <>
