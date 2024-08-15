@@ -65,6 +65,10 @@ export const generateBotsWithItems = async ({
         let buyables = await Promise.all(
           shopItems.map(async (shopItem) => {
             const buyable = await fn(async () => {
+              if (shopItem.isSold) {
+                return false
+              }
+
               if (shopItem.item.price > game.data.gold) {
                 return false
               }
@@ -99,8 +103,8 @@ export const generateBotsWithItems = async ({
           const rerollPrice = 1
           if (game.data.gold >= rerollPrice) {
             game.data.gold -= rerollPrice
-            game.data.shopItems = await generateShopItems({ game })
             game.data.shopRerolls++
+            game.data.shopItems = await generateShopItems({ game })
             continue
           }
 
