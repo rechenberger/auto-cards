@@ -148,6 +148,8 @@ export const rngOrder = <T>({
   seed: Seed
   items: T[]
 }): T[] => {
+  // TODO: optimize this, it currently takes 30% of the match gen time
+
   const itemsWithRng = items.map((item, idx) => ({
     item,
     rng: rngFloat({ seed: [seedToString({ seed }), idx] }),
