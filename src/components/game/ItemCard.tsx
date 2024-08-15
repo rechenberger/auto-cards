@@ -18,12 +18,14 @@ export const ItemCard = async ({
   shopItem,
   size = '200',
   className,
+  count = 1,
 }: {
   game?: Game
   name: string
   shopItem?: Game['data']['shopItems'][number] & { idx: number }
   size?: '480' | '320' | '240' | '200' | '160' | '80'
   className?: string
+  count?: number
 }) => {
   const item = await getItemByName(name)
   const title = capitalCase(name)
@@ -94,6 +96,15 @@ export const ItemCard = async ({
               />
             </div>
           </div>
+          {count >= 2 && (
+            <>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="text-white rounded-full font-black px-8 py-2 text-6xl bg-black/80 -rotate-12 scale-150">
+                  {count}x
+                </div>
+              </div>
+            </>
+          )}
           {!!shopItem?.isSold && (
             <>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
