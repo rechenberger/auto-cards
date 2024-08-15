@@ -1,8 +1,9 @@
 import { StatsDisplay } from '@/components/game/StatsDisplay'
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
+import { getAllItems } from '@/game/allItems'
 import { calcStats } from '@/game/calcStats'
 import { SeedArray } from '@/game/seed'
-import { orderBy } from 'lodash-es'
+import { orderBy, sum } from 'lodash-es'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
 import { generateBotsWithItems } from './generateBotsWithItems'
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
   title: 'Simulation',
 }
 
-const NO_OF_BOTS = 20
+const NO_OF_BOTS = 10
 const NO_OF_MATCHES = 5
 
 export default async function Page() {
@@ -37,6 +38,8 @@ export default async function Page() {
 
   botResults = orderBy(botResults, ['winRate'], ['desc'])
 
+  const allItems = await getAllItems()
+
   return (
     <>
       <SimpleDataCard
@@ -51,8 +54,10 @@ export default async function Page() {
         {botResults.map((bot) => (
           <Fragment key={bot.name}>
             <div>{bot.name}</div>
-            <div>{bot.game.data.shopItems.length}</div>
-            <div>{bot.game.data.shopItems.map((i) => i.name).join(', ')}</div>
+            <div>{bot.game.data.currentLoadout.items.length}</div>
+            <div>
+              {bot.game.data.currentLoadout.items.map((i) => i.name).join(', ')}
+            </div>
             <div>
               <div className="flex flex-row justify-start">
                 {calcStats({ loadout: bot.game.data.currentLoadout }).then(
@@ -70,6 +75,25 @@ export default async function Page() {
             </div>
           </Fragment>
         ))}
+      </div>
+      <div>
+        {allItems.map((item) => {
+          const botsWithItem = botResults.filter((bot) =>
+            bot.game.data.currentLoadout.items
+              .map((i) => i.name)
+              .includes(item.name),
+          )
+          const winRates = botsWithItem.map((bot) => bot.winRate)
+          const winRate = sum(winRates) / winRates.length
+          return (
+            <Fragment key={item.name}>
+              <div>
+                <div>{item.name}</div>
+                <div>{Math.round(winRate * 100)}%</div>
+              </div>
+            </Fragment>
+          )
+        })}
       </div>
     </>
   )
