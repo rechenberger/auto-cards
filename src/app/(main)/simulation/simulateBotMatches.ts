@@ -28,6 +28,8 @@ export const simulateBotMatches = async ({
 
               bot.matches += 1
               other.matches += 1
+              bot.time += matchReport.time
+              other.time += matchReport.time
 
               const isWinner = matchReport.winner.sideIdx === 0
               if (isWinner) {

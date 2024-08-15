@@ -79,7 +79,7 @@ export const generateMatch = async ({
     log({ msg: 'Game over', sideIdx: loser.sideIdx })
     log({ msg: 'Loses', sideIdx: loser.sideIdx })
     log({ msg: 'Wins!', sideIdx: winner.sideIdx })
-    return { logs, winner, loser }
+    return { logs, winner, loser, time }
   }
 
   const futureActions = [

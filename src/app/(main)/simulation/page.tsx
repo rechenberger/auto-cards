@@ -86,9 +86,10 @@ export default async function Page() {
           simulationSeed,
           startingGold,
           startingItems,
+          simulatedTime: `${(sumBy(botResults, (bot) => bot.time) / 1000 / 60 / 60).toFixed(1)} hours`,
         }}
       />
-      <div className="grid grid-cols-[auto,auto,1fr,auto,auto,auto] gap-2 justify-start">
+      <div className="grid grid-cols-[auto,auto,1fr,auto,auto,auto,auto] gap-2 justify-start">
         {botResults.map((bot) => (
           <Fragment key={bot.name}>
             <div>{bot.name}</div>
@@ -110,6 +111,7 @@ export default async function Page() {
                 )}
               </div>
             </div>
+            <div>{(bot.time / 1000 / bot.matches).toFixed(1)}s</div>
             <div>
               {bot.draws} ({Math.round((bot.draws / bot.matches) * 100)}%)
             </div>

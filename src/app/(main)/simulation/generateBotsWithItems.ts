@@ -27,6 +27,7 @@ export const generateBotsWithItems = async ({
       wins: 0,
       matches: 0,
       draws: 0,
+      time: 0,
     }
   })
 
