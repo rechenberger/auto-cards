@@ -86,7 +86,7 @@ export default async function Page() {
           simulationSeed,
           startingGold,
           startingItems,
-          simulatedTime: `${(sumBy(botResults, (bot) => bot.time) / 1000 / 60 / 60).toFixed(1)} hours`,
+          simulatedTime: `${(sumBy(botResults, (bot) => bot.time) / 1000 / 60 / 60 / 2).toFixed(1)} hours`,
         }}
       />
       <div className="grid grid-cols-[auto,auto,1fr,auto,auto,auto,auto] gap-2 justify-start">
