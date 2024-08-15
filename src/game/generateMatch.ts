@@ -25,6 +25,7 @@ type GenerateMatchInput = {
     loadout: LoadoutData
   }[]
   seed: SeedArray
+  skipLogs?: boolean
 }
 
 export const generateMatchState = async (input: GenerateMatchInput) => {
@@ -56,6 +57,7 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
 export type MatchState = Awaited<ReturnType<typeof generateMatchState>>
 
 export const generateMatch = async ({
+  skipLogs,
   participants,
   seed,
 }: GenerateMatchInput) => {
@@ -66,6 +68,7 @@ export const generateMatch = async ({
 
   const logs: MatchLog[] = []
   const log = (log: Omit<MatchLog, 'time' | 'itemName' | 'stateSnapshot'>) => {
+    if (skipLogs) return
     const itemName =
       log.itemIdx !== undefined
         ? sides[log.sideIdx].items[log.itemIdx].name

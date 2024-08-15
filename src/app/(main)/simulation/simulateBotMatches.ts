@@ -23,6 +23,7 @@ export const simulateBotMatches = async ({
                   { loadout: other.game.data.currentLoadout },
                 ],
                 seed: [...bot.seed, 'match', matchIdx, other.name],
+                skipLogs: true,
               })
 
               const isDraw =
