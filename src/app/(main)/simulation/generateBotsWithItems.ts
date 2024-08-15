@@ -1,5 +1,5 @@
 import { Game } from '@/db/schema-zod'
-import { getItemByName } from '@/game/allItems'
+import { getItemByName, ItemName } from '@/game/allItems'
 import { calcStats, hasNegativeStats } from '@/game/calcStats'
 import { generateShopItems } from '@/game/generateShopItems'
 import { SeedArray, seedToString } from '@/game/seed'
@@ -12,9 +12,13 @@ export type BotGame = Awaited<ReturnType<typeof generateBotsWithItems>>[number]
 export const generateBotsWithItems = async ({
   noOfBots,
   simulationSeed,
+  startingGold = 10,
+  startingItems = [],
 }: {
   noOfBots: number
   simulationSeed: SeedArray
+  startingGold?: number
+  startingItems?: ItemName[]
 }) => {
   const bots = range(noOfBots).map((idx) => {
     return {
@@ -25,7 +29,10 @@ export const generateBotsWithItems = async ({
 
   const botsWithGame = await Promise.all(
     bots.map(async (bot) => {
-      const items = [{ name: 'hero' }]
+      const items = [
+        { name: 'hero' },
+        ...startingItems.map((name) => ({ name })),
+      ]
 
       const game = typedParse(Game, {
         id: `simulation-${bot.name}`,
@@ -36,7 +43,7 @@ export const generateBotsWithItems = async ({
           currentLoadout: {
             items,
           },
-          gold: 10,
+          gold: startingGold,
           roundNo: 0,
           seed: seedToString({ seed: [...bot.seed, 'game'] }),
           shopItems: [],
