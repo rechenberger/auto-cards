@@ -1,5 +1,13 @@
 import { StatsDisplay } from '@/components/game/StatsDisplay'
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { getAllItems } from '@/game/allItems'
 import { calcStats } from '@/game/calcStats'
 import { SeedArray } from '@/game/seed'
@@ -13,13 +21,14 @@ export const metadata: Metadata = {
   title: 'Simulation',
 }
 
-const NO_OF_BOTS = 10
-const NO_OF_MATCHES = 5
+const NO_OF_BOTS = 40
+const NO_OF_MATCHES = 1
 
 export default async function Page() {
   const simulationSeed: SeedArray = ['lol']
 
-  const noOfMatches = NO_OF_BOTS * (NO_OF_BOTS - 1) * NO_OF_MATCHES
+  const noOfMatchesPerBot = (NO_OF_BOTS - 1) * NO_OF_MATCHES
+  const noOfMatches = NO_OF_BOTS * noOfMatchesPerBot
   console.log(`Simulating ${noOfMatches} matches`)
 
   const bots = await generateBotsWithItems({
@@ -77,23 +86,39 @@ export default async function Page() {
         ))}
       </div>
       <div>
-        {allItems.map((item) => {
-          const botsWithItem = botResults.filter((bot) =>
-            bot.game.data.currentLoadout.items
-              .map((i) => i.name)
-              .includes(item.name),
-          )
-          const winRates = botsWithItem.map((bot) => bot.winRate)
-          const winRate = sum(winRates) / winRates.length
-          return (
-            <Fragment key={item.name}>
-              <div>
-                <div>{item.name}</div>
-                <div>{Math.round(winRate * 100)}%</div>
-              </div>
-            </Fragment>
-          )
-        })}
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Item</TableHead>
+              <TableHead>Bots</TableHead>
+              <TableHead>Matches</TableHead>
+              <TableHead>WinRate</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {allItems.map((item) => {
+              const botsWithItem = botResults.filter((bot) =>
+                bot.game.data.currentLoadout.items
+                  .map((i) => i.name)
+                  .includes(item.name),
+              )
+              const winRates = botsWithItem.map((bot) => bot.winRate)
+              const winRate = sum(winRates) / winRates.length
+              return (
+                <Fragment key={item.name}>
+                  <TableRow>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{botsWithItem.length}</TableCell>
+                    <TableCell>
+                      {botsWithItem.length * noOfMatchesPerBot}
+                    </TableCell>
+                    <TableCell>{Math.round(winRate * 100)}%</TableCell>
+                  </TableRow>
+                </Fragment>
+              )
+            })}
+          </TableBody>
+        </Table>
       </div>
     </>
   )
