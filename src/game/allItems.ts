@@ -126,7 +126,7 @@ const allItems = [
     price: 4,
     stats: {
       space: -1,
-      lifeSteal: 10,
+      lifeSteal: 20,
     },
   },
 ] as const satisfies ItemDefinition[]

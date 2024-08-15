@@ -34,6 +34,8 @@ export default async function Page() {
   const bots = await generateBotsWithItems({
     noOfBots: NO_OF_BOTS,
     simulationSeed,
+    // startingItems: ['woodenSword'],
+    // startingGold: 30,
   })
 
   const now = Date.now()
