@@ -24,7 +24,7 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 3_000,
         statsSelf: {
-          health: 6,
+          health: 4,
           stamina: 2,
         },
       },
@@ -65,6 +65,7 @@ const allItemsConst = [
     price: 4,
     stats: {
       space: -4,
+      block: 30,
     },
     triggers: [
       {
@@ -86,7 +87,7 @@ const allItemsConst = [
     triggers: [
       {
         type: 'interval',
-        cooldown: 5_000,
+        cooldown: 10_000,
         statsEnemy: {
           poison: 1,
         },

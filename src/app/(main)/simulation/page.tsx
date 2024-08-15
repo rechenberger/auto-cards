@@ -57,6 +57,22 @@ export default async function Page() {
 
   const allItems = await getAllItems()
 
+  let itemStats = allItems.map((item) => {
+    const botsWithItem = botResults.filter((bot) =>
+      bot.game.data.currentLoadout.items.map((i) => i.name).includes(item.name),
+    )
+    const winRates = botsWithItem.map((bot) => bot.wins / bot.matches)
+    const winRate = sum(winRates) / winRates.length
+    const matches = sumBy(botsWithItem, (bot) => bot.matches)
+    return {
+      ...item,
+      botsWithItem,
+      winRate,
+      matches,
+    }
+  })
+  itemStats = orderBy(itemStats, (item) => item.winRate, ['desc'])
+
   return (
     <>
       <SimpleDataCard
@@ -107,23 +123,14 @@ export default async function Page() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {allItems.map((item) => {
-              const botsWithItem = botResults.filter((bot) =>
-                bot.game.data.currentLoadout.items
-                  .map((i) => i.name)
-                  .includes(item.name),
-              )
-              const winRates = botsWithItem.map((bot) => bot.wins / bot.matches)
-              const winRate = sum(winRates) / winRates.length
+            {itemStats.map((item) => {
               return (
                 <Fragment key={item.name}>
                   <TableRow>
                     <TableCell>{item.name}</TableCell>
-                    <TableCell>{botsWithItem.length}</TableCell>
-                    <TableCell>
-                      {sumBy(botsWithItem, (bot) => bot.matches)}
-                    </TableCell>
-                    <TableCell>{Math.round(winRate * 100)}%</TableCell>
+                    <TableCell>{item.botsWithItem.length}</TableCell>
+                    <TableCell>{item.matches}</TableCell>
+                    <TableCell>{Math.round(item.winRate * 100)}%</TableCell>
                   </TableRow>
                 </Fragment>
               )
