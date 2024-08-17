@@ -20,7 +20,7 @@ const baseInput: SimulationInput = {
   startingGold: 20,
   startingItems: ['hero'],
   noOfBotsSelected: 5,
-  noOfSelectionRounds: 100,
+  noOfSelectionRounds: 1,
 }
 
 const variants = [

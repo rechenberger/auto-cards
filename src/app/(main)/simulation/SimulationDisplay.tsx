@@ -20,10 +20,12 @@ export const SimulationDisplay = async ({
   input,
   simulationResult,
   allItems,
+  showDraws = false,
 }: {
   input: SimulationInput
   simulationResult: SimulationResult
   allItems: ItemDefinition[]
+  showDraws?: boolean
 }) => {
   const { bots } = simulationResult
 
@@ -86,70 +88,76 @@ export const SimulationDisplay = async ({
             ).toFixed(1)} hours`,
           }}
         />
-        <div className="grid grid-cols-[1fr,auto,auto] gap-2 justify-start">
-          {bots.map((bot, idx) => (
-            <Fragment key={idx}>
-              <div className="flex flex-row gap-1 overflow-hidden">
-                {countifyItems(
-                  withoutStartingItems(bot.game.data.currentLoadout.items),
-                ).map((i) => (
-                  <Fragment key={i.name}>
-                    <TinyItem name={i.name} count={i.count} />
-                  </Fragment>
-                ))}
-              </div>
-              {/* <div>
-              <div className="flex flex-row justify-start">
-                {calcStats({ loadout: bot.game.data.currentLoadout }).then(
-                  (stats) => (
-                    <StatsDisplay stats={stats} showZero />
-                  ),
-                )}
-              </div>
-            </div> */}
-              {/* <div>{bot.simulationRounds}</div> */}
-              <div className="w-max">
-                {(bot.time / 1000 / bot.matches).toFixed(1)}s
-              </div>
-              {/* <div>
-              {bot.draws} ({Math.round((bot.draws / bot.matches) * 100)}%)
-            </div> */}
-              <div className="w-max">
-                {bot.wins} ({Math.round((bot.wins / bot.matches) * 100)}%)
-              </div>
-            </Fragment>
-          ))}
-        </div>
-        <div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Item</TableHead>
-                <TableHead>Bots</TableHead>
-                <TableHead>Rounds</TableHead>
-                {/* <TableHead>Matches</TableHead> */}
-                <TableHead>WinRate</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {itemStats.map((item) => {
-                return (
-                  <Fragment key={item.name}>
-                    <TableRow>
-                      <TableCell className="flex flex-row">
-                        <TinyItem name={item.name} />
-                      </TableCell>
-                      <TableCell>{item.botsWithItem.length}</TableCell>
-                      <TableCell>{item.simulationRounds}</TableCell>
-                      {/* <TableCell>{item.matches}</TableCell> */}
-                      <TableCell>{Math.round(item.winRate * 100)}%</TableCell>
-                    </TableRow>
-                  </Fragment>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Items</TableHead>
+              <TableHead title="Selection rounds survived">Age</TableHead>
+              <TableHead title="average match time">ØTime</TableHead>
+              {showDraws && <TableHead>Draws</TableHead>}
+              <TableHead>Wins</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {bots.map((bot, idx) => (
+              <Fragment key={idx}>
+                <TableRow>
+                  <TableCell className="flex flex-row gap-1 overflow-hidden">
+                    {countifyItems(
+                      withoutStartingItems(bot.game.data.currentLoadout.items),
+                    ).map((i) => (
+                      <Fragment key={i.name}>
+                        <TinyItem name={i.name} count={i.count} />
+                      </Fragment>
+                    ))}
+                  </TableCell>
+                  <TableCell>{bot.simulationRounds}</TableCell>
+                  <TableCell className="w-max">
+                    {(bot.time / 1000 / bot.matches).toFixed(1)}s
+                  </TableCell>
+                  {showDraws && (
+                    <TableCell>
+                      {bot.draws}&nbsp;(
+                      {Math.round((bot.draws / bot.matches) * 100)}%)
+                    </TableCell>
+                  )}
+                  <TableCell className="w-max">
+                    {bot.wins}&nbsp;(
+                    {Math.round((bot.wins / bot.matches) * 100)}%)
+                  </TableCell>
+                </TableRow>
+              </Fragment>
+            ))}
+          </TableBody>
+        </Table>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Item</TableHead>
+              <TableHead>Bots</TableHead>
+              <TableHead>Rounds</TableHead>
+              {/* <TableHead>Matches</TableHead> */}
+              <TableHead>WinRate</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {itemStats.map((item) => {
+              return (
+                <Fragment key={item.name}>
+                  <TableRow>
+                    <TableCell className="flex flex-row">
+                      <TinyItem name={item.name} />
+                    </TableCell>
+                    <TableCell>{item.botsWithItem.length}</TableCell>
+                    <TableCell>{item.simulationRounds}</TableCell>
+                    {/* <TableCell>{item.matches}</TableCell> */}
+                    <TableCell>{Math.round(item.winRate * 100)}%</TableCell>
+                  </TableRow>
+                </Fragment>
+              )
+            })}
+          </TableBody>
+        </Table>
       </div>
     </>
   )
