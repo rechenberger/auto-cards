@@ -14,7 +14,7 @@ import { calcStats } from '@/game/calcStats'
 import { countifyItems } from '@/game/countifyItems'
 import { SeedArray } from '@/game/seed'
 import { capitalCase } from 'change-case'
-import { orderBy, range, sum, sumBy, take } from 'lodash-es'
+import { orderBy, range, sum, sumBy, take, uniqBy } from 'lodash-es'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
 import { BotGame, generateBotsWithItems } from './generateBotsWithItems'
@@ -47,14 +47,23 @@ export default async function Page() {
 
     if (!isFinal) {
       console.time('generateBotsWithItems')
-      bots.push(
-        ...(await generateBotsWithItems({
-          noOfBots: noOfBots - bots.length,
-          simulationSeed: [...simulationSeed, selectionRound],
-          startingItems,
-          startingGold,
-        })),
-      )
+      let t = 0
+      while (bots.length < noOfBots) {
+        t++
+        bots.push(
+          ...(await generateBotsWithItems({
+            noOfBots: noOfBots - bots.length,
+            simulationSeed: [...simulationSeed, selectionRound, t],
+            startingItems,
+            startingGold,
+          })),
+        )
+        bots = uniqBy(bots, (bot) =>
+          orderBy(bot.game.data.currentLoadout.items, (i) => i.name)
+            .map((i) => i.name)
+            .join(','),
+        )
+      }
       console.timeEnd('generateBotsWithItems')
     }
 
