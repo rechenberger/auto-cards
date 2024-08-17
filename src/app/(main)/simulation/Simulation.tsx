@@ -99,11 +99,13 @@ export async function Simulation({
     const winRates = botsWithItem.map((bot) => bot.wins / bot.matches)
     const winRate = sum(winRates) / winRates.length
     const matches = sumBy(botsWithItem, (bot) => bot.matches)
+    const simulationRounds = sumBy(botsWithItem, (bot) => bot.simulationRounds)
     return {
       ...item,
       botsWithItem,
       winRate,
       matches,
+      simulationRounds,
     }
   })
   itemStats = orderBy(itemStats, (item) => item.winRate, ['desc'])
@@ -122,7 +124,13 @@ export async function Simulation({
           noOfItems: (await getAllItems()).length,
           noOfBotsSelected,
           noOfSelectionRounds,
-          simulatedTime: `${(sumBy(bots, (bot) => bot.time) / 1000 / 60 / 60 / 2).toFixed(1)} hours`,
+          simulatedTime: `${(
+            sumBy(bots, (bot) => bot.time) /
+            1000 /
+            60 /
+            60 /
+            2
+          ).toFixed(1)} hours`,
         }}
       />
       <div className="grid grid-cols-[1fr,auto,auto] gap-2 justify-start">
@@ -132,7 +140,9 @@ export async function Simulation({
               {countifyItems(bot.game.data.currentLoadout.items)
                 .map(
                   (i) =>
-                    `${i.count > 1 ? `${i.count}x ` : ''}${capitalCase(i.name)}`,
+                    `${i.count > 1 ? `${i.count}x ` : ''}${capitalCase(
+                      i.name,
+                    )}`,
                 )
                 .join(', ')}
             </div>
@@ -162,6 +172,7 @@ export async function Simulation({
             <TableRow>
               <TableHead>Item</TableHead>
               <TableHead>Bots</TableHead>
+              <TableHead>Rounds</TableHead>
               <TableHead>Matches</TableHead>
               <TableHead>WinRate</TableHead>
             </TableRow>
@@ -173,6 +184,7 @@ export async function Simulation({
                   <TableRow>
                     <TableCell>{item.name}</TableCell>
                     <TableCell>{item.botsWithItem.length}</TableCell>
+                    <TableCell>{item.simulationRounds}</TableCell>
                     <TableCell>{item.matches}</TableCell>
                     <TableCell>{Math.round(item.winRate * 100)}%</TableCell>
                   </TableRow>
