@@ -28,6 +28,7 @@ export const generateBotsWithItems = async ({
       matches: 0,
       draws: 0,
       time: 0,
+      simulationRounds: 0,
     }
   })
 
