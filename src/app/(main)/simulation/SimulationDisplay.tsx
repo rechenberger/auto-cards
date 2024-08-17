@@ -1,4 +1,5 @@
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
+import { Progress } from '@/components/ui/progress'
 import {
   Table,
   TableBody,
@@ -8,14 +9,13 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { LoadoutData } from '@/db/schema-zod'
-import { getAllItems } from '@/game/allItems'
 import { countifyItems } from '@/game/countifyItems'
+import { ItemDefinition } from '@/game/zod-schema'
 import { omit, orderBy, sum, sumBy } from 'lodash-es'
 import { Fragment } from 'react'
 import { SimulationInput } from './Simulation'
 import { TinyItem } from './TinyItem'
 import { SimulationResult } from './simulate'
-import { ItemDefinition } from '@/game/zod-schema'
 
 export const SimulationDisplay = async ({
   input,
@@ -67,6 +67,11 @@ export const SimulationDisplay = async ({
   return (
     <>
       <div className="flex flex-col gap-4">
+        <Progress
+          value={
+            (100 * simulationResult.selectionRound) / input.noOfSelectionRounds
+          }
+        />
         <SimpleDataCard
           data={{
             ...input,

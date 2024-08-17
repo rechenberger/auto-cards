@@ -1,7 +1,7 @@
 import { getAllItems, ItemName } from '@/game/allItems'
 import { SeedArray } from '@/game/seed'
 import { createStreamableUI } from 'ai/rsc'
-import { range, throttle } from 'lodash-es'
+import { range } from 'lodash-es'
 import { simulate, SimulationResult } from './simulate'
 import { SimulationDisplay } from './SimulationDisplay'
 
@@ -15,7 +15,15 @@ export type SimulationInput = {
   noOfSelectionRounds: number
 }
 
-export async function Simulation({ input }: { input: SimulationInput }) {
+export async function Simulation({
+  input,
+  onUpdateThrottleMs = 200,
+  onUpdateRenderCycles = 10,
+}: {
+  input: SimulationInput
+  onUpdateThrottleMs?: number
+  onUpdateRenderCycles?: number
+}) {
   const allItems = await getAllItems()
   const ui = createStreamableUI(<></>)
 
@@ -32,8 +40,7 @@ export async function Simulation({ input }: { input: SimulationInput }) {
     }
 
     // This is to make sure the UI updates:
-    const renderCycles = 5
-    for (const idx of range(renderCycles)) {
+    for (const idx of range(onUpdateRenderCycles)) {
       await new Promise((resolve) => setTimeout(resolve, 0))
     }
   }
@@ -41,6 +48,7 @@ export async function Simulation({ input }: { input: SimulationInput }) {
   simulate({
     input,
     onUpdate,
+    onUpdateThrottleMs,
   })
 
   return <div>{ui.value}</div>
