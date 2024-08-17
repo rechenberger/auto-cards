@@ -10,11 +10,11 @@ import {
 import { getAllItems, ItemName } from '@/game/allItems'
 import { countifyItems } from '@/game/countifyItems'
 import { SeedArray } from '@/game/seed'
-import { capitalCase } from 'change-case'
 import { orderBy, range, sum, sumBy, take, uniqBy } from 'lodash-es'
 import { Fragment } from 'react'
 import { BotGame, generateBotsWithItems } from './generateBotsWithItems'
 import { simulateBotMatches } from './simulateBotMatches'
+import { TinyItem } from './TinyItem'
 
 export type SimulationProps = {
   noOfBots: number
@@ -136,15 +136,12 @@ export async function Simulation({
       <div className="grid grid-cols-[1fr,auto,auto] gap-2 justify-start">
         {bots.map((bot, idx) => (
           <Fragment key={idx}>
-            <div className="truncate">
-              {countifyItems(bot.game.data.currentLoadout.items)
-                .map(
-                  (i) =>
-                    `${i.count > 1 ? `${i.count}x ` : ''}${capitalCase(
-                      i.name,
-                    )}`,
-                )
-                .join(', ')}
+            <div className="flex flex-row gap-0.5 overflow-hidden">
+              {countifyItems(bot.game.data.currentLoadout.items).map((i) => (
+                <Fragment key={i.name}>
+                  <TinyItem name={i.name} count={i.count} />
+                </Fragment>
+              ))}
             </div>
             {/* <div>
               <div className="flex flex-row justify-start">
@@ -156,11 +153,13 @@ export async function Simulation({
               </div>
             </div> */}
             {/* <div>{bot.simulationRounds}</div> */}
-            <div>{(bot.time / 1000 / bot.matches).toFixed(1)}s</div>
+            <div className="w-max">
+              {(bot.time / 1000 / bot.matches).toFixed(1)}s
+            </div>
             {/* <div>
               {bot.draws} ({Math.round((bot.draws / bot.matches) * 100)}%)
             </div> */}
-            <div>
+            <div className="w-max">
               {bot.wins} ({Math.round((bot.wins / bot.matches) * 100)}%)
             </div>
           </Fragment>
@@ -182,7 +181,9 @@ export async function Simulation({
               return (
                 <Fragment key={item.name}>
                   <TableRow>
-                    <TableCell>{item.name}</TableCell>
+                    <TableCell>
+                      <TinyItem name={item.name} />
+                    </TableCell>
                     <TableCell>{item.botsWithItem.length}</TableCell>
                     <TableCell>{item.simulationRounds}</TableCell>
                     <TableCell>{item.matches}</TableCell>
