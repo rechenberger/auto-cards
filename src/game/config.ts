@@ -6,3 +6,4 @@ export const BASE_TICK_TIME = 1000
 export const MAX_MATCH_TIME = 10 * 60 * 1000
 
 export const FATIGUE_STARTS_AT = 15_000
+export const MIN_COOLDOWN = 100

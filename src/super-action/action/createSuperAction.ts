@@ -18,6 +18,7 @@ export type SuperActionDialog = {
   content?: ReactNode
   confirm?: string
   cancel?: string
+  className?: string
 } | null
 
 export type SuperActionError = {

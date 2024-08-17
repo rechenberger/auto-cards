@@ -28,6 +28,7 @@ export const generateBotsWithItems = async ({
       matches: 0,
       draws: 0,
       time: 0,
+      simulationRounds: 0,
     }
   })
 
@@ -119,11 +120,6 @@ export const generateBotsWithItems = async ({
         game,
       }
     }),
-  )
-  console.log(
-    botsWithGame.map((b) =>
-      b.game.data.currentLoadout.items.map((i) => i.name),
-    ),
   )
 
   return botsWithGame

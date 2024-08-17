@@ -13,7 +13,7 @@ export const simulateBotMatches = async ({
     bots.map(async (bot) => {
       const others = bots.filter((b) => b.name !== bot.name)
 
-      const matches = await Promise.all(
+      await Promise.all(
         others.map(async (other) => {
           return await Promise.all(
             range(noOfRepeats).map(async (matchIdx) => {

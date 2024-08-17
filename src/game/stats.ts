@@ -6,6 +6,7 @@ import {
   Carrot,
   Coins,
   Crosshair,
+  Flame,
   Heart,
   HeartPulse,
   Pyramid,
@@ -82,6 +83,12 @@ const heroStats = [
     icon: Bird,
     bgClass: 'bg-sky-500',
     tooltip: 'Last X seconds. Can only be hit if enemy is also flying',
+  },
+  {
+    name: 'haste',
+    icon: Flame,
+    bgClass: 'bg-red-500',
+    tooltip: 'Cooldowns reduces by X%.',
   },
 ] as const
 
