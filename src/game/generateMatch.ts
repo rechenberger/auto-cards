@@ -2,13 +2,9 @@ import { LoadoutData } from '@/db/schema-zod'
 import { rngFloat, rngOrder, SeedArray } from '@/game/seed'
 import { cloneDeep, minBy, orderBy } from 'lodash-es'
 import { getItemByName } from './allItems'
+import { calcCooldown } from './calcCooldown'
 import { addStats, calcStats, hasNegativeStats, sumStats } from './calcStats'
-import {
-  BASE_TICK_TIME,
-  FATIGUE_STARTS_AT,
-  MAX_MATCH_TIME,
-  MIN_COOLDOWN,
-} from './config'
+import { BASE_TICK_TIME, FATIGUE_STARTS_AT, MAX_MATCH_TIME } from './config'
 import { Stats } from './stats'
 
 export type MatchLog = {
@@ -97,10 +93,10 @@ export const generateMatch = async ({
         return (
           item.triggers?.flatMap((trigger, triggerIdx) => {
             if (trigger.type !== 'interval') return []
-            const cooldown = Math.max(
-              trigger.cooldown * (1 - (side.stats.haste ?? 0) / 100),
-              MIN_COOLDOWN,
-            )
+            const cooldown = calcCooldown({
+              cooldown: trigger.cooldown,
+              stats: side.stats,
+            })
             return {
               type: 'itemTrigger' as const,
               time: cooldown,
@@ -202,10 +198,10 @@ export const generateMatch = async ({
         const mySide = sides[action.sideIdx]
         const otherSide = sides[1 - action.sideIdx] // lol
 
-        const cooldown = Math.max(
-          trigger.cooldown * (1 - (mySide.stats.haste ?? 0) / 100),
-          MIN_COOLDOWN,
-        )
+        const cooldown = calcCooldown({
+          cooldown: trigger.cooldown,
+          stats: mySide.stats,
+        })
         action.time += cooldown
 
         const { statsSelf, statsEnemy, attack } = trigger

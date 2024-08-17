@@ -12,6 +12,7 @@ import {
   Pyramid,
   Shield,
   Skull,
+  Snowflake,
   Sword,
   Syringe,
 } from 'lucide-react'
@@ -87,8 +88,14 @@ const heroStats = [
   {
     name: 'haste',
     icon: Flame,
-    bgClass: 'bg-red-500',
-    tooltip: 'Cooldowns reduces by X%.',
+    bgClass: 'bg-amber-400',
+    tooltip: 'Everything triggers X% faster.',
+  },
+  {
+    name: 'slow',
+    icon: Snowflake,
+    bgClass: 'bg-sky-300',
+    tooltip: 'Everything triggers X% slower.',
   },
 ] as const
 
