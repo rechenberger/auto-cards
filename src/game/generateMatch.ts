@@ -153,6 +153,17 @@ export const generateMatch = async ({
             })
           }
 
+          // FLYING
+          if (side.stats.flying) {
+            addStats(side.stats, { flying: -1 })
+            log({
+              msg: 'Flying',
+              sideIdx: side.sideIdx,
+              stats: regenStats,
+              targetSideIdx: side.sideIdx,
+            })
+          }
+
           // FATIGUE
           const fatigue = Math.max(
             1 + (time - FATIGUE_STARTS_AT) / BASE_TICK_TIME,
@@ -202,73 +213,90 @@ export const generateMatch = async ({
             targetSideIdx: mySide.sideIdx,
           })
         }
-        if (statsEnemy) {
-          addStats(otherSide.stats, statsEnemy)
-          log({
-            ...action,
-            stats: statsEnemy,
-            targetSideIdx: otherSide.sideIdx,
-          })
-        }
-        if (attack) {
-          const accuracyRng = rngFloat({ seed: seedAction, max: 100 })
-          const doesHit = accuracyRng <= (attack.accuracy ?? 0)
-          if (doesHit) {
-            let damage = attack.damage ?? 0
-            const blockedDamage = Math.min(damage, otherSide.stats.block ?? 0)
-            damage -= blockedDamage
-            const targetStats: Stats = {
-              health: -1 * damage,
-              block: -1 * blockedDamage,
-            }
-            addStats(otherSide.stats, targetStats)
+        const tryingToReach = !!statsEnemy || !!attack
+        if (tryingToReach) {
+          const canReachEnemy = otherSide.stats.flying
+            ? !!mySide.stats.flying
+            : true
+          if (!canReachEnemy) {
             log({
               ...action,
-              msg: `Hit`,
               targetSideIdx: otherSide.sideIdx,
-              stats: targetStats,
+              msg: 'Cannot Reach',
             })
-
-            // LIFESTEAL
-            if (mySide.stats.lifeSteal) {
-              const lifeStealDamage = Math.ceil(
-                damage * (mySide.stats.lifeSteal / 100),
-              )
-              const lifeStealStats: Stats = {
-                health: lifeStealDamage,
-              }
-              addStats(mySide.stats, lifeStealStats)
-              log({
-                ...action,
-                sideIdx: mySide.sideIdx,
-                msg: `Life Steal`,
-                targetSideIdx: otherSide.sideIdx,
-                stats: lifeStealStats,
-              })
-            }
-
-            // THORNS
-            if (otherSide.stats.thorns) {
-              const thornsDamage = otherSide.stats.thorns
-              const thornsStats: Stats = {
-                health: -1 * thornsDamage,
-              }
-              addStats(mySide.stats, thornsStats)
-              log({
-                ...action,
-                sideIdx: otherSide.sideIdx,
-                msg: `Thorns`,
-                targetSideIdx: mySide.sideIdx,
-                stats: thornsStats,
-                itemIdx: undefined,
-              })
-            }
           } else {
-            log({
-              ...action,
-              msg: 'Miss',
-              targetSideIdx: otherSide.sideIdx,
-            })
+            if (statsEnemy) {
+              addStats(otherSide.stats, statsEnemy)
+              log({
+                ...action,
+                stats: statsEnemy,
+                targetSideIdx: otherSide.sideIdx,
+              })
+            }
+            if (attack) {
+              const accuracyRng = rngFloat({ seed: seedAction, max: 100 })
+              const doesHit = accuracyRng <= (attack.accuracy ?? 0)
+              if (doesHit) {
+                let damage = attack.damage ?? 0
+                const blockedDamage = Math.min(
+                  damage,
+                  otherSide.stats.block ?? 0,
+                )
+                damage -= blockedDamage
+                const targetStats: Stats = {
+                  health: -1 * damage,
+                  block: -1 * blockedDamage,
+                }
+                addStats(otherSide.stats, targetStats)
+                log({
+                  ...action,
+                  msg: `Hit`,
+                  targetSideIdx: otherSide.sideIdx,
+                  stats: targetStats,
+                })
+
+                // LIFESTEAL
+                if (mySide.stats.lifeSteal) {
+                  const lifeStealDamage = Math.ceil(
+                    damage * (mySide.stats.lifeSteal / 100),
+                  )
+                  const lifeStealStats: Stats = {
+                    health: lifeStealDamage,
+                  }
+                  addStats(mySide.stats, lifeStealStats)
+                  log({
+                    ...action,
+                    sideIdx: mySide.sideIdx,
+                    msg: `Life Steal`,
+                    targetSideIdx: otherSide.sideIdx,
+                    stats: lifeStealStats,
+                  })
+                }
+
+                // THORNS
+                if (otherSide.stats.thorns) {
+                  const thornsDamage = otherSide.stats.thorns
+                  const thornsStats: Stats = {
+                    health: -1 * thornsDamage,
+                  }
+                  addStats(mySide.stats, thornsStats)
+                  log({
+                    ...action,
+                    sideIdx: otherSide.sideIdx,
+                    msg: `Thorns`,
+                    targetSideIdx: mySide.sideIdx,
+                    stats: thornsStats,
+                    itemIdx: undefined,
+                  })
+                }
+              } else {
+                log({
+                  ...action,
+                  msg: 'Miss',
+                  targetSideIdx: otherSide.sideIdx,
+                })
+              }
+            }
           }
         }
       } else {

@@ -2,6 +2,7 @@ import { constArrayMap } from '@/lib/constArrayMap'
 import {
   Backpack,
   Banana,
+  Bird,
   Carrot,
   Coins,
   Crosshair,
@@ -75,6 +76,12 @@ const heroStats = [
     icon: Skull,
     bgClass: 'bg-green-500',
     tooltip: 'Lose X health per second.',
+  },
+  {
+    name: 'flying',
+    icon: Bird,
+    bgClass: 'bg-sky-500',
+    tooltip: 'Last X seconds. Can only be hit if enemy is also flying',
   },
 ] as const
 

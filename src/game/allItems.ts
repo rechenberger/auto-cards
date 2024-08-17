@@ -130,6 +130,15 @@ const allItemsConst = [
       lifeSteal: 20,
     },
   },
+  {
+    name: 'balloon',
+    tags: ['accessory'],
+    price: 4,
+    stats: {
+      space: -2,
+      flying: 5,
+    },
+  },
 ] as const satisfies ItemDefinition[]
 
 export type ItemName = (typeof allItemsConst)[number]['name']
