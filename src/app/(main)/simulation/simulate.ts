@@ -70,13 +70,17 @@ export const simulate = async ({
 
     if (!isFinal) {
       // console.time('generateBotsWithItems')
-      let t = 0
+      let noOfTry = 0
+      const maxTries = 10
       while (bots.length < noOfBots) {
-        t++
+        noOfTry++
+        if (noOfTry > maxTries) {
+          break
+        }
         bots.push(
           ...(await generateBotsWithItems({
             noOfBots: noOfBots - bots.length,
-            simulationSeed: [...simulationSeed, selectionRound, t],
+            simulationSeed: [...simulationSeed, selectionRound, noOfTry],
             startingItems,
             startingGold,
           })),

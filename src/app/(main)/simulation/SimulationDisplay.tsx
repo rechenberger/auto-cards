@@ -49,7 +49,9 @@ export const SimulationDisplay = async ({
           .includes(item.name),
       )
       const winRates = botsWithItem.map((bot) => bot.wins / bot.matches)
-      const winRate = sum(winRates) / winRates.length
+      const winRate = winRates.length
+        ? sum(winRates) / winRates.length
+        : undefined
       const matches = sumBy(botsWithItem, (bot) => bot.matches)
       const simulationRounds = sumBy(
         botsWithItem,
@@ -63,7 +65,7 @@ export const SimulationDisplay = async ({
         simulationRounds,
       }
     })
-  itemStats = orderBy(itemStats, (item) => item.winRate, ['desc'])
+  itemStats = orderBy(itemStats, (item) => item.winRate ?? 0, ['desc'])
 
   return (
     <>
@@ -91,7 +93,7 @@ export const SimulationDisplay = async ({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Items</TableHead>
+              <TableHead>Loadout</TableHead>
               <TableHead title="Selection rounds survived">Age</TableHead>
               <TableHead title="average match time">ØTime</TableHead>
               {showDraws && <TableHead>Draws</TableHead>}
@@ -135,7 +137,7 @@ export const SimulationDisplay = async ({
             <TableRow>
               <TableHead>Item</TableHead>
               <TableHead>Bots</TableHead>
-              <TableHead>Rounds</TableHead>
+              <TableHead>∑Age</TableHead>
               {/* <TableHead>Matches</TableHead> */}
               <TableHead>WinRate</TableHead>
             </TableRow>
@@ -151,7 +153,11 @@ export const SimulationDisplay = async ({
                     <TableCell>{item.botsWithItem.length}</TableCell>
                     <TableCell>{item.simulationRounds}</TableCell>
                     {/* <TableCell>{item.matches}</TableCell> */}
-                    <TableCell>{Math.round(item.winRate * 100)}%</TableCell>
+                    <TableCell>
+                      {item.winRate === undefined
+                        ? '-'
+                        : `${Math.round(item.winRate * 100)}%`}
+                    </TableCell>
                   </TableRow>
                 </Fragment>
               )

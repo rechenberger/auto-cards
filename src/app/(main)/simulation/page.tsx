@@ -14,13 +14,13 @@ export const metadata: Metadata = {
 }
 
 const baseInput: SimulationInput = {
-  noOfBots: 10,
+  noOfBots: 40,
   noOfRepeats: 1,
   simulationSeed: ['lol'],
-  startingGold: 20,
+  startingGold: 10,
   startingItems: ['hero'],
-  noOfBotsSelected: 5,
-  noOfSelectionRounds: 1,
+  noOfBotsSelected: 20,
+  noOfSelectionRounds: 5,
 }
 
 const variants = [
@@ -54,7 +54,10 @@ export default async function Page() {
                     {variants.map((variant, idx) => (
                       <Fragment key={idx}>
                         <div className="flex flex-col gap-4 flex-1 min-w-[45%]">
-                          <SimulationStream input={variant} />
+                          <SimulationStream
+                            input={variant}
+                            onUpdateRenderCycles={20}
+                          />
                         </div>
                       </Fragment>
                     ))}
