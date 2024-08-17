@@ -1,7 +1,18 @@
+import { ItemName } from '@/game/allItems'
+import { SeedArray } from '@/game/seed'
 import { orderBy, range, take, throttle, uniqBy } from 'lodash-es'
 import { BotGame, generateBotsWithItems } from './generateBotsWithItems'
 import { simulateBotMatches } from './simulateBotMatches'
-import { SimulationInput } from './Simulation'
+
+export type SimulationInput = {
+  noOfBots: number
+  noOfRepeats: number
+  simulationSeed: SeedArray
+  startingGold: number
+  startingItems: ItemName[]
+  noOfBotsSelected: number
+  noOfSelectionRounds: number
+}
 
 export type SimulationResult = {
   bots: BotGame[]

@@ -13,9 +13,8 @@ import { countifyItems } from '@/game/countifyItems'
 import { ItemDefinition } from '@/game/zod-schema'
 import { omit, orderBy, sum, sumBy } from 'lodash-es'
 import { Fragment } from 'react'
-import { SimulationInput } from './Simulation'
+import { SimulationInput, SimulationResult } from './simulate'
 import { TinyItem } from './TinyItem'
-import { SimulationResult } from './simulate'
 
 export const SimulationDisplay = async ({
   input,

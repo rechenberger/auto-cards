@@ -1,21 +1,10 @@
-import { getAllItems, ItemName } from '@/game/allItems'
-import { SeedArray } from '@/game/seed'
+import { getAllItems } from '@/game/allItems'
 import { createStreamableUI } from 'ai/rsc'
 import { range } from 'lodash-es'
-import { simulate, SimulationResult } from './simulate'
+import { simulate, SimulationInput, SimulationResult } from './simulate'
 import { SimulationDisplay } from './SimulationDisplay'
 
-export type SimulationInput = {
-  noOfBots: number
-  noOfRepeats: number
-  simulationSeed: SeedArray
-  startingGold: number
-  startingItems: ItemName[]
-  noOfBotsSelected: number
-  noOfSelectionRounds: number
-}
-
-export async function Simulation({
+export async function SimulationStream({
   input,
   onUpdateThrottleMs = 200,
   onUpdateRenderCycles = 10,

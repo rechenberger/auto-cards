@@ -6,7 +6,8 @@ import {
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
-import { Simulation, SimulationInput } from './Simulation'
+import { SimulationStream } from './SimulationStream'
+import { SimulationInput } from './simulate'
 
 export const metadata: Metadata = {
   title: 'Simulation',
@@ -53,7 +54,7 @@ export default async function Page() {
                     {variants.map((variant, idx) => (
                       <Fragment key={idx}>
                         <div className="flex flex-col gap-4 flex-1 min-w-[45%]">
-                          <Simulation input={variant} />
+                          <SimulationStream input={variant} />
                         </div>
                       </Fragment>
                     ))}
