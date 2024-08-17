@@ -151,7 +151,13 @@ export const SimulationDisplay = async ({
                     <TableCell className="flex flex-row">
                       <TinyItem name={item.name} />
                     </TableCell>
-                    <TableCell>{item.botsWithItem.length}</TableCell>
+                    <TableCell>
+                      {item.botsWithItem.length}&nbsp;(
+                      {Math.round(
+                        (100 * item.botsWithItem.length) / bots.length,
+                      )}
+                      %)
+                    </TableCell>
                     <TableCell>{item.simulationRounds}</TableCell>
                     {/* <TableCell>{item.matches}</TableCell> */}
                     <TableCell>
