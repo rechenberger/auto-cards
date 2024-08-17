@@ -66,6 +66,7 @@ export const SimulationDisplay = async ({
       }
     })
   itemStats = orderBy(itemStats, (item) => item.winRate ?? 0, ['desc'])
+  itemStats = orderBy(itemStats, (item) => item.simulationRounds, ['desc'])
 
   return (
     <>
