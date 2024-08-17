@@ -121,11 +121,6 @@ export const generateBotsWithItems = async ({
       }
     }),
   )
-  console.log(
-    botsWithGame.map((b) =>
-      b.game.data.currentLoadout.items.map((i) => i.name),
-    ),
-  )
 
   return botsWithGame
 }
