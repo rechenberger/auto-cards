@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { LoadoutData } from '@/db/schema-zod'
 import { getAllItems, ItemName } from '@/game/allItems'
 import { countifyItems } from '@/game/countifyItems'
 import { SeedArray } from '@/game/seed'
@@ -92,22 +93,40 @@ export async function Simulation({
 
   const allItems = await getAllItems()
 
-  let itemStats = allItems.map((item) => {
-    const botsWithItem = bots.filter((bot) =>
-      bot.game.data.currentLoadout.items.map((i) => i.name).includes(item.name),
-    )
-    const winRates = botsWithItem.map((bot) => bot.wins / bot.matches)
-    const winRate = sum(winRates) / winRates.length
-    const matches = sumBy(botsWithItem, (bot) => bot.matches)
-    const simulationRounds = sumBy(botsWithItem, (bot) => bot.simulationRounds)
-    return {
-      ...item,
-      botsWithItem,
-      winRate,
-      matches,
-      simulationRounds,
+  const withoutStartingItems = (items: LoadoutData['items']) => {
+    const result = [...items]
+    for (const startingItem of startingItems) {
+      const idx = result.findIndex((i) => i.name === startingItem)
+      if (idx !== -1) {
+        result.splice(idx, 1)
+      }
     }
-  })
+    return result
+  }
+
+  let itemStats = allItems
+    .filter((item) => item.price > 0)
+    .map((item) => {
+      const botsWithItem = bots.filter((bot) =>
+        withoutStartingItems(bot.game.data.currentLoadout.items)
+          .map((i) => i.name)
+          .includes(item.name),
+      )
+      const winRates = botsWithItem.map((bot) => bot.wins / bot.matches)
+      const winRate = sum(winRates) / winRates.length
+      const matches = sumBy(botsWithItem, (bot) => bot.matches)
+      const simulationRounds = sumBy(
+        botsWithItem,
+        (bot) => bot.simulationRounds,
+      )
+      return {
+        ...item,
+        botsWithItem,
+        winRate,
+        matches,
+        simulationRounds,
+      }
+    })
   itemStats = orderBy(itemStats, (item) => item.winRate, ['desc'])
 
   return (
@@ -137,7 +156,9 @@ export async function Simulation({
         {bots.map((bot, idx) => (
           <Fragment key={idx}>
             <div className="flex flex-row gap-0.5 overflow-hidden">
-              {countifyItems(bot.game.data.currentLoadout.items).map((i) => (
+              {countifyItems(
+                withoutStartingItems(bot.game.data.currentLoadout.items),
+              ).map((i) => (
                 <Fragment key={i.name}>
                   <TinyItem name={i.name} count={i.count} />
                 </Fragment>
