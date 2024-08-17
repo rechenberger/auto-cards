@@ -1,31 +1,31 @@
 import { throwIfNotAdmin } from '@/auth/getIsAdmin'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
-import { Simulation, SimulationProps } from './Simulation'
+import { Simulation, SimulationInput } from './Simulation'
 
 export const metadata: Metadata = {
   title: 'Simulation',
 }
 
-const baseProps: SimulationProps = {
-  noOfBots: 40,
+const baseInput: SimulationInput = {
+  noOfBots: 10,
   noOfRepeats: 1,
   simulationSeed: ['lol'],
   startingGold: 20,
   startingItems: ['hero'],
-  noOfBotsSelected: 20,
+  noOfBotsSelected: 5,
   noOfSelectionRounds: 5,
 }
 
 const variants = [
-  baseProps,
+  baseInput,
   {
-    ...baseProps,
+    ...baseInput,
     // startingItems: ['hero', 'woodenSword'],
     simulationSeed: ['rofl'],
   },
   {
-    ...baseProps,
+    ...baseInput,
     // startingItems: ['hero', 'woodenSword'],
     simulationSeed: ['xd'],
   },
@@ -39,7 +39,7 @@ export default async function Page() {
         {variants.map((variant, idx) => (
           <Fragment key={idx}>
             <div className="flex flex-col gap-4 flex-1 min-w-[45%]">
-              <Simulation {...baseProps} />
+              <Simulation input={variant} />
             </div>
           </Fragment>
         ))}
