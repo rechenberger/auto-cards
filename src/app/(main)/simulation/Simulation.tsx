@@ -139,8 +139,8 @@ export async function Simulation({
           tookSeconds,
           simulationSeed,
           startingGold,
-          startingItems,
-          noOfItems: (await getAllItems()).length,
+          startingItems: startingItems.join(', '),
+          noOfItems: allItems.length,
           noOfBotsSelected,
           noOfSelectionRounds,
           simulatedTime: `${(
