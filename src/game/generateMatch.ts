@@ -3,7 +3,12 @@ import { rngFloat, rngOrder, SeedArray } from '@/game/seed'
 import { cloneDeep, minBy, orderBy } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { addStats, calcStats, hasNegativeStats, sumStats } from './calcStats'
-import { BASE_TICK_TIME, FATIGUE_STARTS_AT, MAX_MATCH_TIME } from './config'
+import {
+  BASE_TICK_TIME,
+  FATIGUE_STARTS_AT,
+  MAX_MATCH_TIME,
+  MIN_COOLDOWN,
+} from './config'
 import { Stats } from './stats'
 
 export type MatchLog = {
@@ -92,9 +97,13 @@ export const generateMatch = async ({
         return (
           item.triggers?.flatMap((trigger, triggerIdx) => {
             if (trigger.type !== 'interval') return []
+            const cooldown = Math.max(
+              trigger.cooldown * (1 - (side.stats.haste ?? 0) / 100),
+              MIN_COOLDOWN,
+            )
             return {
               type: 'itemTrigger' as const,
-              time: trigger.cooldown,
+              time: cooldown,
               lastUsed: 0,
               sideIdx: side.sideIdx,
               itemIdx,
@@ -189,10 +198,15 @@ export const generateMatch = async ({
             action.triggerIdx
           ]
         action.lastUsed = time
-        action.time += trigger.cooldown
 
         const mySide = sides[action.sideIdx]
         const otherSide = sides[1 - action.sideIdx] // lol
+
+        const cooldown = Math.max(
+          trigger.cooldown * (1 - (mySide.stats.haste ?? 0) / 100),
+          MIN_COOLDOWN,
+        )
+        action.time += cooldown
 
         const { statsSelf, statsEnemy, attack } = trigger
         if (statsSelf) {
