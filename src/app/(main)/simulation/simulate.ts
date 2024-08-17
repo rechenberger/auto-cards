@@ -1,10 +1,24 @@
-import { orderBy, range, take, uniqBy } from 'lodash-es'
+import { orderBy, range, take, throttle, uniqBy } from 'lodash-es'
 import { BotGame, generateBotsWithItems } from './generateBotsWithItems'
 import { simulateBotMatches } from './simulateBotMatches'
 import { SimulationInput } from './Simulation'
 
-export type SimulationResult = Awaited<ReturnType<typeof simulate>>
-export const simulate = async ({ input }: { input: SimulationInput }) => {
+export type SimulationResult = {
+  bots: BotGame[]
+  tookSeconds: string
+  done: boolean
+  selectionRound: number
+}
+
+export const simulate = async ({
+  input,
+  onUpdate = async () => {},
+  onUpdateThrottleMs = 200,
+}: {
+  input: SimulationInput
+  onUpdate?: (result: SimulationResult) => Promise<void>
+  onUpdateThrottleMs?: number
+}) => {
   const {
     noOfBots,
     noOfRepeats,
@@ -17,6 +31,29 @@ export const simulate = async ({ input }: { input: SimulationInput }) => {
   let bots: BotGame[] = []
 
   const startTime = Date.now()
+
+  const onUpdateThrottled = throttle(onUpdate, onUpdateThrottleMs, {
+    leading: true,
+    trailing: true,
+  })
+
+  const update = async ({
+    done,
+    selectionRound,
+  }: {
+    done: boolean
+    selectionRound: number
+  }) => {
+    const result = {
+      bots,
+      tookSeconds: ((Date.now() - startTime) / 1000).toFixed(1),
+      done,
+      selectionRound,
+    }
+    await onUpdateThrottled(result)
+    return result
+  }
+
   for (const selectionRound of range(noOfSelectionRounds + 1)) {
     const isFinal = selectionRound === noOfSelectionRounds
 
@@ -51,6 +88,11 @@ export const simulate = async ({ input }: { input: SimulationInput }) => {
 
     bots = orderBy(bots, (bot) => bot.wins / bot.matches, ['desc'])
 
+    const result = await update({ done: isFinal, selectionRound })
+    if (isFinal) {
+      return result
+    }
+
     if (!isFinal) {
       bots = take(bots, noOfBotsSelected)
       for (const bot of bots) {
@@ -61,12 +103,5 @@ export const simulate = async ({ input }: { input: SimulationInput }) => {
         bot.simulationRounds++
       }
     }
-  }
-
-  const tookSeconds = ((Date.now() - startTime) / 1000).toFixed(1)
-
-  return {
-    bots,
-    tookSeconds,
   }
 }
