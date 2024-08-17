@@ -86,6 +86,7 @@ export default async function Page() {
           simulationSeed,
           startingGold,
           startingItems,
+          noOfItems: (await getAllItems()).length,
           simulatedTime: `${(sumBy(botResults, (bot) => bot.time) / 1000 / 60 / 60 / 2).toFixed(1)} hours`,
         }}
       />
