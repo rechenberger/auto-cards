@@ -1,5 +1,5 @@
-import { randomBytes } from 'crypto'
-import { isArray } from 'lodash-es'
+import { createHash, randomBytes } from 'crypto'
+import { isArray, orderBy } from 'lodash-es'
 import hash from 'object-hash'
 import seedrandom from 'seedrandom'
 
@@ -10,12 +10,23 @@ export const createSeed = () => {
 export type SeedArray = (string | number | object)[]
 export type Seed = string | SeedArray
 
+const RNG_WITH_CRYPTO = true
+
 export const rng = ({ seed }: { seed: Seed }) => {
-  const seedString = isArray(seed)
-    ? seed.map((s) => (typeof s === 'object' ? hash(s) : s)).join('~')
-    : seed
-  const generator = seedrandom(seedString)
-  return generator()
+  const seedString = seedToString({ seed })
+
+  if (RNG_WITH_CRYPTO) {
+    // FROM: https://teampilot.ai/team/tristan/chat/621f61f01d1c2559a7bb75a1ecbe4b4f
+    const hash = createHash('sha256').update(seedString).digest('hex')
+    const hexSubstring = hash.substring(0, 8)
+    const numericValue = parseInt(hexSubstring, 16)
+    // Normalize the numeric value to a float between 0 and 1
+    const floatValue = numericValue / 0xffffffff
+    return floatValue
+  } else {
+    const generator = seedrandom(seedString)
+    return generator()
+  }
 }
 
 export const rngFloat = ({
@@ -120,4 +131,40 @@ export const rngItemsWithWeights = <T>({
     results.push(item.item)
   }
   return results
+}
+
+export const seedToString = ({ seed }: { seed: Seed }) => {
+  const seedString = isArray(seed)
+    ? seed.map((s) => (typeof s === 'object' ? hash(s) : s)).join('~')
+    : seed
+
+  return seedString
+}
+
+export const rngOrder = <T>({
+  seed,
+  items,
+}: {
+  seed: Seed
+  items: T[]
+}): T[] => {
+  // tiny optimizations for n<=2
+  if (items.length < 2) return items
+  if (items.length === 2) {
+    return rng({ seed }) < 0.5 ? [items[0], items[1]] : [items[1], items[0]]
+  }
+
+  const itemsWithRng = items.map((item, idx) => ({
+    item,
+    rng: rngFloat({ seed: [seedToString({ seed }), idx] }),
+  }))
+  const ordered = orderBy(itemsWithRng, 'rng', 'asc')
+  return ordered.map((item) => item.item)
+
+  // Why no work?
+  // return orderBy(
+  //   items,
+  //   (item, idx) => rngFloat({ seed: [seedToString({ seed }), idx] }),
+  //   'asc',
+  // )
 }

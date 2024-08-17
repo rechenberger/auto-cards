@@ -62,7 +62,7 @@ const heroStats = [
     name: 'lifeSteal',
     icon: Syringe,
     bgClass: 'bg-fuchsia-800',
-    tooltip: 'Steal X Health when attacking.',
+    tooltip: 'Heal x% of the damage when attacking.',
   },
   {
     name: 'regen',

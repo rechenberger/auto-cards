@@ -1,8 +1,8 @@
 import { LoadoutData } from '@/db/schema-zod'
-import { rngFloat, SeedArray } from '@/game/seed'
-import { cloneDeep, first, map, orderBy } from 'lodash-es'
+import { rngFloat, rngOrder, SeedArray } from '@/game/seed'
+import { cloneDeep, minBy, orderBy } from 'lodash-es'
 import { getItemByName } from './allItems'
-import { calcStats, hasNegativeStats, sumStats } from './calcStats'
+import { addStats, calcStats, hasNegativeStats, sumStats } from './calcStats'
 import { BASE_TICK_TIME, FATIGUE_STARTS_AT, MAX_MATCH_TIME } from './config'
 import { Stats } from './stats'
 
@@ -25,24 +25,16 @@ type GenerateMatchInput = {
     loadout: LoadoutData
   }[]
   seed: SeedArray
+  skipLogs?: boolean
 }
 
 export const generateMatchState = async (input: GenerateMatchInput) => {
   const sides = await Promise.all(
     input.participants.map(async (p, idx) => {
-      const itemDefs = await Promise.all(
+      const items = await Promise.all(
         p.loadout.items.map((i) => getItemByName(i.name)),
       )
       const stats = await calcStats({ loadout: p.loadout })
-
-      const items = itemDefs.map((item) => ({
-        ...item,
-        triggers: map(item.triggers, (trigger) => ({
-          ...trigger,
-          lastUsed: 0,
-          // nextUse: time + trigger.cooldown,
-        })),
-      }))
 
       return {
         items,
@@ -56,6 +48,7 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
 export type MatchState = Awaited<ReturnType<typeof generateMatchState>>
 
 export const generateMatch = async ({
+  skipLogs,
   participants,
   seed,
 }: GenerateMatchInput) => {
@@ -66,6 +59,7 @@ export const generateMatch = async ({
 
   const logs: MatchLog[] = []
   const log = (log: Omit<MatchLog, 'time' | 'itemName' | 'stateSnapshot'>) => {
+    if (skipLogs) return
     const itemName =
       log.itemIdx !== undefined
         ? sides[log.sideIdx].items[log.itemIdx].name
@@ -75,56 +69,69 @@ export const generateMatch = async ({
   }
 
   const endOfMatch = () => {
-    const sidesByHealth = orderBy(sides, (s) => s.stats.health ?? 0, 'asc')
+    const sidesRandom = rngOrder({ items: sides, seed: [...seed, 'end'] })
+    const sidesByHealth = orderBy(
+      sidesRandom,
+      (s) => s.stats.health ?? 0,
+      'asc',
+    )
     const [loser, winner] = sidesByHealth
     log({ msg: 'Game over', sideIdx: loser.sideIdx })
     log({ msg: 'Loses', sideIdx: loser.sideIdx })
     log({ msg: 'Wins!', sideIdx: winner.sideIdx })
-    return { logs }
+    return { logs, winner, loser, time }
   }
 
-  while (true) {
-    const seedTick = [...seed, time]
-    const nextBaseTick =
-      time % BASE_TICK_TIME === 0
-        ? time
-        : time + BASE_TICK_TIME - (time % BASE_TICK_TIME)
-    let futureActions = [
-      { type: 'baseTick' as const, time: nextBaseTick },
-      ...sides.flatMap((side, sideIdx) => {
-        return side.items.flatMap((item, itemIdx) => {
-          return item.triggers.flatMap((trigger, triggerIdx) => {
+  const futureActions = [
+    { type: 'baseTick' as const, time: 0 },
+    ...rngOrder({
+      items: sides,
+      seed: [...seed, 'futureActions'],
+    }).flatMap((side) => {
+      return side.items.flatMap((item, itemIdx) => {
+        return (
+          item.triggers?.flatMap((trigger, triggerIdx) => {
             if (trigger.type !== 'interval') return []
             return {
               type: 'itemTrigger' as const,
-              time: trigger.lastUsed + trigger.cooldown,
-              sideIdx,
+              time: trigger.cooldown,
+              lastUsed: 0,
+              sideIdx: side.sideIdx,
               itemIdx,
               triggerIdx,
             }
-          })
-        })
-      }),
-    ]
-    futureActions = orderBy(futureActions, 'time', 'asc')
-    const nextTime = first(futureActions)?.time
+          }) || []
+        )
+      })
+    }),
+  ]
+
+  while (true) {
+    const seedTick = [...seed, time]
+
+    const nextTime = minBy(futureActions, (a) => a.time)?.time
     if (nextTime === undefined) {
       throw new Error('no next time')
     }
 
     // GOTO FUTURE
     time = nextTime
-    const actions = futureActions.filter((a) => a.time === time)
 
-    for (const action of actions) {
+    for (const action of futureActions) {
+      if (action.time !== time) continue
+
       if (action.type === 'baseTick') {
-        for (const side of sides) {
+        action.time += BASE_TICK_TIME
+        for (const side of rngOrder({
+          items: sides,
+          seed: [...seedTick, 'actions'],
+        })) {
           // REGEN
           const regenStats = {
             health: side.stats.regen,
             stamina: side.stats.staminaRegen,
           }
-          side.stats = sumStats(side.stats, regenStats)
+          addStats(side.stats, regenStats)
           log({
             msg: 'Regenerate',
             sideIdx: side.sideIdx,
@@ -137,7 +144,7 @@ export const generateMatch = async ({
             const poisonStats = {
               health: -1 * side.stats.poison ?? 0,
             }
-            side.stats = sumStats(side.stats, poisonStats)
+            addStats(side.stats, poisonStats)
             log({
               msg: 'Poison',
               sideIdx: side.sideIdx,
@@ -155,7 +162,7 @@ export const generateMatch = async ({
             const fatigueStats = {
               health: -1 * fatigue,
             }
-            side.stats = sumStats(side.stats, fatigueStats)
+            addStats(side.stats, fatigueStats)
             log({
               msg: 'Fatigue',
               sideIdx: side.sideIdx,
@@ -167,10 +174,12 @@ export const generateMatch = async ({
       } else if (action.type === 'itemTrigger') {
         const seedAction = [...seedTick, action]
         const trigger =
-          sides[action.sideIdx].items[action.itemIdx].triggers[
+          sides[action.sideIdx].items[action.itemIdx].triggers![
             action.triggerIdx
           ]
-        trigger.lastUsed = time
+        action.lastUsed = time
+        action.time += trigger.cooldown
+
         const mySide = sides[action.sideIdx]
         const otherSide = sides[1 - action.sideIdx] // lol
 
@@ -194,7 +203,7 @@ export const generateMatch = async ({
           })
         }
         if (statsEnemy) {
-          otherSide.stats = sumStats(otherSide.stats, statsEnemy)
+          addStats(otherSide.stats, statsEnemy)
           log({
             ...action,
             stats: statsEnemy,
@@ -212,7 +221,7 @@ export const generateMatch = async ({
               health: -1 * damage,
               block: -1 * blockedDamage,
             }
-            otherSide.stats = sumStats(otherSide.stats, targetStats)
+            addStats(otherSide.stats, targetStats)
             log({
               ...action,
               msg: `Hit`,
@@ -228,7 +237,7 @@ export const generateMatch = async ({
               const lifeStealStats: Stats = {
                 health: lifeStealDamage,
               }
-              mySide.stats = sumStats(mySide.stats, lifeStealStats)
+              addStats(mySide.stats, lifeStealStats)
               log({
                 ...action,
                 sideIdx: mySide.sideIdx,
@@ -244,13 +253,14 @@ export const generateMatch = async ({
               const thornsStats: Stats = {
                 health: -1 * thornsDamage,
               }
-              mySide.stats = sumStats(mySide.stats, thornsStats)
+              addStats(mySide.stats, thornsStats)
               log({
                 ...action,
                 sideIdx: otherSide.sideIdx,
                 msg: `Thorns`,
                 targetSideIdx: mySide.sideIdx,
                 stats: thornsStats,
+                itemIdx: undefined,
               })
             }
           } else {

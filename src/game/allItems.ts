@@ -1,6 +1,6 @@
 import { ItemDefinition } from './zod-schema'
 
-const allItems: ItemDefinition[] = [
+const allItemsConst = [
   {
     name: 'hero',
     tags: ['hero'],
@@ -24,7 +24,7 @@ const allItems: ItemDefinition[] = [
         type: 'interval',
         cooldown: 3_000,
         statsSelf: {
-          health: 6,
+          health: 4,
           stamina: 2,
         },
       },
@@ -65,6 +65,7 @@ const allItems: ItemDefinition[] = [
     price: 4,
     stats: {
       space: -4,
+      block: 30,
     },
     triggers: [
       {
@@ -86,7 +87,7 @@ const allItems: ItemDefinition[] = [
     triggers: [
       {
         type: 'interval',
-        cooldown: 5_000,
+        cooldown: 10_000,
         statsEnemy: {
           poison: 1,
         },
@@ -126,10 +127,13 @@ const allItems: ItemDefinition[] = [
     price: 4,
     stats: {
       space: -1,
-      lifeSteal: 10,
+      lifeSteal: 20,
     },
   },
-]
+] as const satisfies ItemDefinition[]
+
+export type ItemName = (typeof allItemsConst)[number]['name']
+const allItems: ItemDefinition[] = allItemsConst
 
 export const getAllItems = async () => allItems
 export const getItemByName = async (name: string) => {

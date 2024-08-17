@@ -1,7 +1,8 @@
 import { Game } from '@/db/schema-zod'
 import { calcStats } from '@/game/calcStats'
+import { countifyItems } from '@/game/countifyItems'
 import { orderItems } from '@/game/orderItems'
-import { countBy, map } from 'lodash-es'
+import { map } from 'lodash-es'
 import { Fragment } from 'react'
 import { CardRow } from './CardRow'
 import { HandDisplay } from './HandDisplay'
@@ -11,11 +12,7 @@ import { StatsDisplay } from './StatsDisplay'
 export const LoadoutDisplay = async ({ game }: { game: Game }) => {
   const stats = await calcStats({ loadout: game.data.currentLoadout })
 
-  const itemsGrouped = countBy(game.data.currentLoadout.items, 'name')
-  let items = map(itemsGrouped, (count, itemName) => ({
-    name: itemName,
-    count,
-  }))
+  let items = countifyItems(game.data.currentLoadout.items)
   items = await orderItems(items)
 
   return (

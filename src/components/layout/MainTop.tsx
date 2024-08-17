@@ -24,6 +24,11 @@ export const MainTop = async () => {
       hidden: !isLoggedIn,
     },
     {
+      name: 'Simulation',
+      href: '/simulation',
+      hidden: !isAdminOrDev,
+    },
+    {
       name: 'Items',
       href: '/items',
     },
