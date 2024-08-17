@@ -1,5 +1,6 @@
 import { throwIfNotAdmin } from '@/auth/getIsAdmin'
 import { Metadata } from 'next'
+import { Fragment } from 'react'
 import { Simulation, SimulationProps } from './Simulation'
 
 export const metadata: Metadata = {
@@ -16,22 +17,32 @@ const baseProps: SimulationProps = {
   noOfSelectionRounds: 5,
 }
 
-const variantProps: SimulationProps = {
-  ...baseProps,
-  startingItems: ['hero', 'woodenSword'],
-}
+const variants = [
+  baseProps,
+  {
+    ...baseProps,
+    // startingItems: ['hero', 'woodenSword'],
+    simulationSeed: ['rofl'],
+  },
+  {
+    ...baseProps,
+    // startingItems: ['hero', 'woodenSword'],
+    simulationSeed: ['xd'],
+  },
+]
 
 export default async function Page() {
   await throwIfNotAdmin({ allowDev: true })
   return (
     <>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex flex-col gap-4">
-          <Simulation {...baseProps} />
-        </div>
-        <div className="flex flex-col gap-4">
-          <Simulation {...variantProps} />
-        </div>
+      <div className="flex flex-row gap-4 overflow-x-auto">
+        {variants.map((variant, idx) => (
+          <Fragment key={idx}>
+            <div className="flex flex-col gap-4 flex-1 min-w-[45%]">
+              <Simulation {...baseProps} />
+            </div>
+          </Fragment>
+        ))}
       </div>
     </>
   )
