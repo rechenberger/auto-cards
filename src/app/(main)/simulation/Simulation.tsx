@@ -155,7 +155,7 @@ export async function Simulation({
       <div className="grid grid-cols-[1fr,auto,auto] gap-2 justify-start">
         {bots.map((bot, idx) => (
           <Fragment key={idx}>
-            <div className="flex flex-row gap-0.5 overflow-hidden">
+            <div className="flex flex-row gap-1 overflow-hidden">
               {countifyItems(
                 withoutStartingItems(bot.game.data.currentLoadout.items),
               ).map((i) => (
@@ -193,7 +193,7 @@ export async function Simulation({
               <TableHead>Item</TableHead>
               <TableHead>Bots</TableHead>
               <TableHead>Rounds</TableHead>
-              <TableHead>Matches</TableHead>
+              {/* <TableHead>Matches</TableHead> */}
               <TableHead>WinRate</TableHead>
             </TableRow>
           </TableHeader>
@@ -202,12 +202,12 @@ export async function Simulation({
               return (
                 <Fragment key={item.name}>
                   <TableRow>
-                    <TableCell>
+                    <TableCell className="flex flex-row">
                       <TinyItem name={item.name} />
                     </TableCell>
                     <TableCell>{item.botsWithItem.length}</TableCell>
                     <TableCell>{item.simulationRounds}</TableCell>
-                    <TableCell>{item.matches}</TableCell>
+                    {/* <TableCell>{item.matches}</TableCell> */}
                     <TableCell>{Math.round(item.winRate * 100)}%</TableCell>
                   </TableRow>
                 </Fragment>

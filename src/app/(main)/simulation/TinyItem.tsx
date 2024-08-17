@@ -19,7 +19,7 @@ export const TinyItem = async ({
   }
   return (
     <>
-      <div className={cn('px-1 py-0.5 rounded truncate', tag.bgClass)}>
+      <div className={cn('px-1 py-0.5 rounded truncate text-sm', tag.bgClass)}>
         {label}
       </div>
     </>
