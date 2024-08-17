@@ -4,15 +4,16 @@ import { simulateBotMatches } from './simulateBotMatches'
 import { SimulationInput } from './Simulation'
 
 export type SimulationResult = Awaited<ReturnType<typeof simulate>>
-export const simulate = async ({
-  noOfBots,
-  noOfRepeats,
-  simulationSeed,
-  startingGold,
-  startingItems,
-  noOfBotsSelected,
-  noOfSelectionRounds,
-}: SimulationInput) => {
+export const simulate = async ({ input }: { input: SimulationInput }) => {
+  const {
+    noOfBots,
+    noOfRepeats,
+    simulationSeed,
+    startingGold,
+    startingItems,
+    noOfBotsSelected,
+    noOfSelectionRounds,
+  } = input
   let bots: BotGame[] = []
 
   const startTime = Date.now()

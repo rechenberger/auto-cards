@@ -14,7 +14,7 @@ export type SimulationInput = {
 }
 
 export async function Simulation({ input }: { input: SimulationInput }) {
-  const simulationResult = await simulate(input)
+  const simulationResult = await simulate({ input })
 
   return (
     <>
