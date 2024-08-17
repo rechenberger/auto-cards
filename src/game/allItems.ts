@@ -139,6 +139,25 @@ const allItemsConst = [
       flying: 5,
     },
   },
+  {
+    name: 'dagger',
+    tags: ['weapon'],
+    price: 3,
+    stats: {
+      space: -2,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsSelf: {},
+        attack: {
+          damage: 4,
+          accuracy: 70,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export type ItemName = (typeof allItemsConst)[number]['name']
