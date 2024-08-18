@@ -10,7 +10,7 @@ import { type ActionCommandConfig } from '../command/ActionCommandProvider'
 
 export type ActionButtonProps<Comp extends typeof Button = typeof Button> = {
   children?: React.ReactNode
-  component?: Comp
+  component?: Comp | 'button'
   hideIcon?: boolean
   hideButton?: boolean
   command?: Omit<
@@ -58,13 +58,14 @@ export const ActionButton = <Comp extends typeof Button = typeof Button>(
         >
           {children}
           {!hideIcon && (
-            <Icon className={cn('w-4 h-4 ml-2', isLoading && 'animate-spin')} />
+            <Icon className={cn('size-4 ml-2', isLoading && 'animate-spin')} />
           )}
         </Component>
       )}
       {command && (
         <ActionCommand
           icon={hideIcon ? undefined : Icon}
+          isLoading={isLoading}
           {...command}
           action={trigger as any} // TODO: fix type
         >

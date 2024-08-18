@@ -13,6 +13,7 @@ import { Fragment } from 'react'
 import { BuyButton } from './BuyButton'
 import { StatsDisplay } from './StatsDisplay'
 import { TriggerDisplay } from './TriggerDisplay'
+import { getItemAiImagePrompt } from './getItemAiImagePrompt'
 
 export const ItemCard = async ({
   game,
@@ -97,10 +98,7 @@ export const ItemCard = async ({
               )}
             </div>
             <div className="border-black border-2 rounded-lg overflow-hidden">
-              <AiImage
-                prompt={`Cartoony cozy Image of ${title}. Background is a sunny track trough the mountains or woods whatever fits.`}
-                itemId={item.name}
-              />
+              <AiImage prompt={getItemAiImagePrompt(item)} itemId={item.name} />
             </div>
           </div>
           {count >= 2 && (
