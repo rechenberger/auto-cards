@@ -13,7 +13,7 @@ export const ShopView = ({ game }: { game: Game }) => {
           <FightButton game={game} />
         </div>
         <div className="flex-1" />
-        <LoadoutDisplay game={game} />
+        <LoadoutDisplay game={game} loadout={game.data.currentLoadout} />
       </div>
     </>
   )

@@ -72,7 +72,7 @@ export const matchParticipation = sqliteTable('matchParticipation', {
   ...baseStats(),
   data: text('data', { mode: 'json' }).$type<object>().notNull(),
   matchId: text('matchId').notNull(),
-  userId: text('userId').notNull(),
+  userId: text('userId'),
   loadoutId: text('loadoutId').notNull(),
   sideIdx: int('sideIdx').notNull(),
   status: text('stats').$type<'won' | 'lost'>().notNull(),

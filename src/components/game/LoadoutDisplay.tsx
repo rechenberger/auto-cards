@@ -1,4 +1,4 @@
-import { Game } from '@/db/schema-zod'
+import { Game, LoadoutData } from '@/db/schema-zod'
 import { calcStats } from '@/game/calcStats'
 import { countifyItems } from '@/game/countifyItems'
 import { orderItems } from '@/game/orderItems'
@@ -9,10 +9,16 @@ import { HandDisplay } from './HandDisplay'
 import { ItemCard } from './ItemCard'
 import { StatsDisplay } from './StatsDisplay'
 
-export const LoadoutDisplay = async ({ game }: { game: Game }) => {
-  const stats = await calcStats({ loadout: game.data.currentLoadout })
+export const LoadoutDisplay = async ({
+  game,
+  loadout,
+}: {
+  game?: Game
+  loadout: LoadoutData
+}) => {
+  const stats = await calcStats({ loadout })
 
-  let items = countifyItems(game.data.currentLoadout.items)
+  let items = countifyItems(loadout.items)
   items = await orderItems(items)
 
   return (
