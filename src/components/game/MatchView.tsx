@@ -3,6 +3,7 @@ import { schema } from '@/db/schema-export'
 import { Game, Match } from '@/db/schema-zod'
 import { generateMatch } from '@/game/generateMatch'
 import { eq } from 'drizzle-orm'
+import { LoadoutDisplay } from './LoadoutDisplay'
 import { MatchReportDisplay } from './MatchReportDisplay'
 
 export const MatchView = async ({
@@ -26,7 +27,13 @@ export const MatchView = async ({
 
   return (
     <>
-      <MatchReportDisplay matchReport={matchReport} />
+      <div className="rotate-180">
+        <LoadoutDisplay loadout={participants[0].loadout.data} />
+      </div>
+      <div className="max-h-96 overflow-scroll">
+        <MatchReportDisplay matchReport={matchReport} />
+      </div>
+      <LoadoutDisplay loadout={participants[1].loadout.data} />
     </>
   )
 }
