@@ -104,14 +104,19 @@ export default async function Page() {
 
   return (
     <>
-      {/* <ActionButton
+      <ActionButton
+        askForConfirmation
         action={async () => {
           'use server'
-          return superAction(async () => {})
+          return superAction(async () => {
+            for (const round of roundStats) {
+              await generateRoundBots({ roundNo: round.roundNo })
+            }
+          })
         }}
       >
-        BOT
-      </ActionButton> */}
+        Generate All
+      </ActionButton>
       <Table>
         <TableHeader>
           <TableHead>Round</TableHead>
