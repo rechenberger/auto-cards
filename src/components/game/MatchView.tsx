@@ -1,6 +1,7 @@
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Game, Match } from '@/db/schema-zod'
+import { getBotName } from '@/game/botName'
 import { generateMatch } from '@/game/generateMatch'
 import { eq } from 'drizzle-orm'
 import { orderBy } from 'lodash-es'
@@ -19,6 +20,7 @@ export const MatchView = async ({
     where: eq(schema.matchParticipation.matchId, match.id),
     with: {
       loadout: true,
+      user: true,
     },
   })
   participants = orderBy(participants, (p) => p.sideIdx, 'asc')
@@ -30,6 +32,11 @@ export const MatchView = async ({
 
   return (
     <>
+      <div className="self-center">
+        {participants[1]?.user?.name ||
+          participants[1]?.user?.email ||
+          getBotName({ seed: participants[1].loadout.id })}
+      </div>
       <div className="rotate-180">
         <LoadoutDisplay loadout={participants[1].loadout.data} />
       </div>
@@ -38,6 +45,7 @@ export const MatchView = async ({
       </div>
       <LoadoutDisplay loadout={participants[0].loadout.data} />
       {!!game && <NextRoundButton game={game} />}
+      <div className="self-center">{participants[0]?.user?.name || 'Me'}</div>
     </>
   )
 }
