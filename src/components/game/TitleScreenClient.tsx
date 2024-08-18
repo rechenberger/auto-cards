@@ -47,7 +47,7 @@ const Card = ({ seed, children }: { seed: SeedArray; children: ReactNode }) => {
 
 export const TitleScreenClient = ({ children }: { children: ReactNode[] }) => {
   return (
-    <Canvas style={{ position: 'fixed', inset: 0 }}>
+    <Canvas style={{ position: 'fixed', inset: 0 }} className="-z-10">
       {/* <Stars /> */}
       <ambientLight />
       <pointLight position={[10, 10, 10]} />

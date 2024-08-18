@@ -3,7 +3,7 @@ import { MainTop } from '@/components/layout/MainTop'
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <div className="z-10 bg-background">
+      <div className="bg-background">
         <MainTop />
         <hr />
       </div>
