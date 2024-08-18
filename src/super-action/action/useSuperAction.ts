@@ -5,6 +5,7 @@ import { useCallback, useState } from 'react'
 import { useShowDialog } from '../dialog/DialogProvider'
 import { consumeSuperActionResponse } from './consumeSuperActionResponse'
 import { SuperAction, SuperActionDialog } from './createSuperAction'
+import { useRouterTryCatch } from './useRouterTryCatch'
 
 export type UseSuperActionOptions = {
   action: SuperAction
@@ -20,7 +21,7 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
   const { action, disabled, catchToast, askForConfirmation, stopPropagation } =
     options
 
-  // const router = useRouter()
+  const router = useRouterTryCatch()
   const showDialog = useShowDialog()
 
   const trigger = useCallback(
@@ -59,11 +60,11 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
             showDialog(d)
           },
           onRedirect: (r) => {
-            // if (r.type === 'push') {
-            //   router.push(r.url)
-            // } else {
-            //   router.replace(r.url)
-            // }
+            if (r.type === 'push') {
+              router?.push(r.url)
+            } else {
+              router?.replace(r.url)
+            }
           },
           catch: catchToast
             ? (e) => {
@@ -86,7 +87,7 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
       action,
       showDialog,
       catchToast,
-      // router,
+      router,
     ],
   )
 
