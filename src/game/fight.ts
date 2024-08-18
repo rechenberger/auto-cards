@@ -1,8 +1,9 @@
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Game } from '@/db/schema-zod'
-import { and, eq, isNull } from 'drizzle-orm'
+import { and, desc, eq, not } from 'drizzle-orm'
 import { cloneDeep, first } from 'lodash-es'
+import { NO_OF_LATEST_LOADOUTS } from './config'
 import { generateMatch } from './generateMatch'
 import { rngItem, seedToString } from './seed'
 
@@ -10,9 +11,10 @@ export const fight = async ({ game }: { game: Game }) => {
   const enemyLoadouts = await db.query.loadout.findMany({
     where: and(
       eq(schema.loadout.roundNo, game.data.roundNo),
-      isNull(schema.loadout.userId),
+      not(eq(schema.loadout.userId, game.userId)),
     ),
-    limit: 5,
+    limit: NO_OF_LATEST_LOADOUTS,
+    orderBy: desc(schema.loadout.createdAt),
   })
   const enemyLoadout = rngItem({
     items: enemyLoadouts,
