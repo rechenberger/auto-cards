@@ -26,6 +26,11 @@ export const MainTop = async () => {
       hidden: !isAdminOrDev,
     },
     {
+      name: 'Bot',
+      href: '/bot',
+      hidden: !isAdminOrDev,
+    },
+    {
       name: 'Items',
       href: '/items',
     },

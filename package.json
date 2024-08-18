@@ -39,7 +39,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cmdk": "^1.0.0",
-    "drizzle-orm": "^0.30.8",
+    "drizzle-orm": "^0.33.0",
     "drizzle-zod": "^0.5.1",
     "eslint": "8.49.0",
     "eslint-config-next": "13.5.2",
@@ -74,7 +74,7 @@
     "@types/seedrandom": "^3.0.8",
     "@types/three": "^0.167.1",
     "dotenv-flow": "^4.1.0",
-    "drizzle-kit": "^0.21.2",
+    "drizzle-kit": "^0.24.0",
     "prettier": "^3.1.1"
   }
 }
