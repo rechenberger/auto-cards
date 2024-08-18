@@ -27,6 +27,8 @@
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-toast": "^1.1.5",
     "@radix-ui/react-tooltip": "^1.1.2",
+    "@react-three/drei": "^9.111.0",
+    "@react-three/fiber": "^8.17.5",
     "@sodefa/next-server-context": "^0.0.2",
     "@teampilot/sdk": "^0.0.32",
     "@types/node": "20.6.3",
@@ -58,6 +60,7 @@
     "tailwind-merge": "^1.14.0",
     "tailwindcss": "3.4.1",
     "tailwindcss-animate": "^1.0.7",
+    "three": "^0.167.1",
     "typescript": "5.4.5",
     "zod": "^3.22.4"
   },
@@ -69,6 +72,7 @@
     "@types/react": "18.2.78",
     "@types/react-dom": "18.2.25",
     "@types/seedrandom": "^3.0.8",
+    "@types/three": "^0.167.1",
     "dotenv-flow": "^4.1.0",
     "drizzle-kit": "^0.21.2",
     "prettier": "^3.1.1"

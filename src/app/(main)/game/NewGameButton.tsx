@@ -1,12 +1,18 @@
 import { getMyUserIdOrLogin } from '@/auth/getMyUser'
+import { ButtonProps } from '@/components/ui/button'
 import { createGame } from '@/game/createGame'
 import { superAction } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { redirect } from 'next/navigation'
 
-export const NewGameButton = () => {
+export const NewGameButton = ({
+  variant,
+}: {
+  variant?: ButtonProps['variant']
+}) => {
   return (
     <ActionButton
+      variant={variant}
       action={async () => {
         'use server'
 

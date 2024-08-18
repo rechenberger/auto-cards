@@ -1,11 +1,11 @@
 'use client'
 
 import { toast } from '@/components/ui/use-toast'
-import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { useShowDialog } from '../dialog/DialogProvider'
 import { consumeSuperActionResponse } from './consumeSuperActionResponse'
 import { SuperAction, SuperActionDialog } from './createSuperAction'
+import { useRouterTryCatch } from './useRouterTryCatch'
 
 export type UseSuperActionOptions = {
   action: SuperAction
@@ -21,7 +21,7 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
   const { action, disabled, catchToast, askForConfirmation, stopPropagation } =
     options
 
-  const router = useRouter()
+  const router = useRouterTryCatch()
   const showDialog = useShowDialog()
 
   const trigger = useCallback(
@@ -61,9 +61,9 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
           },
           onRedirect: (r) => {
             if (r.type === 'push') {
-              router.push(r.url)
+              router?.push(r.url)
             } else {
-              router.replace(r.url)
+              router?.replace(r.url)
             }
           },
           catch: catchToast

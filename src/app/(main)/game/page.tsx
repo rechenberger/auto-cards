@@ -1,6 +1,7 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { getMyUserIdOrLogin } from '@/auth/getMyUser'
 import { ItemCard } from '@/components/game/ItemCard'
+import { TitleScreen } from '@/components/game/TitleScreen'
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import { Button } from '@/components/ui/button'
 import {
@@ -37,6 +38,7 @@ export default async function Page() {
 
   return (
     <>
+      <TitleScreen />
       <div className="flex flex-row gap-2 items-center">
         <div className="font-bold flex-1">My Games</div>
         {isAdmin && (
