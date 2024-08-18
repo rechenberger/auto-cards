@@ -43,7 +43,7 @@ export const tryAddStats = (a: Stats, b: Stats) => {
   for (const key in b) {
     const k = key as keyof Stats
     a[k] = (a[k] || 0) + (b[k] || 0)
-    if (key !== 'health' && a[k] < 0) {
+    if (key !== 'health' && (a[k] || 0) < 0) {
       a[k] = 0
     }
   }
