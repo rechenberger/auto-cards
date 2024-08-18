@@ -10,11 +10,11 @@ import {
 } from '@/components/ui/table'
 import { LoadoutData } from '@/db/schema-zod'
 import { countifyItems } from '@/game/countifyItems'
-import { omit, orderBy, sum, sumBy } from 'lodash-es'
+import { ItemDefinition } from '@/game/ItemDefinition'
+import { cloneDeep, omit, orderBy, sum, sumBy } from 'lodash-es'
 import { Fragment } from 'react'
 import { SimulationInput, SimulationResult } from './simulate'
 import { TinyItem } from './TinyItem'
-import { ItemDefinition } from '@/game/ItemDefinition'
 
 export const SimulationDisplay = async ({
   input,
@@ -30,11 +30,15 @@ export const SimulationDisplay = async ({
   const { bots } = simulationResult
 
   const withoutStartingItems = (items: LoadoutData['items']) => {
-    const result = [...items]
+    const result = cloneDeep(items)
     for (const startingItem of input.startingItems) {
       const idx = result.findIndex((i) => i.name === startingItem)
       if (idx !== -1) {
-        result.splice(idx, 1)
+        if (result[idx].count && result[idx].count > 1) {
+          result[idx].count -= 1
+        } else {
+          result.splice(idx, 1)
+        }
       }
     }
     return result

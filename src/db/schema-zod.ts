@@ -6,7 +6,12 @@ import { schema } from './schema-export'
 const seed = z.string().default(() => createSeed())
 
 export const LoadoutData = z.object({
-  items: z.array(z.object({ name: z.string() })),
+  items: z.array(
+    z.object({
+      name: z.string(),
+      count: z.number().optional(),
+    }),
+  ),
 })
 export type LoadoutData = z.infer<typeof LoadoutData>
 

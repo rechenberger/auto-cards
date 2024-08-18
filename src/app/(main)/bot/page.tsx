@@ -60,44 +60,42 @@ export default async function Page() {
 
   const generateRoundBots = async ({ roundNo }: { roundNo: number }) => {
     'use server'
-    return superAction(async () => {
-      const input = {
-        ...baseInput,
-        ...startingByRound(roundNo),
-      }
-      const simulationResult = await simulate({
-        input,
-      })
-      if (!simulationResult) return
-      streamDialog({
-        title: `Round ${roundNo}`,
-        content: (
-          <div>
-            <SimulationDisplay
-              input={input}
-              simulationResult={simulationResult}
-              allItems={[]}
-            />
-          </div>
-        ),
-      })
-      await db
-        .delete(schema.loadout)
-        .where(
-          and(
-            isNull(schema.loadout.userId),
-            eq(schema.loadout.roundNo, roundNo),
-          ),
-        )
-        .execute()
-      await db.insert(schema.loadout).values(
-        simulationResult.bots.map((bot) => ({
-          roundNo,
-          data: bot.game.data.currentLoadout,
-        })),
-      )
-      streamRevalidatePath('/bot')
+    const input = {
+      ...baseInput,
+      ...startingByRound(roundNo),
+    }
+    const simulationResult = await simulate({
+      input,
     })
+    if (!simulationResult) return
+    streamDialog({
+      title: `Round ${roundNo}`,
+      content: (
+        <div>
+          <SimulationDisplay
+            input={input}
+            simulationResult={simulationResult}
+            allItems={[]}
+          />
+        </div>
+      ),
+    })
+    await db
+      .delete(schema.loadout)
+      .where(
+        and(isNull(schema.loadout.userId), eq(schema.loadout.roundNo, roundNo)),
+      )
+      .execute()
+    await db.insert(schema.loadout).values(
+      simulationResult.bots.map((bot) => ({
+        roundNo,
+        data: {
+          ...bot.game.data.currentLoadout,
+          items: countifyItems(bot.game.data.currentLoadout.items),
+        },
+      })),
+    )
+    streamRevalidatePath('/bot')
   }
 
   return (
@@ -145,7 +143,9 @@ export default async function Page() {
                   <ActionButton
                     action={async () => {
                       'use server'
-                      return generateRoundBots({ roundNo: round.roundNo })
+                      return superAction(async () => {
+                        return generateRoundBots({ roundNo: round.roundNo })
+                      })
                     }}
                   >
                     Generate

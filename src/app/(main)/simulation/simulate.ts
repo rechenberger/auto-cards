@@ -87,7 +87,7 @@ export const simulate = async ({
         )
         bots = uniqBy(bots, (bot) =>
           orderBy(bot.game.data.currentLoadout.items, (i) => i.name)
-            .map((i) => i.name)
+            .map((i) => `${i.count ?? 1}:${i.name}`)
             .join(','),
         )
       }

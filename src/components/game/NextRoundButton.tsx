@@ -1,9 +1,9 @@
 import { Game } from '@/db/schema-zod'
+import { ItemName } from '@/game/allItems'
 import { gameAction } from '@/game/gameAction'
 import { generateShopItems } from '@/game/generateShopItems'
 import { roundStats } from '@/game/roundStats'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { range } from 'lodash-es'
 
 export const NextRoundButton = ({ game }: { game: Game }) => {
   return (
@@ -19,11 +19,18 @@ export const NextRoundButton = ({ game }: { game: Game }) => {
               game.data.roundNo += 1
               game.data.shopRerolls = 0
               game.data.gold += roundStats[game.data.roundNo]?.gold ?? 0
-              game.data.currentLoadout.items.push(
-                ...range(roundStats[game.data.roundNo]?.experience ?? 0).map(
-                  () => ({ name: 'experience' }),
-                ),
+              const experience = roundStats[game.data.roundNo]?.experience ?? 0
+              const expItem = game.data.currentLoadout.items.find(
+                (i) => i.name === ('experience' satisfies ItemName),
               )
+              if (expItem) {
+                expItem.count = (expItem.count ?? 0) + experience
+              } else {
+                game.data.currentLoadout.items.push({
+                  name: 'experience' satisfies ItemName,
+                  count: experience,
+                })
+              }
               game.data.shopItems = await generateShopItems({ game })
             },
           })

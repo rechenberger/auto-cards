@@ -1,6 +1,6 @@
 import { LoadoutData } from '@/db/schema-zod'
 import { capitalCase } from 'change-case'
-import { keys, map, omitBy, sumBy, uniq } from 'lodash-es'
+import { keys, map, omitBy, range, sumBy, uniq } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { Stats } from './stats'
 
@@ -13,7 +13,9 @@ export const calcStats = async ({ loadout }: { loadout: LoadoutData }) => {
       }
     }),
   )
-  const stats = sumStats(...items.map((i) => i.item.stats || {}))
+  const stats = sumStats(
+    ...items.flatMap((i) => range(i.count ?? 1).map(() => i.item.stats || {})),
+  )
   return stats
 }
 

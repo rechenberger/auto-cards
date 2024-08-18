@@ -44,7 +44,14 @@ export const BuyButton = ({
               s.isReserved = false
 
               const loadout = game.data.currentLoadout
-              loadout.items = [...loadout.items, { name: shopItem.name }]
+              const itemInLoadout = loadout.items.find(
+                (i) => i.name === shopItem.name,
+              )
+              if (itemInLoadout) {
+                itemInLoadout.count = (itemInLoadout.count ?? 1) + 1
+              } else {
+                loadout.items = [...loadout.items, { name: shopItem.name }]
+              }
               const stats = await calcStats({
                 loadout: loadout,
               })
