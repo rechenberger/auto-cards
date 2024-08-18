@@ -19,7 +19,7 @@ export default async function Page() {
         {items.map((item, idx) => (
           <Fragment key={idx}>
             <Link href={`/items/${item.name}`}>
-              <ItemCard name={item.name} size="240" />
+              <ItemCard name={item.name} size="320" />
             </Link>
           </Fragment>
         ))}
