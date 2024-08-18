@@ -1,9 +1,11 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { getMyUserIdOrLogin } from '@/auth/getMyUser'
+import { EndOfGameView } from '@/components/game/EndOfGameView'
 import { MatchView } from '@/components/game/MatchView'
 import { ShopView } from '@/components/game/ShopView'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
+import { MAX_ROUND_NO } from '@/game/config'
 import { getGameFromDb } from '@/game/getGame'
 import { eq } from 'drizzle-orm'
 import { Metadata } from 'next'
@@ -26,6 +28,10 @@ export default async function Page({
     if (!isAdmin) {
       return notFound()
     }
+  }
+
+  if (game.data.roundNo >= MAX_ROUND_NO) {
+    return <EndOfGameView game={game} />
   }
 
   const loadouts = await db.query.loadout.findMany({

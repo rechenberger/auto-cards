@@ -24,7 +24,7 @@ export const GameMatchBoard = async ({ game }: { game: Game }) => {
   return (
     <>
       <div className="flex flex-row gap-2 p-2 rounded-full bg-gray-500/20 self-center">
-        {range(MAX_ROUND_NO).map((roundNo) => {
+        {range(MAX_ROUND_NO + 1).map((roundNo) => {
           const loadout = loadouts.find((l) => l.roundNo === roundNo)
           const status = loadout?.primaryMatchParticipation?.status
           const match = loadout?.primaryMatchParticipation?.match
