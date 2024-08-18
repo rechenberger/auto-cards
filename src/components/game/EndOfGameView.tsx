@@ -12,13 +12,17 @@ export const EndOfGameView = ({ game }: { game: Game }) => {
       <div className="flex-1 flex flex-col gap-4 items-center justify-center text-center">
         {/* <div className="text-6xl">GG</div>
         <div className="text-2xl">Game Over</div> */}
-        <div className={cn(fontLore.className, '-space-y-0')}>
-          <div className="text-2xl font-bold">You will never be forgotten</div>
-          <div className="text-xs opacity-60">
-            unless I accidentally delete the database
+        <div className="p-4 bg-background/80 rounded-lg flex flex-col gap-4">
+          <div className={cn(fontLore.className, '')}>
+            <div className="text-2xl font-bold">
+              You will never be forgotten
+            </div>
+            <div className="text-xs opacity-60">
+              unless I accidentally delete the database
+            </div>
           </div>
+          <GameMatchBoard game={game} />
         </div>
-        <GameMatchBoard game={game} />
         <LoadoutDisplay game={game} loadout={game.data.currentLoadout} />
         <div />
         <NewGameButton variant={'outline'} />
