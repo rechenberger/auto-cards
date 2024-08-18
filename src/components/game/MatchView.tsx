@@ -39,13 +39,13 @@ export const MatchView = async ({
   return (
     <>
       <div className="flex flex-col gap-4 items-center">
+        <div className="self-stretch flex flex-col gap-4">
+          <LoadoutDisplay loadout={participants[1].loadout.data} />
+        </div>
         <div>
           {participants[1]?.user?.name ||
             participants[1]?.user?.email ||
             getBotName({ seed: participants[1].loadout.id })}
-        </div>
-        <div className="self-stretch flex flex-col gap-4">
-          <LoadoutDisplay loadout={participants[1].loadout.data} />
         </div>
         <div className="max-h-96 overflow-auto rounded-lg self-stretch lg:self-center">
           <MatchReportDisplay matchReport={matchReport} />
