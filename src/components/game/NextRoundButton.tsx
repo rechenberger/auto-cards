@@ -16,7 +16,6 @@ export const NextRoundButton = ({ game }: { game: Game }) => {
             action: async ({ ctx }) => {
               const { game } = ctx
               game.data.roundNo += 1
-              game.data.shopItems = []
               game.data.shopRerolls = 0
               game.data.gold += roundStats[game.data.roundNo]?.gold ?? 0
               game.data.shopItems = await generateShopItems({ game })
