@@ -7,7 +7,7 @@ import { ItemCard } from './ItemCard'
 const TitleScreenClient = dynamic(
   () => import('./TitleScreenClient').then((m) => m.TitleScreenClient),
   {
-    ssr: true,
+    ssr: false,
   },
 )
 

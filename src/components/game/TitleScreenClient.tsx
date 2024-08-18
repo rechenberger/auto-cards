@@ -1,7 +1,7 @@
 'use client'
 
 import { rngFloat, SeedArray } from '@/game/seed'
-import { Html, Stars } from '@react-three/drei'
+import { Html } from '@react-three/drei'
 import { Canvas, Euler, useFrame, Vector3 } from '@react-three/fiber'
 import { range } from 'lodash-es'
 import { ReactNode, useRef } from 'react'
@@ -48,7 +48,7 @@ const Card = ({ seed, children }: { seed: SeedArray; children: ReactNode }) => {
 export const TitleScreenClient = ({ children }: { children: ReactNode[] }) => {
   return (
     <Canvas style={{ position: 'fixed', inset: 0 }}>
-      <Stars />
+      {/* <Stars /> */}
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
       {children.map((child, idx) => (
