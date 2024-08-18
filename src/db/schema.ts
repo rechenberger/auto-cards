@@ -11,8 +11,8 @@ const baseStats = () => ({
     .notNull()
     .primaryKey()
     .$defaultFn(() => createId()),
-  createdAt: text('createdAt'),
-  updatedAt: text('updatedAt'),
+  createdAt: text('createdAt').$defaultFn(() => new Date().toISOString()),
+  updatedAt: text('updatedAt').$onUpdate(() => new Date().toISOString()),
 })
 
 export const game = sqliteTable('game', {

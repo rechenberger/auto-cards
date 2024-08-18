@@ -4,7 +4,7 @@ import { Game, Match } from '@/db/schema-zod'
 import { getBotName } from '@/game/botName'
 import { generateMatch } from '@/game/generateMatch'
 import { eq } from 'drizzle-orm'
-import { orderBy } from 'lodash-es'
+import { every, orderBy } from 'lodash-es'
 import { LoadoutDisplay } from './LoadoutDisplay'
 import { MatchReportDisplay } from './MatchReportDisplay'
 import { NextRoundButton } from './NextRoundButton'
@@ -24,6 +24,12 @@ export const MatchView = async ({
     },
   })
   participants = orderBy(participants, (p) => p.sideIdx, 'asc')
+  if (participants.length !== 2) {
+    throw new Error('Match must have exactly 2 participants')
+  }
+  if (!every(participants, (p) => p.loadout)) {
+    throw new Error('All participants must have loadouts')
+  }
 
   const matchReport = await generateMatch({
     participants: participants.map((p) => ({ loadout: p.loadout.data })),
