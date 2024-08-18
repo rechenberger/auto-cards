@@ -10,9 +10,8 @@ export const EndOfGameView = ({ game }: { game: Game }) => {
         <div className="text-6xl">GG</div>
         <div className="text-2xl">Game Over</div>
         <GameMatchBoard game={game} />
-        <div className="my-8">
-          <LoadoutDisplay game={game} loadout={game.data.currentLoadout} />
-        </div>
+        <LoadoutDisplay game={game} loadout={game.data.currentLoadout} />
+        <div />
         <NewGameButton variant={'outline'} />
       </div>
     </>

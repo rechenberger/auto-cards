@@ -30,7 +30,7 @@ export default async function Page({
     }
   }
 
-  if (game.data.roundNo >= MAX_ROUND_NO) {
+  if (game.data.roundNo > MAX_ROUND_NO) {
     return <EndOfGameView game={game} />
   }
 

@@ -5,7 +5,7 @@ export const HandDisplay = ({ children }: { children: ReactNode[] }) => {
   return (
     <>
       {/* <div className="h-[360px]" /> */}
-      <div className="relative bottom-20 inset-x-0 flex flex-row justify-center gap-2">
+      <div className="relative bottom-20 inset-x-0 flex flex-row justify-center gap-2 mt-16">
         {children.map((card, idx) => {
           return (
             <Fragment key={idx}>
