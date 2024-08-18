@@ -137,10 +137,12 @@ export default async function Page({
               })
 
               streamDialog({
-                title: 'Match result',
+                title: 'Match Report',
                 content: (
                   <>
-                    <MatchReportDisplay matchReport={matchReport} />
+                    <div className="overflow-auto max-h-[calc(100vh-240px)] max-sm:-mx-6">
+                      <MatchReportDisplay matchReport={matchReport} />
+                    </div>
                   </>
                 ),
               })
