@@ -59,65 +59,10 @@ export default async function Page({
 
   return (
     <>
-      <div className="flex flex-row gap-8">
-        {sides.map((side, sideIdx) => {
-          return (
-            <Fragment key={sideIdx}>
-              <div className="flex flex-col gap-1">
-                {allItems.map((item) => {
-                  const count =
-                    side.find((i) => i.name === item.name)?.count ?? 0
-
-                  const minus = cloneDeep(sides)
-                  const minusItem = minus[sideIdx]?.find(
-                    (i) => i.name === item.name,
-                  )
-                  if (minusItem && minusItem.count > 0) {
-                    minusItem.count--
-                  }
-                  const minusQuery = encode(minus)
-                  const minusHref = `?q=${minusQuery}`
-
-                  const plus = cloneDeep(sides)
-                  const plusItem = plus[sideIdx]?.find(
-                    (i) => i.name === item.name,
-                  )
-                  if (plusItem) {
-                    plusItem.count++
-                  } else {
-                    plus[sideIdx].push({ name: item.name, count: 1 })
-                  }
-                  const plusQuery = encode(plus)
-                  const plusHref = `?q=${plusQuery}`
-
-                  return (
-                    <Fragment key={item.name}>
-                      <div
-                        className={cn(
-                          // count <= 0 && 'grayscale',
-                          'flex flex-col',
-                        )}
-                      >
-                        <TinyItem name={item.name} />
-                      </div>
-                      <div className="flex flex-row gap-1 mb-4 self-center">
-                        {count >= 1 && (
-                          <>
-                            <Link href={minusHref}>-</Link>
-                            <div>{count}</div>
-                          </>
-                        )}
-                        <Link href={plusHref}>+</Link>
-                      </div>
-                    </Fragment>
-                  )
-                })}
-              </div>
-            </Fragment>
-          )
-        })}
+      <div className="flex flex-col gap-4 self-center max-w-96">
         <ActionButton
           catchToast
+          className="mb-8"
           action={async () => {
             'use server'
             return superAction(async () => {
@@ -151,6 +96,74 @@ export default async function Page({
         >
           Fight
         </ActionButton>
+        <div className="grid grid-cols-2 gap-8">
+          {sides.map((side, sideIdx) => {
+            return (
+              <Fragment key={sideIdx}>
+                <div className="flex flex-col gap-1">
+                  {allItems.map((item) => {
+                    const count =
+                      side.find((i) => i.name === item.name)?.count ?? 0
+
+                    const minus = cloneDeep(sides)
+                    const minusItem = minus[sideIdx]?.find(
+                      (i) => i.name === item.name,
+                    )
+                    if (minusItem && minusItem.count > 0) {
+                      minusItem.count--
+                    }
+                    const minusQuery = encode(minus)
+                    const minusHref = `?q=${minusQuery}`
+
+                    const plus = cloneDeep(sides)
+                    const plusItem = plus[sideIdx]?.find(
+                      (i) => i.name === item.name,
+                    )
+                    if (plusItem) {
+                      plusItem.count++
+                    } else {
+                      plus[sideIdx].push({ name: item.name, count: 1 })
+                    }
+                    const plusQuery = encode(plus)
+                    const plusHref = `?q=${plusQuery}`
+
+                    return (
+                      <Fragment key={item.name}>
+                        <div
+                          className={cn(
+                            // count <= 0 && 'grayscale',
+                            'flex flex-col',
+                          )}
+                        >
+                          <TinyItem name={item.name} />
+                        </div>
+                        <div className="flex flex-row gap-1 mb-4 items-center">
+                          {count >= 1 && (
+                            <>
+                              <Link
+                                className="flex-1 text-center font-bold py-1"
+                                href={minusHref}
+                              >
+                                -
+                              </Link>
+                              <div>{count}</div>
+                            </>
+                          )}
+                          <Link
+                            className="flex-1 text-center font-bold py-1"
+                            href={plusHref}
+                          >
+                            +
+                          </Link>
+                        </div>
+                      </Fragment>
+                    )
+                  })}
+                </div>
+              </Fragment>
+            )
+          })}
+        </div>
       </div>
     </>
   )
