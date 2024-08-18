@@ -38,7 +38,11 @@ export const AiImageGallery = async ({
           <ActionButton
             action={async () => {
               'use server'
-              return generateAiImage({ prompt, itemId })
+              return generateAiImage({
+                prompt,
+                itemId,
+                force: !!aiImages.length,
+              })
             }}
           >
             New Image

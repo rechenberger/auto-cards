@@ -6,10 +6,14 @@ import { first } from 'lodash-es'
 import { revalidatePath } from 'next/cache'
 import { AiImageProps } from './AiImage'
 
-export const generateAiImage = async ({ prompt, itemId }: AiImageProps) => {
+export const generateAiImage = async ({
+  prompt,
+  itemId,
+  force = true,
+}: AiImageProps & { force?: boolean }) => {
   'use server'
   await throwIfNotAdmin({ allowDev: true })
-  const { url } = await generateImage({ prompt, force: true })
+  const { url } = await generateImage({ prompt, force })
   await db.insert(schema.aiImage).values({
     prompt,
     url,
