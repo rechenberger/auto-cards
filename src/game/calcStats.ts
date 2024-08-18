@@ -39,6 +39,17 @@ export const addStats = (a: Stats, b: Stats) => {
   return a
 }
 
+export const tryAddStats = (a: Stats, b: Stats) => {
+  for (const key in b) {
+    const k = key as keyof Stats
+    a[k] = (a[k] || 0) + (b[k] || 0)
+    if (key !== 'health' && a[k] < 0) {
+      a[k] = 0
+    }
+  }
+  return a
+}
+
 const getNegativeStats = ({ stats }: { stats: Stats }) => {
   return omitBy(stats, (v) => v === undefined || v >= 0) as Stats
 }
@@ -58,4 +69,15 @@ export const throwIfNegativeStats = ({ stats }: { stats: Stats }) => {
       ).join(', ')}`,
     )
   }
+}
+
+export const hasStats = (a: Stats, b: Stats) => {
+  for (const [key, value] of Object.entries(b)) {
+    // @ts-expect-error
+    const current = mySide.stats[key] ?? 0
+    if (current < value) {
+      return false
+    }
+  }
+  return true
 }

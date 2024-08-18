@@ -5,6 +5,7 @@ import { Tag } from './tags'
 export const Trigger = z.object({
   type: z.enum(['interval', 'onSelfStun', 'onEnemyStun']),
   cooldown: z.number(),
+  statsRequired: Stats.optional(),
   statsSelf: Stats.optional(),
   statsEnemy: Stats.optional(),
   attack: Stats.optional(),

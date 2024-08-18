@@ -3,7 +3,7 @@ import { rngFloat, rngOrder, SeedArray } from '@/game/seed'
 import { cloneDeep, minBy, orderBy } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { calcCooldown } from './calcCooldown'
-import { addStats, calcStats, hasNegativeStats, sumStats } from './calcStats'
+import { addStats, calcStats, hasStats, tryAddStats } from './calcStats'
 import { BASE_TICK_TIME, FATIGUE_STARTS_AT, MAX_MATCH_TIME } from './config'
 import { Stats } from './stats'
 
@@ -204,19 +204,21 @@ export const generateMatch = async ({
         })
         action.time += cooldown
 
-        const { statsSelf, statsEnemy, attack } = trigger
-        if (statsSelf) {
-          const newStats = sumStats(mySide.stats, statsSelf)
-          if (hasNegativeStats({ stats: newStats })) {
+        const { statsRequired, statsSelf, statsEnemy, attack } = trigger
+        if (statsRequired) {
+          const enough = hasStats(mySide.stats, statsRequired)
+          if (!enough) {
             log({
               ...action,
-              msg: 'Not enough',
+              msg: `Not enough`,
               targetSideIdx: mySide.sideIdx,
-              stats: statsSelf,
+              stats: statsRequired,
             })
             continue
           }
-          mySide.stats = newStats
+        }
+        if (statsSelf) {
+          tryAddStats(mySide.stats, statsSelf)
           log({
             ...action,
             stats: statsSelf,
@@ -236,7 +238,7 @@ export const generateMatch = async ({
             })
           } else {
             if (statsEnemy) {
-              addStats(otherSide.stats, statsEnemy)
+              tryAddStats(otherSide.stats, statsEnemy)
               log({
                 ...action,
                 stats: statsEnemy,

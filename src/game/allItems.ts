@@ -41,6 +41,9 @@ const allItemsConst = [
       {
         type: 'interval',
         cooldown: 3_000,
+        statsRequired: {
+          stamina: 3,
+        },
         statsSelf: {
           stamina: -3,
         },
