@@ -34,8 +34,9 @@ export const SimulationDisplay = async ({
     for (const startingItem of input.startingItems) {
       const idx = result.findIndex((i) => i.name === startingItem)
       if (idx !== -1) {
-        if (result[idx].count && result[idx].count > 1) {
-          result[idx].count -= 1
+        const item = result[idx]
+        if (item && item.count && item.count > 1) {
+          item.count -= 1
         } else {
           result.splice(idx, 1)
         }
