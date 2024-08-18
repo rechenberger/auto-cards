@@ -21,9 +21,9 @@ import { ActionButton } from '@/super-action/button/ActionButton'
 import { and, eq, isNull } from 'drizzle-orm'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
-import { startingByRound } from '../simulation/page'
 import { simulate, SimulationInput } from '../simulation/simulate'
 import { SimulationDisplay } from '../simulation/SimulationDisplay'
+import { startingByRound } from '../simulation/startingByRound'
 import { TinyItem } from '../simulation/TinyItem'
 
 export const metadata: Metadata = {

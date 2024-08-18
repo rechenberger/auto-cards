@@ -12,23 +12,10 @@ import { Metadata } from 'next'
 import { Fragment } from 'react'
 import { SimulationStream } from './SimulationStream'
 import { SimulationInput } from './simulate'
+import { startingByRound } from './startingByRound'
 
 export const metadata: Metadata = {
   title: 'Simulation',
-}
-
-export const startingByRound = (
-  roundNo: number,
-): Pick<SimulationInput, 'startingGold' | 'startingItems'> => {
-  return {
-    startingGold: getRoundStatsCumulative(roundNo).gold,
-    startingItems: [
-      'hero',
-      ...range(getRoundStatsCumulative(roundNo).experience ?? 0).map(
-        () => 'experience' as const,
-      ),
-    ],
-  }
 }
 
 const baseInput: SimulationInput = {
