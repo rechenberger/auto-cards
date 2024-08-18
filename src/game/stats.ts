@@ -88,7 +88,7 @@ const heroStats = [
   {
     name: 'haste',
     icon: Flame,
-    bgClass: 'bg-amber-400',
+    bgClass: 'bg-red-700',
     tooltip: 'Everything triggers X% faster.',
   },
   {

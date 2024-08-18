@@ -47,7 +47,7 @@ export const MatchView = async ({
         <div className="rotate-180">
           <LoadoutDisplay loadout={participants[1].loadout.data} />
         </div>
-        <div className="max-h-96 overflow-scroll">
+        <div className="max-h-96 overflow-auto rounded-lg">
           <MatchReportDisplay matchReport={matchReport} />
         </div>
         <LoadoutDisplay loadout={participants[0].loadout.data} />
