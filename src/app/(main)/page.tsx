@@ -15,9 +15,7 @@ export default async function Page() {
         </h1>
         <UserButton />
       </div> */}
-      <div className=" flex-1 h-screen">
-        <TitleScreen />
-      </div>
+      <TitleScreen />
     </>
   )
 }
