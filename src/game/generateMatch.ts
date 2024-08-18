@@ -1,6 +1,6 @@
 import { LoadoutData } from '@/db/schema-zod'
 import { rngFloat, rngOrder, SeedArray } from '@/game/seed'
-import { cloneDeep, minBy, orderBy } from 'lodash-es'
+import { cloneDeep, minBy, orderBy, range } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { calcCooldown } from './calcCooldown'
 import { addStats, calcStats, hasStats, tryAddStats } from './calcStats'
@@ -33,7 +33,10 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
   const sides = await Promise.all(
     input.participants.map(async (p, idx) => {
       const items = await Promise.all(
-        p.loadout.items.map((i) => getItemByName(i.name)),
+        p.loadout.items.map(async (i) => ({
+          ...(await getItemByName(i.name)),
+          count: i.count ?? 1,
+        })),
       )
       const stats = await calcStats({ loadout: p.loadout })
 
@@ -97,14 +100,14 @@ export const generateMatch = async ({
               cooldown: trigger.cooldown,
               stats: side.stats,
             })
-            return {
+            return range(item.count ?? 1).map(() => ({
               type: 'itemTrigger' as const,
               time: cooldown,
               lastUsed: 0,
               sideIdx: side.sideIdx,
               itemIdx,
               triggerIdx,
-            }
+            }))
           }) || []
         )
       })

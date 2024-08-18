@@ -19,11 +19,11 @@ import {
 import { streamRevalidatePath } from '@/super-action/action/streamRevalidatePath'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { and, eq, isNull } from 'drizzle-orm'
-import { sumBy } from 'lodash-es'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
 import { simulate, SimulationInput } from '../simulation/simulate'
 import { SimulationDisplay } from '../simulation/SimulationDisplay'
+import { startingByRound } from '../simulation/startingByRound'
 import { TinyItem } from '../simulation/TinyItem'
 
 export const metadata: Metadata = {
@@ -54,50 +54,48 @@ export default async function Page() {
     return {
       roundNo,
       loadouts,
-      gold: startingGoldByRound(roundNo),
+      gold: startingByRound(roundNo).startingGold,
     }
   })
 
   const generateRoundBots = async ({ roundNo }: { roundNo: number }) => {
     'use server'
-    return superAction(async () => {
-      const input = {
-        ...baseInput,
-        startingGold: startingGoldByRound(roundNo),
-      }
-      const simulationResult = await simulate({
-        input,
-      })
-      if (!simulationResult) return
-      streamDialog({
-        title: `Round ${roundNo}`,
-        content: (
-          <div>
-            <SimulationDisplay
-              input={input}
-              simulationResult={simulationResult}
-              allItems={[]}
-            />
-          </div>
-        ),
-      })
-      await db
-        .delete(schema.loadout)
-        .where(
-          and(
-            isNull(schema.loadout.userId),
-            eq(schema.loadout.roundNo, roundNo),
-          ),
-        )
-        .execute()
-      await db.insert(schema.loadout).values(
-        simulationResult.bots.map((bot) => ({
-          roundNo,
-          data: bot.game.data.currentLoadout,
-        })),
-      )
-      streamRevalidatePath('/bot')
+    const input = {
+      ...baseInput,
+      ...startingByRound(roundNo),
+    }
+    const simulationResult = await simulate({
+      input,
     })
+    if (!simulationResult) return
+    streamDialog({
+      title: `Round ${roundNo}`,
+      content: (
+        <div>
+          <SimulationDisplay
+            input={input}
+            simulationResult={simulationResult}
+            allItems={[]}
+          />
+        </div>
+      ),
+    })
+    await db
+      .delete(schema.loadout)
+      .where(
+        and(isNull(schema.loadout.userId), eq(schema.loadout.roundNo, roundNo)),
+      )
+      .execute()
+    await db.insert(schema.loadout).values(
+      simulationResult.bots.map((bot) => ({
+        roundNo,
+        data: {
+          ...bot.game.data.currentLoadout,
+          items: countifyItems(bot.game.data.currentLoadout.items),
+        },
+      })),
+    )
+    streamRevalidatePath('/bot')
   }
 
   return (
@@ -145,7 +143,9 @@ export default async function Page() {
                   <ActionButton
                     action={async () => {
                       'use server'
-                      return generateRoundBots({ roundNo: round.roundNo })
+                      return superAction(async () => {
+                        return generateRoundBots({ roundNo: round.roundNo })
+                      })
                     }}
                   >
                     Generate
@@ -158,12 +158,5 @@ export default async function Page() {
       </Table>
       <div className="self-center flex flex-col gap-4"></div>
     </>
-  )
-}
-
-const startingGoldByRound = (roundNo: number) => {
-  return sumBy(
-    roundStats.filter((r) => r.roundNo <= roundNo),
-    'gold',
   )
 }

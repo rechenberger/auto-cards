@@ -9,7 +9,7 @@ import {
   superAction,
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { cloneDeep, range } from 'lodash-es'
+import { cloneDeep } from 'lodash-es'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { Fragment } from 'react'
@@ -74,9 +74,7 @@ export default async function Page({
                 seed: [seed],
                 participants: sides.map((side) => ({
                   loadout: {
-                    items: side.flatMap((item) =>
-                      range(item.count).map(() => ({ name: item.name })),
-                    ),
+                    items: side,
                   },
                 })),
               })
