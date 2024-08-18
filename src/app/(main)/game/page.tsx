@@ -62,7 +62,6 @@ export default async function Page() {
             <Card className="flex flex-col gap-4 p-4 items-center">
               <GameMatchBoard game={game} />
               <ItemGrid items={game.data.currentLoadout.items} />
-              <div className="flex-1" />
               <div className="flex flex-row justify-end gap-2">
                 {isAdmin && (
                   <ActionButton
@@ -96,7 +95,7 @@ export default async function Page() {
 const ItemGrid = async ({ items }: { items: { name: string }[] }) => {
   const betterItems = countifyItems(await orderItems(items))
   return (
-    <div className="flex flex-row flex-wrap gap-1 justify-center items-center">
+    <div className="flex-1 flex flex-row flex-wrap gap-1 justify-center items-start">
       {betterItems.map((item, idx) => {
         return (
           <Fragment key={idx}>
