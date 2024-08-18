@@ -1,12 +1,5 @@
 import { getIsLoggedIn } from '@/auth/getMyUser'
-import dynamic from 'next/dynamic'
-
-const TitleScreen = dynamic(
-  () => import('@/components/game/TitleScreen').then((m) => m.TitleScreen),
-  {
-    ssr: false,
-  },
-)
+import { TitleScreen } from '@/components/game/TitleScreen'
 
 export default async function Page() {
   const isLoggedIn = await getIsLoggedIn()
