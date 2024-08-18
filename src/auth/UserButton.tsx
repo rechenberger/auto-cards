@@ -9,11 +9,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { ChevronDown, KeyRound, LogOut } from 'lucide-react'
+import { ChevronDown, KeyRound, LogOut, PersonStanding } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { auth, signOut } from './auth'
 import {
   changePasswordWithRedirect,
+  changeUsernameWithRedirect,
   loginWithRedirect,
 } from './loginWithRedirect'
 
@@ -38,6 +39,18 @@ export const UserButton = async () => {
               />
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <ActionButton
+                variant={'ghost'}
+                hideIcon
+                className="w-full text-left"
+                size={'sm'}
+                action={changeUsernameWithRedirect}
+              >
+                <PersonStanding className="w-4 h-4 mr-2" />
+                Change Username
+              </ActionButton>
+            </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <ActionButton
                 variant={'ghost'}
