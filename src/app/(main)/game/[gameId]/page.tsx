@@ -5,7 +5,7 @@ import { MatchView } from '@/components/game/MatchView'
 import { ShopView } from '@/components/game/ShopView'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
-import { MAX_ROUND_NO } from '@/game/config'
+import { NO_OF_ROUNDS } from '@/game/config'
 import { getGameFromDb } from '@/game/getGame'
 import { eq } from 'drizzle-orm'
 import { Metadata } from 'next'
@@ -30,7 +30,7 @@ export default async function Page({
     }
   }
 
-  if (game.data.roundNo > MAX_ROUND_NO) {
+  if (game.data.roundNo >= NO_OF_ROUNDS) {
     return <EndOfGameView game={game} />
   }
 
