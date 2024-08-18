@@ -17,6 +17,7 @@ const Card = ({ seed, children }: { seed: SeedArray; children: ReactNode }) => {
 
   useFrame((state, delta) => {
     if (!meshRef.current) return
+    if (delta > 0.1) return // Skip if too much time has passed
     // Apply continuous rotation
     meshRef.current.rotation.x += delta * 1
     meshRef.current.rotation.y += delta * 1
