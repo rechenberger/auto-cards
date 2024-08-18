@@ -13,6 +13,7 @@ import { ActionButton } from '@/super-action/button/ActionButton'
 import { isNull } from 'drizzle-orm'
 import { sumBy } from 'lodash-es'
 import { Metadata } from 'next'
+import { revalidatePath } from 'next/cache'
 import { Fragment } from 'react'
 import { simulate, SimulationInput } from '../simulation/simulate'
 import { SimulationDisplay } from '../simulation/SimulationDisplay'
@@ -74,6 +75,13 @@ export default async function Page() {
           </div>
         ),
       })
+      await db.insert(schema.loadout).values(
+        simulationResult.bots.map((bot) => ({
+          roundNo,
+          data: bot.game.data.currentLoadout,
+        })),
+      )
+      revalidatePath('/bot')
     })
   }
 
