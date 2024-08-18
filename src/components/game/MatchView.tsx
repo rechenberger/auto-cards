@@ -5,6 +5,7 @@ import { generateMatch } from '@/game/generateMatch'
 import { eq } from 'drizzle-orm'
 import { LoadoutDisplay } from './LoadoutDisplay'
 import { MatchReportDisplay } from './MatchReportDisplay'
+import { NextRoundButton } from './NextRoundButton'
 
 export const MatchView = async ({
   game,
@@ -34,6 +35,7 @@ export const MatchView = async ({
         <MatchReportDisplay matchReport={matchReport} />
       </div>
       <LoadoutDisplay loadout={participants[1].loadout.data} />
+      <NextRoundButton game={game} />
     </>
   )
 }

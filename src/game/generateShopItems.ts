@@ -8,7 +8,7 @@ export const generateShopItems = async ({ game }: { game: Game }) => {
   const allItems = await getAllItems()
   const itemsForSale = allItems.filter((item) => !!item.price)
 
-  const shopSeed = [game.data.seed, game.data.shopRerolls]
+  const shopSeed = [game.data.seed, game.data.roundNo, game.data.shopRerolls]
 
   const shopItems: GameData['shopItems'] = range(NO_OF_SHOP_ITEMS).map(
     (idx) => {
