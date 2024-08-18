@@ -11,7 +11,7 @@ export const MatchView = async ({
   game,
   match,
 }: {
-  game: Game
+  game?: Game
   match: Match
 }) => {
   const participants = await db.query.matchParticipation.findMany({
@@ -35,7 +35,7 @@ export const MatchView = async ({
         <MatchReportDisplay matchReport={matchReport} />
       </div>
       <LoadoutDisplay loadout={participants[1].loadout.data} />
-      <NextRoundButton game={game} />
+      {!!game && <NextRoundButton game={game} />}
     </>
   )
 }
