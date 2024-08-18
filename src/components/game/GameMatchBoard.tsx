@@ -28,6 +28,7 @@ export const GameMatchBoard = async ({ game }: { game: Game }) => {
           const loadout = loadouts.find((l) => l.roundNo === roundNo)
           const status = loadout?.primaryMatchParticipation?.status
           const match = loadout?.primaryMatchParticipation?.match
+          const isActive = roundNo === game.data.roundNo
           const inner = (
             <div
               className={cn(
@@ -38,14 +39,16 @@ export const GameMatchBoard = async ({ game }: { game: Game }) => {
                     ? 'bg-gray-500'
                     : 'bg-gray-500/20',
                 'flex items-center justify-center',
+                'font-bold leading-none text-center text-lg',
                 'text-white',
+                isActive && 'ring-2 ring-primary',
               )}
             >
               {status === 'won' ? (
                 <Crown className="size-6" />
               ) : status === 'lost' ? (
                 <Skull className="size-6" />
-              ) : roundNo === game.data.roundNo ? (
+              ) : isActive ? (
                 roundNo + 1
               ) : null}
             </div>
