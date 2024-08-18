@@ -15,12 +15,12 @@ const Card = ({ seed, children }: { seed: SeedArray; children: ReactNode }) => {
   const minY = -8
   const maxY = -1 * minY
 
-  useFrame(() => {
+  useFrame((state, delta) => {
     if (!meshRef.current) return
     // Apply continuous rotation
-    meshRef.current.rotation.x += 0.01
-    meshRef.current.rotation.y += 0.01
-    meshRef.current.position.y -= 0.05 // Falling effect
+    meshRef.current.rotation.x += delta * 1
+    meshRef.current.rotation.y += delta * 1
+    meshRef.current.position.y -= delta * 5 // Falling effect
     if (meshRef.current.position.y < minY) {
       meshRef.current.position.y = maxY // Reset to top
     }
