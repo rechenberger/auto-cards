@@ -2,6 +2,7 @@ import { UserButton } from '@/auth/UserButton'
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { getIsLoggedIn } from '@/auth/getMyUser'
 import { DarkModeToggle } from '@/components/layout/DarkModeToggle'
+import { MusicButton } from '../game/MusicButton'
 import { MainLogo } from './MainLogo'
 import { MainTopNav } from './MainTopNav'
 
@@ -58,6 +59,7 @@ export const MainTop = async () => {
               <Github />
             </Link>
           </Button> */}
+          <MusicButton />
           <DarkModeToggle />
         </div>
       </div>
