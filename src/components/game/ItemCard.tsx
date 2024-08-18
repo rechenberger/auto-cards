@@ -131,7 +131,7 @@ export const ItemCard = async ({
         </div>
         <div
           className={cn(
-            'flex-1 flex flex-col justify-center rounded-md p-1',
+            'flex-1 flex flex-col justify-center rounded-lg p-1',
             tag.bgClass,
             tag.bgClass && 'border-2 border-black',
           )}
