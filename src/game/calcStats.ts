@@ -73,8 +73,8 @@ export const throwIfNegativeStats = ({ stats }: { stats: Stats }) => {
 
 export const hasStats = (a: Stats, b: Stats) => {
   for (const [key, value] of Object.entries(b)) {
-    // @ts-expect-error
-    const current = mySide.stats[key] ?? 0
+    const k = key as keyof Stats
+    const current = a[k] ?? 0
     if (current < value) {
       return false
     }
