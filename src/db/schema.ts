@@ -32,9 +32,9 @@ export const gameRelations = relations(game, ({ one, many }) => ({
 
 export const loadout = sqliteTable('loadout', {
   ...baseStats(),
-  userId: text('userId').notNull(),
+  userId: text('userId'),
   data: text('data', { mode: 'json' }).$type<LoadoutData>().notNull(),
-  gameId: text('gameId').notNull(),
+  gameId: text('gameId'),
   roundNo: int('roundNo').notNull(),
   primaryMatchParticipationId: text('primaryMatchParticipationId'),
 })
