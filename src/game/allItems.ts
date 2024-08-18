@@ -1,4 +1,4 @@
-import { ItemDefinition } from './zod-schema'
+import { ItemDefinition } from './ItemDefinition'
 
 const allItemsConst = [
   {

@@ -1,4 +1,4 @@
-import { Trigger } from '@/game/zod-schema'
+import { Trigger } from '@/game/ItemDefinition'
 import { capitalCase } from 'change-case'
 import { StatsDisplay } from './StatsDisplay'
 

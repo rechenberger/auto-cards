@@ -1,7 +1,7 @@
 'use client'
 
+import { ItemDefinition } from '@/game/ItemDefinition'
 import { getTagDefinition } from '@/game/tags'
-import { ItemDefinition } from '@/game/zod-schema'
 import { cn } from '@/lib/utils'
 import { SuperAction } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'

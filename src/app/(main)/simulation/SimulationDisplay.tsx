@@ -10,11 +10,11 @@ import {
 } from '@/components/ui/table'
 import { LoadoutData } from '@/db/schema-zod'
 import { countifyItems } from '@/game/countifyItems'
-import { ItemDefinition } from '@/game/zod-schema'
 import { omit, orderBy, sum, sumBy } from 'lodash-es'
 import { Fragment } from 'react'
 import { SimulationInput, SimulationResult } from './simulate'
 import { TinyItem } from './TinyItem'
+import { ItemDefinition } from '@/game/ItemDefinition'
 
 export const SimulationDisplay = async ({
   input,

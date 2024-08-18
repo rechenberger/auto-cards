@@ -1,7 +1,7 @@
 import { Game } from '@/db/schema-zod'
 import { calcStats, throwIfNegativeStats } from '@/game/calcStats'
 import { gameAction } from '@/game/gameAction'
-import { ItemDefinition } from '@/game/zod-schema'
+import { ItemDefinition } from '@/game/ItemDefinition'
 import { streamToast } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
