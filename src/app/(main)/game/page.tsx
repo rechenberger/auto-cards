@@ -3,15 +3,17 @@ import { getMyUserIdOrLogin } from '@/auth/getMyUser'
 import { GameMatchBoard } from '@/components/game/GameMatchBoard'
 import { ItemCard } from '@/components/game/ItemCard'
 import { TitleScreen } from '@/components/game/TitleScreen'
+import { TimeAgo } from '@/components/simple/TimeAgo'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Game } from '@/db/schema-zod'
+import { LIMIT_GAME_OVERVIEW } from '@/game/config'
 import { countifyItems } from '@/game/countifyItems'
 import { orderItems } from '@/game/orderItems'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { eq } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 import { Metadata } from 'next'
 import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
@@ -28,6 +30,8 @@ export default async function Page() {
 
   const gamesRaw = await db.query.game.findMany({
     where: (s, { eq }) => eq(s.userId, userId),
+    orderBy: desc(schema.game.updatedAt),
+    limit: LIMIT_GAME_OVERVIEW,
   })
   const games = z.array(Game).parse(gamesRaw)
   const isAdmin = await getIsAdmin()
@@ -62,6 +66,11 @@ export default async function Page() {
             <Card className="flex flex-col gap-4 p-4 items-center">
               <GameMatchBoard game={game} />
               <ItemGrid items={game.data.currentLoadout.items} />
+              {game.updatedAt && (
+                <div className="text-sm opacity-60">
+                  <TimeAgo date={new Date(game.updatedAt)} />
+                </div>
+              )}
               <div className="flex flex-row justify-end gap-2">
                 {isAdmin && (
                   <ActionButton
