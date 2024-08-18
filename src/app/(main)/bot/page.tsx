@@ -1,22 +1,30 @@
 import { throwIfNotAdmin } from '@/auth/getIsAdmin'
-import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
-import { Card } from '@/components/ui/card'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Loadout } from '@/db/schema-zod'
+import { countifyItems } from '@/game/countifyItems'
 import { roundStats } from '@/game/roundStats'
 import {
   streamDialog,
   superAction,
 } from '@/super-action/action/createSuperAction'
+import { streamRevalidatePath } from '@/super-action/action/streamRevalidatePath'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { isNull } from 'drizzle-orm'
+import { and, eq, isNull } from 'drizzle-orm'
 import { sumBy } from 'lodash-es'
 import { Metadata } from 'next'
-import { revalidatePath } from 'next/cache'
 import { Fragment } from 'react'
 import { simulate, SimulationInput } from '../simulation/simulate'
 import { SimulationDisplay } from '../simulation/SimulationDisplay'
+import { TinyItem } from '../simulation/TinyItem'
 
 export const metadata: Metadata = {
   title: 'Bot',
@@ -75,13 +83,22 @@ export default async function Page() {
           </div>
         ),
       })
+      await db
+        .delete(schema.loadout)
+        .where(
+          and(
+            isNull(schema.loadout.userId),
+            eq(schema.loadout.roundNo, roundNo),
+          ),
+        )
+        .execute()
       await db.insert(schema.loadout).values(
         simulationResult.bots.map((bot) => ({
           roundNo,
           data: bot.game.data.currentLoadout,
         })),
       )
-      revalidatePath('/bot')
+      streamRevalidatePath('/bot')
     })
   }
 
@@ -95,23 +112,48 @@ export default async function Page() {
       >
         BOT
       </ActionButton> */}
-      <div className="self-center flex flex-col gap-4">
-        {rounds.map((round) => (
-          <Fragment key={round.roundNo}>
-            <Card className="p-2">
-              <SimpleDataCard data={round} />
-              <ActionButton
-                action={async () => {
-                  'use server'
-                  return generateRoundBots({ roundNo: round.roundNo })
-                }}
-              >
-                Generate
-              </ActionButton>
-            </Card>
-          </Fragment>
-        ))}
-      </div>
+      <Table>
+        <TableHeader>
+          <TableHead>Round</TableHead>
+          <TableHead>Gold</TableHead>
+          <TableHead>Loadouts</TableHead>
+          <TableHead>Actions</TableHead>
+        </TableHeader>
+        <TableBody>
+          {rounds.map((round) => (
+            <Fragment key={round.roundNo}>
+              <TableRow>
+                <TableCell>{round.roundNo}</TableCell>
+                <TableCell>{round.gold}</TableCell>
+                <TableCell className="flex flex-col gap-1">
+                  {round.loadouts.map((loadout) => (
+                    <Fragment key={loadout.id}>
+                      <div className="flex flex-row gap-1">
+                        {countifyItems(loadout.data.items).map((i) => (
+                          <Fragment key={i.name}>
+                            <TinyItem name={i.name} count={i.count} />
+                          </Fragment>
+                        ))}
+                      </div>
+                    </Fragment>
+                  ))}
+                </TableCell>
+                <TableCell>
+                  <ActionButton
+                    action={async () => {
+                      'use server'
+                      return generateRoundBots({ roundNo: round.roundNo })
+                    }}
+                  >
+                    Generate
+                  </ActionButton>
+                </TableCell>
+              </TableRow>
+            </Fragment>
+          ))}
+        </TableBody>
+      </Table>
+      <div className="self-center flex flex-col gap-4"></div>
     </>
   )
 }
