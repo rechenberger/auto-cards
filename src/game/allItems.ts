@@ -9,7 +9,7 @@ const allItemsConst = [
       health: 50,
       stamina: 5,
       staminaRegen: 1,
-      space: 8,
+      space: 14,
     },
   },
   {
