@@ -13,7 +13,7 @@ export const MatchReportDisplay = ({
 }) => {
   return (
     <>
-      <div className="grid grid-cols-[auto,auto,auto,1fr,auto,auto] text-xs rounded-md">
+      <div className="grid grid-cols-[auto,auto,auto,1fr,auto,auto] text-xs rounded-md whitespace-nowrap">
         {matchReport.logs.map((log, idx) => {
           const cell = cn(
             'px-2 py-0.5 flex flex-row items-center h-8',

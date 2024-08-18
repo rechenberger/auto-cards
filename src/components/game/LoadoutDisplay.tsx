@@ -48,7 +48,7 @@ export const LoadoutDisplay = async ({
       </div>
 
       <div className="flex flex-col items-center">
-        <StatsDisplay stats={stats} showZero />
+        <StatsDisplay stats={stats} showZero canWrap />
       </div>
     </>
   )

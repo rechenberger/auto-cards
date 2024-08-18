@@ -13,15 +13,22 @@ export const StatsDisplay = ({
   relative,
   showZero,
   size = 'default',
+  canWrap,
 }: {
   stats: Stats
   relative?: boolean
   showZero?: boolean
   size?: 'sm' | 'default'
+  canWrap?: boolean
 }) => {
   return (
     <>
-      <div className="flex flex-row gap-2 justify-center dark text-white">
+      <div
+        className={cn(
+          'flex flex-row gap-2 justify-center dark text-white',
+          canWrap && 'flex-wrap',
+        )}
+      >
         {allStatsDefinition.map((stat) => {
           const value = stats[stat.name]
           if (showZero ? value === undefined : !value) return null
