@@ -163,6 +163,34 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'ripsawBlade',
+    tags: ['weapon'],
+    price: 10,
+    stats: {
+      space: -2,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsRequired: {
+          stamina: 2,
+        },
+        statsSelf: {
+          stamina: -2,
+        },
+        statsEnemy: {
+          thorns: -2,
+          regen: -2,
+        },
+        attack: {
+          damage: 18,
+          accuracy: 90,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export type ItemName = (typeof allItemsConst)[number]['name']

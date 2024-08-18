@@ -1,10 +1,13 @@
 import { throwIfNotAdmin } from '@/auth/getIsAdmin'
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
+import { NO_OF_ROUNDS } from '@/game/config'
+import { roundStats } from '@/game/roundStats'
 import {
   streamDialog,
   superAction,
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
+import { sumBy } from 'lodash-es'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
 import { SimulationStream } from './SimulationStream'
@@ -15,12 +18,15 @@ export const metadata: Metadata = {
 }
 
 const baseInput: SimulationInput = {
-  noOfBots: 40,
+  noOfBots: 20,
   noOfRepeats: 1,
   simulationSeed: ['lol'],
-  startingGold: 40,
+  startingGold: sumBy(
+    roundStats.filter((r) => r.roundNo < NO_OF_ROUNDS),
+    (r) => r?.gold ?? 0,
+  ),
   startingItems: ['hero'],
-  noOfBotsSelected: 20,
+  noOfBotsSelected: 10,
   noOfSelectionRounds: 5,
 }
 
