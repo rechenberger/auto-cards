@@ -42,8 +42,6 @@ const baseInput: SimulationInput = {
 
 export default async function Page() {
   await throwIfNotAdmin({ allowDev: true })
-  // const userId = process.env.BOT_USER_ID
-  // if (!userId) throw new Error('BOT_USER_ID not set')
 
   const allLoadouts = await db.query.loadout
     .findMany({
