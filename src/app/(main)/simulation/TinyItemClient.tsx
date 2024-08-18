@@ -36,6 +36,7 @@ export const TinyItemClient = ({
         size="vanilla"
         className={cn(
           'px-1 py-0.5 rounded truncate text-sm',
+          'bg-gray-500',
           tag.bgClass,
           hoveredItem && hoveredItem !== item.name && 'opacity-50 grayscale',
         )}
