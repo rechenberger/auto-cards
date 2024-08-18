@@ -3,6 +3,7 @@ import { MatchReportDisplay } from '@/components/game/MatchReportDisplay'
 import { getAllItems } from '@/game/allItems'
 import { generateMatch } from '@/game/generateMatch'
 import { orderItems } from '@/game/orderItems'
+import { cn } from '@/lib/utils'
 import {
   streamDialog,
   superAction,
@@ -91,10 +92,21 @@ export default async function Page({
 
                   return (
                     <Fragment key={item.name}>
-                      <TinyItem name={item.name} />
+                      <div
+                        className={cn(
+                          // count <= 0 && 'grayscale',
+                          'flex flex-col',
+                        )}
+                      >
+                        <TinyItem name={item.name} />
+                      </div>
                       <div className="flex flex-row gap-1 mb-4 self-center">
-                        <Link href={minusHref}>-</Link>
-                        <div>{count}</div>
+                        {count >= 1 && (
+                          <>
+                            <Link href={minusHref}>-</Link>
+                            <div>{count}</div>
+                          </>
+                        )}
                         <Link href={plusHref}>+</Link>
                       </div>
                     </Fragment>
