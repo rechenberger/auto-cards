@@ -278,7 +278,7 @@ export const generateMatch = async ({
                     ...action,
                     sideIdx: mySide.sideIdx,
                     msg: `Life Steal`,
-                    targetSideIdx: otherSide.sideIdx,
+                    targetSideIdx: mySide.sideIdx,
                     stats: lifeStealStats,
                   })
                 }
