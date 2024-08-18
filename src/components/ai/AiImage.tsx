@@ -52,7 +52,7 @@ export const AiImageRaw = async ({
           variant={'outline'}
           action={async () => {
             'use server'
-            return generateAiImage({ prompt, itemId })
+            return generateAiImage({ prompt, itemId, force: false })
           }}
           title={prompt}
         >

@@ -14,7 +14,8 @@ export const LatestGame = async () => {
       where: (s, { eq }) => eq(s.userId, userId),
       orderBy: desc(schema.game.updatedAt),
     })
-    .then(Game.parse)
+    .then(Game.safeParse)
+    .then((game) => (game.success ? game.data : null))
 
   if (game) {
     return (

@@ -24,11 +24,13 @@ export default async function Page({ params: { itemName } }: PageProps) {
       <div className="flex flex-row gap-4">
         <ItemCard name={itemName} size="480" />
         {isAdmin && (
-          <AiImageGallery
-            prompt={getItemAiImagePrompt({ name: itemName })}
-            itemId={itemName}
-            className="border-black border-2 rounded-lg"
-          />
+          <div className="flex-1">
+            <AiImageGallery
+              prompt={getItemAiImagePrompt({ name: itemName })}
+              itemId={itemName}
+              className="border-black border-2 rounded-lg"
+            />
+          </div>
         )}
       </div>
     </>
