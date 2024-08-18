@@ -10,8 +10,8 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: 'AutoCards',
-    template: '%s | AutoCards',
+    default: 'Sack of Secrets: Battlegrounds',
+    template: '%s | Sack of Secrets',
   },
   description: 'by Tristan Rechenberger',
 }
