@@ -1,95 +1,128 @@
-import { Stats } from './stats'
-type RoundStats = Stats & { roundNo: number }
+import { sumBy } from 'lodash-es'
+
+type RoundStats = {
+  roundNo: number
+  gold: number
+  health: number
+  experience: number
+}
 
 export const roundStats: RoundStats[] = [
   {
     roundNo: 0,
     gold: 12,
     health: 50,
+    experience: 0,
   },
   {
     roundNo: 1,
     gold: 9,
     health: 70,
+    experience: 1,
   },
   {
     roundNo: 2,
     gold: 9,
     health: 90,
+    experience: 1,
   },
   {
     roundNo: 3,
     gold: 9,
     health: 110,
+    experience: 1,
   },
   {
     roundNo: 4,
     gold: 10,
     health: 140,
+    experience: 1,
   },
   {
     roundNo: 5,
     gold: 10,
     health: 170,
+    experience: 2,
   },
   {
     roundNo: 6,
     gold: 11,
     health: 200,
+    experience: 2,
   },
   {
     roundNo: 7,
     gold: 11, // Sub-class thingy gives another 10 gold
     health: 230,
+    experience: 2,
   },
   {
     roundNo: 8,
     gold: 12,
     health: 260,
+    experience: 2,
   },
   {
     roundNo: 9,
     gold: 12,
     health: 300,
+    experience: 2,
   },
   {
     roundNo: 10,
     gold: 13,
     health: 340,
+    experience: 2,
   },
   {
     roundNo: 11,
     gold: 13,
     health: 380,
+    experience: 2,
   },
   {
     roundNo: 12,
     gold: 14,
     health: 420,
+    experience: 2,
   },
   {
     roundNo: 13,
     gold: 14,
     health: 460,
+    experience: 3,
   },
   {
     roundNo: 14,
     gold: 15,
     health: 520,
+    experience: 3,
   },
   {
     roundNo: 15,
     gold: 15,
     health: 580,
+    experience: 3,
   },
   {
     roundNo: 16,
     gold: 15,
     health: 640,
+    experience: 3,
   },
   {
     roundNo: 17,
     gold: 15,
     health: 700,
+    experience: 3,
   },
 ]
+
+export const getRoundStatsCumulative = (roundNo: number) => {
+  const rounds = roundStats.filter((r) => r.roundNo <= roundNo)
+  return {
+    gold: sumBy(rounds, (r) => r.gold),
+    health: sumBy(rounds, (r) => r.health),
+    experience: sumBy(rounds, (r) => r.experience),
+  }
+}

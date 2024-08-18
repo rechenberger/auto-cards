@@ -13,6 +13,14 @@ const allItemsConst = [
     },
   },
   {
+    name: 'experience',
+    tags: ['hero'],
+    price: 0,
+    stats: {
+      health: 20,
+    },
+  },
+  {
     name: 'banana',
     tags: ['food'],
     price: 3,

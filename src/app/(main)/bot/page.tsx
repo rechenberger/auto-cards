@@ -19,9 +19,9 @@ import {
 import { streamRevalidatePath } from '@/super-action/action/streamRevalidatePath'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { and, eq, isNull } from 'drizzle-orm'
-import { sumBy } from 'lodash-es'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
+import { startingByRound } from '../simulation/page'
 import { simulate, SimulationInput } from '../simulation/simulate'
 import { SimulationDisplay } from '../simulation/SimulationDisplay'
 import { TinyItem } from '../simulation/TinyItem'
@@ -54,7 +54,7 @@ export default async function Page() {
     return {
       roundNo,
       loadouts,
-      gold: startingGoldByRound(roundNo),
+      gold: startingByRound(roundNo).startingGold,
     }
   })
 
@@ -63,7 +63,7 @@ export default async function Page() {
     return superAction(async () => {
       const input = {
         ...baseInput,
-        startingGold: startingGoldByRound(roundNo),
+        ...startingByRound(roundNo),
       }
       const simulationResult = await simulate({
         input,
@@ -158,12 +158,5 @@ export default async function Page() {
       </Table>
       <div className="self-center flex flex-col gap-4"></div>
     </>
-  )
-}
-
-const startingGoldByRound = (roundNo: number) => {
-  return sumBy(
-    roundStats.filter((r) => r.roundNo <= roundNo),
-    'gold',
   )
 }

@@ -1,13 +1,13 @@
 import { throwIfNotAdmin } from '@/auth/getIsAdmin'
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import { NO_OF_ROUNDS } from '@/game/config'
-import { roundStats } from '@/game/roundStats'
+import { getRoundStatsCumulative } from '@/game/roundStats'
 import {
   streamDialog,
   superAction,
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { sumBy } from 'lodash-es'
+import { range } from 'lodash-es'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
 import { SimulationStream } from './SimulationStream'
@@ -17,15 +17,25 @@ export const metadata: Metadata = {
   title: 'Simulation',
 }
 
+export const startingByRound = (
+  roundNo: number,
+): Pick<SimulationInput, 'startingGold' | 'startingItems'> => {
+  return {
+    startingGold: getRoundStatsCumulative(roundNo).gold,
+    startingItems: [
+      'hero',
+      ...range(getRoundStatsCumulative(roundNo).experience ?? 0).map(
+        () => 'experience' as const,
+      ),
+    ],
+  }
+}
+
 const baseInput: SimulationInput = {
   noOfBots: 20,
   noOfRepeats: 1,
   simulationSeed: ['lol'],
-  startingGold: sumBy(
-    roundStats.filter((r) => r.roundNo < NO_OF_ROUNDS),
-    (r) => r?.gold ?? 0,
-  ),
-  startingItems: ['hero'],
+  ...startingByRound(NO_OF_ROUNDS - 1),
   noOfBotsSelected: 10,
   noOfSelectionRounds: 5,
 }
