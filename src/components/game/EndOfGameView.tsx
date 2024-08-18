@@ -23,7 +23,10 @@ export const EndOfGameView = ({ game }: { game: Game }) => {
           </div>
           <GameMatchBoard game={game} />
         </div>
-        <LoadoutDisplay game={game} loadout={game.data.currentLoadout} />
+
+        <div className="self-stretch flex flex-col gap-4">
+          <LoadoutDisplay game={game} loadout={game.data.currentLoadout} />
+        </div>
         <div />
         <NewGameButton variant={'outline'} />
       </div>
