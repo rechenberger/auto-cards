@@ -44,7 +44,7 @@ export const MatchView = async ({
             participants[1]?.user?.email ||
             getBotName({ seed: participants[1].loadout.id })}
         </div>
-        <div className="self-stretch flex flex-col gap-4 rotate-180">
+        <div className="self-stretch flex flex-col gap-4">
           <LoadoutDisplay loadout={participants[1].loadout.data} />
         </div>
         <div className="max-h-96 overflow-auto rounded-lg self-stretch lg:self-center">
