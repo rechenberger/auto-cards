@@ -2,6 +2,7 @@ import { getIsLoggedIn } from '@/auth/getMyUser'
 import { UserButton } from '@/auth/UserButton'
 import { TitleScreen } from '@/components/game/TitleScreen'
 import { cn } from '@/lib/utils'
+import { LatestGame } from './LatestGame'
 
 export default async function Page() {
   const isLoggedIn = await getIsLoggedIn()
@@ -15,7 +16,13 @@ export default async function Page() {
         <h1 className={cn('font-bold text-2xl lg:text-6xl')}>
           Auto <span className="text-primary">Cards</span>
         </h1>
-        <UserButton />
+        {isLoggedIn ? (
+          <>
+            <LatestGame />
+          </>
+        ) : (
+          <UserButton />
+        )}
       </div>
       <TitleScreen />
     </>
