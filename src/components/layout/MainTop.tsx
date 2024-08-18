@@ -2,9 +2,16 @@ import { UserButton } from '@/auth/UserButton'
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { getIsLoggedIn } from '@/auth/getMyUser'
 import { DarkModeToggle } from '@/components/layout/DarkModeToggle'
-import { MusicButton } from '../game/MusicButton'
+import dynamic from 'next/dynamic'
 import { MainLogo } from './MainLogo'
 import { MainTopNav } from './MainTopNav'
+
+const MusicButton = dynamic(
+  () => import('../game/MusicButton').then((mod) => mod.MusicButton),
+  {
+    ssr: false,
+  },
+)
 
 export const MainTop = async () => {
   const isAdminOrDev = await getIsAdmin({ allowDev: true })
