@@ -19,7 +19,7 @@ export const LatestGame = async () => {
   if (game) {
     return (
       <>
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-col xl:flex-row gap-2">
           <NewGameButton variant={'outline'} />
           <Button asChild>
             <Link href={`/game/${game.id}`}>Resume Game</Link>
