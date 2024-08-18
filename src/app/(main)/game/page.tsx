@@ -44,6 +44,7 @@ export default async function Page() {
         {isAdmin && (
           <ActionButton
             variant={'outline'}
+            hideIcon
             askForConfirmation
             action={async () => {
               'use server'
@@ -89,6 +90,7 @@ export default async function Page() {
                   {game.userId === userId && (
                     <ActionButton
                       variant={'outline'}
+                      hideIcon
                       askForConfirmation
                       action={async () => {
                         'use server'

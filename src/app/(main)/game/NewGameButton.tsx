@@ -13,6 +13,7 @@ export const NewGameButton = ({
   return (
     <ActionButton
       variant={variant}
+      hideIcon
       action={async () => {
         'use server'
 
