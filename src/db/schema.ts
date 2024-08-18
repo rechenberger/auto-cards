@@ -75,6 +75,7 @@ export const matchParticipation = sqliteTable('matchParticipation', {
   userId: text('userId').notNull(),
   loadoutId: text('loadoutId').notNull(),
   sideIdx: int('sideIdx').notNull(),
+  status: text('stats').$type<'won' | 'lost'>().notNull(),
 })
 
 export const matchParticipationRelations = relations(
