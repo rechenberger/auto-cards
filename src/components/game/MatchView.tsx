@@ -32,20 +32,22 @@ export const MatchView = async ({
 
   return (
     <>
-      <div className="self-center">
-        {participants[1]?.user?.name ||
-          participants[1]?.user?.email ||
-          getBotName({ seed: participants[1].loadout.id })}
+      <div className="flex flex-col items-center gap-4">
+        <div>
+          {participants[1]?.user?.name ||
+            participants[1]?.user?.email ||
+            getBotName({ seed: participants[1].loadout.id })}
+        </div>
+        <div className="rotate-180">
+          <LoadoutDisplay loadout={participants[1].loadout.data} />
+        </div>
+        <div className="max-h-96 overflow-scroll">
+          <MatchReportDisplay matchReport={matchReport} />
+        </div>
+        <LoadoutDisplay loadout={participants[0].loadout.data} />
+        <div>{participants[0]?.user?.name || 'Me'}</div>
+        {!!game && <NextRoundButton game={game} />}
       </div>
-      <div className="rotate-180">
-        <LoadoutDisplay loadout={participants[1].loadout.data} />
-      </div>
-      <div className="max-h-96 overflow-scroll">
-        <MatchReportDisplay matchReport={matchReport} />
-      </div>
-      <LoadoutDisplay loadout={participants[0].loadout.data} />
-      {!!game && <NextRoundButton game={game} />}
-      <div className="self-center">{participants[0]?.user?.name || 'Me'}</div>
     </>
   )
 }
