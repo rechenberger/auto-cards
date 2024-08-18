@@ -33,8 +33,19 @@ export const sumStats2 = (a: Stats, b: Stats) => {
 
 export const addStats = (a: Stats, b: Stats) => {
   for (const key in b) {
-    // @ts-expect-error
-    a[key] = (a[key] || 0) + (b[key] || 0)
+    const k = key as keyof Stats
+    a[k] = (a[k] || 0) + (b[k] || 0)
+  }
+  return a
+}
+
+export const tryAddStats = (a: Stats, b: Stats) => {
+  for (const key in b) {
+    const k = key as keyof Stats
+    a[k] = (a[k] || 0) + (b[k] || 0)
+    if (key !== 'health' && (a[k] || 0) < 0) {
+      a[k] = 0
+    }
   }
   return a
 }
@@ -58,4 +69,15 @@ export const throwIfNegativeStats = ({ stats }: { stats: Stats }) => {
       ).join(', ')}`,
     )
   }
+}
+
+export const hasStats = (a: Stats, b: Stats) => {
+  for (const [key, value] of Object.entries(b)) {
+    const k = key as keyof Stats
+    const current = a[k] ?? 0
+    if (current < value) {
+      return false
+    }
+  }
+  return true
 }

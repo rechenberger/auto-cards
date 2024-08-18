@@ -29,6 +29,15 @@ export const MainTop = async () => {
       hidden: !isLoggedIn,
     },
     {
+      name: 'Items',
+      href: '/items',
+    },
+    {
+      name: 'Playground',
+      href: '/playground',
+      hidden: !isAdminOrDev,
+    },
+    {
       name: 'Simulation',
       href: '/simulation',
       hidden: !isAdminOrDev,
@@ -37,10 +46,6 @@ export const MainTop = async () => {
       name: 'Bot',
       href: '/bot',
       hidden: !isAdminOrDev,
-    },
-    {
-      name: 'Items',
-      href: '/items',
     },
     {
       name: 'Users',

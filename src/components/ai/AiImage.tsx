@@ -44,7 +44,7 @@ export const AiImageRaw = async ({
   })
   if (!aiImage) {
     return (
-      <Skeleton
+      <div
         className={cn(className, 'flex flex-col items-center justify-center')}
       >
         <ActionButton
@@ -58,7 +58,7 @@ export const AiImageRaw = async ({
         >
           Generate
         </ActionButton>
-      </Skeleton>
+      </div>
     )
   }
   return (
