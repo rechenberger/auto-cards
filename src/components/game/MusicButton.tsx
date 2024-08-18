@@ -9,7 +9,7 @@ import { Label } from '../ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Slider } from '../ui/slider'
 
-const musicVolumeAtom = atomWithStorage('musicVolume', 20)
+const musicVolumeAtom = atomWithStorage('musicVolume', 0)
 
 export const MusicButton = () => {
   const ref = useRef<HTMLAudioElement>(null)
@@ -38,7 +38,7 @@ export const MusicButton = () => {
             <span className="flex-1">Music</span>
             <Slider
               value={[volume]}
-              onValueChange={(v) => setVolume(v[0])}
+              onValueChange={(v: any) => setVolume(v[0])}
               max={100}
               step={1}
             />
