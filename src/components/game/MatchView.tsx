@@ -5,6 +5,8 @@ import { getBotName } from '@/game/botName'
 import { generateMatch } from '@/game/generateMatch'
 import { eq } from 'drizzle-orm'
 import { every, orderBy } from 'lodash-es'
+import { AlertCircle } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { LoadoutDisplay } from './LoadoutDisplay'
 import { MatchReportDisplay } from './MatchReportDisplay'
 import { NextRoundButton } from './NextRoundButton'
@@ -24,11 +26,19 @@ export const MatchView = async ({
     },
   })
   participants = orderBy(participants, (p) => p.sideIdx, 'asc')
-  if (participants.length !== 2) {
-    throw new Error('Match must have exactly 2 participants')
-  }
-  if (!every(participants, (p) => p.loadout)) {
-    throw new Error('All participants must have loadouts')
+  if (participants.length !== 2 || !every(participants, (p) => p.loadout)) {
+    return (
+      <>
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Old Match</AlertTitle>
+          <AlertDescription>
+            Game has changed too much to replay this match
+          </AlertDescription>
+        </Alert>
+        {!!game && <NextRoundButton game={game} />}
+      </>
+    )
   }
 
   const matchReport = await generateMatch({
