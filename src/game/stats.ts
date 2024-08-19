@@ -124,9 +124,9 @@ const otherStats = [
 ] as const
 
 export const allStatsDefinition = [
+  ...otherStats,
   ...heroStats,
   ...attackStats,
-  ...otherStats,
 ] as const
 
 export const getStatDefinition = (stat: Stat) => {

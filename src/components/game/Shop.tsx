@@ -1,9 +1,11 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { Game } from '@/db/schema-zod'
+import { calcStats } from '@/game/calcStats'
 import { gameAction } from '@/game/gameAction'
 import { generateShopItems } from '@/game/generateShopItems'
 import { orderItems } from '@/game/orderItems'
 import { ActionButton } from '@/super-action/button/ActionButton'
+import { pick } from 'lodash-es'
 import { RotateCw } from 'lucide-react'
 import { Fragment } from 'react'
 import { CardRow } from './CardRow'
@@ -20,10 +22,15 @@ export const Shop = async ({ game }: { game: Game }) => {
   }))
   shopItems = await orderItems(shopItems)
 
+  const stats = await calcStats({ loadout: game.data.currentLoadout })
+
   return (
     <>
       <div className="flex flex-row gap-2 justify-center items-center">
-        <StatsDisplay stats={{ gold: game.data.gold }} showZero />
+        <StatsDisplay
+          stats={{ gold: game.data.gold, ...pick(stats, ['space']) }}
+          showZero
+        />
         <div className="flex-1" />
         {isAdmin && (
           <ActionButton
