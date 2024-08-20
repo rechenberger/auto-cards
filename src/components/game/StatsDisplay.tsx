@@ -14,12 +14,14 @@ export const StatsDisplay = ({
   showZero,
   size = 'default',
   canWrap,
+  disableTooltip,
 }: {
   stats: Stats
   relative?: boolean
   showZero?: boolean
   size?: 'sm' | 'default'
   canWrap?: boolean
+  disableTooltip?: boolean
 }) => {
   return (
     <>
@@ -36,11 +38,17 @@ export const StatsDisplay = ({
           return (
             <Fragment key={stat.name}>
               <Tooltip>
-                <TooltipTrigger className="cursor-help" tabIndex={-1}>
+                <TooltipTrigger
+                  className={cn(
+                    disableTooltip ? 'pointer-events-none' : 'cursor-help',
+                  )}
+                  tabIndex={-1}
+                >
                   <div
                     className={cn(
                       'rounded-full border px-1 py-0.5 flex flex-row items-center',
                       stat.bgClass,
+                      '[text-shadow:_0px_0px_2px_rgb(0_0_0_/_80%)]',
                     )}
                   >
                     <stat.icon
