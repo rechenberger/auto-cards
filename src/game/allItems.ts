@@ -70,7 +70,7 @@ const allItemsConst = [
   {
     name: 'leatherBag',
     tags: ['bag'],
-    price: 4,
+    price: IGNORE_SPACE ? 0 : 4,
     stats: {
       space: space(4),
     },

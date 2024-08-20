@@ -33,46 +33,50 @@ export const StatsDisplay = ({
           canWrap && 'flex-wrap',
         )}
       >
-        {allStatsDefinition.map((stat) => {
-          const value = stats[stat.name]
-          if (showZero ? value === undefined : !value) return null
+        {allStatsDefinition
+          .filter((stat) => !('hidden' in stat && stat.hidden))
+          .map((stat) => {
+            const value = stats[stat.name]
+            if (showZero ? value === undefined : !value) return null
 
-          const inner = (
-            <div
-              className={cn(
-                'rounded-full border px-1 py-0.5 flex flex-row items-center',
-                stat.bgClass,
-                '[text-shadow:_0px_0px_2px_rgb(0_0_0_/_80%)]',
-                statClassName,
-              )}
-            >
-              <stat.icon className={cn('size-4', size === 'sm' && 'size-3')} />
+            const inner = (
               <div
                 className={cn(
-                  'text-sm px-1 font-bold',
-                  size === 'sm' && 'text-xs',
+                  'rounded-full border px-1 py-0.5 flex flex-row items-center',
+                  stat.bgClass,
+                  '[text-shadow:_0px_0px_2px_rgb(0_0_0_/_80%)]',
+                  statClassName,
                 )}
               >
-                {value}
+                <stat.icon
+                  className={cn('size-4', size === 'sm' && 'size-3')}
+                />
+                <div
+                  className={cn(
+                    'text-sm px-1 font-bold',
+                    size === 'sm' && 'text-xs',
+                  )}
+                >
+                  {value}
+                </div>
               </div>
-            </div>
-          )
+            )
 
-          if (disableTooltip) {
-            return inner
-          }
+            if (disableTooltip) {
+              return inner
+            }
 
-          return (
-            <Fragment key={stat.name}>
-              <Tooltip>
-                <TooltipTrigger tabIndex={-1}>{inner}</TooltipTrigger>
-                <TooltipContent className="bg-none border-none shadow-none p-0">
-                  <CardTooltip name={stat.name} text={stat.tooltip} />
-                </TooltipContent>
-              </Tooltip>
-            </Fragment>
-          )
-        })}
+            return (
+              <Fragment key={stat.name}>
+                <Tooltip>
+                  <TooltipTrigger tabIndex={-1}>{inner}</TooltipTrigger>
+                  <TooltipContent className="bg-none border-none shadow-none p-0">
+                    <CardTooltip name={stat.name} text={stat.tooltip} />
+                  </TooltipContent>
+                </Tooltip>
+              </Fragment>
+            )
+          })}
       </div>
     </>
   )
