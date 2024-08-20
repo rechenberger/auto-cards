@@ -9,12 +9,12 @@ import { pick } from 'lodash-es'
 import { Fragment } from 'react'
 import { BuyButton } from './BuyButton'
 import { CardRow } from './CardRow'
+import { GameMatchBoard } from './GameMatchBoard'
 import { ItemCard } from './ItemCard'
 import { ReRollButton } from './ReRollButton'
 import { StatsDisplay } from './StatsDisplay'
 
 export const Shop = async ({ game }: { game: Game }) => {
-  const priceToReroll = 1 // TODO: make this dynamic
   const isAdmin = await getIsAdmin({ allowDev: true })
 
   let shopItems = game.data.shopItems.map((shopItem, idx) => ({
@@ -32,6 +32,9 @@ export const Shop = async ({ game }: { game: Game }) => {
           stats={{ gold: game.data.gold, ...pick(stats, ['space']) }}
           showZero
         />
+
+        <div className="flex-1" />
+        <GameMatchBoard game={game} />
         <div className="flex-1" />
         {isAdmin && (
           <ActionButton

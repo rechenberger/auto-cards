@@ -8,7 +8,6 @@ export const ShopView = ({ game }: { game: Game }) => {
   return (
     <>
       <div className="flex-1 flex flex-col gap-4">
-        <GameMatchBoard game={game} />
         <Shop game={game} />
         <div className="flex-1" />
         <div className="self-center">
