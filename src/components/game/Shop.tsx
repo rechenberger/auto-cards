@@ -4,10 +4,12 @@ import { calcStats } from '@/game/calcStats'
 import { gameAction } from '@/game/gameAction'
 import { generateShopItems } from '@/game/generateShopItems'
 import { orderItems } from '@/game/orderItems'
+import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { pick } from 'lodash-es'
 import { RotateCw } from 'lucide-react'
 import { Fragment } from 'react'
+import { BuyButton } from './BuyButton'
 import { CardRow } from './CardRow'
 import { ItemCard } from './ItemCard'
 import { StatsDisplay } from './StatsDisplay'
@@ -79,7 +81,24 @@ export const Shop = async ({ game }: { game: Game }) => {
         <CardRow>
           {shopItems.map((shopItem) => (
             <Fragment key={shopItem.idx}>
-              <ItemCard game={game} name={shopItem.name} shopItem={shopItem} />
+              <div
+                className={cn(
+                  'flex flex-col gap-2 items-center justify-start',
+                  shopItem.isSold && 'grayscale opacity-50',
+                )}
+              >
+                <ItemCard
+                  game={game}
+                  name={shopItem.name}
+                  shopItem={shopItem}
+                />
+
+                {!!game && !!shopItem && !shopItem.isSold && (
+                  <>
+                    <BuyButton game={game} shopItem={{ ...shopItem }} />
+                  </>
+                )}
+              </div>
             </Fragment>
           ))}
         </CardRow>

@@ -1,16 +1,12 @@
 import { AiImage } from '@/components/ai/AiImage'
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
-import { gameAction } from '@/game/gameAction'
 import { getTagDefinition } from '@/game/tags'
 import { fontHeading } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
-import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
 import { first } from 'lodash-es'
-import { Lock, LockOpen } from 'lucide-react'
 import { Fragment } from 'react'
-import { BuyButton } from './BuyButton'
 import { StatsDisplay } from './StatsDisplay'
 import { TriggerDisplay } from './TriggerDisplay'
 import { getItemAiImagePrompt } from './getItemAiImagePrompt'
@@ -131,12 +127,11 @@ export const ItemCard = async ({
         </div>
         <div
           className={cn(
-            'flex-1 flex flex-col justify-center rounded-lg p-1',
+            'flex-1 flex flex-col justify-center rounded-lg p-2',
             tag.bgClass,
             tag.bgClass && 'border-2 border-black',
           )}
         >
-          <div className="flex-1" />
           <div className="flex flex-col items-center gap-2">
             {item.stats && <StatsDisplay relative stats={item.stats} />}
             {item.triggers?.map((trigger, idx) => (
@@ -144,41 +139,6 @@ export const ItemCard = async ({
                 <TriggerDisplay trigger={trigger} />
               </Fragment>
             ))}
-          </div>
-          <div className="flex-1" />
-          <div>
-            <div className="flex flex-row gap-2 justify-end items-center">
-              {!!game && !!shopItem && !shopItem.isSold && (
-                <>
-                  <label className="flex flex-row gap-1">
-                    <ActionButton
-                      variant={'secondary'}
-                      size={'icon'}
-                      className={cn(shopItem.isReserved && 'text-green-500')}
-                      hideIcon
-                      action={async () => {
-                        'use server'
-                        return gameAction({
-                          gameId: game.id,
-                          action: async ({ ctx }) => {
-                            const s = ctx.game.data.shopItems[shopItem.idx]
-                            s.isReserved = !s.isReserved
-                          },
-                        })
-                      }}
-                    >
-                      {shopItem.isReserved ? (
-                        <Lock className="size-4" strokeWidth={3} />
-                      ) : (
-                        <LockOpen className="size-4" strokeWidth={3} />
-                      )}
-                    </ActionButton>
-                  </label>
-                  <div className="flex-1" />
-                  <BuyButton game={game} shopItem={{ ...shopItem, item }} />
-                </>
-              )}
-            </div>
           </div>
         </div>
       </div>
