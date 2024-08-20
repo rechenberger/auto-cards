@@ -2,16 +2,15 @@ import { getIsAdmin } from '@/auth/getIsAdmin'
 import { Game } from '@/db/schema-zod'
 import { calcStats } from '@/game/calcStats'
 import { gameAction } from '@/game/gameAction'
-import { generateShopItems } from '@/game/generateShopItems'
 import { orderItems } from '@/game/orderItems'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { pick } from 'lodash-es'
-import { RotateCw } from 'lucide-react'
 import { Fragment } from 'react'
 import { BuyButton } from './BuyButton'
 import { CardRow } from './CardRow'
 import { ItemCard } from './ItemCard'
+import { ReRollButton } from './ReRollButton'
 import { StatsDisplay } from './StatsDisplay'
 
 export const Shop = async ({ game }: { game: Game }) => {
@@ -50,32 +49,10 @@ export const Shop = async ({ game }: { game: Game }) => {
               })
             }}
           >
-            +${10}
+            +{10} gold
           </ActionButton>
         )}
-        <ActionButton
-          catchToast
-          hideIcon
-          variant={'outline'}
-          action={async () => {
-            'use server'
-            return gameAction({
-              gameId: game.id,
-              action: async ({ ctx }) => {
-                const { game } = ctx
-                game.data.shopRerolls += 1
-                if (game.data.gold < priceToReroll) {
-                  throw new Error('not enough gold')
-                }
-                game.data.gold -= priceToReroll
-                game.data.shopItems = await generateShopItems({ game })
-              },
-            })
-          }}
-        >
-          <RotateCw className="size-4 mr-2" />
-          Re-Roll Shop (${priceToReroll})
-        </ActionButton>
+        <ReRollButton game={game} />
       </div>
       <div className="self-center max-w-full">
         <CardRow>
