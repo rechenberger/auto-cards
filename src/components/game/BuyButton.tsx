@@ -26,6 +26,8 @@ export const BuyButton = async ({
     price = Math.ceil(price * 0.5)
   }
 
+  const enoughGold = game.data.gold >= price
+
   return (
     <>
       <div className="flex flex-row justify-end items-center rounded-xl gap-0.5">
@@ -34,7 +36,11 @@ export const BuyButton = async ({
           catchToast
           size="sm"
           variant="secondary"
-          className="flex flex-row gap-1 items-center rounded-r-none"
+          disabled={!enoughGold}
+          className={cn(
+            'flex flex-row gap-1 items-center rounded-r-none',
+            !enoughGold && 'grayscale',
+          )}
           action={async () => {
             'use server'
             return gameAction({
