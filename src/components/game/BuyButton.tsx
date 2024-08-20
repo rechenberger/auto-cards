@@ -25,12 +25,14 @@ export const BuyButton = async ({
   if (shopItem?.isOnSale) {
     price = Math.ceil(price * 0.5)
   }
+
   return (
     <>
-      <div className="flex flex-row justify-end items-center rounded-xl">
+      <div className="flex flex-row justify-end items-center rounded-xl gap-0.5">
         <ActionButton
           hideIcon
           catchToast
+          size="sm"
           variant="secondary"
           className="flex flex-row gap-1 items-center rounded-r-none"
           action={async () => {
@@ -81,7 +83,7 @@ export const BuyButton = async ({
           <TooltipTrigger>
             <ActionButton
               variant={'secondary'}
-              size={'icon'}
+              size="sm"
               className={cn(
                 shopItem.isReserved && 'text-green-500',
                 'rounded-l-none',
@@ -99,9 +101,9 @@ export const BuyButton = async ({
               }}
             >
               {shopItem.isReserved ? (
-                <Lock className="size-4" strokeWidth={3} />
+                <Lock className="size-3" strokeWidth={3} />
               ) : (
-                <LockOpen className="size-4" strokeWidth={3} />
+                <LockOpen className="size-3" strokeWidth={3} />
               )}
             </ActionButton>
             <TooltipContent>
