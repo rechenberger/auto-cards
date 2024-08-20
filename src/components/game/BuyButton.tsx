@@ -88,13 +88,16 @@ export const BuyButton = async ({
                 {/* <div className="font-bold text-[10px] text-red-500 flex-1">
                   SALE
                 </div> */}
-                <div className="scale-75 -mx-1 -my-2 relative">
+                <div className="scale-75 -mx-1 -my-2 relative top-0.5">
                   <div className="grayscale">
                     <StatsDisplay
                       stats={{ gold: item.price }}
                       showZero
                       disableTooltip
                     />
+                  </div>
+                  <div className="absolute -top-2.5 -left-3 -rotate-[24deg] text-red-500 font-black text-xs">
+                    SALE
                   </div>
                   <div className="border-y border-red-500 absolute inset-x-0 top-[50%] -rotate-[24deg]"></div>
                 </div>
@@ -104,7 +107,9 @@ export const BuyButton = async ({
               stats={{ gold: price }}
               showZero
               disableTooltip
-              statClassName={cn(shopItem.isOnSale && 'bg-green-500')}
+              statClassName={cn()
+              // shopItem.isOnSale && 'bg-green-500'
+              }
             />
           </div>
         </ActionButton>
