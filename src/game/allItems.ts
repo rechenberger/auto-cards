@@ -1,4 +1,9 @@
+import { IGNORE_SPACE } from './config'
 import { ItemDefinition } from './ItemDefinition'
+
+const space = (space: number) => {
+  return IGNORE_SPACE ? undefined : space
+}
 
 const allItemsConst = [
   {
@@ -9,7 +14,7 @@ const allItemsConst = [
       health: 50,
       stamina: 5,
       staminaRegen: 1,
-      space: 14,
+      space: space(14),
     },
   },
   {
@@ -25,7 +30,7 @@ const allItemsConst = [
     tags: ['food'],
     price: 3,
     stats: {
-      space: -3,
+      space: space(-3),
     },
     triggers: [
       {
@@ -43,7 +48,7 @@ const allItemsConst = [
     tags: ['weapon'],
     price: 3,
     stats: {
-      space: -2,
+      space: space(-2),
     },
     triggers: [
       {
@@ -65,9 +70,9 @@ const allItemsConst = [
   {
     name: 'leatherBag',
     tags: ['bag'],
-    price: 4,
+    price: IGNORE_SPACE ? 0 : 4,
     stats: {
-      space: 4,
+      space: space(4),
     },
   },
   {
@@ -75,7 +80,7 @@ const allItemsConst = [
     tags: ['shield'],
     price: 4,
     stats: {
-      space: -4,
+      space: space(-4),
       block: 30,
     },
     triggers: [
@@ -93,7 +98,7 @@ const allItemsConst = [
     tags: ['food'],
     price: 3,
     stats: {
-      space: -2,
+      space: space(-2),
     },
     triggers: [
       {
@@ -110,7 +115,7 @@ const allItemsConst = [
     tags: ['food'],
     price: 4,
     stats: {
-      space: -1,
+      space: space(-1),
       regen: 2,
     },
   },
@@ -119,7 +124,7 @@ const allItemsConst = [
     tags: ['food'],
     price: 7,
     stats: {
-      space: -3,
+      space: space(-3),
     },
     triggers: [
       {
@@ -137,7 +142,7 @@ const allItemsConst = [
     tags: ['accessory'],
     price: 4,
     stats: {
-      space: -1,
+      space: space(-1),
       lifeSteal: 20,
     },
   },
@@ -146,7 +151,7 @@ const allItemsConst = [
     tags: ['accessory'],
     price: 4,
     stats: {
-      space: -2,
+      space: space(-2),
       flying: 5,
     },
   },
@@ -155,7 +160,7 @@ const allItemsConst = [
     tags: ['weapon'],
     price: 3,
     stats: {
-      space: -2,
+      space: space(-2),
     },
     triggers: [
       {
@@ -176,7 +181,7 @@ const allItemsConst = [
     tags: ['weapon'],
     price: 10,
     stats: {
-      space: -2,
+      space: space(-2),
     },
     triggers: [
       {

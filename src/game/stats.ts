@@ -17,6 +17,7 @@ import {
   Syringe,
 } from 'lucide-react'
 import { z } from 'zod'
+import { IGNORE_SPACE } from './config'
 
 const heroStats = [
   {
@@ -30,6 +31,7 @@ const heroStats = [
     icon: Backpack,
     bgClass: 'bg-yellow-800',
     tooltip: 'Space for cards.',
+    hidden: IGNORE_SPACE,
   },
   {
     name: 'stamina',
