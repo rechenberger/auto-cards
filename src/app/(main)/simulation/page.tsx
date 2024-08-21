@@ -1,13 +1,11 @@
 import { throwIfNotAdmin } from '@/auth/getIsAdmin'
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import { NO_OF_ROUNDS } from '@/game/config'
-import { getRoundStatsCumulative } from '@/game/roundStats'
 import {
   streamDialog,
   superAction,
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { range } from 'lodash-es'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
 import { SimulationStream } from './SimulationStream'
@@ -24,7 +22,7 @@ const baseInput: SimulationInput = {
   simulationSeed: ['lol'],
   ...startingByRound(NO_OF_ROUNDS - 1),
   noOfBotsSelected: 10,
-  noOfSelectionRounds: 5,
+  noOfSelectionRounds: 10,
 }
 
 const variants = [

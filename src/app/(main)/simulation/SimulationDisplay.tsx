@@ -53,6 +53,13 @@ export const SimulationDisplay = async ({
           .map((i) => i.name)
           .includes(item.name),
       )
+      const totalAmount = sum(
+        botsWithItem.flatMap((bot) =>
+          withoutStartingItems(bot.game.data.currentLoadout.items)
+            .filter((i) => i.name === item.name)
+            .map((i) => i.count ?? 1),
+        ),
+      )
       const winRates = botsWithItem.map((bot) => bot.wins / bot.matches)
       const winRate = winRates.length
         ? sum(winRates) / winRates.length
@@ -68,6 +75,7 @@ export const SimulationDisplay = async ({
         winRate,
         matches,
         simulationRounds,
+        totalAmount,
       }
     })
   itemStats = orderBy(itemStats, (item) => item.winRate ?? 0, ['desc'])
@@ -143,6 +151,7 @@ export const SimulationDisplay = async ({
             <TableRow>
               <TableHead>Item</TableHead>
               <TableHead>Bots</TableHead>
+              <TableHead>∑Amount</TableHead>
               <TableHead>∑Age</TableHead>
               {/* <TableHead>Matches</TableHead> */}
               <TableHead>WinRate</TableHead>
@@ -163,6 +172,7 @@ export const SimulationDisplay = async ({
                       )}
                       %)
                     </TableCell>
+                    <TableCell>{item.totalAmount}</TableCell>
                     <TableCell>{item.simulationRounds}</TableCell>
                     {/* <TableCell>{item.matches}</TableCell> */}
                     <TableCell>

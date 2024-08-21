@@ -103,7 +103,7 @@ const allItemsConst = [
     triggers: [
       {
         type: 'interval',
-        cooldown: 10_000,
+        cooldown: 3_000,
         statsEnemy: {
           poison: 1,
         },
@@ -167,7 +167,7 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 2_000,
         statsSelf: {
-          haste: 5,
+          haste: 2,
         },
         attack: {
           damage: 4,
