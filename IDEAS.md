@@ -14,3 +14,7 @@
 ## Every
 
 - Every 10 mana: Deal 10 life steal damage
+
+## Other
+
+- Steal 1 Buff
