@@ -163,11 +163,14 @@ export const generateMatch = async ({
 
           // FLYING
           if (side.stats.flying) {
-            addStats(side.stats, { flying: -1 })
+            const flyingStats = {
+              flying: -1,
+            }
+            addStats(side.stats, flyingStats)
             log({
               msg: 'Flying',
               sideIdx: side.sideIdx,
-              stats: regenStats,
+              stats: flyingStats,
               targetSideIdx: side.sideIdx,
             })
           }
