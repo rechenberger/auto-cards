@@ -32,7 +32,7 @@ export const MatchCards = async ({
                     size="80"
                   />
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent className="p-0 border-none bg-transparent">
                   <ItemCard
                     game={game}
                     name={item.name}
