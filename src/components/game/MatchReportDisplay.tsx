@@ -3,7 +3,7 @@
 import { MatchReport } from '@/game/generateMatch'
 import { cn } from '@/lib/utils'
 import { capitalCase } from 'change-case'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtom } from 'jotai'
 import { keys, pick, pickBy } from 'lodash-es'
 import { ArrowRight, Swords } from 'lucide-react'
 import { Fragment } from 'react'
@@ -20,7 +20,7 @@ export const MatchReportDisplay = ({
   matchReport: MatchReport
 }) => {
   const [activeMatchLog, setActiveMatchLog] = useAtom(activeMatchLogAtom)
-  const isPlaying = useAtomValue(matchPlaybackPlayingAtom)
+  const [isPlaying, setIsPlaying] = useAtom(matchPlaybackPlayingAtom)
 
   return (
     <>
@@ -32,6 +32,7 @@ export const MatchReportDisplay = ({
             'px-2 py-0.5 flex flex-row items-center h-8',
             log.sideIdx === 0 ? 'bg-blue-500' : 'bg-red-500',
             isActive ? 'bg-opacity-50' : 'bg-opacity-20',
+            isPlaying && 'cursor-pointer',
           )
           const hasStats = !!log.stats
 
@@ -44,10 +45,18 @@ export const MatchReportDisplay = ({
             )
 
           const cellProps = {
-            onMouseEnter: () => setActiveMatchLog({ idx, log }),
+            onClick: () => {
+              setIsPlaying(false)
+              setActiveMatchLog({ idx, log })
+            },
+            onMouseEnter: () => {
+              if (isPlaying) {
+                return
+              }
+              setActiveMatchLog({ idx, log })
+            },
             // onMouseLeave: () => setActiveMatchLog(null),
           }
-
           return (
             <Fragment key={idx}>
               <div {...cellProps} className={cn(cell, 'justify-end')}>
