@@ -15,7 +15,7 @@ export const MatchReportDisplayToggle = ({
   return (
     <>
       <Collapsible>
-        <CollapsibleTrigger className="w-full">
+        <CollapsibleTrigger className="w-full" asChild>
           <Button variant="outline">Logs</Button>
         </CollapsibleTrigger>
         <CollapsibleContent>

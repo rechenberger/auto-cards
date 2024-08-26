@@ -9,4 +9,4 @@ export const matchPlaybackSpeedAtom = atomWithStorage<number>(
   'matchPlaybackSpeed',
   1,
 )
-export const matchPlaybackPlayingAtom = atom<boolean>(false)
+export const matchPlaybackPlayingAtom = atom<boolean>(true)
