@@ -49,6 +49,12 @@ export const tryAddStats = (a: Stats, b: Stats) => {
       a[k] = 0
     }
   }
+  if (a.healthMax && a.health && a.health > a.healthMax) {
+    a.health = a.healthMax
+  }
+  if (a.staminaMax && a.stamina && a.stamina > a.staminaMax) {
+    a.stamina = a.staminaMax
+  }
   return a
 }
 
