@@ -135,17 +135,23 @@ export const generateMatch = async ({
           seed: [...seedTick, 'actions'],
         })) {
           // REGEN
+          const missingHealth =
+            (side.stats.healthMax ?? 0) - (side.stats.health ?? 0)
+          const missingStamina =
+            (side.stats.staminaMax ?? 0) - (side.stats.stamina ?? 0)
           const regenStats = {
-            health: side.stats.regen,
-            stamina: side.stats.staminaRegen,
+            health: Math.min(missingHealth, side.stats.regen ?? 0),
+            stamina: Math.min(missingStamina, side.stats.staminaRegen ?? 0),
           }
-          addStats(side.stats, regenStats)
-          log({
-            msg: 'Regenerate',
-            sideIdx: side.sideIdx,
-            stats: regenStats,
-            targetSideIdx: side.sideIdx,
-          })
+          if (regenStats.health > 0 || regenStats.stamina > 0) {
+            addStats(side.stats, regenStats)
+            log({
+              msg: 'Regenerate',
+              sideIdx: side.sideIdx,
+              stats: regenStats,
+              targetSideIdx: side.sideIdx,
+            })
+          }
 
           // POISON
           if (side.stats.poison) {
