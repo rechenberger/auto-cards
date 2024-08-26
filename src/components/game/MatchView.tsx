@@ -5,7 +5,7 @@ import { AlertCircle } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { MatchCards } from './MatchCards'
 import { getMatchParticipants } from './MatchParticipants'
-import { MatchReportDisplay } from './MatchReportDisplay'
+import { MatchReportDisplayToggle } from './MatchReportDisplayToggle'
 import { MatchReportPlaybackControls } from './MatchReportPlaybackControls'
 import { MatchSide } from './MatchSide'
 import { NextRoundButton } from './NextRoundButton'
@@ -45,14 +45,12 @@ export const MatchView = async ({
           <MatchCards items={participants[0].loadout.data.items} sideIdx={0} />
           <div className="flex-1 flex flex-col gap-2 items-center justify-center self-start">
             <MatchReportPlaybackControls matchReport={matchReport} />
-            <div className="max-h-96 overflow-auto rounded-lg self-stretch lg:self-center">
-              <MatchReportDisplay matchReport={matchReport} />
-            </div>
+            <MatchReportDisplayToggle matchReport={matchReport} />
             {!!game && <NextRoundButton game={game} />}
           </div>
           <MatchCards items={participants[1].loadout.data.items} sideIdx={1} />
         </div>
-        <div className="flex flex-1 flex-row gap-2 justify-center">
+        <div className="flex flex-row gap-2 justify-center">
           <MatchSide
             sideIdx={0}
             participant={participants[0]}

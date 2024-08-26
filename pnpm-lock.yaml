@@ -7,6 +7,7 @@ specifiers:
   '@libsql/client': ^0.6.0
   '@paralleldrive/cuid2': ^2.2.2
   '@radix-ui/react-checkbox': ^1.0.4
+  '@radix-ui/react-collapsible': ^1.1.0
   '@radix-ui/react-dialog': ^1.0.5
   '@radix-ui/react-dropdown-menu': ^2.0.6
   '@radix-ui/react-hover-card': ^1.1.1
@@ -76,6 +77,7 @@ dependencies:
   '@libsql/client': 0.6.2
   '@paralleldrive/cuid2': 2.2.2
   '@radix-ui/react-checkbox': 1.1.1_h24anbnoytg7wusewee4x6rjfm
+  '@radix-ui/react-collapsible': 1.1.0_h24anbnoytg7wusewee4x6rjfm
   '@radix-ui/react-dialog': 1.1.1_h24anbnoytg7wusewee4x6rjfm
   '@radix-ui/react-dropdown-menu': 2.1.1_h24anbnoytg7wusewee4x6rjfm
   '@radix-ui/react-hover-card': 1.1.1_h24anbnoytg7wusewee4x6rjfm
@@ -1199,6 +1201,33 @@ packages:
       '@radix-ui/react-use-controllable-state': 1.1.0_7fms6266e6sudc74vktmdr53wa
       '@radix-ui/react-use-previous': 1.1.0_7fms6266e6sudc74vktmdr53wa
       '@radix-ui/react-use-size': 1.1.0_7fms6266e6sudc74vktmdr53wa
+      '@types/react': 18.2.78
+      '@types/react-dom': 18.2.25
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /@radix-ui/react-collapsible/1.1.0_h24anbnoytg7wusewee4x6rjfm:
+    resolution: {integrity: sha512-zQY7Epa8sTL0mq4ajSJpjgn2YmCgyrG7RsQgLp3C0LQVkG7+Tf6Pv1CeNWZLyqMjhdPkBa5Lx7wYBeSu7uCSTA==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+    dependencies:
+      '@radix-ui/primitive': 1.1.0
+      '@radix-ui/react-compose-refs': 1.1.0_7fms6266e6sudc74vktmdr53wa
+      '@radix-ui/react-context': 1.1.0_7fms6266e6sudc74vktmdr53wa
+      '@radix-ui/react-id': 1.1.0_7fms6266e6sudc74vktmdr53wa
+      '@radix-ui/react-presence': 1.1.0_h24anbnoytg7wusewee4x6rjfm
+      '@radix-ui/react-primitive': 2.0.0_h24anbnoytg7wusewee4x6rjfm
+      '@radix-ui/react-use-controllable-state': 1.1.0_7fms6266e6sudc74vktmdr53wa
+      '@radix-ui/react-use-layout-effect': 1.1.0_7fms6266e6sudc74vktmdr53wa
       '@types/react': 18.2.78
       '@types/react-dom': 18.2.25
       react: 18.2.0
