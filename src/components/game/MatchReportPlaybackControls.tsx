@@ -2,6 +2,7 @@
 
 import { MatchReport } from '@/game/generateMatch'
 import { useAtom } from 'jotai'
+import { findIndex } from 'lodash-es'
 import { Pause, Play, RotateCcw } from 'lucide-react'
 import { Fragment, useEffect } from 'react'
 import { Button } from '../ui/button'
@@ -17,7 +18,7 @@ import {
   matchPlaybackSpeedAtom,
 } from './matchPlaybackState'
 
-const MIN_TIMEOUT = 100
+const MIN_TIMEOUT = 0
 
 const speeds = [0.5, 1, 2, 4]
 
@@ -38,10 +39,19 @@ export const MatchReportPlaybackControls = ({
     const activeLogIdx = activeMatchLog?.idx ?? -1
     const activeLogTime = activeMatchLog?.log.time ?? 0
 
-    const nextLogIdx = activeLogIdx + 1
+    let nextLogIdx = MIN_TIMEOUT
+      ? activeLogIdx + 1
+      : findIndex(matchReport.logs, (log, idx) => {
+          return idx > activeLogIdx && log.time > activeLogTime
+        })
 
-    if (nextLogIdx >= matchReport.logs.length) {
+    if (nextLogIdx >= matchReport.logs.length || nextLogIdx < 0) {
       setPlaying(false)
+      nextLogIdx = matchReport.logs.length - 1
+      setActiveMatchLog({
+        idx: nextLogIdx,
+        log: matchReport.logs[nextLogIdx],
+      })
       return
     }
 
