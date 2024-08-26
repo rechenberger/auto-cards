@@ -7,7 +7,7 @@ import { eq } from 'drizzle-orm'
 import { every, orderBy } from 'lodash-es'
 import { AlertCircle } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
-import { LoadoutDisplay } from './LoadoutDisplay'
+import { MatchCards } from './MatchCards'
 import { MatchReportDisplay } from './MatchReportDisplay'
 import { MatchReportPlaybackControls } from './MatchReportPlaybackControls'
 import { MatchStatsDisplay } from './MatchStatsDisplay'
@@ -51,24 +51,20 @@ export const MatchView = async ({
   return (
     <>
       <div className="flex flex-col gap-4 items-center">
-        <div className="self-stretch flex flex-col gap-4">
-          <LoadoutDisplay loadout={participants[1].loadout.data} />
-        </div>
+        <MatchCards items={participants[1].loadout.data.items} />
+        <MatchStatsDisplay matchReport={matchReport} sideIdx={1} />
         <div>
           {participants[1]?.user?.name ||
             participants[1]?.user?.email ||
             getBotName({ seed: participants[1].loadout.id })}
         </div>
-        <MatchStatsDisplay matchReport={matchReport} sideIdx={1} />
         <MatchReportPlaybackControls matchReport={matchReport} />
         <div className="max-h-96 overflow-auto rounded-lg self-stretch lg:self-center">
           <MatchReportDisplay matchReport={matchReport} />
         </div>
-        <MatchStatsDisplay matchReport={matchReport} sideIdx={0} />
-        <div className="self-stretch flex flex-col gap-4">
-          <LoadoutDisplay loadout={participants[0].loadout.data} />
-        </div>
         <div>{participants[0]?.user?.name || 'Me'}</div>
+        <MatchStatsDisplay matchReport={matchReport} sideIdx={0} />
+        <MatchCards items={participants[0].loadout.data.items} />
         {!!game && <NextRoundButton game={game} />}
       </div>
     </>
