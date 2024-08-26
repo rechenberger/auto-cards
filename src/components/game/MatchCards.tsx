@@ -4,7 +4,6 @@ import { orderItems } from '@/game/orderItems'
 import { map } from 'lodash-es'
 import { Fragment } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
-import { CardRow } from './CardRow'
 import { ItemCard } from './ItemCard'
 
 export const MatchCards = async ({
@@ -19,31 +18,29 @@ export const MatchCards = async ({
 
   return (
     <>
-      <div>
-        <CardRow>
-          {map(items, (item) => (
-            <Fragment key={item.name}>
-              <Tooltip>
-                <TooltipTrigger>
-                  <ItemCard
-                    game={game}
-                    name={item.name}
-                    count={item.count}
-                    size="80"
-                  />
-                </TooltipTrigger>
-                <TooltipContent className="p-0 border-none bg-transparent">
-                  <ItemCard
-                    game={game}
-                    name={item.name}
-                    count={item.count}
-                    size="320"
-                  />
-                </TooltipContent>
-              </Tooltip>
-            </Fragment>
-          ))}
-        </CardRow>
+      <div className="grid grid-cols-4 gap-1">
+        {map(items, (item) => (
+          <Fragment key={item.name}>
+            <Tooltip>
+              <TooltipTrigger>
+                <ItemCard
+                  game={game}
+                  name={item.name}
+                  count={item.count}
+                  size="80"
+                />
+              </TooltipTrigger>
+              <TooltipContent className="p-0 border-none bg-transparent">
+                <ItemCard
+                  game={game}
+                  name={item.name}
+                  count={item.count}
+                  size="320"
+                />
+              </TooltipContent>
+            </Tooltip>
+          </Fragment>
+        ))}
       </div>
     </>
   )

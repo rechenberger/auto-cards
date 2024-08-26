@@ -1,7 +1,6 @@
 import { getBotName } from '@/game/botName'
 import { MatchReport } from '@/game/generateMatch'
 import { cn } from '@/lib/utils'
-import { MatchCards } from './MatchCards'
 import { MatchParticipant } from './MatchParticipants'
 import { MatchStatsDisplay } from './MatchStatsDisplay'
 
@@ -26,6 +25,7 @@ export const MatchSide = ({
         className={cn(
           'flex flex-row gap-4 justify-start',
           isEnemy && 'flex-row-reverse',
+          'w-40',
         )}
       >
         <div
@@ -37,7 +37,7 @@ export const MatchSide = ({
           <div>{name}</div>
           <MatchStatsDisplay matchReport={matchReport} sideIdx={sideIdx} />
         </div>
-        <MatchCards items={participant.loadout.data.items} />
+        {/* <MatchCards items={participant.loadout.data.items} /> */}
       </div>
     </>
   )

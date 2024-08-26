@@ -26,7 +26,7 @@ export const MatchStatsDisplay = ({
   return (
     <>
       <StatsBars stats={stats} />
-      <StatsDisplay stats={stats} size="sm" hideBars />
+      <StatsDisplay stats={stats} size="sm" hideBars canWrap />
     </>
   )
 }

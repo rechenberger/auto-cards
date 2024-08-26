@@ -3,6 +3,7 @@ import { generateMatch } from '@/game/generateMatch'
 import { every } from 'lodash-es'
 import { AlertCircle } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
+import { MatchCards } from './MatchCards'
 import { getMatchParticipants } from './MatchParticipants'
 import { MatchReportDisplay } from './MatchReportDisplay'
 import { MatchReportPlaybackControls } from './MatchReportPlaybackControls'
@@ -40,23 +41,29 @@ export const MatchView = async ({
   return (
     <>
       <div className="flex flex-col gap-4 flex-1">
-        <MatchSide
-          sideIdx={1}
-          participant={participants[1]}
-          matchReport={matchReport}
-        />
-        <div className="flex-1 flex flex-col gap-2 items-center justify-center">
-          <MatchReportPlaybackControls matchReport={matchReport} />
-          <div className="max-h-96 overflow-auto rounded-lg self-stretch lg:self-center">
-            <MatchReportDisplay matchReport={matchReport} />
+        <div className="flex flex-row gap-2 flex-1 items-end">
+          <MatchCards items={participants[0].loadout.data.items} />
+          <div className="flex-1 flex flex-col gap-2 items-center justify-center self-start">
+            <MatchReportPlaybackControls matchReport={matchReport} />
+            <div className="max-h-96 overflow-auto rounded-lg self-stretch lg:self-center">
+              <MatchReportDisplay matchReport={matchReport} />
+            </div>
+            {!!game && <NextRoundButton game={game} />}
           </div>
-          {!!game && <NextRoundButton game={game} />}
+          <MatchCards items={participants[1].loadout.data.items} />
         </div>
-        <MatchSide
-          sideIdx={0}
-          participant={participants[0]}
-          matchReport={matchReport}
-        />
+        <div className="flex flex-1 flex-row gap-2 justify-center">
+          <MatchSide
+            sideIdx={0}
+            participant={participants[0]}
+            matchReport={matchReport}
+          />
+          <MatchSide
+            sideIdx={1}
+            participant={participants[1]}
+            matchReport={matchReport}
+          />
+        </div>
       </div>
     </>
   )
