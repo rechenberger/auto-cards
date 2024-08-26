@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { Stats } from './stats'
+import { Stat, Stats } from './stats'
 import { Tag } from './tags'
 
 export const Trigger = z.object({
@@ -9,6 +9,7 @@ export const Trigger = z.object({
   statsSelf: Stats.optional(),
   statsEnemy: Stats.optional(),
   attack: Stats.optional(),
+  multiplier: z.array(Tag.or(Stat)).optional(),
 })
 export type Trigger = z.infer<typeof Trigger>
 
