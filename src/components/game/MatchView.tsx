@@ -42,7 +42,7 @@ export const MatchView = async ({
     <>
       <div className="flex flex-col gap-4 flex-1">
         <div className="flex flex-row gap-2 flex-1 items-end">
-          <MatchCards items={participants[0].loadout.data.items} />
+          <MatchCards items={participants[0].loadout.data.items} sideIdx={0} />
           <div className="flex-1 flex flex-col gap-2 items-center justify-center self-start">
             <MatchReportPlaybackControls matchReport={matchReport} />
             <div className="max-h-96 overflow-auto rounded-lg self-stretch lg:self-center">
@@ -50,7 +50,7 @@ export const MatchView = async ({
             </div>
             {!!game && <NextRoundButton game={game} />}
           </div>
-          <MatchCards items={participants[1].loadout.data.items} />
+          <MatchCards items={participants[1].loadout.data.items} sideIdx={1} />
         </div>
         <div className="flex flex-1 flex-row gap-2 justify-center">
           <MatchSide

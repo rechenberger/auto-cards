@@ -9,9 +9,11 @@ import { ItemCard } from './ItemCard'
 export const MatchCards = async ({
   items,
   game,
+  sideIdx,
 }: {
   items: LoadoutData['items']
   game?: Game
+  sideIdx: number
 }) => {
   items = countifyItems(items)
   items = await orderItems(items)
@@ -30,7 +32,10 @@ export const MatchCards = async ({
                   size="80"
                 />
               </TooltipTrigger>
-              <TooltipContent className="p-0 border-none bg-transparent">
+              <TooltipContent
+                className="p-0 border-none bg-transparent"
+                side={sideIdx === 0 ? 'right' : 'left'}
+              >
                 <ItemCard
                   game={game}
                   name={item.name}
