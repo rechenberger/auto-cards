@@ -24,7 +24,7 @@ export const MatchReportDisplay = ({
 
   return (
     <>
-      <div className="grid grid-cols-[auto,auto,auto,1fr,auto,auto] text-xs rounded-md whitespace-nowrap">
+      <div className="grid grid-cols-[auto,auto,auto,1fr,auto,auto] text-xs rounded-md whitespace-nowrap relative">
         {matchReport.logs.map((log, idx) => {
           const isActive = activeMatchLog?.idx === idx
 
