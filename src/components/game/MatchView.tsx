@@ -43,9 +43,10 @@ export const MatchView = async ({
       <div className="flex flex-col gap-4 flex-1">
         <div className="flex flex-row gap-2 flex-1 items-end">
           <MatchCards items={participants[0].loadout.data.items} sideIdx={0} />
-          <div className="flex-1 flex flex-col gap-2 items-center justify-center self-start">
+          <div className="flex-1 flex flex-col gap-2 items-center justify-center self-stretch">
             <MatchReportPlaybackControls matchReport={matchReport} />
             <MatchReportDisplayToggle matchReport={matchReport} />
+            <div className="flex-1" />
             {!!game && <NextRoundButton game={game} />}
           </div>
           <MatchCards items={participants[1].loadout.data.items} sideIdx={1} />
