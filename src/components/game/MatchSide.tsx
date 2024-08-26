@@ -25,7 +25,9 @@ export const MatchSide = ({
         className={cn(
           'flex flex-row gap-4 justify-start',
           isEnemy && 'flex-row-reverse',
-          'w-40',
+          'w-60',
+          'p-4 rounded-xl',
+          isEnemy ? 'bg-blue-500/20' : 'bg-red-500/20',
         )}
       >
         <div
@@ -34,7 +36,7 @@ export const MatchSide = ({
             isEnemy ? 'items-end' : 'items-start',
           )}
         >
-          <div>{name}</div>
+          <div className="text-lg font-bold">{name}</div>
           <MatchStatsDisplay matchReport={matchReport} sideIdx={sideIdx} />
         </div>
         {/* <MatchCards items={participant.loadout.data.items} /> */}

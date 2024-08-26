@@ -1,11 +1,11 @@
 import { MatchLog } from '@/game/generateMatch'
-import { atomWithLocalStorage } from '@/lib/atomWithLocalStorage'
 import { atom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 
 export const activeMatchLogAtom = atom<{ idx: number; log: MatchLog } | null>(
   null,
 )
-export const matchPlaybackSpeedAtom = atomWithLocalStorage<number>(
+export const matchPlaybackSpeedAtom = atomWithStorage<number>(
   'matchPlaybackSpeed',
   1,
 )
