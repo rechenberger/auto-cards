@@ -30,6 +30,7 @@ export const MatchReportDisplay = ({
 
           const cell = cn(
             'px-2 py-0.5 flex flex-row items-center h-8',
+            'transition-colors duration-100 ease-in-out',
             log.sideIdx === 0 ? 'bg-blue-500' : 'bg-red-500',
             isActive ? 'bg-opacity-50' : 'bg-opacity-20',
             isPlaying && 'cursor-pointer',
