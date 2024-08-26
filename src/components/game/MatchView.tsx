@@ -1,16 +1,12 @@
-import { db } from '@/db/db'
-import { schema } from '@/db/schema-export'
 import { Game, Match } from '@/db/schema-zod'
-import { getBotName } from '@/game/botName'
 import { generateMatch } from '@/game/generateMatch'
-import { eq } from 'drizzle-orm'
-import { every, orderBy } from 'lodash-es'
+import { every } from 'lodash-es'
 import { AlertCircle } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
-import { MatchCards } from './MatchCards'
+import { getMatchParticipants } from './MatchParticipants'
 import { MatchReportDisplay } from './MatchReportDisplay'
 import { MatchReportPlaybackControls } from './MatchReportPlaybackControls'
-import { MatchStatsDisplay } from './MatchStatsDisplay'
+import { MatchSide } from './MatchSide'
 import { NextRoundButton } from './NextRoundButton'
 
 export const MatchView = async ({
@@ -20,14 +16,7 @@ export const MatchView = async ({
   game?: Game
   match: Match
 }) => {
-  let participants = await db.query.matchParticipation.findMany({
-    where: eq(schema.matchParticipation.matchId, match.id),
-    with: {
-      loadout: true,
-      user: true,
-    },
-  })
-  participants = orderBy(participants, (p) => p.sideIdx, 'asc')
+  const participants = await getMatchParticipants({ matchId: match.id })
   if (participants.length !== 2 || !every(participants, (p) => p.loadout)) {
     return (
       <>
@@ -50,22 +39,24 @@ export const MatchView = async ({
 
   return (
     <>
-      <div className="flex flex-col gap-4 items-center">
-        <MatchCards items={participants[1].loadout.data.items} />
-        <MatchStatsDisplay matchReport={matchReport} sideIdx={1} />
-        <div>
-          {participants[1]?.user?.name ||
-            participants[1]?.user?.email ||
-            getBotName({ seed: participants[1].loadout.id })}
+      <div className="flex flex-col gap-4 flex-1">
+        <MatchSide
+          sideIdx={1}
+          participant={participants[1]}
+          matchReport={matchReport}
+        />
+        <div className="flex-1 flex flex-col gap-2 items-center justify-center">
+          <MatchReportPlaybackControls matchReport={matchReport} />
+          <div className="max-h-96 overflow-auto rounded-lg self-stretch lg:self-center">
+            <MatchReportDisplay matchReport={matchReport} />
+          </div>
+          {!!game && <NextRoundButton game={game} />}
         </div>
-        <MatchReportPlaybackControls matchReport={matchReport} />
-        <div className="max-h-96 overflow-auto rounded-lg self-stretch lg:self-center">
-          <MatchReportDisplay matchReport={matchReport} />
-        </div>
-        <div>{participants[0]?.user?.name || 'Me'}</div>
-        <MatchStatsDisplay matchReport={matchReport} sideIdx={0} />
-        <MatchCards items={participants[0].loadout.data.items} />
-        {!!game && <NextRoundButton game={game} />}
+        <MatchSide
+          sideIdx={0}
+          participant={participants[0]}
+          matchReport={matchReport}
+        />
       </div>
     </>
   )
