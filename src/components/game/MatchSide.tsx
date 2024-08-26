@@ -1,7 +1,12 @@
+'use client'
+
 import { getBotName } from '@/game/botName'
 import { MatchReport } from '@/game/generateMatch'
 import { cn } from '@/lib/utils'
+import { useAtomValue } from 'jotai'
+import { Crown } from 'lucide-react'
 import { MatchParticipant } from './MatchParticipants'
+import { activeMatchLogAtom } from './matchPlaybackState'
 import { MatchStatsDisplay } from './MatchStatsDisplay'
 
 export const MatchSide = ({
@@ -19,6 +24,10 @@ export const MatchSide = ({
     participant.user?.email ||
     getBotName({ seed: participant.loadout.id })
 
+  const isWinner = matchReport.winner.sideIdx === sideIdx
+  const activeMatchLog = useAtomValue(activeMatchLogAtom)
+  const isDone = activeMatchLog?.idx === matchReport.logs.length - 1
+
   return (
     <>
       <div
@@ -27,9 +36,17 @@ export const MatchSide = ({
           isEnemy && 'flex-row-reverse',
           'w-60 min-h-48',
           'p-4 rounded-xl',
-          isEnemy ? 'bg-blue-500/20' : 'bg-red-500/20',
+          isEnemy ? 'bg-red-500/20' : 'bg-blue-500/20',
+          'relative',
         )}
       >
+        {isDone && isWinner && (
+          <div
+            className={cn('absolute -top-12', isEnemy ? 'right-2' : 'left-2')}
+          >
+            <Crown className="size-16" />
+          </div>
+        )}
         <div
           className={cn(
             'flex flex-col gap-2',
