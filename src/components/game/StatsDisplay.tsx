@@ -18,6 +18,7 @@ export const StatsDisplay = ({
   canWrap,
   disableTooltip,
   statClassName,
+  hideBars,
 }: {
   stats: Stats
   relative?: boolean
@@ -26,6 +27,7 @@ export const StatsDisplay = ({
   canWrap?: boolean
   disableTooltip?: boolean
   statClassName?: string
+  hideBars?: boolean
 }) => {
   return (
     <>
@@ -37,6 +39,7 @@ export const StatsDisplay = ({
       >
         {allStatsDefinition
           .filter((stat) => !('hidden' in stat && stat.hidden))
+          .filter((stat) => !hideBars || !('bar' in stat && stat.bar))
           .map((stat) => {
             const value = stats[stat.name]
             if (showZero ? value === undefined : !value) return null
