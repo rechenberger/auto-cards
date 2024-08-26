@@ -35,7 +35,7 @@ export const StatsBars = ({ stats }: { stats: Stats }) => {
             />
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="font-bold">
-                {bar.current} / {bar.max}
+                {Math.max(bar.current, 0)} / {bar.max}
               </div>
             </div>
           </div>
