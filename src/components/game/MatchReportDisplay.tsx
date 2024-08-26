@@ -40,7 +40,7 @@ export const MatchReportDisplay = ({
 
           const cellProps = {
             onMouseEnter: () => setActiveMatchLog(log),
-            onMouseLeave: () => setActiveMatchLog(null),
+            // onMouseLeave: () => setActiveMatchLog(null),
           }
 
           return (
