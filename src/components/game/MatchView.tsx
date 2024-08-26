@@ -1,7 +1,7 @@
 import { Game, Match } from '@/db/schema-zod'
 import { generateMatch } from '@/game/generateMatch'
 import { every } from 'lodash-es'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, Swords } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { MatchCards } from './MatchCards'
 import { getMatchParticipants } from './MatchParticipants'
@@ -50,12 +50,15 @@ export const MatchView = async ({
           </div>
           <MatchCards items={participants[1].loadout.data.items} sideIdx={1} />
         </div>
-        <div className="flex flex-row gap-2 justify-center">
+        <div className="flex flex-row gap-2 justify-center relative">
           <MatchSide
             sideIdx={0}
             participant={participants[0]}
             matchReport={matchReport}
           />
+          <div className="absolute top-8">
+            <Swords className="size-16" />
+          </div>
           <MatchSide
             sideIdx={1}
             participant={participants[1]}
