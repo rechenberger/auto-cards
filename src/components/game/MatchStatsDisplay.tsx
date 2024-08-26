@@ -8,7 +8,7 @@ export const MatchStatsDisplay = ({ sideIdx }: { sideIdx: number }) => {
   const activeMatchLog = useAtomValue(activeMatchLogAtom)
   if (!activeMatchLog) return null
 
-  const stats = activeMatchLog.stateSnapshot.sides[sideIdx].stats
+  const stats = activeMatchLog.log.stateSnapshot.sides[sideIdx].stats
 
   return (
     <>

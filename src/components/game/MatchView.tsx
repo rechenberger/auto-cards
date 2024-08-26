@@ -9,6 +9,7 @@ import { AlertCircle } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { LoadoutDisplay } from './LoadoutDisplay'
 import { MatchReportDisplay } from './MatchReportDisplay'
+import { MatchReportPlaybackControls } from './MatchReportPlaybackControls'
 import { MatchStatsDisplay } from './MatchStatsDisplay'
 import { NextRoundButton } from './NextRoundButton'
 
@@ -59,6 +60,7 @@ export const MatchView = async ({
             getBotName({ seed: participants[1].loadout.id })}
         </div>
         <MatchStatsDisplay sideIdx={1} />
+        <MatchReportPlaybackControls matchReport={matchReport} />
         <div className="max-h-96 overflow-auto rounded-lg self-stretch lg:self-center">
           <MatchReportDisplay matchReport={matchReport} />
         </div>

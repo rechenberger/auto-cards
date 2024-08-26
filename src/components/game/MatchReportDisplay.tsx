@@ -21,7 +21,7 @@ export const MatchReportDisplay = ({
     <>
       <div className="grid grid-cols-[auto,auto,auto,1fr,auto,auto] text-xs rounded-md whitespace-nowrap">
         {matchReport.logs.map((log, idx) => {
-          const isActive = activeMatchLog === log
+          const isActive = activeMatchLog?.idx === idx
 
           const cell = cn(
             'px-2 py-0.5 flex flex-row items-center h-8',
@@ -39,7 +39,7 @@ export const MatchReportDisplay = ({
             )
 
           const cellProps = {
-            onMouseEnter: () => setActiveMatchLog(log),
+            onMouseEnter: () => setActiveMatchLog({ idx, log }),
             // onMouseLeave: () => setActiveMatchLog(null),
           }
 
