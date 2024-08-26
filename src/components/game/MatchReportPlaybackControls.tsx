@@ -10,6 +10,8 @@ import {
   matchPlaybackSpeedAtom,
 } from './matchPlaybackState'
 
+const MIN_TIMEOUT = 100
+
 export const MatchReportPlaybackControls = ({
   matchReport,
 }: {
@@ -35,9 +37,15 @@ export const MatchReportPlaybackControls = ({
     const nextLog = matchReport.logs[nextLogIdx]
     const nextLogTime = nextLog.time
 
+    let ms = nextLogTime - activeLogTime
+    ms /= speed
+    if (ms < MIN_TIMEOUT) {
+      ms = MIN_TIMEOUT
+    }
+
     const timeout = setTimeout(() => {
       setActiveMatchLog({ idx: nextLogIdx, log: nextLog })
-    }, nextLogTime - activeLogTime)
+    }, ms)
 
     return () => clearTimeout(timeout)
   }, [

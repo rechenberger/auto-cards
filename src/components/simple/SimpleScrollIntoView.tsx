@@ -8,8 +8,8 @@ export const SimpleScrollIntoView = () => {
   useEffect(() => {
     ref.current?.scrollIntoView({
       behavior: 'smooth',
-      block: 'center',
-      inline: 'center',
+      // block: 'center',
+      // inline: 'center',
     })
   })
 

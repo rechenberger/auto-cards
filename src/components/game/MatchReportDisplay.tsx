@@ -3,12 +3,15 @@
 import { MatchReport } from '@/game/generateMatch'
 import { cn } from '@/lib/utils'
 import { capitalCase } from 'change-case'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { keys, pick, pickBy } from 'lodash-es'
 import { ArrowRight, Swords } from 'lucide-react'
 import { Fragment } from 'react'
 import { SimpleScrollIntoView } from '../simple/SimpleScrollIntoView'
-import { activeMatchLogAtom } from './matchPlaybackState'
+import {
+  activeMatchLogAtom,
+  matchPlaybackPlayingAtom,
+} from './matchPlaybackState'
 import { StatsDisplay } from './StatsDisplay'
 
 export const MatchReportDisplay = ({
@@ -17,6 +20,7 @@ export const MatchReportDisplay = ({
   matchReport: MatchReport
 }) => {
   const [activeMatchLog, setActiveMatchLog] = useAtom(activeMatchLogAtom)
+  const isPlaying = useAtomValue(matchPlaybackPlayingAtom)
 
   return (
     <>
@@ -48,7 +52,7 @@ export const MatchReportDisplay = ({
             <Fragment key={idx}>
               <div {...cellProps} className={cn(cell, 'justify-end')}>
                 {(log.time / 1000).toFixed(1)}s
-                {isActive && <SimpleScrollIntoView />}
+                {isActive && isPlaying && <SimpleScrollIntoView />}
               </div>
               <div
                 {...cellProps}
