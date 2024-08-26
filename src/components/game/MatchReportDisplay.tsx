@@ -7,6 +7,7 @@ import { useAtom } from 'jotai'
 import { keys, pick, pickBy } from 'lodash-es'
 import { ArrowRight, Swords } from 'lucide-react'
 import { Fragment } from 'react'
+import { SimpleScrollIntoView } from '../simple/SimpleScrollIntoView'
 import { activeMatchLogAtom } from './matchPlaybackState'
 import { StatsDisplay } from './StatsDisplay'
 
@@ -47,6 +48,7 @@ export const MatchReportDisplay = ({
             <Fragment key={idx}>
               <div {...cellProps} className={cn(cell, 'justify-end')}>
                 {(log.time / 1000).toFixed(1)}s
+                {isActive && <SimpleScrollIntoView />}
               </div>
               <div
                 {...cellProps}
