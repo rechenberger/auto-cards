@@ -2,6 +2,7 @@
 
 import { useAtomValue } from 'jotai'
 import { activeMatchLogAtom } from './matchPlaybackState'
+import { StatsBars } from './StatsBars'
 import { StatsDisplay } from './StatsDisplay'
 
 export const MatchStatsDisplay = ({ sideIdx }: { sideIdx: number }) => {
@@ -12,6 +13,7 @@ export const MatchStatsDisplay = ({ sideIdx }: { sideIdx: number }) => {
 
   return (
     <>
+      <StatsBars stats={stats} />
       <StatsDisplay stats={stats} size="sm" />
     </>
   )

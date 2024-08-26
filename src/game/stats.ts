@@ -27,6 +27,13 @@ const heroStats = [
     tooltip: 'Health points.',
   },
   {
+    name: 'healthMax',
+    icon: Heart,
+    bgClass: 'bg-red-500',
+    tooltip: 'Max Health points.',
+    hidden: true,
+  },
+  {
     name: 'space',
     icon: Backpack,
     bgClass: 'bg-yellow-800',
@@ -38,6 +45,13 @@ const heroStats = [
     icon: Banana,
     bgClass: 'bg-yellow-500',
     tooltip: 'Stamina points.',
+  },
+  {
+    name: 'staminaMax',
+    icon: Banana,
+    bgClass: 'bg-yellow-500',
+    tooltip: 'Max Stamina points.',
+    hidden: true,
   },
   {
     name: 'staminaRegen',
