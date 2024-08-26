@@ -34,7 +34,7 @@ export const MatchSide = ({
         className={cn(
           'flex flex-row gap-4 justify-start',
           isEnemy && 'flex-row-reverse',
-          'w-60 min-h-48',
+          'xl:w-80 min-h-48',
           'p-4 rounded-xl',
           isEnemy ? 'bg-red-500/20' : 'bg-blue-500/20',
           'relative',

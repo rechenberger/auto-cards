@@ -20,7 +20,7 @@ export const MatchCards = async ({
 
   return (
     <>
-      <div className="grid grid-cols-4 gap-1">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-1">
         {map(items, (item) => (
           <Fragment key={item.name}>
             <Tooltip>

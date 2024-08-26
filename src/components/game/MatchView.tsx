@@ -41,30 +41,57 @@ export const MatchView = async ({
   return (
     <>
       <div className="flex flex-col gap-4 flex-1">
-        <div className="flex flex-row gap-2 flex-1 items-end">
-          <MatchCards items={participants[0].loadout.data.items} sideIdx={0} />
+        <div className="flex flex-col xl:flex-row gap-2 flex-1 items-end">
+          <div className="hidden xl:flex">
+            <MatchCards
+              items={participants[0].loadout.data.items}
+              sideIdx={0}
+            />
+          </div>
           <div className="flex-1 flex flex-col gap-2 items-center justify-center self-stretch">
             <MatchReportPlaybackControls matchReport={matchReport} />
             <MatchReportDisplayToggle matchReport={matchReport} />
             <div className="flex-1" />
             {!!game && <NextRoundButton game={game} />}
           </div>
-          <MatchCards items={participants[1].loadout.data.items} sideIdx={1} />
+
+          <div className="hidden xl:flex">
+            <MatchCards
+              items={participants[1].loadout.data.items}
+              sideIdx={1}
+            />
+          </div>
         </div>
         <div className="flex flex-row gap-2 justify-center relative">
-          <MatchSide
-            sideIdx={0}
-            participant={participants[0]}
-            matchReport={matchReport}
-          />
+          <div className="max-xl:flex-1 flex flex-col gap-4">
+            <MatchSide
+              sideIdx={0}
+              participant={participants[0]}
+              matchReport={matchReport}
+            />
+            <div className="xl:hidden self-start">
+              <MatchCards
+                items={participants[0].loadout.data.items}
+                sideIdx={0}
+              />
+            </div>
+          </div>
           <div className="absolute top-8">
             <Swords className="size-16" />
           </div>
-          <MatchSide
-            sideIdx={1}
-            participant={participants[1]}
-            matchReport={matchReport}
-          />
+          <div className="max-xl:flex-1 flex flex-col gap-4">
+            <MatchSide
+              sideIdx={1}
+              participant={participants[1]}
+              matchReport={matchReport}
+            />
+            <div className="xl:hidden self-end">
+              <MatchCards
+                items={participants[1].loadout.data.items}
+                sideIdx={1}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </>
