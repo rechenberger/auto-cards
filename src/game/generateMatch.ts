@@ -47,7 +47,35 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
       }
     }),
   )
-  return { sides }
+
+  const futureActions = [
+    { type: 'baseTick' as const, time: 0 },
+    ...rngOrder({
+      items: sides,
+      seed: [...input.seed, 'futureActions'],
+    }).flatMap((side) => {
+      return side.items.flatMap((item, itemIdx) => {
+        return (
+          item.triggers?.flatMap((trigger, triggerIdx) => {
+            if (trigger.type !== 'interval') return []
+            const cooldown = calcCooldown({
+              cooldown: trigger.cooldown,
+              stats: side.stats,
+            })
+            return range(item.count ?? 1).map(() => ({
+              type: 'itemTrigger' as const,
+              time: cooldown,
+              lastUsed: 0,
+              sideIdx: side.sideIdx,
+              itemIdx,
+              triggerIdx,
+            }))
+          }) || []
+        )
+      })
+    }),
+  ]
+  return { sides, futureActions }
 }
 export type MatchState = Awaited<ReturnType<typeof generateMatchState>>
 
@@ -59,7 +87,7 @@ export const generateMatch = async ({
   let time = 0
 
   const state = await generateMatchState({ participants, seed })
-  const { sides } = state
+  const { sides, futureActions } = state
 
   const logs: MatchLog[] = []
   const log = (log: Omit<MatchLog, 'time' | 'itemName' | 'stateSnapshot'>) => {
@@ -85,34 +113,6 @@ export const generateMatch = async ({
     log({ msg: 'Wins!', sideIdx: winner.sideIdx })
     return { logs, winner, loser, time }
   }
-
-  const futureActions = [
-    { type: 'baseTick' as const, time: 0 },
-    ...rngOrder({
-      items: sides,
-      seed: [...seed, 'futureActions'],
-    }).flatMap((side) => {
-      return side.items.flatMap((item, itemIdx) => {
-        return (
-          item.triggers?.flatMap((trigger, triggerIdx) => {
-            if (trigger.type !== 'interval') return []
-            const cooldown = calcCooldown({
-              cooldown: trigger.cooldown,
-              stats: side.stats,
-            })
-            return range(item.count ?? 1).map(() => ({
-              type: 'itemTrigger' as const,
-              time: cooldown,
-              lastUsed: 0,
-              sideIdx: side.sideIdx,
-              itemIdx,
-              triggerIdx,
-            }))
-          }) || []
-        )
-      })
-    }),
-  ]
 
   while (true) {
     const seedTick = [...seed, time]
