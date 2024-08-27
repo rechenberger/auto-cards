@@ -32,6 +32,11 @@ export const MatchReportPlaybackControls = ({
   const [speed, setSpeed] = useAtom(matchPlaybackSpeedAtom)
   const [playing, setPlaying] = useAtom(matchPlaybackPlayingAtom)
 
+  useEffect(() => {
+    setActiveMatchLog({ idx: 0, log: matchReport.logs[0] })
+    setPlaying(true)
+  }, [matchReport, setActiveMatchLog, setPlaying])
+
   const isDone = activeMatchLog?.idx === matchReport.logs.length - 1
 
   useEffect(() => {
