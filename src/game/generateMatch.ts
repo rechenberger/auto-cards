@@ -65,13 +65,14 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
               cooldown: trigger.cooldown,
               stats: side.stats,
             })
-            return range(item.count ?? 1).map(() => ({
+            return range(item.count ?? 1).map((itemCounter) => ({
               type: 'itemTrigger' as const,
               time: cooldown,
               lastUsed: 0,
               sideIdx: side.sideIdx,
               itemIdx,
               triggerIdx,
+              itemCounter, // to have different seed for each item in a stack
             }))
           }) || []
         )
