@@ -6,6 +6,7 @@ import {
   Carrot,
   Coins,
   Crosshair,
+  Eye,
   Flame,
   Heart,
   HeartPulse,
@@ -17,7 +18,7 @@ import {
   Syringe,
 } from 'lucide-react'
 import { z } from 'zod'
-import { IGNORE_SPACE } from './config'
+import { IGNORE_SPACE, MAX_THORNS_MULTIPLIER } from './config'
 
 const heroStats = [
   {
@@ -25,6 +26,14 @@ const heroStats = [
     icon: Heart,
     bgClass: 'bg-red-500',
     tooltip: 'Health points.',
+    bar: true,
+  },
+  {
+    name: 'healthMax',
+    icon: Heart,
+    bgClass: 'bg-red-500',
+    tooltip: 'Max Health points.',
+    hidden: true,
   },
   {
     name: 'space',
@@ -38,6 +47,14 @@ const heroStats = [
     icon: Banana,
     bgClass: 'bg-yellow-500',
     tooltip: 'Stamina points.',
+    bar: true,
+  },
+  {
+    name: 'staminaMax',
+    icon: Banana,
+    bgClass: 'bg-yellow-500',
+    tooltip: 'Max Stamina points.',
+    hidden: true,
   },
   {
     name: 'staminaRegen',
@@ -49,7 +66,7 @@ const heroStats = [
     name: 'block',
     icon: Shield,
     bgClass: 'bg-cyan-500',
-    tooltip: 'Prevents X damage this turn.',
+    tooltip: 'Prevents X damage from attacks.',
   },
   {
     name: 'strength',
@@ -61,7 +78,7 @@ const heroStats = [
     name: 'thorns',
     icon: Pyramid,
     bgClass: 'bg-orange-500',
-    tooltip: 'Deal X Damage to attacker when attacked.',
+    tooltip: `Deal X Damage to attacker when attacked. Max ${MAX_THORNS_MULTIPLIER}x damage of the attacker.`,
   },
   {
     name: 'lifeSteal',
@@ -98,6 +115,12 @@ const heroStats = [
     icon: Snowflake,
     bgClass: 'bg-sky-300',
     tooltip: 'Everything triggers X% slower.',
+  },
+  {
+    name: 'aim',
+    icon: Eye,
+    bgClass: 'bg-blue-500',
+    tooltip: 'X% chance to crit. Removed on crit.',
   },
 ] as const
 

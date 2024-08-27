@@ -49,7 +49,18 @@ export const tryAddStats = (a: Stats, b: Stats) => {
       a[k] = 0
     }
   }
+  limitMaxStats(a)
   return a
+}
+
+export const limitMaxStats = (stats: Stats) => {
+  if (stats.healthMax && stats.health && stats.health > stats.healthMax) {
+    stats.health = stats.healthMax
+  }
+  if (stats.staminaMax && stats.stamina && stats.stamina > stats.staminaMax) {
+    stats.stamina = stats.staminaMax
+  }
+  return stats
 }
 
 const getNegativeStats = ({ stats }: { stats: Stats }) => {
@@ -82,4 +93,8 @@ export const hasStats = (a: Stats, b: Stats) => {
     }
   }
   return true
+}
+
+export const hasAnyStats = ({ stats }: { stats: Stats }) => {
+  return !!keys(omitBy(stats, (v) => v === undefined || v === 0)).length
 }

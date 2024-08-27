@@ -12,7 +12,9 @@ const allItemsConst = [
     price: 0,
     stats: {
       health: 50,
+      healthMax: 50,
       stamina: 5,
+      staminaMax: 5,
       staminaRegen: 1,
       space: space(14),
     },
@@ -23,6 +25,7 @@ const allItemsConst = [
     price: 0,
     stats: {
       health: 20,
+      healthMax: 20,
     },
   },
   {
@@ -200,6 +203,23 @@ const allItemsConst = [
         attack: {
           damage: 18,
           accuracy: 90,
+        },
+      },
+    ],
+  },
+  {
+    name: 'spyglass',
+    tags: ['accessory'],
+    price: 3,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_000,
+        statsSelf: {
+          aim: 5,
         },
       },
     ],

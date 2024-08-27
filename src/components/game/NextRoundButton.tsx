@@ -10,6 +10,7 @@ export const NextRoundButton = ({ game }: { game: Game }) => {
     <>
       <ActionButton
         catchToast
+        variant="outline"
         action={async () => {
           'use server'
           return gameAction({
