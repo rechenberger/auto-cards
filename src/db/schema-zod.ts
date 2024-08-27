@@ -63,3 +63,26 @@ export const MatchParticipation = createSelectSchema(
   },
 )
 export type MatchParticipation = z.infer<typeof MatchParticipation>
+
+export const LiveMatchData = z.object({
+  seed,
+})
+export type LiveMatchData = z.infer<typeof LiveMatchData>
+
+export const LiveMatch = createSelectSchema(schema.liveMatch, {
+  data: LiveMatchData,
+})
+export type LiveMatch = z.infer<typeof LiveMatch>
+
+export const LiveMatchParticipationData = z.object({})
+export type LiveMatchParticipationData = z.infer<
+  typeof LiveMatchParticipationData
+>
+
+export const LiveMatchParticipation = createSelectSchema(
+  schema.liveMatchParticipation,
+  {
+    data: LiveMatchParticipationData,
+  },
+)
+export type LiveMatchParticipation = z.infer<typeof LiveMatchParticipation>

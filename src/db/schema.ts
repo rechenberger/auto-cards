@@ -2,7 +2,13 @@ import { createId } from '@paralleldrive/cuid2'
 import { relations } from 'drizzle-orm'
 import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 import { users } from './schema-auth'
-import { GameData, LoadoutData, MatchData } from './schema-zod'
+import {
+  GameData,
+  LiveMatchData,
+  LiveMatchParticipationData,
+  LoadoutData,
+  MatchData,
+} from './schema-zod'
 
 export * from './schema-auth'
 
@@ -58,12 +64,17 @@ export const loadoutRelations = relations(loadout, ({ one, many }) => ({
 export const match = sqliteTable('match', {
   ...baseStats(),
   data: text('data', { mode: 'json' }).$type<MatchData>().notNull(),
+  liveMatchId: text('liveMatchId'),
 })
 
 export const matchRelations = relations(match, ({ one, many }) => ({
   game: one(game, {
     fields: [match.id],
     references: [game.id],
+  }),
+  liveMatch: one(liveMatch, {
+    fields: [match.liveMatchId],
+    references: [liveMatch.id],
   }),
   matchParticipations: many(matchParticipation),
 }))
@@ -102,3 +113,36 @@ export const aiImage = sqliteTable('aiImage', {
   url: text('url').notNull(),
   itemId: text('itemId'),
 })
+
+export const liveMatch = sqliteTable('liveMatch', {
+  ...baseStats(),
+  data: text('data', { mode: 'json' }).$type<LiveMatchData>().notNull(),
+})
+
+export const liveMatchRelations = relations(liveMatch, ({ one, many }) => ({
+  liveMatchParticipations: many(liveMatchParticipation),
+  matches: many(match),
+}))
+
+export const liveMatchParticipation = sqliteTable('liveMatchParticipation', {
+  ...baseStats(),
+  liveMatchId: text('liveMatchId').notNull(),
+  userId: text('userId').notNull(),
+  data: text('data', { mode: 'json' })
+    .$type<LiveMatchParticipationData>()
+    .notNull(),
+})
+
+export const liveMatchParticipationRelations = relations(
+  liveMatchParticipation,
+  ({ one }) => ({
+    liveMatch: one(liveMatch, {
+      fields: [liveMatchParticipation.liveMatchId],
+      references: [liveMatch.id],
+    }),
+    user: one(users, {
+      fields: [liveMatchParticipation.userId],
+      references: [users.id],
+    }),
+  }),
+)
