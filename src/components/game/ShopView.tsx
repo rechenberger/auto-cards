@@ -1,7 +1,7 @@
 import { Game } from '@/db/schema-zod'
 import { FightButton } from './FightButton'
-import { GameMatchBoard } from './GameMatchBoard'
 import { LoadoutDisplay } from './LoadoutDisplay'
+import { MatchReportResetter } from './MatchReportResetter'
 import { Shop } from './Shop'
 
 export const ShopView = ({ game }: { game: Game }) => {
@@ -15,6 +15,7 @@ export const ShopView = ({ game }: { game: Game }) => {
         </div>
         <div className="flex-1" />
         <LoadoutDisplay game={game} loadout={game.data.currentLoadout} />
+        <MatchReportResetter />
       </div>
     </>
   )
