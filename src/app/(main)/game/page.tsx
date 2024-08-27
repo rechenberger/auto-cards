@@ -20,6 +20,7 @@ import Link from 'next/link'
 import { Fragment } from 'react'
 import { z } from 'zod'
 import { NewGameButton } from './NewGameButton'
+import { NewLiveMatchButton } from './NewLiveMatchButton'
 
 export const metadata: Metadata = {
   title: 'Games',
@@ -59,6 +60,7 @@ export default async function Page() {
           </ActionButton>
         )}
         <NewGameButton />
+        <NewLiveMatchButton />
       </div>
       <div className="grid lg:grid-cols-3 gap-4">
         {games.map((game) => (
