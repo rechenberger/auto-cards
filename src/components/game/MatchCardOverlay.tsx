@@ -73,16 +73,19 @@ export const MatchCardOverlay = ({
         ...animations,
         {
           id: log.logIdx.toString(),
-          content: <>{log.stats && <StatsDisplay stats={log.stats} />}</>,
+          content: (
+            <>
+              {log.stats ? (
+                <StatsDisplay stats={log.stats} />
+              ) : (
+                <div>{log.msg}</div>
+              )}
+            </>
+          ),
           startedAt: Date.now(),
           duration: 1000,
         },
       ])
-
-      // toast({
-      //   title: 'Item used',
-      //   description: log.itemName,
-      // })
     },
   })
 
