@@ -5,6 +5,7 @@ import { getItemByName } from './allItems'
 import { calcCooldown } from './calcCooldown'
 import { addStats, calcStats, hasStats, tryAddStats } from './calcStats'
 import { BASE_TICK_TIME, FATIGUE_STARTS_AT, MAX_MATCH_TIME } from './config'
+import { orderItems } from './orderItems'
 import { Stats } from './stats'
 
 export type MatchLog = {
@@ -33,12 +34,13 @@ type GenerateMatchInput = {
 export const generateMatchState = async (input: GenerateMatchInput) => {
   const sides = await Promise.all(
     input.participants.map(async (p, idx) => {
-      const items = await Promise.all(
+      let items = await Promise.all(
         p.loadout.items.map(async (i) => ({
           ...(await getItemByName(i.name)),
           count: i.count ?? 1,
         })),
       )
+      items = await orderItems(items)
       const stats = await calcStats({ loadout: p.loadout })
 
       return {
