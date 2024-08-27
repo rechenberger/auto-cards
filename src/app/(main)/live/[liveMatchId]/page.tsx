@@ -1,7 +1,9 @@
 import { getMyUserIdOrLogin } from '@/auth/getMyUser'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
+import { LiveMatchParticipationData } from '@/db/schema-zod'
 import { createGame } from '@/game/createGame'
+import { typedParse } from '@/lib/typedParse'
 import {
   streamToast,
   superAction,
@@ -65,7 +67,7 @@ export default async function Page({
               await db.insert(schema.liveMatchParticipation).values({
                 liveMatchId: liveMatch.id,
                 userId: userId,
-                data: {},
+                data: typedParse(LiveMatchParticipationData, {}),
               })
               streamToast({
                 title: 'Joined Match',
