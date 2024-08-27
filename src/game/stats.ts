@@ -65,7 +65,7 @@ const heroStats = [
     name: 'block',
     icon: Shield,
     bgClass: 'bg-cyan-500',
-    tooltip: 'Prevents X damage this turn.',
+    tooltip: 'Prevents X damage from attacks.',
   },
   {
     name: 'strength',
