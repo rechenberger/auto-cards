@@ -44,7 +44,7 @@ export const MatchView = async ({
   return (
     <>
       <div className="flex flex-col gap-4 flex-1">
-        <div className="flex flex-col xl:flex-row gap-2 flex-1 items-end">
+        <div className="flex flex-col xl:flex-row gap-2 flex-1 items-center">
           <div className="hidden xl:flex">
             <MatchCards
               items={participants[0].loadout.data.items}
