@@ -83,7 +83,7 @@ export const MatchReportPlaybackControls = ({
     <>
       <div className="flex flex-row gap-2 items-center">
         <div className="w-12" />
-        <div className="flex flex-row">
+        <div className="flex flex-row gap-0.5">
           <Button
             variant="secondary"
             size="sm"
