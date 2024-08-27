@@ -287,7 +287,7 @@ export const generateMatch = async ({
                   })
 
                   // LIFESTEAL
-                  if (mySide.stats.lifeSteal) {
+                  if (mySide.stats.lifeSteal && damage > 0) {
                     const lifeStealDamage = Math.ceil(
                       damage * (mySide.stats.lifeSteal / 100),
                     )
