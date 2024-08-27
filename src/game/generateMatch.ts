@@ -5,9 +5,11 @@ import { getItemByName } from './allItems'
 import { calcCooldown } from './calcCooldown'
 import { addStats, calcStats, hasStats, tryAddStats } from './calcStats'
 import { BASE_TICK_TIME, FATIGUE_STARTS_AT, MAX_MATCH_TIME } from './config'
+import { orderItems } from './orderItems'
 import { Stats } from './stats'
 
 export type MatchLog = {
+  logIdx: number
   time: number
   msg?: string
   sideIdx: number
@@ -32,12 +34,13 @@ type GenerateMatchInput = {
 export const generateMatchState = async (input: GenerateMatchInput) => {
   const sides = await Promise.all(
     input.participants.map(async (p, idx) => {
-      const items = await Promise.all(
+      let items = await Promise.all(
         p.loadout.items.map(async (i) => ({
           ...(await getItemByName(i.name)),
           count: i.count ?? 1,
         })),
       )
+      items = await orderItems(items)
       const stats = await calcStats({ loadout: p.loadout })
 
       return {
@@ -62,13 +65,14 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
               cooldown: trigger.cooldown,
               stats: side.stats,
             })
-            return range(item.count ?? 1).map(() => ({
+            return range(item.count ?? 1).map((itemCounter) => ({
               type: 'itemTrigger' as const,
               time: cooldown,
               lastUsed: 0,
               sideIdx: side.sideIdx,
               itemIdx,
               triggerIdx,
+              itemCounter, // to have different seed for each item in a stack
             }))
           }) || []
         )
@@ -90,14 +94,16 @@ export const generateMatch = async ({
   const { sides, futureActions } = state
 
   const logs: MatchLog[] = []
-  const log = (log: Omit<MatchLog, 'time' | 'itemName' | 'stateSnapshot'>) => {
+  const log = (
+    log: Omit<MatchLog, 'time' | 'itemName' | 'stateSnapshot' | 'logIdx'>,
+  ) => {
     if (skipLogs) return
     const itemName =
       log.itemIdx !== undefined
         ? sides[log.sideIdx].items[log.itemIdx].name
         : undefined
     const stateSnapshot = cloneDeep(state)
-    logs.push({ ...log, time, itemName, stateSnapshot })
+    logs.push({ ...log, time, itemName, stateSnapshot, logIdx: logs.length })
   }
 
   const endOfMatch = () => {
@@ -135,17 +141,23 @@ export const generateMatch = async ({
           seed: [...seedTick, 'actions'],
         })) {
           // REGEN
+          const missingHealth =
+            (side.stats.healthMax ?? 0) - (side.stats.health ?? 0)
+          const missingStamina =
+            (side.stats.staminaMax ?? 0) - (side.stats.stamina ?? 0)
           const regenStats = {
-            health: side.stats.regen,
-            stamina: side.stats.staminaRegen,
+            health: Math.min(missingHealth, side.stats.regen ?? 0),
+            stamina: Math.min(missingStamina, side.stats.staminaRegen ?? 0),
           }
-          addStats(side.stats, regenStats)
-          log({
-            msg: 'Regenerate',
-            sideIdx: side.sideIdx,
-            stats: regenStats,
-            targetSideIdx: side.sideIdx,
-          })
+          if (regenStats.health > 0 || regenStats.stamina > 0) {
+            addStats(side.stats, regenStats)
+            log({
+              msg: 'Regenerate',
+              sideIdx: side.sideIdx,
+              stats: regenStats,
+              targetSideIdx: side.sideIdx,
+            })
+          }
 
           // POISON
           if (side.stats.poison) {
@@ -315,11 +327,11 @@ export const generateMatch = async ({
           }
         }
 
-        const cooldown = calcCooldown({
-          cooldown: trigger.cooldown,
-          stats: mySide.stats,
-        })
-        action.time += cooldown
+        // We do that after all actions, so that haste is applied to the cooldown
+        // action.time += calcCooldown({
+        //   cooldown: trigger.cooldown,
+        //   stats: mySide.stats,
+        // })
       } else {
         const exhaustiveCheck: never = action
         throw new Error(
@@ -331,6 +343,21 @@ export const generateMatch = async ({
       const dead = sides.some((side) => (side.stats.health ?? 0) <= 0)
       if (dead) {
         return endOfMatch()
+      }
+    }
+
+    // UPDATE COOLDOWN
+    for (const action of futureActions) {
+      if (action.time !== time) continue
+      if (action.type === 'itemTrigger') {
+        const cooldown = calcCooldown({
+          cooldown:
+            sides[action.sideIdx].items[action.itemIdx].triggers![
+              action.triggerIdx
+            ].cooldown,
+          stats: sides[action.sideIdx].stats,
+        })
+        action.time += cooldown
       }
     }
 
