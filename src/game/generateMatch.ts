@@ -91,7 +91,9 @@ export const generateMatch = async ({
   const { sides, futureActions } = state
 
   const logs: MatchLog[] = []
-  const log = (log: Omit<MatchLog, 'time' | 'itemName' | 'stateSnapshot'>) => {
+  const log = (
+    log: Omit<MatchLog, 'time' | 'itemName' | 'stateSnapshot' | 'logIdx'>,
+  ) => {
     if (skipLogs) return
     const itemName =
       log.itemIdx !== undefined
