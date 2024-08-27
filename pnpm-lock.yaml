@@ -47,6 +47,7 @@ specifiers:
   drizzle-zod: ^0.5.1
   eslint: 8.49.0
   eslint-config-next: 13.5.2
+  framer-motion: ^11.3.30
   humanize-duration: ^3.32.1
   jotai: ^2.8.0
   lodash-es: ^4.17.21
@@ -106,6 +107,7 @@ dependencies:
   drizzle-zod: 0.5.1_vufjqcqpuiw5f34uf3xjbhxnhm
   eslint: 8.49.0
   eslint-config-next: 13.5.2_zbjqvsjp4jxmxlyb3pomfdbep4
+  framer-motion: 11.3.30_biqbaboplfbrettd7655fr4n2y
   humanize-duration: 3.32.1
   jotai: 2.9.3_7fms6266e6sudc74vktmdr53wa
   lodash-es: 4.17.21
@@ -4224,6 +4226,25 @@ packages:
 
   /fraction.js/4.3.7:
     resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
+    dev: false
+
+  /framer-motion/11.3.30_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-9VmqGe9OIjfMoCcs+ZsKXlv6JaG5QagKX2F1uSbkG3Z33wgjnz60Kw+CngC1M49rDYau+Y9aL+8jGagAwrbVyw==}
+    peerDependencies:
+      '@emotion/is-prop-valid': '*'
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    peerDependenciesMeta:
+      '@emotion/is-prop-valid':
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      tslib: 2.6.3
     dev: false
 
   /fs-minipass/2.1.0:

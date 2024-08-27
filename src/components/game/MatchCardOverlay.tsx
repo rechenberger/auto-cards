@@ -1,6 +1,7 @@
 'use client'
 
 import { MatchLog, MatchReport } from '@/game/generateMatch'
+import { motion } from 'framer-motion'
 import { useAtomValue } from 'jotai'
 import { range } from 'lodash-es'
 import { Fragment, useEffect, useRef, useState } from 'react'
@@ -89,16 +90,40 @@ export const MatchCardOverlay = ({
     <>
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none flex-col gap-2">
         {animations.map((animation) => {
-          if (Date.now() - animation.startedAt > animation.duration) {
-            return null
-          }
           return (
             <Fragment key={animation.id}>
-              <div>{animation.content}</div>
+              <Animation {...animation} />
             </Fragment>
           )
         })}
       </div>
     </>
+  )
+}
+
+const Animation = ({
+  content,
+  duration,
+  startedAt,
+}: {
+  id: string
+  content: React.ReactNode
+  startedAt: number
+  duration: number
+}) => {
+  if (Date.now() - startedAt > duration) {
+    return null
+  }
+  return (
+    <motion.div
+      // className="absolute bottom-0"
+      // initial={{ opacity: 1 }}
+      animate={{ opacity: 0, y: -100 }}
+      transition={{
+        duration: duration / 1000,
+      }}
+    >
+      {content}
+    </motion.div>
   )
 }
