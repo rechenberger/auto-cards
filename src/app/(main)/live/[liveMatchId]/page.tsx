@@ -1,15 +1,16 @@
 import { getMyUserIdOrLogin } from '@/auth/getMyUser'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
+import { createGame } from '@/game/createGame'
 import {
   streamToast,
   superAction,
 } from '@/super-action/action/createSuperAction'
 import { streamRevalidatePath } from '@/super-action/action/streamRevalidatePath'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'Live Match',
@@ -41,6 +42,13 @@ export default async function Page({
     (participation) => participation.user.id === userId,
   )
 
+  const myGame = await db.query.game.findFirst({
+    where: and(
+      eq(schema.game.userId, userId),
+      eq(schema.game.liveMatchId, liveMatchId),
+    ),
+  })
+
   return (
     <>
       <h1>Live Match</h1>
@@ -49,7 +57,7 @@ export default async function Page({
           <div key={participation.id}>{participation.user.name}</div>
         ))}
       </div>
-      {!isParticipating && (
+      {!isParticipating ? (
         <ActionButton
           action={async () => {
             'use server'
@@ -68,6 +76,32 @@ export default async function Page({
           }}
         >
           Join Match
+        </ActionButton>
+      ) : myGame ? (
+        <ActionButton
+          action={async () => {
+            'use server'
+            return superAction(async () => {
+              redirect(`/game/${myGame.id}`)
+            })
+          }}
+        >
+          Resume Game
+        </ActionButton>
+      ) : (
+        <ActionButton
+          action={async () => {
+            'use server'
+            return superAction(async () => {
+              const myGame = await createGame({
+                userId,
+                liveMatch: liveMatch,
+              })
+              redirect(`/game/${myGame.id}`)
+            })
+          }}
+        >
+          Start Game
         </ActionButton>
       )}
     </>

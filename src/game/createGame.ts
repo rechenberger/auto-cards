@@ -1,7 +1,7 @@
 import { getMyUser } from '@/auth/getMyUser'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
-import { GameData } from '@/db/schema-zod'
+import { GameData, LiveMatch } from '@/db/schema-zod'
 import { sendDiscordMessage } from '@/lib/discord'
 import { typedParse } from '@/lib/typedParse'
 import { createId } from '@paralleldrive/cuid2'
@@ -10,7 +10,13 @@ import { GAME_DATA_VERSION } from './config'
 import { generateShopItems } from './generateShopItems'
 import { roundStats } from './roundStats'
 
-export const createGame = async ({ userId }: { userId: string }) => {
+export const createGame = async ({
+  userId,
+  liveMatch,
+}: {
+  userId: string
+  liveMatch?: LiveMatch
+}) => {
   const id = createId()
 
   const game = {
@@ -19,6 +25,7 @@ export const createGame = async ({ userId }: { userId: string }) => {
     data: typedParse(GameData, {
       version: GAME_DATA_VERSION,
       gold: first(roundStats)?.gold ?? 0,
+      seed: liveMatch?.data.seed,
       shopItems: [],
       currentLoadout: {
         items: [
@@ -30,6 +37,7 @@ export const createGame = async ({ userId }: { userId: string }) => {
     }),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    liveMatchId: liveMatch?.id ?? null,
   }
 
   game.data.shopItems = await generateShopItems({ game })

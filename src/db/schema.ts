@@ -25,6 +25,7 @@ export const game = sqliteTable('game', {
   ...baseStats(),
   userId: text('userId').notNull(),
   data: text('data', { mode: 'json' }).$type<GameData>().notNull(),
+  liveMatchId: text('liveMatchId'),
 })
 
 export const gameRelations = relations(game, ({ one, many }) => ({
@@ -34,6 +35,10 @@ export const gameRelations = relations(game, ({ one, many }) => ({
   }),
   loadouts: many(loadout),
   matches: many(match),
+  liveMatch: one(liveMatch, {
+    fields: [game.liveMatchId],
+    references: [liveMatch.id],
+  }),
 }))
 
 export const loadout = sqliteTable('loadout', {
