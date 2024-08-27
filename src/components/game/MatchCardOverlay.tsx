@@ -1,11 +1,12 @@
 'use client'
 
+import { hasAnyStats, sumStats } from '@/game/calcStats'
 import { MATCH_CARD_ANIMATION_DURATION } from '@/game/config'
 import { MatchLog, MatchReport } from '@/game/generateMatch'
 import { motion } from 'framer-motion'
 import { useAtomValue } from 'jotai'
-import { range } from 'lodash-es'
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { countBy, range, uniqueId } from 'lodash-es'
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import {
   activeMatchLogAtom,
   matchPlaybackSpeedAtom,
@@ -49,6 +50,13 @@ const useOnLogEvent = ({
   }, [activeMatchLog, matchReport.logs, onLogs, onLog])
 }
 
+type AnimationData = {
+  id: string
+  content: React.ReactNode
+  startedAt: number
+  duration: number
+}
+
 export const MatchCardOverlay = ({
   sideIdx,
   itemIdx,
@@ -58,41 +66,84 @@ export const MatchCardOverlay = ({
   itemIdx: number
   matchReport: MatchReport
 }) => {
-  const [animations, setAnimations] = useState<
-    {
-      id: string
-      content: React.ReactNode
-      startedAt: number
-      duration: number
-    }[]
-  >([])
+  const [animations, setAnimations] = useState<AnimationData[]>([])
 
   const speed = useAtomValue(matchPlaybackSpeedAtom)
 
-  useOnLogEvent({
-    matchReport,
-    onLog: (log) => {
-      if (log.sideIdx !== sideIdx) return
-      if (log.itemIdx !== itemIdx) return
-
+  const addAnimation = useCallback(
+    (animation: Omit<AnimationData, 'startedAt' | 'duration' | 'id'>) => {
       setAnimations((animations) => [
         ...animations.filter((a) => Date.now() - a.startedAt < a.duration),
         {
-          id: log.logIdx.toString(),
-          content: (
-            <>
-              {log.stats ? (
-                <StatsDisplay stats={log.stats} size="sm" />
-              ) : (
-                <div className="text-xs">{log.msg}</div>
-              )}
-            </>
-          ),
+          ...animation,
+          id: uniqueId(),
           startedAt: Date.now(),
           duration: MATCH_CARD_ANIMATION_DURATION / speed,
         },
       ])
     },
+    [speed],
+  )
+
+  useOnLogEvent({
+    matchReport,
+    onLogs: (logs) => {
+      logs = logs.filter(
+        (log) => log.sideIdx === sideIdx && log.itemIdx === itemIdx,
+      )
+      const statsMySide = sumStats(
+        ...logs
+          .filter((log) => log.targetSideIdx === sideIdx)
+          .map((log) => log.stats || {}),
+      )
+      const statsOtherSide = sumStats(
+        ...logs
+          .filter((log) => log.targetSideIdx !== sideIdx)
+          .map((log) => log.stats || {}),
+      )
+
+      for (const stats of [statsMySide, statsOtherSide]) {
+        if (hasAnyStats({ stats })) {
+          addAnimation({
+            content: <StatsDisplay stats={stats} size="sm" />,
+          })
+        }
+      }
+
+      const messagesWithoutStats = logs
+        .filter((log) => !log.stats)
+        .map((log) => log.msg)
+      const msgCounts = countBy(messagesWithoutStats, (msg) => msg)
+
+      for (const [msg, count] of Object.entries(msgCounts)) {
+        if (count > 1) {
+          addAnimation({
+            content: (
+              <div className="text-xs">
+                {count > 1 ? `${count}x ` : ''}
+                {msg}
+              </div>
+            ),
+          })
+        }
+      }
+    },
+    // onLog: (log) => {
+    //   if (log.sideIdx !== sideIdx) return
+    //   if (log.itemIdx !== itemIdx) return
+
+    //   addAnimation({
+    //     content: (
+    //       <>
+    //         {log.stats ? (
+    //           <StatsDisplay stats={log.stats} size="sm" />
+    //         ) : (
+    //           <div className="text-xs">{log.msg}</div>
+    //         )}
+    //       </>
+    //     ),
+    //   })
+    // },
   })
 
   return (

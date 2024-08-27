@@ -94,3 +94,7 @@ export const hasStats = (a: Stats, b: Stats) => {
   }
   return true
 }
+
+export const hasAnyStats = ({ stats }: { stats: Stats }) => {
+  return !!keys(omitBy(stats, (v) => v === undefined || v === 0)).length
+}
