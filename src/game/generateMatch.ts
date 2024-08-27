@@ -307,10 +307,11 @@ export const generateMatch = async ({
                   // THORNS
                   if (otherSide.stats.thorns && damage > 0) {
                     let thornsDamage = otherSide.stats.thorns
-                    thornsDamage = Math.min(
+                    const maxThornsDamage = Math.round(
                       damage * MAX_THORNS_MULTIPLIER,
-                      thornsDamage,
                     )
+                    thornsDamage = Math.min(maxThornsDamage, thornsDamage)
+
                     const thornsStats: Stats = {
                       health: -1 * thornsDamage,
                     }
