@@ -6,6 +6,7 @@ import { calcCooldown } from './calcCooldown'
 import { addStats, calcStats, hasStats, tryAddStats } from './calcStats'
 import {
   BASE_TICK_TIME,
+  CRIT_MULTIPLIER,
   FATIGUE_STARTS_AT,
   MAX_MATCH_TIME,
   MAX_THORNS_MULTIPLIER,
@@ -265,10 +266,22 @@ export const generateMatch = async ({
                 })
               }
               if (attack) {
-                const accuracyRng = rngFloat({ seed: seedAction, max: 100 })
+                const accuracyRng = rngFloat({
+                  seed: [...seedAction, 'hit'],
+                  max: 100,
+                })
                 const doesHit = accuracyRng <= (attack.accuracy ?? 0)
                 if (doesHit) {
                   let damage = attack.damage ?? 0
+
+                  const critChance = mySide.stats.aim ?? 0
+                  const doesCrit =
+                    rngFloat({ seed: [...seedAction, 'crit'], max: 100 }) <=
+                    critChance
+                  if (doesCrit) {
+                    damage = Math.round(damage * CRIT_MULTIPLIER)
+                  }
+
                   const blockedDamage = Math.min(
                     damage,
                     otherSide.stats.block ?? 0,
@@ -281,10 +294,24 @@ export const generateMatch = async ({
                   addStats(otherSide.stats, targetStats)
                   log({
                     ...action,
-                    msg: `Hit`,
+                    msg: doesCrit ? `Critical Hit` : `Hit`,
                     targetSideIdx: otherSide.sideIdx,
                     stats: targetStats,
                   })
+                  if (doesCrit) {
+                    if (mySide.stats.aim) {
+                      const removeAimStats: Stats = {
+                        aim: -1 * mySide.stats.aim,
+                      }
+                      addStats(mySide.stats, removeAimStats)
+                      log({
+                        ...action,
+                        msg: `Reset Aim`,
+                        targetSideIdx: mySide.sideIdx,
+                        stats: removeAimStats,
+                      })
+                    }
+                  }
 
                   // LIFESTEAL
                   if (mySide.stats.lifeSteal && damage > 0) {

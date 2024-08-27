@@ -6,6 +6,7 @@ import {
   Carrot,
   Coins,
   Crosshair,
+  Eye,
   Flame,
   Heart,
   HeartPulse,
@@ -114,6 +115,12 @@ const heroStats = [
     icon: Snowflake,
     bgClass: 'bg-sky-300',
     tooltip: 'Everything triggers X% slower.',
+  },
+  {
+    name: 'aim',
+    icon: Eye,
+    bgClass: 'bg-blue-500',
+    tooltip: 'X% chance to crit. Removed on crit.',
   },
 ] as const
 

@@ -207,6 +207,23 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'spyglass',
+    tags: ['accessory'],
+    price: 3,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_000,
+        statsSelf: {
+          aim: 5,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export type ItemName = (typeof allItemsConst)[number]['name']
