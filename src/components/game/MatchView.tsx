@@ -50,6 +50,7 @@ export const MatchView = async ({
               items={participants[0].loadout.data.items}
               sideIdx={0}
               changemakers={changemakers}
+              matchReport={matchReport}
             />
           </div>
           <div className="flex-1 flex flex-col gap-2 items-center justify-center self-stretch">
@@ -64,6 +65,7 @@ export const MatchView = async ({
               items={participants[1].loadout.data.items}
               sideIdx={1}
               changemakers={changemakers}
+              matchReport={matchReport}
             />
           </div>
         </div>
@@ -78,6 +80,8 @@ export const MatchView = async ({
               <MatchCards
                 items={participants[0].loadout.data.items}
                 sideIdx={0}
+                changemakers={changemakers}
+                matchReport={matchReport}
               />
             </div>
           </div>
@@ -94,6 +98,8 @@ export const MatchView = async ({
               <MatchCards
                 items={participants[1].loadout.data.items}
                 sideIdx={1}
+                changemakers={changemakers}
+                matchReport={matchReport}
               />
             </div>
           </div>
