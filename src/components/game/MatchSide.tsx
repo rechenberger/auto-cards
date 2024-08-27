@@ -42,18 +42,24 @@ export const MatchSide = ({
       >
         {isDone && isWinner && (
           <div
-            className={cn('absolute -top-12', isEnemy ? 'right-2' : 'left-2')}
+            className={cn(
+              'absolute -top-6 xl:-top-12',
+              isEnemy ? 'right-2' : 'left-2',
+            )}
           >
-            <Crown className="size-16" />
+            <Crown className="size-8 xl:size-16" />
           </div>
         )}
         <div
           className={cn(
             'flex flex-col gap-2',
             isEnemy ? 'items-end' : 'items-start',
+            'overflow-hidden',
           )}
         >
-          <div className="text-lg font-bold">{name}</div>
+          <div className="text-lg font-bold truncate max-w-28 sm:max-w-60">
+            {name}
+          </div>
           <MatchStatsDisplay matchReport={matchReport} sideIdx={sideIdx} />
         </div>
         {/* <MatchCards items={participant.loadout.data.items} /> */}

@@ -86,7 +86,7 @@ export const MatchView = async ({
             </div>
           </div>
           <div className="absolute top-8 z-10">
-            <Swords className="size-16" />
+            <Swords className="size-8 xl:size-16" />
           </div>
           <div className="max-xl:flex-1 flex flex-col gap-4">
             <MatchSide

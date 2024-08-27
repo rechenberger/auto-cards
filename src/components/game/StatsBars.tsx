@@ -27,7 +27,7 @@ export const StatsBars = ({ stats }: { stats: Stats }) => {
     <div className="flex flex-col gap-2">
       {bars.map((bar, idx) => (
         <Fragment key={idx}>
-          <div className="relative w-40">
+          <div className="relative w-28 sm:w-40">
             <Progress
               value={100 * (bar.current / bar.max)}
               className="border shadow h-6"
