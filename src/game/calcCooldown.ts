@@ -10,6 +10,7 @@ export const calcCooldown = ({
 }) => {
   const slow = stats.slow ?? 0
   const haste = stats.haste ?? 0
-  const result = Math.max(cooldown * (1 + (slow - haste) / 100), MIN_COOLDOWN)
+  let result = Math.max(cooldown * (1 + (slow - haste) / 100), MIN_COOLDOWN)
+  // result = Math.ceil(result * 100) / 100 // TODO: consider this?
   return result
 }
