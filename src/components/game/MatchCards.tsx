@@ -22,15 +22,13 @@ export const MatchCards = async ({
   items = countifyItems(items)
   items = await orderItems(items)
 
+  const noOfChangemakers = items.length >= 7 ? 2 : 1
+  const topChangemakers = take(changemakers?.[sideIdx], noOfChangemakers)
+
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-4 grid-flow-dense">
         {map(items, (item, itemIdx) => {
-          const noOfChangemakers = items.length >= 7 ? 2 : 1
-          const topChangemakers = take(
-            changemakers?.[sideIdx],
-            noOfChangemakers,
-          )
           const isBig = topChangemakers.some((c) => c.name === item.name)
           const changemaker = find(
             changemakers?.[sideIdx],
