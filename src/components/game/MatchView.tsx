@@ -1,4 +1,5 @@
 import { Game, Match } from '@/db/schema-zod'
+import { generateChangemakers } from '@/game/generateChangemakers'
 import { generateMatch } from '@/game/generateMatch'
 import { every } from 'lodash-es'
 import { AlertCircle, Swords } from 'lucide-react'
@@ -38,6 +39,8 @@ export const MatchView = async ({
     seed: [match.data.seed],
   })
 
+  const changemakers = await generateChangemakers({ match, participants })
+
   return (
     <>
       <div className="flex flex-col gap-4 flex-1">
@@ -46,6 +49,7 @@ export const MatchView = async ({
             <MatchCards
               items={participants[0].loadout.data.items}
               sideIdx={0}
+              changemakers={changemakers}
             />
           </div>
           <div className="flex-1 flex flex-col gap-2 items-center justify-center self-stretch">
@@ -59,6 +63,7 @@ export const MatchView = async ({
             <MatchCards
               items={participants[1].loadout.data.items}
               sideIdx={1}
+              changemakers={changemakers}
             />
           </div>
         </div>

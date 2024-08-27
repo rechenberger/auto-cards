@@ -1,8 +1,9 @@
 import { Game, LoadoutData } from '@/db/schema-zod'
 import { countifyItems } from '@/game/countifyItems'
+import { Changemakers } from '@/game/generateChangemakers'
 import { orderItems } from '@/game/orderItems'
 import { cn } from '@/lib/utils'
-import { map } from 'lodash-es'
+import { find, map, take } from 'lodash-es'
 import { Fragment } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 import { ItemCard } from './ItemCard'
@@ -11,10 +12,12 @@ export const MatchCards = async ({
   items,
   game,
   sideIdx,
+  changemakers,
 }: {
   items: LoadoutData['items']
   game?: Game
   sideIdx: number
+  changemakers?: Changemakers
 }) => {
   items = countifyItems(items)
   items = await orderItems(items)
@@ -23,7 +26,16 @@ export const MatchCards = async ({
     <>
       <div className="grid grid-cols-2 md:grid-cols-4 grid-flow-dense">
         {map(items, (item, itemIdx) => {
-          const isBig = itemIdx === 2 || itemIdx === 3
+          const noOfChangemakers = items.length >= 7 ? 2 : 1
+          const topChangemakers = take(
+            changemakers?.[sideIdx],
+            noOfChangemakers,
+          )
+          const isBig = topChangemakers.some((c) => c.name === item.name)
+          const changemaker = find(
+            changemakers?.[sideIdx],
+            (c) => c.name === item.name,
+          )
           return (
             <Fragment key={item.name}>
               <Tooltip>
@@ -41,7 +53,7 @@ export const MatchCards = async ({
                   />
                 </TooltipTrigger>
                 <TooltipContent
-                  className="p-0 border-none bg-transparent"
+                  className="p-0 border-none bg-transparent rounded-xl"
                   side={sideIdx === 0 ? 'right' : 'left'}
                 >
                   <ItemCard
@@ -50,6 +62,14 @@ export const MatchCards = async ({
                     count={item.count}
                     size="320"
                   />
+
+                  <div className="absolute -bottom-6 flex flex-col items-center inset-x-0">
+                    {changemaker && (
+                      <div className="bg-[#313130] text-white px-4 py-1 rounded-b-md">
+                        Necessity: {Math.round(changemaker.necessity * 100)}%
+                      </div>
+                    )}
+                  </div>
                 </TooltipContent>
               </Tooltip>
             </Fragment>
