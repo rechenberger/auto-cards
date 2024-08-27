@@ -8,6 +8,7 @@ import { BASE_TICK_TIME, FATIGUE_STARTS_AT, MAX_MATCH_TIME } from './config'
 import { Stats } from './stats'
 
 export type MatchLog = {
+  logIdx: number
   time: number
   msg?: string
   sideIdx: number
@@ -97,7 +98,7 @@ export const generateMatch = async ({
         ? sides[log.sideIdx].items[log.itemIdx].name
         : undefined
     const stateSnapshot = cloneDeep(state)
-    logs.push({ ...log, time, itemName, stateSnapshot })
+    logs.push({ ...log, time, itemName, stateSnapshot, logIdx: logs.length })
   }
 
   const endOfMatch = () => {
