@@ -1,11 +1,15 @@
 'use client'
 
+import { MATCH_CARD_ANIMATION_DURATION } from '@/game/config'
 import { MatchLog, MatchReport } from '@/game/generateMatch'
 import { motion } from 'framer-motion'
 import { useAtomValue } from 'jotai'
 import { range } from 'lodash-es'
 import { Fragment, useEffect, useRef, useState } from 'react'
-import { activeMatchLogAtom } from './matchPlaybackState'
+import {
+  activeMatchLogAtom,
+  matchPlaybackSpeedAtom,
+} from './matchPlaybackState'
 import { StatsDisplay } from './StatsDisplay'
 
 const useOnLogEvent = ({
@@ -63,6 +67,8 @@ export const MatchCardOverlay = ({
     }[]
   >([])
 
+  const speed = useAtomValue(matchPlaybackSpeedAtom)
+
   useOnLogEvent({
     matchReport,
     onLog: (log) => {
@@ -70,20 +76,20 @@ export const MatchCardOverlay = ({
       if (log.itemIdx !== itemIdx) return
 
       setAnimations((animations) => [
-        ...animations,
+        ...animations.filter((a) => Date.now() - a.startedAt < a.duration),
         {
           id: log.logIdx.toString(),
           content: (
             <>
               {log.stats ? (
-                <StatsDisplay stats={log.stats} />
+                <StatsDisplay stats={log.stats} size="sm" />
               ) : (
-                <div>{log.msg}</div>
+                <div className="text-xs">{log.msg}</div>
               )}
             </>
           ),
           startedAt: Date.now(),
-          duration: 1000,
+          duration: MATCH_CARD_ANIMATION_DURATION / speed,
         },
       ])
     },

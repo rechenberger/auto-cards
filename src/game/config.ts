@@ -11,3 +11,4 @@ export const NO_OF_LATEST_LOADOUTS = 5
 export const LIMIT_GAME_OVERVIEW = 9
 
 export const IGNORE_SPACE = true
+export const MATCH_CARD_ANIMATION_DURATION = 1_000
