@@ -17,7 +17,7 @@ import {
   Syringe,
 } from 'lucide-react'
 import { z } from 'zod'
-import { IGNORE_SPACE } from './config'
+import { IGNORE_SPACE, MAX_THORNS_MULTIPLIER } from './config'
 
 const heroStats = [
   {
@@ -77,7 +77,7 @@ const heroStats = [
     name: 'thorns',
     icon: Pyramid,
     bgClass: 'bg-orange-500',
-    tooltip: 'Deal X Damage to attacker when attacked.',
+    tooltip: `Deal X Damage to attacker when attacked. Max ${MAX_THORNS_MULTIPLIER}x damage of the attacker.`,
   },
   {
     name: 'lifeSteal',

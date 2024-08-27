@@ -13,3 +13,5 @@ export const LIMIT_GAME_OVERVIEW = 9
 
 export const IGNORE_SPACE = true
 export const MATCH_CARD_ANIMATION_DURATION = 1_000
+
+export const MAX_THORNS_MULTIPLIER = 1.5

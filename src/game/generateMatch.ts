@@ -4,7 +4,12 @@ import { cloneDeep, minBy, orderBy, range } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { calcCooldown } from './calcCooldown'
 import { addStats, calcStats, hasStats, tryAddStats } from './calcStats'
-import { BASE_TICK_TIME, FATIGUE_STARTS_AT, MAX_MATCH_TIME } from './config'
+import {
+  BASE_TICK_TIME,
+  FATIGUE_STARTS_AT,
+  MAX_MATCH_TIME,
+  MAX_THORNS_MULTIPLIER,
+} from './config'
 import { orderItems } from './orderItems'
 import { Stats } from './stats'
 
@@ -300,8 +305,12 @@ export const generateMatch = async ({
                   }
 
                   // THORNS
-                  if (otherSide.stats.thorns) {
-                    const thornsDamage = otherSide.stats.thorns
+                  if (otherSide.stats.thorns && damage > 0) {
+                    let thornsDamage = otherSide.stats.thorns
+                    thornsDamage = Math.min(
+                      damage * MAX_THORNS_MULTIPLIER,
+                      thornsDamage,
+                    )
                     const thornsStats: Stats = {
                       health: -1 * thornsDamage,
                     }
