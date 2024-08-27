@@ -289,7 +289,7 @@ export const generateMatch = async ({
                     const lifeStealStats: Stats = {
                       health: lifeStealDamage,
                     }
-                    addStats(mySide.stats, lifeStealStats)
+                    tryAddStats(mySide.stats, lifeStealStats)
                     log({
                       ...action,
                       sideIdx: mySide.sideIdx,
