@@ -326,11 +326,11 @@ export const generateMatch = async ({
           }
         }
 
-        const cooldown = calcCooldown({
-          cooldown: trigger.cooldown,
-          stats: mySide.stats,
-        })
-        action.time += cooldown
+        // We do that after all actions, so that haste is applied to the cooldown
+        // action.time += calcCooldown({
+        //   cooldown: trigger.cooldown,
+        //   stats: mySide.stats,
+        // })
       } else {
         const exhaustiveCheck: never = action
         throw new Error(
@@ -342,6 +342,21 @@ export const generateMatch = async ({
       const dead = sides.some((side) => (side.stats.health ?? 0) <= 0)
       if (dead) {
         return endOfMatch()
+      }
+    }
+
+    // UPDATE COOLDOWN
+    for (const action of futureActions) {
+      if (action.time !== time) continue
+      if (action.type === 'itemTrigger') {
+        const cooldown = calcCooldown({
+          cooldown:
+            sides[action.sideIdx].items[action.itemIdx].triggers![
+              action.triggerIdx
+            ].cooldown,
+          stats: sides[action.sideIdx].stats,
+        })
+        action.time += cooldown
       }
     }
 
