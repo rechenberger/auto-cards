@@ -42,7 +42,9 @@ const useOnLogEvent = ({
 
     const logIndexesToAnimate = range(lastLogIdx + 1, newLogIdx + 1)
 
-    const logs = logIndexesToAnimate.map((idx) => matchReport.logs[idx])
+    const logs = logIndexesToAnimate
+      .map((idx) => matchReport.logs[idx])
+      .filter(Boolean)
     onLogs?.(logs)
     for (const log of logs) {
       onLog?.(log)
