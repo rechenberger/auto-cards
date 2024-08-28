@@ -66,14 +66,15 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
       return side.items.flatMap((item, itemIdx) => {
         return (
           item.triggers?.flatMap((trigger, triggerIdx) => {
-            if (trigger.type !== 'interval') return []
+            if (!['interval', 'startOfBattle'].includes(trigger.type)) return []
             const cooldown = calcCooldown({
               cooldown: trigger.cooldown,
               stats: side.stats,
+              tags: item.tags ?? [],
             })
             return range(item.count ?? 1).map((itemCounter) => ({
               type: 'itemTrigger' as const,
-              time: cooldown,
+              time: trigger.type === 'startOfBattle' ? 0 : cooldown,
               lastUsed: 0,
               sideIdx: side.sideIdx,
               itemIdx,
@@ -270,17 +271,26 @@ export const generateMatch = async ({
                   seed: [...seedAction, 'hit'],
                   max: 100,
                 })
-                const doesHit = accuracyRng <= (attack.accuracy ?? 0)
+                let accuracy = attack.accuracy ?? 0
+                if (mySide.stats.drunk) {
+                  accuracy -= mySide.stats.drunk
+                }
+                const doesHit = accuracyRng <= accuracy
                 if (doesHit) {
                   let damage = attack.damage ?? 0
+
+                  if (otherSide.stats.drunk) {
+                    damage *= 1 + otherSide.stats.drunk / 100
+                  }
 
                   const critChance = mySide.stats.aim ?? 0
                   const doesCrit =
                     rngFloat({ seed: [...seedAction, 'crit'], max: 100 }) <=
                     critChance
                   if (doesCrit) {
-                    damage = Math.round(damage * CRIT_MULTIPLIER)
+                    damage *= CRIT_MULTIPLIER
                   }
+                  damage = Math.round(damage)
 
                   const blockedDamage = Math.min(
                     damage,
@@ -387,12 +397,16 @@ export const generateMatch = async ({
     for (const action of futureActions) {
       if (action.time !== time) continue
       if (action.type === 'itemTrigger') {
+        const side = sides[action.sideIdx]
+        const item = side.items[action.itemIdx]
+        const trigger = item.triggers![action.triggerIdx]
+        if (trigger.type === 'startOfBattle') {
+          action.time = MAX_MATCH_TIME
+        }
         const cooldown = calcCooldown({
-          cooldown:
-            sides[action.sideIdx].items[action.itemIdx].triggers![
-              action.triggerIdx
-            ].cooldown,
-          stats: sides[action.sideIdx].stats,
+          cooldown: trigger.cooldown,
+          stats: side.stats,
+          tags: item.tags ?? [],
         })
         action.time += cooldown
       }

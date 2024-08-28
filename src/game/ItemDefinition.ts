@@ -3,7 +3,11 @@ import { Stats } from './stats'
 import { Tag } from './tags'
 
 export const Trigger = z.object({
-  type: z.enum(['interval', 'onSelfStun', 'onEnemyStun']),
+  type: z.enum([
+    'interval',
+    'startOfBattle',
+    // 'onSelfStun', 'onEnemyStun'
+  ]),
   cooldown: z.number(),
   statsRequired: Stats.optional(),
   statsSelf: Stats.optional(),

@@ -224,6 +224,103 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'beer',
+    tags: ['food'],
+    price: 5,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_000,
+        statsSelf: {
+          drunk: 1,
+        },
+      },
+    ],
+  },
+  {
+    name: 'beerFest',
+    tags: ['event'],
+    price: 8,
+    stats: {
+      space: space(-4),
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        cooldown: 0,
+        statsSelf: {
+          drunk: 20,
+        },
+        statsEnemy: {
+          drunk: 20,
+        },
+      },
+    ],
+  },
+  {
+    name: 'thornsFest',
+    tags: ['event'],
+    price: 8,
+    stats: {
+      space: space(-4),
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        cooldown: 0,
+        statsSelf: {
+          thorns: 20,
+        },
+        statsEnemy: {
+          thorns: 20,
+        },
+      },
+    ],
+  },
+  {
+    name: 'blockFest',
+    tags: ['event'],
+    price: 8,
+    stats: {
+      space: space(-4),
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        cooldown: 0,
+        statsSelf: {
+          block: 100,
+        },
+        statsEnemy: {
+          block: 100,
+        },
+      },
+    ],
+  },
+  {
+    name: 'frostFest',
+    tags: ['event'],
+    price: 8,
+    stats: {
+      space: space(-4),
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        cooldown: 0,
+        statsSelf: {
+          slow: 20,
+        },
+        statsEnemy: {
+          slow: 20,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export type ItemName = (typeof allItemsConst)[number]['name']

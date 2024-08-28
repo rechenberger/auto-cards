@@ -1,12 +1,15 @@
 import { COOLDOWN_PRECISION, MIN_COOLDOWN } from './config'
 import { Stats } from './stats'
+import { Tag } from './tags'
 
 export const calcCooldown = ({
   cooldown,
   stats,
+  tags,
 }: {
   cooldown: number
   stats: Stats
+  tags: Tag[]
 }) => {
   let multiplier = 1
   if (stats.slow) {
@@ -14,6 +17,9 @@ export const calcCooldown = ({
   }
   if (stats.haste) {
     multiplier -= stats.haste / 100
+  }
+  if (stats.drunk && tags.includes('food')) {
+    multiplier -= stats.drunk / 100
   }
 
   let result = cooldown * multiplier
