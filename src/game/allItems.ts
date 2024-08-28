@@ -343,6 +343,20 @@ const allItemsConst = [
           slow: 5,
         },
       },
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        attack: {
+          accuracy: 80,
+          damage: 20,
+        },
+        statsRequired: {
+          slow: 20,
+        },
+        statsSelf: {
+          slow: -20,
+        },
+      },
     ],
   },
   {
