@@ -243,7 +243,7 @@ const allItemsConst = [
   },
   {
     name: 'beerFest',
-    tags: ['food'],
+    tags: ['event'],
     price: 8,
     stats: {
       space: space(-4),
