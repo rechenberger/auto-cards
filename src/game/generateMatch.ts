@@ -66,7 +66,7 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
       return side.items.flatMap((item, itemIdx) => {
         return (
           item.triggers?.flatMap((trigger, triggerIdx) => {
-            if (trigger.type !== 'interval') return []
+            if (!['interval', 'startOfBattle'].includes(trigger.type)) return []
             const cooldown = calcCooldown({
               cooldown: trigger.cooldown,
               stats: side.stats,
@@ -74,7 +74,7 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
             })
             return range(item.count ?? 1).map((itemCounter) => ({
               type: 'itemTrigger' as const,
-              time: cooldown,
+              time: trigger.type === 'startOfBattle' ? 0 : cooldown,
               lastUsed: 0,
               sideIdx: side.sideIdx,
               itemIdx,
@@ -397,13 +397,16 @@ export const generateMatch = async ({
     for (const action of futureActions) {
       if (action.time !== time) continue
       if (action.type === 'itemTrigger') {
+        const side = sides[action.sideIdx]
+        const item = side.items[action.itemIdx]
+        const trigger = item.triggers![action.triggerIdx]
+        if (trigger.type === 'startOfBattle') {
+          action.time = MAX_MATCH_TIME
+        }
         const cooldown = calcCooldown({
-          cooldown:
-            sides[action.sideIdx].items[action.itemIdx].triggers![
-              action.triggerIdx
-            ].cooldown,
-          stats: sides[action.sideIdx].stats,
-          tags: sides[action.sideIdx].items[action.itemIdx].tags ?? [],
+          cooldown: trigger.cooldown,
+          stats: side.stats,
+          tags: item.tags ?? [],
         })
         action.time += cooldown
       }

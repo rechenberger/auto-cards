@@ -250,8 +250,8 @@ const allItemsConst = [
     },
     triggers: [
       {
-        type: 'interval',
-        cooldown: 10_000,
+        type: 'startOfBattle',
+        cooldown: 0,
         statsSelf: {
           drunk: 20,
         },
