@@ -289,6 +289,9 @@ export const generateMatch = async ({
                     critChance
                   if (doesCrit) {
                     damage *= CRIT_MULTIPLIER
+                    if (statsEnemy?.critDamage) {
+                      damage *= 1 + statsEnemy.critDamage / 100
+                    }
                   }
                   damage = Math.round(damage)
 
