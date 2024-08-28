@@ -70,6 +70,7 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
             const cooldown = calcCooldown({
               cooldown: trigger.cooldown,
               stats: side.stats,
+              tags: item.tags ?? [],
             })
             return range(item.count ?? 1).map((itemCounter) => ({
               type: 'itemTrigger' as const,
@@ -270,17 +271,26 @@ export const generateMatch = async ({
                   seed: [...seedAction, 'hit'],
                   max: 100,
                 })
-                const doesHit = accuracyRng <= (attack.accuracy ?? 0)
+                let accuracy = attack.accuracy ?? 0
+                if (mySide.stats.drunk) {
+                  accuracy -= mySide.stats.drunk
+                }
+                const doesHit = accuracyRng <= accuracy
                 if (doesHit) {
                   let damage = attack.damage ?? 0
+
+                  if (otherSide.stats.drunk) {
+                    damage *= 1 + otherSide.stats.drunk / 100
+                  }
 
                   const critChance = mySide.stats.aim ?? 0
                   const doesCrit =
                     rngFloat({ seed: [...seedAction, 'crit'], max: 100 }) <=
                     critChance
                   if (doesCrit) {
-                    damage = Math.round(damage * CRIT_MULTIPLIER)
+                    damage *= CRIT_MULTIPLIER
                   }
+                  damage = Math.round(damage)
 
                   const blockedDamage = Math.min(
                     damage,
@@ -393,6 +403,7 @@ export const generateMatch = async ({
               action.triggerIdx
             ].cooldown,
           stats: sides[action.sideIdx].stats,
+          tags: sides[action.sideIdx].items[action.itemIdx].tags ?? [],
         })
         action.time += cooldown
       }
