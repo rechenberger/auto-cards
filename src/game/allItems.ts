@@ -261,6 +261,66 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'thornsFest',
+    tags: ['event'],
+    price: 8,
+    stats: {
+      space: space(-4),
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        cooldown: 0,
+        statsSelf: {
+          thorns: 20,
+        },
+        statsEnemy: {
+          thorns: 20,
+        },
+      },
+    ],
+  },
+  {
+    name: 'blockFest',
+    tags: ['event'],
+    price: 8,
+    stats: {
+      space: space(-4),
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        cooldown: 0,
+        statsSelf: {
+          block: 100,
+        },
+        statsEnemy: {
+          block: 100,
+        },
+      },
+    ],
+  },
+  {
+    name: 'frostFest',
+    tags: ['event'],
+    price: 8,
+    stats: {
+      space: space(-4),
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        cooldown: 0,
+        statsSelf: {
+          slow: 20,
+        },
+        statsEnemy: {
+          slow: 20,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export type ItemName = (typeof allItemsConst)[number]['name']
