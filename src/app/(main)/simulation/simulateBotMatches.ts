@@ -1,6 +1,18 @@
-import { generateMatch } from '@/game/generateMatch'
-import { flatten, range } from 'lodash-es'
+import { range } from 'lodash-es'
+import Piscina from 'piscina'
 import { BotGame } from './generateBotsWithItems'
+
+let piscina: Piscina | null = null
+
+function getPiscina() {
+  if (!piscina) {
+    piscina = new Piscina({
+      filename: new URL('./matchWorker.ts', import.meta.url).href,
+      maxThreads: 4, // Adjust based on your needs
+    })
+  }
+  return piscina
+}
 
 export const simulateBotMatches = async ({
   bots,
@@ -13,44 +25,41 @@ export const simulateBotMatches = async ({
     bots.map(async (bot) => {
       const others = bots.filter((b) => b.name !== bot.name)
 
-      await Promise.all(
-        others.map(async (other) => {
-          return await Promise.all(
-            range(noOfRepeats).map(async (matchIdx) => {
-              const matchReport = await generateMatch({
-                participants: [
-                  { loadout: bot.game.data.currentLoadout },
-                  { loadout: other.game.data.currentLoadout },
-                ],
-                seed: [...bot.seed, 'match', matchIdx, other.name],
-                skipLogs: true,
-              })
+      const matchResults = await Promise.all(
+        others.flatMap((other) =>
+          range(noOfRepeats).map(async (matchIdx) => {
+            const matchReport: any = await getPiscina().run({
+              participants: [
+                { loadout: bot.game.data.currentLoadout },
+                { loadout: other.game.data.currentLoadout },
+              ],
+              seed: [...bot.seed, 'match', matchIdx, other.name],
+              skipLogs: true,
+            })
 
-              bot.matches += 1
-              other.matches += 1
-              bot.time += matchReport.time
-              other.time += matchReport.time
+            bot.matches += 1
+            other.matches += 1
+            bot.time += matchReport.time
+            other.time += matchReport.time
 
-              const isWinner = matchReport.winner.sideIdx === 0
-              if (isWinner) {
-                bot.wins += 1
-              } else {
-                other.wins += 1
-              }
+            const isWinner = matchReport.winner.sideIdx === 0
+            if (isWinner) {
+              bot.wins += 1
+            } else {
+              other.wins += 1
+            }
 
-              const isDraw =
-                matchReport.winner.stats.health ===
-                matchReport.loser.stats.health
-              if (isDraw) {
-                bot.draws += 1
-                other.draws += 1
-              }
+            const isDraw =
+              matchReport.winner.stats.health === matchReport.loser.stats.health
+            if (isDraw) {
+              bot.draws += 1
+              other.draws += 1
+            }
 
-              return matchReport
-            }),
-          )
-        }),
-      ).then(flatten)
+            return matchReport
+          }),
+        ),
+      )
 
       return bot
     }),
