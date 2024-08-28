@@ -321,6 +321,30 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'frostHammer',
+    tags: ['weapon'],
+    price: 6,
+    stats: {
+      space: space(-4),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        attack: {
+          accuracy: 80,
+          damage: 20,
+        },
+        statsSelf: {
+          slow: 5,
+        },
+        statsEnemy: {
+          slow: 5,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export type ItemName = (typeof allItemsConst)[number]['name']
