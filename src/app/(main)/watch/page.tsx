@@ -60,7 +60,7 @@ const MatchEntry = async ({ match }: { match: Match }) => {
       <div className="flex flex-row gap-1 flex-wrap items-start justify-end">
         {p1Items.map((item, idx) => (
           <Fragment key={idx}>
-            <TinyItem name={item.name} />
+            <TinyItem name={item.name} count={item.count} />
           </Fragment>
         ))}
       </div>
@@ -81,7 +81,7 @@ const MatchEntry = async ({ match }: { match: Match }) => {
       <div className="flex flex-row gap-1 flex-wrap items-start justify-start">
         {p2Items.map((item, idx) => (
           <Fragment key={idx}>
-            <TinyItem name={item.name} />
+            <TinyItem name={item.name} count={item.count} />
           </Fragment>
         ))}
       </div>
