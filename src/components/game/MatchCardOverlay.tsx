@@ -155,7 +155,7 @@ export const MatchCardOverlay = ({
     <>
       {stats && (
         <div className="absolute top-4 inset-x-2 flex items-center justify-center">
-          <StatsDisplay stats={stats} size="sm" />
+          <StatsDisplay stats={stats} size="sm" canWrap />
         </div>
       )}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none flex-col gap-2">
