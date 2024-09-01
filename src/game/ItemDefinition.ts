@@ -2,6 +2,12 @@ import { z } from 'zod'
 import { Stats } from './stats'
 import { Tag } from './tags'
 
+export const ScopedStats = z.object({
+  stats: Stats,
+  scope: z.enum(['both', 'self', 'enemy', 'item']),
+})
+export type ScopedStats = z.infer<typeof ScopedStats>
+
 export const Trigger = z.object({
   type: z.enum([
     'interval',
@@ -13,6 +19,7 @@ export const Trigger = z.object({
   statsSelf: Stats.optional(),
   statsEnemy: Stats.optional(),
   attack: Stats.optional(),
+  scopedStats: z.array(ScopedStats).optional(),
 })
 export type Trigger = z.infer<typeof Trigger>
 
