@@ -336,8 +336,12 @@ const allItemsConst = [
           accuracy: 80,
           damage: 20,
         },
+        statsRequired: {
+          stamina: 4,
+        },
         statsSelf: {
           slow: 5,
+          stamina: -4,
         },
         statsEnemy: {
           slow: 5,
