@@ -41,6 +41,7 @@ export const LoadoutDisplay = async ({
                 name={item.name}
                 count={item.count}
                 size="240"
+                tooltipOnClick
               />
             </Fragment>
           ))}
