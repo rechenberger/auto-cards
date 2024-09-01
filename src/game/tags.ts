@@ -28,7 +28,7 @@ export const allTagsDefinition = [
   },
   {
     name: 'default',
-    bgClass: 'bg-amber-200',
+    // bgClass: 'bg-gray-800',
   },
   {
     name: 'bag',
