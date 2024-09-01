@@ -56,14 +56,16 @@ export const StatsDisplay = ({
                 <stat.icon
                   className={cn('size-4', size === 'sm' && 'size-3')}
                 />
-                <div
-                  className={cn(
-                    'text-sm px-1 font-bold',
-                    size === 'sm' && 'text-xs',
-                  )}
-                >
-                  {value}
-                </div>
+                {!stat.hideCount && (
+                  <div
+                    className={cn(
+                      'text-sm px-1 font-bold',
+                      size === 'sm' && 'text-xs',
+                    )}
+                  >
+                    {value}
+                  </div>
+                )}
               </div>
             )
 

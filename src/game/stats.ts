@@ -31,6 +31,7 @@ type StatDefinitionPre = {
   tooltip: string
   bar?: boolean
   hidden?: boolean
+  hideCount?: boolean
 }
 
 type StatDefinitionPost = StatDefinitionPre & {
@@ -156,6 +157,7 @@ const heroStats = [
     icon: Target,
     bgClass: 'bg-red-500',
     tooltip: 'Can hit flying enemies. Not affected by thorns.',
+    hideCount: true,
   },
 ] as const satisfies StatDefinitionPre[]
 
