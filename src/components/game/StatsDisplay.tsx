@@ -38,8 +38,8 @@ export const StatsDisplay = ({
         )}
       >
         {allStatsDefinition
-          .filter((stat) => !('hidden' in stat && stat.hidden))
-          .filter((stat) => !hideBars || !('bar' in stat && stat.bar))
+          .filter((stat) => !stat.hidden)
+          .filter((stat) => !hideBars || !stat.bar)
           .map((stat) => {
             const value = stats[stat.name]
             if (showZero ? value === undefined : !value) return null

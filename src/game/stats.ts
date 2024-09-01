@@ -12,6 +12,7 @@ import {
   Flame,
   Heart,
   HeartPulse,
+  LucideIcon,
   Pyramid,
   Shield,
   Skull,
@@ -22,6 +23,19 @@ import {
 } from 'lucide-react'
 import { z } from 'zod'
 import { IGNORE_SPACE, MAX_THORNS_MULTIPLIER } from './config'
+
+type StatDefinitionPre = {
+  name: string
+  icon: LucideIcon
+  bgClass: string
+  tooltip: string
+  bar?: boolean
+  hidden?: boolean
+}
+
+type StatDefinitionPost = StatDefinitionPre & {
+  name: Stat
+}
 
 const heroStats = [
   {
@@ -143,7 +157,7 @@ const heroStats = [
     bgClass: 'bg-red-500',
     tooltip: 'Can hit flying enemies. Not affected by thorns.',
   },
-] as const
+] as const satisfies StatDefinitionPre[]
 
 const attackStats = [
   {
@@ -158,7 +172,7 @@ const attackStats = [
     bgClass: 'bg-yellow-500',
     tooltip: 'X% chance to hit.',
   },
-] as const
+] as const satisfies StatDefinitionPre[]
 
 const otherStats = [
   {
@@ -167,23 +181,25 @@ const otherStats = [
     bgClass: 'bg-yellow-500',
     tooltip: 'Money to buy stuff.',
   },
-] as const
+] as const satisfies StatDefinitionPre[]
 
-export const allStatsDefinition = [
+export const allStatsDefinitionConst = [
   ...otherStats,
   ...heroStats,
   ...attackStats,
-] as const
+] as const satisfies StatDefinitionPre[]
+
+export const allStatsDefinition: StatDefinitionPost[] = allStatsDefinitionConst
 
 export const getStatDefinition = (stat: Stat) => {
-  const def = allStatsDefinition.find((b) => b.name === stat)
+  const def = allStatsDefinitionConst.find((b) => b.name === stat)
   if (!def) {
     throw new Error(`Unknown stat: ${stat}`)
   }
-  return def
+  return def as StatDefinitionPost
 }
 
-export const allStats = constArrayMap(allStatsDefinition, 'name')
+export const allStats = constArrayMap(allStatsDefinitionConst, 'name')
 
 export type Stat = (typeof allStats)[number]
 
