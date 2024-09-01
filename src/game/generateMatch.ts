@@ -274,7 +274,7 @@ export const generateMatch = async ({
           const tryingToReach = !!statsEnemy || !!attack
           if (tryingToReach) {
             const canReachEnemy = otherSide.stats.flying
-              ? !!statsForItem.flying
+              ? !!statsForItem.flying || !!statsForItem.ranged
               : true
             if (!canReachEnemy) {
               log({
@@ -373,7 +373,11 @@ export const generateMatch = async ({
                   }
 
                   // THORNS
-                  if (otherSide.stats.thorns && damage > 0) {
+                  if (
+                    otherSide.stats.thorns &&
+                    damage > 0 &&
+                    !statsForItem.ranged
+                  ) {
                     let thornsDamage = otherSide.stats.thorns
                     const maxThornsDamage = Math.round(
                       damage * MAX_THORNS_MULTIPLIER,

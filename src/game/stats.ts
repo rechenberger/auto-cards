@@ -18,6 +18,7 @@ import {
   Snowflake,
   Sword,
   Syringe,
+  Target,
 } from 'lucide-react'
 import { z } from 'zod'
 import { IGNORE_SPACE, MAX_THORNS_MULTIPLIER } from './config'
@@ -135,6 +136,12 @@ const heroStats = [
     icon: Axe,
     bgClass: 'bg-yellow-500',
     tooltip: '+X% crit damage.',
+  },
+  {
+    name: 'ranged',
+    icon: Target,
+    bgClass: 'bg-red-500',
+    tooltip: 'Can hit flying enemies. Not affected by thorns.',
   },
 ] as const
 

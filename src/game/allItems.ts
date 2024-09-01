@@ -360,6 +360,36 @@ const allItemsConst = [
     ],
   },
   {
+    name: 'darts',
+    tags: ['weapon'],
+    price: 3,
+    stats: {
+      space: space(-2),
+    },
+    statsItem: {
+      ranged: 1,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_000,
+        statsRequired: {
+          stamina: 1,
+        },
+        statsSelf: {
+          stamina: -1,
+        },
+        attack: {
+          accuracy: 80,
+          damage: 2,
+        },
+        statsEnemy: {
+          flying: -1,
+        },
+      },
+    ],
+  },
+  {
     name: 'whetstone',
     tags: ['accessory'],
     price: 2,
