@@ -265,6 +265,7 @@ export const generateMatch = async ({
             tryAddStats(item.statsItem, trigger.statsItem)
             log({
               ...action,
+              msg: 'apply to item',
               stats: trigger.statsItem,
               targetSideIdx: mySide.sideIdx,
               targetItemIdx: action.itemIdx,
