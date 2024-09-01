@@ -20,6 +20,12 @@ export const TriggerDisplay = ({ trigger }: { trigger: Trigger }) => {
             <StatsDisplay relative stats={trigger.statsSelf} />
           </div>
         )}
+        {trigger.statsItem && (
+          <div className="flex flex-row gap-2">
+            <div>Item:</div>
+            <StatsDisplay relative stats={trigger.statsItem} />
+          </div>
+        )}
         {trigger.statsEnemy && (
           <div className="flex flex-row gap-2">
             <div>Enemy:</div>

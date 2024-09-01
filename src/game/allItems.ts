@@ -165,11 +165,14 @@ const allItemsConst = [
     stats: {
       space: space(-2),
     },
+    statsItem: {
+      haste: 2,
+    },
     triggers: [
       {
         type: 'interval',
         cooldown: 2_000,
-        statsSelf: {
+        statsItem: {
           haste: 2,
         },
         attack: {
