@@ -165,9 +165,6 @@ const allItemsConst = [
     stats: {
       space: space(-2),
     },
-    statsItem: {
-      haste: 2,
-    },
     triggers: [
       {
         type: 'interval',
