@@ -14,7 +14,7 @@ export const streamItemCard = async ({ name }: { name: string }) => {
       title: capitalCase(name),
       description: (
         <>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 max-h-[calc(100vh-80px)] overflow-auto">
             <ItemCard name={name} size="320" />
             <StatDescriptionsItem name={name} />
           </div>
