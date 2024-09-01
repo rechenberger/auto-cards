@@ -149,17 +149,6 @@ export const MatchCardOverlay = ({
     //     ),
     //   })
     // },
-    // onLog: (log) => {
-    //   // if (log.logIdx !== 0) {
-    //   //   if (log.targetSideIdx !== sideIdx) return
-    //   //   if (log.targetItemIdx !== itemIdx) return
-    //   // }
-
-    //   const newStats = log.stateSnapshot.sides[sideIdx].items[itemIdx].statsItem
-    //   if (newStats) {
-    //     setStats(newStats)
-    //   }
-    // },
   })
 
   return (
