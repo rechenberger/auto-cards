@@ -71,6 +71,7 @@ export const Shop = async ({ game }: { game: Game }) => {
                   game={game}
                   name={shopItem.name}
                   shopItem={shopItem}
+                  tooltipOnClick
                 />
 
                 {!!game && !!shopItem && !shopItem.isSold && (

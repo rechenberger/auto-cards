@@ -4,12 +4,14 @@ import { getItemByName } from '@/game/allItems'
 import { getTagDefinition } from '@/game/tags'
 import { fontHeading } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
+import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
 import { first } from 'lodash-es'
 import { Fragment } from 'react'
 import { StatsDisplay } from './StatsDisplay'
 import { TriggerDisplay } from './TriggerDisplay'
 import { getItemAiImagePrompt } from './getItemAiImagePrompt'
+import { streamItemCard } from './streamItemCard'
 
 export const ItemCard = async ({
   game,
@@ -18,6 +20,7 @@ export const ItemCard = async ({
   size = '200',
   className,
   count = 1,
+  tooltipOnClick,
 }: {
   game?: Game
   name: string
@@ -25,12 +28,13 @@ export const ItemCard = async ({
   size?: '480' | '320' | '240' | '200' | '160' | '80'
   className?: string
   count?: number
+  tooltipOnClick?: boolean
 }) => {
   const item = await getItemByName(name)
   const title = capitalCase(name)
   const tag = getTagDefinition(first(item.tags) ?? 'default')
 
-  return (
+  const inner = (
     <>
       {/* <HoverCard>
         <HoverCardTrigger> */}
@@ -162,4 +166,24 @@ export const ItemCard = async ({
       </HoverCard> */}
     </>
   )
+
+  if (tooltipOnClick) {
+    return (
+      <>
+        <ActionButton
+          variant="vanilla"
+          size="vanilla"
+          hideIcon
+          action={async () => {
+            'use server'
+            return streamItemCard({ name })
+          }}
+        >
+          {inner}
+        </ActionButton>
+      </>
+    )
+  }
+
+  return inner
 }
