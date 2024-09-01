@@ -14,6 +14,7 @@ export const Trigger = z.object({
   statsEnemy: Stats.optional(),
   attack: Stats.optional(),
   statsItem: Stats.optional(),
+  chance: z.number().optional(),
 })
 export type Trigger = z.infer<typeof Trigger>
 

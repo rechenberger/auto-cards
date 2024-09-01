@@ -7,12 +7,17 @@ export const TriggerDisplay = ({ trigger }: { trigger: Trigger }) => {
   return (
     <>
       <div className="px-2 py-2 bg-border/40 rounded-md flex flex-col gap-1 items-center min-w-40">
-        <div>
-          {trigger.type === 'interval'
-            ? `Every ${seconds}`
-            : `${capitalCase(trigger.type)}${
-                trigger.cooldown ? ` (${seconds} cooldown)` : ''
-              }`}
+        <div className="flex flex-row gap-1">
+          <div className="flex-1">
+            {trigger.type === 'interval'
+              ? `Every ${seconds}`
+              : `${capitalCase(trigger.type)}${
+                  trigger.cooldown ? ` (${seconds} cooldown)` : ''
+                }`}
+          </div>
+          {trigger.chance && (
+            <div className="">({Math.round(100 * trigger.chance)}%)</div>
+          )}
         </div>
         {trigger.statsSelf && (
           <div className="flex flex-row gap-2">
