@@ -72,7 +72,7 @@ export const StatsDisplay = ({
             )
 
             if (disableTooltip) {
-              return inner
+              return <Fragment key={stat.name}>{inner}</Fragment>
             }
 
             return (
