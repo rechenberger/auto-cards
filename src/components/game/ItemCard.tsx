@@ -1,6 +1,7 @@
 import { AiImage } from '@/components/ai/AiImage'
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
+import { Changemaker } from '@/game/generateChangemakers'
 import { getTagDefinition } from '@/game/tags'
 import { fontHeading } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
@@ -21,6 +22,7 @@ export const ItemCard = async ({
   className,
   count = 1,
   tooltipOnClick,
+  changemaker,
 }: {
   game?: Game
   name: string
@@ -29,6 +31,7 @@ export const ItemCard = async ({
   className?: string
   count?: number
   tooltipOnClick?: boolean
+  changemaker?: Changemaker
 }) => {
   const item = await getItemByName(name)
   const title = capitalCase(name)
@@ -176,7 +179,7 @@ export const ItemCard = async ({
           hideIcon
           action={async () => {
             'use server'
-            return streamItemCard({ name })
+            return streamItemCard({ name, changemaker })
           }}
         >
           {inner}
