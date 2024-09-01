@@ -71,6 +71,9 @@ export const MatchCardOverlay = ({
   const [animations, setAnimations] = useState<AnimationData[]>([])
 
   const speed = useAtomValue(matchPlaybackSpeedAtom)
+  const activeMatchLog = useAtomValue(activeMatchLogAtom)
+  const stats =
+    activeMatchLog?.log.stateSnapshot.sides[sideIdx].items[itemIdx].statsItem
 
   const addAnimation = useCallback(
     (animation: Omit<AnimationData, 'startedAt' | 'duration' | 'id'>) => {
@@ -150,6 +153,11 @@ export const MatchCardOverlay = ({
 
   return (
     <>
+      {stats && (
+        <div className="absolute top-4 inset-x-2 flex items-center justify-center">
+          <StatsDisplay stats={stats} size="sm" />
+        </div>
+      )}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none flex-col gap-2">
         {animations.map((animation) => {
           return (

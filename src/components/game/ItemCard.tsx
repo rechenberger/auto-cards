@@ -134,6 +134,12 @@ export const ItemCard = async ({
         >
           <div className="flex flex-col items-center gap-2">
             {item.stats && <StatsDisplay relative stats={item.stats} />}
+            {item.statsItem && (
+              <div className="flex flex-row gap-2">
+                <div>Item:</div>
+                <StatsDisplay relative stats={item.statsItem} />
+              </div>
+            )}
             {item.triggers?.map((trigger, idx) => (
               <Fragment key={idx}>
                 <TriggerDisplay trigger={trigger} />

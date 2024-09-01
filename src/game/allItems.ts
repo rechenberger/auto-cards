@@ -169,7 +169,7 @@ const allItemsConst = [
       {
         type: 'interval',
         cooldown: 2_000,
-        statsSelf: {
+        statsItem: {
           haste: 2,
         },
         attack: {

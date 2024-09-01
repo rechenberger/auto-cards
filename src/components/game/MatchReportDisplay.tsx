@@ -37,13 +37,25 @@ export const MatchReportDisplay = ({
           )
           const hasStats = !!log.stats
 
-          const statsAfter =
+          const statsAfterItem =
             log.targetSideIdx !== undefined &&
+            log.targetItemIdx !== undefined &&
             log.stats &&
             pick(
-              log.stateSnapshot.sides[log.targetSideIdx].stats,
+              log.stateSnapshot.sides[log.targetSideIdx].items[
+                log.targetItemIdx
+              ].statsItem,
               keys(pickBy(log.stats, (v) => !!v)),
             )
+
+          const statsAfter =
+            statsAfterItem ||
+            (log.targetSideIdx !== undefined &&
+              log.stats &&
+              pick(
+                log.stateSnapshot.sides[log.targetSideIdx].stats,
+                keys(pickBy(log.stats, (v) => !!v)),
+              ))
 
           const cellProps = {
             onClick: () => {
