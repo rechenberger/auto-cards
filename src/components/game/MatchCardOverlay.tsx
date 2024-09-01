@@ -73,7 +73,7 @@ export const MatchCardOverlay = ({
   const speed = useAtomValue(matchPlaybackSpeedAtom)
   const activeMatchLog = useAtomValue(activeMatchLogAtom)
   const stats =
-    activeMatchLog?.log.stateSnapshot.sides[sideIdx].items[itemIdx].statsItem
+    activeMatchLog?.log.stateSnapshot.sides[sideIdx]?.items[itemIdx]?.statsItem
 
   const addAnimation = useCallback(
     (animation: Omit<AnimationData, 'startedAt' | 'duration' | 'id'>) => {
