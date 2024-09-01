@@ -4,7 +4,6 @@ import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { desc, eq } from 'drizzle-orm'
 import { Suspense } from 'react'
-import { Skeleton } from '../ui/skeleton'
 import { generateAiImage } from './generateAiImage.action'
 
 export type AiImageProps = {
@@ -20,7 +19,7 @@ export const AiImage = ({
 }: AiImageProps) => {
   return (
     <>
-      <Suspense fallback={<Skeleton className={className} />}>
+      <Suspense fallback={<div className={cn(className, 'bg-slate-600')} />}>
         <AiImageRaw prompt={prompt} className={className} itemId={itemId} />
       </Suspense>
     </>
