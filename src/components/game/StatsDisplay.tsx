@@ -19,6 +19,7 @@ export const StatsDisplay = ({
   disableTooltip,
   statClassName,
   hideBars,
+  hideCount,
 }: {
   stats: Stats
   relative?: boolean
@@ -28,6 +29,7 @@ export const StatsDisplay = ({
   disableTooltip?: boolean
   statClassName?: string
   hideBars?: boolean
+  hideCount?: boolean
 }) => {
   return (
     <>
@@ -56,7 +58,7 @@ export const StatsDisplay = ({
                 <stat.icon
                   className={cn('size-4', size === 'sm' && 'size-3')}
                 />
-                {!stat.hideCount && (
+                {!hideCount && !stat.hideCount && (
                   <div
                     className={cn(
                       'text-sm px-1 font-bold',
