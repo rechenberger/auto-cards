@@ -10,6 +10,7 @@ import { capitalCase } from 'change-case'
 import { isNil, mapValues, omitBy, sum, values } from 'lodash-es'
 import { Info } from 'lucide-react'
 import { Fragment } from 'react'
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 import { ItemCard } from './ItemCard'
 import { StatsDisplay } from './StatsDisplay'
 
@@ -62,22 +63,29 @@ export const RoundInfo = async ({ roundNo }: { roundNo: number }) => {
 export const RoundInfoButton = ({ roundNo }: { roundNo: number }) => {
   return (
     <>
-      <ActionButton
-        size="icon"
-        variant={'ghost'}
-        hideIcon
-        className="rounded-full"
-        action={async () => {
-          'use server'
-          return superAction(async () => {
-            streamToast({
-              description: <RoundInfo roundNo={roundNo} />,
-            })
-          })
-        }}
-      >
-        <Info className="size-4" />
-      </ActionButton>
+      <Tooltip>
+        <TooltipTrigger>
+          <ActionButton
+            size="icon"
+            variant={'ghost'}
+            hideIcon
+            className="rounded-full"
+            action={async () => {
+              'use server'
+              return superAction(async () => {
+                streamToast({
+                  description: <RoundInfo roundNo={roundNo} />,
+                })
+              })
+            }}
+          >
+            <Info className="size-4" />
+          </ActionButton>
+        </TooltipTrigger>
+        <TooltipContent>
+          <RoundInfo roundNo={roundNo} />
+        </TooltipContent>
+      </Tooltip>
     </>
   )
 }
