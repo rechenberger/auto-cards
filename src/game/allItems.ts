@@ -421,6 +421,34 @@ const allItemsConst = [
       critDamage: 30,
     },
   },
+  {
+    name: 'broom',
+    tags: ['weapon'],
+    rarity: 'common',
+    price: 3,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        statsRequired: {
+          stamina: 2,
+        },
+        statsSelf: {
+          stamina: -2,
+        },
+        statsEnemy: {
+          blind: 4,
+        },
+        attack: {
+          damage: 2,
+          accuracy: 80,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export type ItemName = (typeof allItemsConst)[number]['name']
