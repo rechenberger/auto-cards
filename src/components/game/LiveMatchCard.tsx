@@ -46,7 +46,10 @@ export const LiveMatchCard = async ({
       <Card className="flex flex-col gap-2 p-2 w-56">
         <div className="flex flex-row gap-2 items-baseline">
           <div className="flex-1">⚡ Live Match</div>
-          <SimpleRefresher forceState={true} />
+          <SimpleRefresher
+            forceState={true}
+            ms={myParticipation?.data.ready ? 1000 : 4000}
+          />
         </div>
         <div>
           {liveMatch.liveMatchParticipations.map((participation) => (
@@ -57,7 +60,10 @@ export const LiveMatchCard = async ({
                 participation.data.ready && 'text-green-500',
               )}
             >
-              <div className="flex-1">{participation.user.name}</div>
+              <div className="flex-1">
+                {participation.user.name}
+                {participation.data.isHost && ' (Host)'}
+              </div>
               <div className="text-right">
                 {participation.data.ready ? 'Ready' : 'Not Ready'}
               </div>
