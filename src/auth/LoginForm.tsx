@@ -40,7 +40,10 @@ export const LoginForm = ({ redirectUrl }: { redirectUrl?: string }) => {
                       </>
                     ),
                   })
-                  await signIn('resend', { email: data.email, redirect: false })
+                  await signIn('nodemailer', {
+                    email: data.email,
+                    redirect: false,
+                  })
                 } else {
                   throw error
                 }
@@ -49,14 +52,14 @@ export const LoginForm = ({ redirectUrl }: { redirectUrl?: string }) => {
             } else if (data.type === 'register') {
               // REGISTER
               await registerUser(data)
-              await signIn('resend', data)
+              await signIn('nodemailer', data)
             } else if (data.type === 'forgotPassword') {
               // CHANGE PASSWORD
               let redirectTo = '/auth/change-password'
               if (redirectUrl) {
                 redirectTo += `?redirect=${encodeURIComponent(redirectUrl)}`
               }
-              await signIn('resend', {
+              await signIn('nodemailer', {
                 email: data.email,
                 redirectTo,
               })

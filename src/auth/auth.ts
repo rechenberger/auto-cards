@@ -1,8 +1,8 @@
 import { db } from '@/db/db'
+import Nodemailer from '@auth/core/providers/nodemailer'
 import { DrizzleAdapter } from '@auth/drizzle-adapter'
 import NextAuth from 'next-auth'
 import Discord from 'next-auth/providers/discord'
-import Resend from 'next-auth/providers/resend'
 import { headers } from 'next/headers'
 import { CredentialsProvider } from './CredentialsProvider'
 import { ImpersonateProvider } from './ImpersonateProvider'
@@ -12,9 +12,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db),
   providers: [
     Discord,
-    Resend({
+    Nodemailer({
       from: process.env.EMAIL_FROM,
-      apiKey: process.env.AUTH_RESEND_KEY,
+      server: process.env.SMTP_URL,
 
       sendVerificationRequest: async (params) => {
         const h = headers()
