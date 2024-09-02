@@ -12,6 +12,7 @@ import { CardRow } from './CardRow'
 import { GameMatchBoard } from './GameMatchBoard'
 import { ItemCard } from './ItemCard'
 import { ReRollButton } from './ReRollButton'
+import { RoundInfoButton } from './RoundInfo'
 import { StatsDisplay } from './StatsDisplay'
 
 export const Shop = async ({ game }: { game: Game }) => {
@@ -34,7 +35,10 @@ export const Shop = async ({ game }: { game: Game }) => {
         />
 
         <div className="flex-1" />
-        <GameMatchBoard game={game} />
+        <div className="flex flex-row gap-1 items-center">
+          <GameMatchBoard game={game} />
+          <RoundInfoButton roundNo={game.data.roundNo} />
+        </div>
         <div className="flex-1" />
         {isAdmin && (
           <ActionButton
@@ -71,6 +75,7 @@ export const Shop = async ({ game }: { game: Game }) => {
                   game={game}
                   name={shopItem.name}
                   shopItem={shopItem}
+                  tooltipOnClick
                 />
 
                 {!!game && !!shopItem && !shopItem.isSold && (

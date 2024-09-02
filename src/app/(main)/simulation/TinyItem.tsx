@@ -1,10 +1,5 @@
-import { ItemCard } from '@/components/game/ItemCard'
+import { streamItemCard } from '@/components/game/streamItemCard'
 import { getItemByName } from '@/game/allItems'
-import {
-  streamToast,
-  superAction,
-} from '@/super-action/action/createSuperAction'
-import { capitalCase } from 'change-case'
 import { TinyItemClient } from './TinyItemClient'
 
 export const TinyItem = async ({
@@ -17,16 +12,7 @@ export const TinyItem = async ({
   const item = await getItemByName(name)
   const action = async () => {
     'use server'
-    return superAction(async () => {
-      streamToast({
-        title: capitalCase(name),
-        description: (
-          <>
-            <ItemCard name={name} size="320" />
-          </>
-        ),
-      })
-    })
+    return streamItemCard({ name })
   }
   return (
     <>

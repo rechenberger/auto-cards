@@ -3,8 +3,20 @@ import { rngFloat, rngOrder, SeedArray } from '@/game/seed'
 import { cloneDeep, minBy, orderBy, range } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { calcCooldown } from './calcCooldown'
-import { addStats, calcStats, hasStats, tryAddStats } from './calcStats'
-import { BASE_TICK_TIME, FATIGUE_STARTS_AT, MAX_MATCH_TIME } from './config'
+import {
+  addStats,
+  calcStats,
+  hasStats,
+  sumStats2,
+  tryAddStats,
+} from './calcStats'
+import {
+  BASE_TICK_TIME,
+  CRIT_MULTIPLIER,
+  FATIGUE_STARTS_AT,
+  MAX_MATCH_TIME,
+  MAX_THORNS_MULTIPLIER,
+} from './config'
 import { orderItems } from './orderItems'
 import { Stats } from './stats'
 
@@ -18,6 +30,7 @@ export type MatchLog = {
   triggerIdx?: number
   stats?: Stats
   targetSideIdx?: number
+  targetItemIdx?: number
   stateSnapshot: MatchState
 }
 
@@ -35,10 +48,14 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
   const sides = await Promise.all(
     input.participants.map(async (p, idx) => {
       let items = await Promise.all(
-        p.loadout.items.map(async (i) => ({
-          ...(await getItemByName(i.name)),
-          count: i.count ?? 1,
-        })),
+        p.loadout.items.map(async (i) => {
+          const def = await getItemByName(i.name)
+          return {
+            ...def,
+            statsItem: def.statsItem ? { ...def.statsItem } : undefined,
+            count: i.count ?? 1,
+          }
+        }),
       )
       items = await orderItems(items)
       const stats = await calcStats({ loadout: p.loadout })
@@ -60,14 +77,15 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
       return side.items.flatMap((item, itemIdx) => {
         return (
           item.triggers?.flatMap((trigger, triggerIdx) => {
-            if (trigger.type !== 'interval') return []
+            if (!['interval', 'startOfBattle'].includes(trigger.type)) return []
             const cooldown = calcCooldown({
               cooldown: trigger.cooldown,
               stats: side.stats,
+              tags: item.tags ?? [],
             })
             return range(item.count ?? 1).map((itemCounter) => ({
               type: 'itemTrigger' as const,
-              time: cooldown,
+              time: trigger.type === 'startOfBattle' ? 0 : cooldown,
               lastUsed: 0,
               sideIdx: side.sideIdx,
               itemIdx,
@@ -207,19 +225,20 @@ export const generateMatch = async ({
         }
       } else if (action.type === 'itemTrigger') {
         const seedAction = [...seedTick, action]
-        const trigger =
-          sides[action.sideIdx].items[action.itemIdx].triggers![
-            action.triggerIdx
-          ]
-        action.lastUsed = time
-
         const mySide = sides[action.sideIdx]
         const otherSide = sides[1 - action.sideIdx] // lol
+        const item = mySide.items[action.itemIdx]
+        const trigger = item.triggers![action.triggerIdx]
+        action.lastUsed = time
+
+        const statsForItem = item.statsItem
+          ? sumStats2(mySide.stats, item.statsItem)
+          : mySide.stats
 
         const { statsRequired, statsSelf, statsEnemy, attack } = trigger
         let hasRequiredStats = true
         if (statsRequired) {
-          const enough = hasStats(mySide.stats, statsRequired)
+          const enough = hasStats(statsForItem, statsRequired)
           if (!enough) {
             log({
               ...action,
@@ -239,10 +258,23 @@ export const generateMatch = async ({
               targetSideIdx: mySide.sideIdx,
             })
           }
+          if (trigger.statsItem) {
+            if (!item.statsItem) {
+              item.statsItem = {}
+            }
+            tryAddStats(item.statsItem, trigger.statsItem)
+            log({
+              ...action,
+              msg: 'apply to item',
+              stats: trigger.statsItem,
+              targetSideIdx: mySide.sideIdx,
+              targetItemIdx: action.itemIdx,
+            })
+          }
           const tryingToReach = !!statsEnemy || !!attack
           if (tryingToReach) {
             const canReachEnemy = otherSide.stats.flying
-              ? !!mySide.stats.flying
+              ? !!statsForItem.flying || !!statsForItem.ranged
               : true
             if (!canReachEnemy) {
               log({
@@ -260,10 +292,37 @@ export const generateMatch = async ({
                 })
               }
               if (attack) {
-                const accuracyRng = rngFloat({ seed: seedAction, max: 100 })
-                const doesHit = accuracyRng <= (attack.accuracy ?? 0)
+                const accuracyRng = rngFloat({
+                  seed: [...seedAction, 'hit'],
+                  max: 100,
+                })
+                let accuracy = attack.accuracy ?? 0
+                if (statsForItem.blind) {
+                  accuracy -= statsForItem.blind
+                }
+                if (statsForItem.drunk) {
+                  accuracy -= statsForItem.drunk
+                }
+                const doesHit = accuracyRng <= accuracy
                 if (doesHit) {
                   let damage = attack.damage ?? 0
+
+                  if (otherSide.stats.drunk) {
+                    damage *= 1 + otherSide.stats.drunk / 100
+                  }
+
+                  const critChance = statsForItem.aim ?? 0
+                  const doesCrit =
+                    rngFloat({ seed: [...seedAction, 'crit'], max: 100 }) <=
+                    critChance
+                  if (doesCrit) {
+                    damage *= CRIT_MULTIPLIER
+                    if (statsEnemy?.critDamage) {
+                      damage *= 1 + statsEnemy.critDamage / 100
+                    }
+                  }
+                  damage = Math.round(damage)
+
                   const blockedDamage = Math.min(
                     damage,
                     otherSide.stats.block ?? 0,
@@ -276,15 +335,32 @@ export const generateMatch = async ({
                   addStats(otherSide.stats, targetStats)
                   log({
                     ...action,
-                    msg: `Hit`,
+                    msg: doesCrit ? `Critical Hit` : `Hit`,
                     targetSideIdx: otherSide.sideIdx,
                     stats: targetStats,
                   })
+                  if (doesCrit) {
+                    if (statsForItem.aim) {
+                      const removeAimStats: Stats = {
+                        aim: -1 * statsForItem.aim,
+                      }
+                      tryAddStats(mySide.stats, removeAimStats)
+                      if (item.statsItem) {
+                        tryAddStats(item.statsItem, removeAimStats)
+                      }
+                      log({
+                        ...action,
+                        msg: `Reset Aim`,
+                        targetSideIdx: mySide.sideIdx,
+                        stats: removeAimStats,
+                      })
+                    }
+                  }
 
                   // LIFESTEAL
-                  if (mySide.stats.lifeSteal) {
+                  if (statsForItem.lifeSteal && damage > 0) {
                     const lifeStealDamage = Math.ceil(
-                      damage * (mySide.stats.lifeSteal / 100),
+                      damage * (statsForItem.lifeSteal / 100),
                     )
                     const lifeStealStats: Stats = {
                       health: lifeStealDamage,
@@ -300,8 +376,17 @@ export const generateMatch = async ({
                   }
 
                   // THORNS
-                  if (otherSide.stats.thorns) {
-                    const thornsDamage = otherSide.stats.thorns
+                  if (
+                    otherSide.stats.thorns &&
+                    damage > 0 &&
+                    !statsForItem.ranged
+                  ) {
+                    let thornsDamage = otherSide.stats.thorns
+                    const maxThornsDamage = Math.round(
+                      damage * MAX_THORNS_MULTIPLIER,
+                    )
+                    thornsDamage = Math.min(maxThornsDamage, thornsDamage)
+
                     const thornsStats: Stats = {
                       health: -1 * thornsDamage,
                     }
@@ -350,12 +435,19 @@ export const generateMatch = async ({
     for (const action of futureActions) {
       if (action.time !== time) continue
       if (action.type === 'itemTrigger') {
+        const side = sides[action.sideIdx]
+        const item = side.items[action.itemIdx]
+        const trigger = item.triggers![action.triggerIdx]
+        if (trigger.type === 'startOfBattle') {
+          action.time = MAX_MATCH_TIME
+        }
+        const statsForItem = item.statsItem
+          ? sumStats2(side.stats, item.statsItem)
+          : side.stats
         const cooldown = calcCooldown({
-          cooldown:
-            sides[action.sideIdx].items[action.itemIdx].triggers![
-              action.triggerIdx
-            ].cooldown,
-          stats: sides[action.sideIdx].stats,
+          cooldown: trigger.cooldown,
+          stats: statsForItem,
+          tags: item.tags ?? [],
         })
         action.time += cooldown
       }

@@ -27,7 +27,12 @@ export const LoadoutDisplay = async ({
         <CardRow>
           {map(items, (item) => (
             <Fragment key={item.name}>
-              <ItemCard game={game} name={item.name} count={item.count} />
+              <ItemCard
+                game={game}
+                name={item.name}
+                count={item.count}
+                tooltipOnClick
+              />
             </Fragment>
           ))}
         </CardRow>
@@ -41,6 +46,7 @@ export const LoadoutDisplay = async ({
                 name={item.name}
                 count={item.count}
                 size="240"
+                tooltipOnClick
               />
             </Fragment>
           ))}

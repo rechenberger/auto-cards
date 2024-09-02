@@ -53,6 +53,8 @@ export const MatchCards = async ({
                     name={item.name}
                     count={item.count}
                     size={isBig ? '160' : '80'}
+                    changemaker={changemaker}
+                    tooltipOnClick
                   />
                   <MatchCardOverlay
                     sideIdx={sideIdx}

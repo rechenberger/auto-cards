@@ -18,3 +18,14 @@
 ## Other
 
 - Steal 1 Buff
+- Strength counts double for this item
+
+## Random Collection
+
+- items gain 5% critical hit chance for each Luck stack.
+- use 10 mana: gain 2s invulnerability (once)
+- item activates: 66.6% chance to gain 1 Mana.
+- Gain 55 Block. Gain 2 Regeneration for each ⭐ Holy item.
+- Gain 45 Block, resist 3 debuffs.
+- Start of battle: Convert 30 health into 60 Block and gain 2 Vampirism. Every 3s: Convert 10 health into 20 Block.
+- Food: Triggers 10% faster for each ⭐ food of a different type.

@@ -29,8 +29,16 @@ export const MainTop = async () => {
       hidden: !isLoggedIn,
     },
     {
+      name: 'Watch',
+      href: '/watch',
+    },
+    {
       name: 'Items',
       href: '/items',
+    },
+    {
+      name: 'Docs',
+      href: '/docs',
     },
     {
       name: 'Playground',

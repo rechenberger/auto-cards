@@ -91,3 +91,4 @@ export const generateChangemakers = async ({
 }
 
 export type Changemakers = Awaited<ReturnType<typeof generateChangemakers>>
+export type Changemaker = Changemakers[number][number]

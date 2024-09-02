@@ -16,9 +16,10 @@ export const StatsDisplay = ({
   showZero,
   size = 'default',
   canWrap,
-  disableTooltip,
+  disableTooltip = true,
   statClassName,
   hideBars,
+  hideCount,
 }: {
   stats: Stats
   relative?: boolean
@@ -28,6 +29,7 @@ export const StatsDisplay = ({
   disableTooltip?: boolean
   statClassName?: string
   hideBars?: boolean
+  hideCount?: boolean
 }) => {
   return (
     <>
@@ -38,8 +40,8 @@ export const StatsDisplay = ({
         )}
       >
         {allStatsDefinition
-          .filter((stat) => !('hidden' in stat && stat.hidden))
-          .filter((stat) => !hideBars || !('bar' in stat && stat.bar))
+          .filter((stat) => !stat.hidden)
+          .filter((stat) => !hideBars || !stat.bar)
           .map((stat) => {
             const value = stats[stat.name]
             if (showZero ? value === undefined : !value) return null
@@ -56,19 +58,21 @@ export const StatsDisplay = ({
                 <stat.icon
                   className={cn('size-4', size === 'sm' && 'size-3')}
                 />
-                <div
-                  className={cn(
-                    'text-sm px-1 font-bold',
-                    size === 'sm' && 'text-xs',
-                  )}
-                >
-                  {value}
-                </div>
+                {!hideCount && !stat.hideCount && (
+                  <div
+                    className={cn(
+                      'text-sm px-1 font-bold',
+                      size === 'sm' && 'text-xs',
+                    )}
+                  >
+                    {value}
+                  </div>
+                )}
               </div>
             )
 
             if (disableTooltip) {
-              return inner
+              return <Fragment key={stat.name}>{inner}</Fragment>
             }
 
             return (

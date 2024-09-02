@@ -1,15 +1,19 @@
 import { AiImage } from '@/components/ai/AiImage'
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
+import { Changemaker } from '@/game/generateChangemakers'
+import { getRarityDefinition } from '@/game/rarities'
 import { getTagDefinition } from '@/game/tags'
 import { fontHeading } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
+import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
 import { first } from 'lodash-es'
 import { Fragment } from 'react'
 import { StatsDisplay } from './StatsDisplay'
 import { TriggerDisplay } from './TriggerDisplay'
 import { getItemAiImagePrompt } from './getItemAiImagePrompt'
+import { streamItemCard } from './streamItemCard'
 
 export const ItemCard = async ({
   game,
@@ -18,6 +22,8 @@ export const ItemCard = async ({
   size = '200',
   className,
   count = 1,
+  tooltipOnClick,
+  changemaker,
 }: {
   game?: Game
   name: string
@@ -25,12 +31,16 @@ export const ItemCard = async ({
   size?: '480' | '320' | '240' | '200' | '160' | '80'
   className?: string
   count?: number
+  tooltipOnClick?: boolean
+  changemaker?: Changemaker
 }) => {
   const item = await getItemByName(name)
   const title = capitalCase(name)
   const tag = getTagDefinition(first(item.tags) ?? 'default')
 
-  return (
+  const rarity = item.rarity ? getRarityDefinition(item.rarity) : undefined
+
+  const inner = (
     <>
       {/* <HoverCard>
         <HoverCardTrigger> */}
@@ -78,7 +88,7 @@ export const ItemCard = async ({
                 {title}
               </div>
             </div>
-            <div className="absolute top-3 inset-x-0 flex flex-col items-end">
+            <div className="absolute top-3 inset-x-0 flex flex-col items-end gap-1">
               {!!item.tags?.length && (
                 <div
                   className={cn(
@@ -90,6 +100,18 @@ export const ItemCard = async ({
                   <div className="text-xs">
                     {item.tags?.map((t) => capitalCase(t)).join(',')}
                   </div>
+                </div>
+              )}
+              {!!rarity && (
+                <div
+                  className={cn(
+                    'bg-[#313130] pl-4 pr-3 py-1',
+                    'rounded-l-full',
+                    'border-l-2 border-y-2 border-black',
+                    rarity.textClass,
+                  )}
+                >
+                  <div className="text-xs">{capitalCase(rarity.name)}</div>
                 </div>
               )}
             </div>
@@ -134,6 +156,12 @@ export const ItemCard = async ({
         >
           <div className="flex flex-col items-center gap-2">
             {item.stats && <StatsDisplay relative stats={item.stats} />}
+            {item.statsItem && (
+              <div className="flex flex-row gap-2">
+                <div>Item:</div>
+                <StatsDisplay relative stats={item.statsItem} />
+              </div>
+            )}
             {item.triggers?.map((trigger, idx) => (
               <Fragment key={idx}>
                 <TriggerDisplay trigger={trigger} />
@@ -156,4 +184,24 @@ export const ItemCard = async ({
       </HoverCard> */}
     </>
   )
+
+  if (tooltipOnClick) {
+    return (
+      <>
+        <ActionButton
+          variant="vanilla"
+          size="vanilla"
+          hideIcon
+          action={async () => {
+            'use server'
+            return streamItemCard({ name, changemaker })
+          }}
+        >
+          {inner}
+        </ActionButton>
+      </>
+    )
+  }
+
+  return inner
 }

@@ -1,23 +1,43 @@
 import { constArrayMap } from '@/lib/constArrayMap'
 import {
+  Axe,
   Backpack,
   Banana,
+  Beer,
   Bird,
   Carrot,
   Coins,
   Crosshair,
+  Eye,
+  EyeOff,
   Flame,
   Heart,
   HeartPulse,
+  LucideIcon,
   Pyramid,
   Shield,
   Skull,
   Snowflake,
   Sword,
   Syringe,
+  Target,
 } from 'lucide-react'
 import { z } from 'zod'
-import { IGNORE_SPACE } from './config'
+import { IGNORE_SPACE, MAX_THORNS_MULTIPLIER } from './config'
+
+type StatDefinitionPre = {
+  name: string
+  icon: LucideIcon
+  bgClass: string
+  tooltip: string
+  bar?: boolean
+  hidden?: boolean
+  hideCount?: boolean
+}
+
+type StatDefinitionPost = StatDefinitionPre & {
+  name: Stat
+}
 
 const heroStats = [
   {
@@ -65,7 +85,7 @@ const heroStats = [
     name: 'block',
     icon: Shield,
     bgClass: 'bg-cyan-500',
-    tooltip: 'Prevents X damage this turn.',
+    tooltip: 'Prevents X damage from attacks.',
   },
   {
     name: 'strength',
@@ -77,7 +97,7 @@ const heroStats = [
     name: 'thorns',
     icon: Pyramid,
     bgClass: 'bg-orange-500',
-    tooltip: 'Deal X Damage to attacker when attacked.',
+    tooltip: `Deal X Damage to attacker when attacked. Max ${MAX_THORNS_MULTIPLIER}x damage of the attacker.`,
   },
   {
     name: 'lifeSteal',
@@ -115,7 +135,38 @@ const heroStats = [
     bgClass: 'bg-sky-300',
     tooltip: 'Everything triggers X% slower.',
   },
-] as const
+  {
+    name: 'aim',
+    icon: Eye,
+    bgClass: 'bg-blue-500',
+    tooltip: 'X% chance to crit. Removed on crit.',
+  },
+  {
+    name: 'drunk',
+    icon: Beer,
+    bgClass: 'bg-yellow-500',
+    tooltip: '-X% accuracy. +X% damage. +X% faster food.',
+  },
+  {
+    name: 'critDamage',
+    icon: Axe,
+    bgClass: 'bg-yellow-500',
+    tooltip: '+X% crit damage.',
+  },
+  {
+    name: 'ranged',
+    icon: Target,
+    bgClass: 'bg-red-500',
+    tooltip: 'Can hit flying enemies. Not affected by thorns.',
+    hideCount: true,
+  },
+  {
+    name: 'blind',
+    icon: EyeOff,
+    bgClass: 'bg-amber-500',
+    tooltip: 'Reduces accuracy by X%.',
+  },
+] as const satisfies StatDefinitionPre[]
 
 const attackStats = [
   {
@@ -130,7 +181,7 @@ const attackStats = [
     bgClass: 'bg-yellow-500',
     tooltip: 'X% chance to hit.',
   },
-] as const
+] as const satisfies StatDefinitionPre[]
 
 const otherStats = [
   {
@@ -139,23 +190,25 @@ const otherStats = [
     bgClass: 'bg-yellow-500',
     tooltip: 'Money to buy stuff.',
   },
-] as const
+] as const satisfies StatDefinitionPre[]
 
-export const allStatsDefinition = [
+export const allStatsDefinitionConst = [
   ...otherStats,
   ...heroStats,
   ...attackStats,
-] as const
+] as const satisfies StatDefinitionPre[]
+
+export const allStatsDefinition: StatDefinitionPost[] = allStatsDefinitionConst
 
 export const getStatDefinition = (stat: Stat) => {
-  const def = allStatsDefinition.find((b) => b.name === stat)
+  const def = allStatsDefinitionConst.find((b) => b.name === stat)
   if (!def) {
     throw new Error(`Unknown stat: ${stat}`)
   }
-  return def
+  return def as StatDefinitionPost
 }
 
-export const allStats = constArrayMap(allStatsDefinition, 'name')
+export const allStats = constArrayMap(allStatsDefinitionConst, 'name')
 
 export type Stat = (typeof allStats)[number]
 
