@@ -212,7 +212,7 @@ const allItemsConst = [
         },
         attack: {
           damage: 18,
-          accuracy: 90,
+          accuracy: 70,
         },
       },
     ],
@@ -239,7 +239,7 @@ const allItemsConst = [
     name: 'beer',
     tags: ['food'],
     rarity: 'uncommon',
-    price: 5,
+    price: 1,
     stats: {
       space: space(-2),
     },
@@ -354,11 +354,11 @@ const allItemsConst = [
           damage: 20,
         },
         statsRequired: {
-          stamina: 4,
+          stamina: 1,
         },
         statsSelf: {
           slow: 5,
-          stamina: -4,
+          stamina: -1,
         },
         statsEnemy: {
           slow: 5,
