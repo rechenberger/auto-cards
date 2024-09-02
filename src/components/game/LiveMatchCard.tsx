@@ -33,7 +33,8 @@ export const LiveMatchCard = async ({
           <div className="flex-1">⚡ Live Match</div>
           <SimpleRefresher
             forceState={true}
-            ms={myParticipation?.data.ready ? 1000 : 4000}
+            // ms={myParticipation?.data.ready ? 1000 : 4000}
+            ms={5_000}
           />
         </div>
         <div>
