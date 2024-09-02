@@ -61,9 +61,17 @@ export default async function Page({
       </div>
       {!isParticipating ? (
         <ActionButton
+          catchToast
+          disabled={liveMatch.status !== 'open'}
           action={async () => {
             'use server'
             return superAction(async () => {
+              const liveMatch = await db.query.liveMatch.findFirst({
+                where: eq(schema.liveMatch.id, liveMatchId),
+              })
+              if (!liveMatch || liveMatch.status !== 'open') {
+                throw new Error('Live match is not open')
+              }
               await db.insert(schema.liveMatchParticipation).values({
                 liveMatchId: liveMatch.id,
                 userId: userId,
@@ -77,7 +85,7 @@ export default async function Page({
             })
           }}
         >
-          Join Match
+          {liveMatch.status === 'open' ? 'Join Match' : 'Match is closed'}
         </ActionButton>
       ) : myGame ? (
         <ActionButton
