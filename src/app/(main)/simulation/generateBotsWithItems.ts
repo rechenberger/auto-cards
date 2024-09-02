@@ -52,6 +52,7 @@ export const generateBotsWithItems = async ({
           shopRerolls: 0,
           version: 1,
         },
+        liveMatchId: null,
       })
 
       game.data.shopItems = await generateShopItems({
