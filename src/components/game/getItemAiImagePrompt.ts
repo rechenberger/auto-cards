@@ -1,7 +1,7 @@
 import { capitalCase } from 'change-case'
 
 export const getItemAiImagePrompt = ({ name }: { name: string }) => {
-  return `Cartoony cozy Image of ${capitalCase(
+  return `Crazy scary image of ${capitalCase(
     name,
-  )}. Background is a sunny track trough the mountains or woods whatever fits.`
+  )}. Halloween theme. Use Flux Schnell and make the image square.`
 }
