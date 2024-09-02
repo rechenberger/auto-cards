@@ -23,11 +23,6 @@ export const RoundInfo = async ({ roundNo }: { roundNo: number }) => {
   const rarityWeights = omitBy(roundStat.rarityWeights, isNil)
   const weightSum = sum(values(rarityWeights))
   const rarityChances = mapValues(rarityWeights, (weight) => weight / weightSum)
-  console.log({
-    weightSum,
-    rarityWeights,
-    rarityChances,
-  })
 
   return (
     <>
