@@ -1,5 +1,5 @@
 import { Game, GameData } from '@/db/schema-zod'
-import { forEach, range } from 'lodash-es'
+import { forEach } from 'lodash-es'
 import { getAllItems } from './allItems'
 import { NO_OF_SHOP_ITEMS, SALE_CHANCE } from './config'
 import { ItemDefinition } from './ItemDefinition'
@@ -36,6 +36,7 @@ export const generateShopItems = async ({
     const counts = rarityCountsByWeights({
       rarityWeights: roundStat.rarityWeights,
       seed: shopSeed,
+      count: NO_OF_SHOP_ITEMS,
     })
     forEach(counts, (count, rarity) => {
       if (!count) return
@@ -44,33 +45,29 @@ export const generateShopItems = async ({
           seed: [...shopSeed, rarity],
           items: itemsForSale.filter((item) => item.rarity === rarity),
           count,
-        }),
+        }).filter(Boolean),
       )
     })
   }
 
-  const shopItems: GameData['shopItems'] = range(NO_OF_SHOP_ITEMS).map(
-    (idx) => {
-      const oldItem = game.data.shopItems[idx]
-      if (oldItem?.isReserved) {
-        return oldItem
-      }
+  const shopItems: GameData['shopItems'] = items.map((newItem, idx) => {
+    const oldItem = game.data.shopItems[idx]
+    if (oldItem?.isReserved) {
+      return oldItem
+    }
 
-      const itemSeed = [...shopSeed, idx]
+    const itemSeed = [...shopSeed, idx]
 
-      const item = items[idx]
+    const isOnSale =
+      rngFloat({
+        seed: [...itemSeed, 'isOnSale'],
+      }) < SALE_CHANCE
 
-      const isOnSale =
-        rngFloat({
-          seed: [...itemSeed, 'isOnSale'],
-        }) < SALE_CHANCE
-
-      return {
-        name: item.name,
-        isOnSale,
-      }
-    },
-  )
+    return {
+      name: newItem.name,
+      isOnSale,
+    }
+  })
 
   return shopItems
 }

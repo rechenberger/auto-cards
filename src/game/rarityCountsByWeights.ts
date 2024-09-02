@@ -5,12 +5,14 @@ import { Seed, rngItemWithWeights } from './seed'
 export const rarityCountsByWeights = ({
   rarityWeights,
   seed,
+  count,
 }: {
   rarityWeights: RarityWeights
   seed: Seed
+  count: number
 }) => {
   const result: RarityWeights = {}
-  range(5).forEach(() => {
+  range(count).forEach(() => {
     const randomRarity = rngItemWithWeights({
       seed,
       items: allRarities.map((rarity) => ({
