@@ -129,6 +129,7 @@ export const liveMatch = sqliteTable('liveMatch', {
 export const liveMatchRelations = relations(liveMatch, ({ one, many }) => ({
   liveMatchParticipations: many(liveMatchParticipation),
   matches: many(match),
+  games: many(game),
 }))
 
 export const liveMatchParticipation = sqliteTable('liveMatchParticipation', {
