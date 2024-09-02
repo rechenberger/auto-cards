@@ -27,6 +27,7 @@ export const NewLiveMatchButton = ({
             .insert(schema.liveMatch)
             .values({
               data: typedParse(LiveMatchData, {}),
+              status: 'open',
             })
             .returning()
             .then(first)

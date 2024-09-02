@@ -64,6 +64,9 @@ export const MatchParticipation = createSelectSchema(
 )
 export type MatchParticipation = z.infer<typeof MatchParticipation>
 
+export const LiveMatchStatus = z.enum(['open', 'locked'])
+export type LiveMatchStatus = z.infer<typeof LiveMatchStatus>
+
 export const LiveMatchData = z.object({
   seed,
 })
@@ -71,6 +74,7 @@ export type LiveMatchData = z.infer<typeof LiveMatchData>
 
 export const LiveMatch = createSelectSchema(schema.liveMatch, {
   data: LiveMatchData,
+  status: LiveMatchStatus,
 })
 export type LiveMatch = z.infer<typeof LiveMatch>
 

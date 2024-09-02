@@ -6,6 +6,7 @@ import {
   GameData,
   LiveMatchData,
   LiveMatchParticipationData,
+  LiveMatchStatus,
   LoadoutData,
   MatchData,
 } from './schema-zod'
@@ -122,6 +123,7 @@ export const aiImage = sqliteTable('aiImage', {
 export const liveMatch = sqliteTable('liveMatch', {
   ...baseStats(),
   data: text('data', { mode: 'json' }).$type<LiveMatchData>().notNull(),
+  status: text('status').$type<LiveMatchStatus>().notNull(),
 })
 
 export const liveMatchRelations = relations(liveMatch, ({ one, many }) => ({
