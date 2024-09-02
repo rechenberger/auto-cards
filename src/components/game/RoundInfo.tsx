@@ -23,6 +23,11 @@ export const RoundInfo = async ({ roundNo }: { roundNo: number }) => {
   const rarityWeights = omitBy(roundStat.rarityWeights, isNil)
   const weightSum = sum(values(rarityWeights))
   const rarityChances = mapValues(rarityWeights, (weight) => weight / weightSum)
+  console.log({
+    weightSum,
+    rarityWeights,
+    rarityChances,
+  })
 
   return (
     <>
@@ -35,7 +40,7 @@ export const RoundInfo = async ({ roundNo }: { roundNo: number }) => {
               <div className={cn('flex flex-row gap-4', rarity.textClass)}>
                 <div className="flex-1">{capitalCase(rarity.name)}</div>
                 <div className="text-right">
-                  {100 * Math.round(rarityChances[rarity.name] || 0)}%
+                  {Math.round(100 * rarityChances[rarity.name] || 0)}%
                 </div>
               </div>
             </Fragment>
