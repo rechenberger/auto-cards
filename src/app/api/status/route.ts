@@ -1,7 +1,10 @@
 import { db } from '@/db/db'
 
 // CONFIG:
+export const revalidate = 0
 const TIMEOUT_IN_SECONDS = 10
+export const maxDuration = 20 // 10s extra for route handling
+
 const checks = [
   {
     name: 'Database',
@@ -10,10 +13,6 @@ const checks = [
     },
   },
 ]
-
-// NEXT.JS ROUTE CONFIG:
-export const revalidate = 0
-export const maxDuration = TIMEOUT_IN_SECONDS + 10 // 10s extra for route handling
 
 // HANDLER:
 export const GET = async () => {
