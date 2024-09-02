@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { Rarity } from './rarities'
 import { Stats } from './stats'
 import { Tag } from './tags'
 
@@ -24,5 +25,6 @@ export const ItemDefinition = z.object({
   price: z.number(),
   stats: Stats.optional(),
   statsItem: Stats.optional(),
+  rarity: Rarity.optional(),
 })
 export type ItemDefinition = z.infer<typeof ItemDefinition>

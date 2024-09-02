@@ -54,7 +54,10 @@ export const generateBotsWithItems = async ({
         },
       })
 
-      game.data.shopItems = await generateShopItems({ game })
+      game.data.shopItems = await generateShopItems({
+        game,
+        skipRarityWeights: true,
+      })
 
       while (true) {
         const shopItems = await Promise.all(
@@ -102,7 +105,10 @@ export const generateBotsWithItems = async ({
           if (game.data.gold >= rerollPrice) {
             game.data.gold -= rerollPrice
             game.data.shopRerolls++
-            game.data.shopItems = await generateShopItems({ game })
+            game.data.shopItems = await generateShopItems({
+              game,
+              skipRarityWeights: true,
+            })
             continue
           }
 

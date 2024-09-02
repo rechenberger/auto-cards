@@ -31,6 +31,7 @@ const allItemsConst = [
   {
     name: 'banana',
     tags: ['food'],
+    rarity: 'common',
     price: 3,
     stats: {
       space: space(-3),
@@ -49,6 +50,7 @@ const allItemsConst = [
   {
     name: 'woodenSword',
     tags: ['weapon'],
+    rarity: 'common',
     price: 3,
     stats: {
       space: space(-2),
@@ -81,6 +83,7 @@ const allItemsConst = [
   {
     name: 'woodenBuckler',
     tags: ['shield'],
+    rarity: 'common',
     price: 4,
     stats: {
       space: space(-4),
@@ -99,6 +102,7 @@ const allItemsConst = [
   {
     name: 'flyAgaric',
     tags: ['food'],
+    rarity: 'uncommon',
     price: 3,
     stats: {
       space: space(-2),
@@ -116,6 +120,7 @@ const allItemsConst = [
   {
     name: 'healingHerbs',
     tags: ['food'],
+    rarity: 'common',
     price: 4,
     stats: {
       space: space(-1),
@@ -125,6 +130,7 @@ const allItemsConst = [
   {
     name: 'pineapple',
     tags: ['food'],
+    rarity: 'uncommon',
     price: 7,
     stats: {
       space: space(-3),
@@ -143,6 +149,7 @@ const allItemsConst = [
   {
     name: 'syringe',
     tags: ['accessory'],
+    rarity: 'uncommon',
     price: 4,
     stats: {
       space: space(-1),
@@ -152,6 +159,7 @@ const allItemsConst = [
   {
     name: 'balloon',
     tags: ['accessory'],
+    rarity: 'uncommon',
     price: 4,
     stats: {
       space: space(-2),
@@ -161,6 +169,7 @@ const allItemsConst = [
   {
     name: 'dagger',
     tags: ['weapon'],
+    rarity: 'uncommon',
     price: 3,
     stats: {
       space: space(-2),
@@ -182,6 +191,7 @@ const allItemsConst = [
   {
     name: 'ripsawBlade',
     tags: ['weapon'],
+    rarity: 'rare',
     price: 10,
     stats: {
       space: space(-2),
@@ -210,6 +220,7 @@ const allItemsConst = [
   {
     name: 'spyglass',
     tags: ['accessory'],
+    rarity: 'rare',
     price: 3,
     stats: {
       space: space(-2),
@@ -227,6 +238,7 @@ const allItemsConst = [
   {
     name: 'beer',
     tags: ['food'],
+    rarity: 'uncommon',
     price: 5,
     stats: {
       space: space(-2),
@@ -244,6 +256,7 @@ const allItemsConst = [
   {
     name: 'beerFest',
     tags: ['event'],
+    rarity: 'rare',
     price: 8,
     stats: {
       space: space(-4),
@@ -264,6 +277,7 @@ const allItemsConst = [
   {
     name: 'thornsFest',
     tags: ['event'],
+    rarity: 'rare',
     price: 8,
     stats: {
       space: space(-4),
@@ -284,6 +298,7 @@ const allItemsConst = [
   {
     name: 'blockFest',
     tags: ['event'],
+    rarity: 'rare',
     price: 8,
     stats: {
       space: space(-4),
@@ -304,6 +319,7 @@ const allItemsConst = [
   {
     name: 'frostFest',
     tags: ['event'],
+    rarity: 'rare',
     price: 8,
     stats: {
       space: space(-4),
@@ -324,6 +340,7 @@ const allItemsConst = [
   {
     name: 'frostHammer',
     tags: ['weapon'],
+    rarity: 'rare',
     price: 6,
     stats: {
       space: space(-4),
@@ -366,6 +383,7 @@ const allItemsConst = [
   {
     name: 'darts',
     tags: ['weapon'],
+    rarity: 'uncommon',
     price: 3,
     stats: {
       space: space(-2),
@@ -396,11 +414,40 @@ const allItemsConst = [
   {
     name: 'whetstone',
     tags: ['accessory'],
+    rarity: 'rare',
     price: 2,
     stats: {
       space: space(-2),
       critDamage: 30,
     },
+  },
+  {
+    name: 'broom',
+    tags: ['weapon'],
+    rarity: 'common',
+    price: 3,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        statsRequired: {
+          stamina: 2,
+        },
+        statsSelf: {
+          stamina: -2,
+        },
+        statsEnemy: {
+          blind: 4,
+        },
+        attack: {
+          damage: 2,
+          accuracy: 80,
+        },
+      },
+    ],
   },
 ] as const satisfies ItemDefinition[]
 

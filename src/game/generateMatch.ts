@@ -297,6 +297,9 @@ export const generateMatch = async ({
                   max: 100,
                 })
                 let accuracy = attack.accuracy ?? 0
+                if (statsForItem.blind) {
+                  accuracy -= statsForItem.blind
+                }
                 if (statsForItem.drunk) {
                   accuracy -= statsForItem.drunk
                 }

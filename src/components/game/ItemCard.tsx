@@ -2,6 +2,7 @@ import { AiImage } from '@/components/ai/AiImage'
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
 import { Changemaker } from '@/game/generateChangemakers'
+import { getRarityDefinition } from '@/game/rarities'
 import { getTagDefinition } from '@/game/tags'
 import { fontHeading } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
@@ -36,6 +37,8 @@ export const ItemCard = async ({
   const item = await getItemByName(name)
   const title = capitalCase(name)
   const tag = getTagDefinition(first(item.tags) ?? 'default')
+
+  const rarity = item.rarity ? getRarityDefinition(item.rarity) : undefined
 
   const inner = (
     <>
@@ -85,7 +88,7 @@ export const ItemCard = async ({
                 {title}
               </div>
             </div>
-            <div className="absolute top-3 inset-x-0 flex flex-col items-end">
+            <div className="absolute top-3 inset-x-0 flex flex-col items-end gap-1">
               {!!item.tags?.length && (
                 <div
                   className={cn(
@@ -97,6 +100,18 @@ export const ItemCard = async ({
                   <div className="text-xs">
                     {item.tags?.map((t) => capitalCase(t)).join(',')}
                   </div>
+                </div>
+              )}
+              {!!rarity && (
+                <div
+                  className={cn(
+                    'bg-[#313130] pl-4 pr-3 py-1',
+                    'rounded-l-full',
+                    'border-l-2 border-y-2 border-black',
+                    rarity.textClass,
+                  )}
+                >
+                  <div className="text-xs">{capitalCase(rarity.name)}</div>
                 </div>
               )}
             </div>

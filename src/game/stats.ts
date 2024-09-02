@@ -9,6 +9,7 @@ import {
   Coins,
   Crosshair,
   Eye,
+  EyeOff,
   Flame,
   Heart,
   HeartPulse,
@@ -158,6 +159,12 @@ const heroStats = [
     bgClass: 'bg-red-500',
     tooltip: 'Can hit flying enemies. Not affected by thorns.',
     hideCount: true,
+  },
+  {
+    name: 'blind',
+    icon: EyeOff,
+    bgClass: 'bg-amber-500',
+    tooltip: 'Reduces accuracy by X%.',
   },
 ] as const satisfies StatDefinitionPre[]
 
