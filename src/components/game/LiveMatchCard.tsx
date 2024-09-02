@@ -36,23 +36,36 @@ export const LiveMatchCard = async ({
           />
         </div>
         <div>
-          {liveMatch.liveMatchParticipations.map((participation) => (
-            <div
-              key={participation.id}
-              className={cn(
-                'flex flex-row gap-2',
-                participation.data.ready && 'text-green-500',
-              )}
-            >
-              <div className="flex-1">
-                {getUserName({ user: participation.user })}
-                {participation.data.isHost && ' (Host)'}
+          {liveMatch.liveMatchParticipations.map((participation) => {
+            const hasGame = liveMatch.games.some(
+              (g) => g.userId === participation.userId,
+            )
+
+            return (
+              <div
+                key={participation.id}
+                className={cn(
+                  'flex flex-row gap-2',
+                  participation.data.ready && 'text-green-500',
+                  !inGame && hasGame && 'text-green-500',
+                )}
+              >
+                <div className="flex-1">
+                  {getUserName({ user: participation.user })}
+                  {participation.data.isHost && ' (Host)'}
+                </div>
+                <div className="text-right">
+                  {participation.data.ready
+                    ? 'Ready'
+                    : inGame
+                      ? 'Not Ready'
+                      : hasGame
+                        ? 'Started'
+                        : 'Joined'}
+                </div>
               </div>
-              <div className="text-right">
-                {participation.data.ready ? 'Ready' : 'Not Ready'}
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
         {inGame ? (
           <LiveMatchGameButtons liveMatch={liveMatch} />

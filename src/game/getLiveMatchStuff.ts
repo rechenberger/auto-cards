@@ -19,6 +19,7 @@ export const getLiveMatchStuff = async ({
           user: true,
         },
       },
+      games: true,
     },
   })
   return liveMatch
