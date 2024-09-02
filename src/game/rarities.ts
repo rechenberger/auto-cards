@@ -4,7 +4,7 @@ import { z } from 'zod'
 export const allRarityDefinitions = [
   {
     name: 'common',
-    textClass: 'text-gray-500',
+    textClass: '',
   },
   {
     name: 'uncommon',
@@ -24,7 +24,9 @@ export const allRarityDefinitions = [
   },
 ] as const
 
-export const getRarityDefinition = (rarity: Rarity) => {
+export const defaultRarity: Rarity = 'common'
+
+export const getRarityDefinition = (rarity: Rarity = 'common') => {
   const def = allRarityDefinitions.find((b) => b.name === rarity)
   if (!def) {
     throw new Error(`Unknown rarity: ${rarity}`)
