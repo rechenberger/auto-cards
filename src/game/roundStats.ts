@@ -4,7 +4,7 @@ import { RarityWeights } from './rarities'
 type RoundStats = {
   roundNo: number
   gold: number
-  health: number
+  // health: number
   experience: number
   rarityWeights: RarityWeights
 }
@@ -21,7 +21,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 0,
     gold: 12,
-    health: 50,
+    // health: 50,
     experience: 0,
     rarityWeights: {
       common: 1,
@@ -30,7 +30,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 1,
     gold: 9,
-    health: 70,
+    // health: 70,
     experience: 1,
     rarityWeights: {
       common: 1,
@@ -40,7 +40,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 2,
     gold: 9,
-    health: 90,
+    // health: 90,
     experience: 1,
     rarityWeights: {
       common: 1,
@@ -50,7 +50,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 3,
     gold: 9,
-    health: 110,
+    // health: 110,
     experience: 1,
     rarityWeights: {
       common: 1,
@@ -61,7 +61,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 4,
     gold: 10,
-    health: 140,
+    // health: 140,
     experience: 1,
     rarityWeights: {
       uncommon: 1,
@@ -71,7 +71,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 5,
     gold: 10,
-    health: 170,
+    // health: 170,
     experience: 2,
     rarityWeights: {
       ...defaultRarityWeights,
@@ -80,7 +80,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 6,
     gold: 11,
-    health: 200,
+    // health: 200,
     experience: 2,
     rarityWeights: {
       ...defaultRarityWeights,
@@ -89,7 +89,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 7,
     gold: 11, // Sub-class thingy gives another 10 gold
-    health: 230,
+    // health: 230,
     experience: 2,
     rarityWeights: {
       ...defaultRarityWeights,
@@ -98,7 +98,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 8,
     gold: 12,
-    health: 260,
+    // health: 260,
     experience: 2,
     rarityWeights: {
       ...defaultRarityWeights,
@@ -107,7 +107,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 9,
     gold: 12,
-    health: 300,
+    // health: 300,
     experience: 2,
     rarityWeights: {
       ...defaultRarityWeights,
@@ -116,7 +116,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 10,
     gold: 13,
-    health: 340,
+    // health: 340,
     experience: 2,
     rarityWeights: {
       ...defaultRarityWeights,
@@ -125,7 +125,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 11,
     gold: 13,
-    health: 380,
+    // health: 380,
     experience: 2,
     rarityWeights: {
       ...defaultRarityWeights,
@@ -134,7 +134,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 12,
     gold: 14,
-    health: 420,
+    // health: 420,
     experience: 2,
     rarityWeights: {
       ...defaultRarityWeights,
@@ -143,7 +143,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 13,
     gold: 14,
-    health: 460,
+    // health: 460,
     experience: 3,
     rarityWeights: {
       ...defaultRarityWeights,
@@ -152,7 +152,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 14,
     gold: 15,
-    health: 520,
+    // health: 520,
     experience: 3,
     rarityWeights: {
       ...defaultRarityWeights,
@@ -161,7 +161,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 15,
     gold: 15,
-    health: 580,
+    // health: 580,
     experience: 3,
     rarityWeights: {
       ...defaultRarityWeights,
@@ -170,7 +170,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 16,
     gold: 15,
-    health: 640,
+    // health: 640,
     experience: 3,
     rarityWeights: {
       ...defaultRarityWeights,
@@ -179,7 +179,7 @@ export const roundStats: RoundStats[] = [
   {
     roundNo: 17,
     gold: 15,
-    health: 700,
+    // health: 700,
     experience: 3,
     rarityWeights: {
       ...defaultRarityWeights,
@@ -191,7 +191,7 @@ export const getRoundStatsCumulative = (roundNo: number) => {
   const rounds = roundStats.filter((r) => r.roundNo <= roundNo)
   return {
     gold: sumBy(rounds, (r) => r.gold),
-    health: sumBy(rounds, (r) => r.health),
+    // health: sumBy(rounds, (r) => r.health),
     experience: sumBy(rounds, (r) => r.experience),
   }
 }
