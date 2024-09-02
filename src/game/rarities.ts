@@ -1,5 +1,7 @@
 import { constArrayMap } from '@/lib/constArrayMap'
+import { range } from 'lodash-es'
 import { z } from 'zod'
+import { rngItemWithWeights, Seed } from './seed'
 
 export const allRarityDefinitions = [
   {

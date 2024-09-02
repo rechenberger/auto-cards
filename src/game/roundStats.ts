@@ -10,10 +10,10 @@ type RoundStats = {
 }
 
 const defaultRarityWeights: RarityWeights = {
-  common: 1,
-  uncommon: 1,
-  rare: 1,
-  epic: 1,
+  common: 10,
+  uncommon: 5,
+  rare: 3,
+  epic: 2,
   legendary: 1,
 }
 
