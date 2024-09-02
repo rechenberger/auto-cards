@@ -13,6 +13,7 @@ export const StatDescriptionsItem = async ({ name }: { name: string }) => {
       t.statsSelf,
       t.statsEnemy,
       t.statsItem,
+      t.attack,
     ]) ?? []),
   ]
   const allStatKeys = uniq(allStats.map((s) => keys(s)).flat()) as Stat[]
