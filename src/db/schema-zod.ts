@@ -76,6 +76,7 @@ export type LiveMatch = z.infer<typeof LiveMatch>
 
 export const LiveMatchParticipationData = z.object({
   ready: z.boolean().default(false),
+  isHost: z.boolean().default(false),
 })
 export type LiveMatchParticipationData = z.infer<
   typeof LiveMatchParticipationData

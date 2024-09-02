@@ -1,7 +1,8 @@
+import { getMyUserIdOrLogin } from '@/auth/getMyUser'
 import { ButtonProps } from '@/components/ui/button'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
-import { LiveMatchData } from '@/db/schema-zod'
+import { LiveMatchData, LiveMatchParticipationData } from '@/db/schema-zod'
 import { typedParse } from '@/lib/typedParse'
 import { superAction } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
@@ -19,6 +20,7 @@ export const NewLiveMatchButton = ({
       hideIcon
       action={async () => {
         'use server'
+        const userId = await getMyUserIdOrLogin()
 
         return superAction(async () => {
           const liveMatch = await db
@@ -32,6 +34,14 @@ export const NewLiveMatchButton = ({
           if (!liveMatch) {
             throw new Error('Failed to create live match')
           }
+
+          await db.insert(schema.liveMatchParticipation).values({
+            liveMatchId: liveMatch.id,
+            userId,
+            data: typedParse(LiveMatchParticipationData, {
+              isHost: true,
+            }),
+          })
 
           redirect(`/live/${liveMatch.id}`)
         })
