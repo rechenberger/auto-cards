@@ -1,47 +1,29 @@
 import { getMyUserId } from '@/auth/getMyUser'
-import { db } from '@/db/db'
-import { schema } from '@/db/schema-export'
-import { LiveMatchParticipationData } from '@/db/schema-zod'
-import { fightLiveMatch } from '@/game/fightLiveMatch'
+import { getLiveMatchStuff } from '@/game/getLiveMatchStuff'
 import { getUserName } from '@/game/getUserName'
-import { typedParse } from '@/lib/typedParse'
 import { cn } from '@/lib/utils'
-import { superAction } from '@/super-action/action/createSuperAction'
-import { streamRevalidatePath } from '@/super-action/action/streamRevalidatePath'
-import { ActionButton } from '@/super-action/button/ActionButton'
-import { eq } from 'drizzle-orm'
+import { notFound } from 'next/navigation'
 import { SimpleRefresher } from '../simple/SimpleRefresher'
 import { Card } from '../ui/card'
+import { LiveMatchGameButtons } from './LiveMatchGameButtons'
+import { LiveMatchJoinButtons } from './LiveMatchJoinButtons'
 
 export const LiveMatchCard = async ({
   liveMatchId,
+  inGame,
 }: {
   liveMatchId: string
+  inGame: boolean
 }) => {
   const userId = await getMyUserId()
-  const liveMatch = await db.query.liveMatch.findFirst({
-    where: eq(schema.liveMatch.id, liveMatchId),
-    with: {
-      liveMatchParticipations: {
-        with: {
-          user: true,
-        },
-      },
-    },
-  })
-  if (!liveMatch) return null
+  const liveMatch = await getLiveMatchStuff({ liveMatchId })
+  if (!liveMatch) return notFound()
 
   const myParticipation = userId
     ? liveMatch.liveMatchParticipations.find(
         (participation) => participation.user.id === userId,
       )
     : undefined
-
-  const allReady = liveMatch.liveMatchParticipations.every(
-    (participation) => participation.data.ready,
-  )
-
-  const isHost = myParticipation?.data.isHost
 
   return (
     <>
@@ -72,51 +54,11 @@ export const LiveMatchCard = async ({
             </div>
           ))}
         </div>
-        {allReady && isHost && liveMatch.liveMatchParticipations.length > 1 ? (
-          <>
-            <ActionButton
-              action={async () => {
-                'use server'
-                return superAction(async () => {
-                  await db
-                    .update(schema.liveMatch)
-                    .set({
-                      status: 'locked',
-                    })
-                    .where(eq(schema.liveMatch.id, liveMatch.id))
-                  await fightLiveMatch({ liveMatchId: liveMatch.id })
-                  streamRevalidatePath('/', 'layout')
-                })
-              }}
-            >
-              Start Matches
-            </ActionButton>
-          </>
-        ) : myParticipation && !myParticipation.data.ready ? (
-          <>
-            <ActionButton
-              action={async () => {
-                'use server'
-                return superAction(async () => {
-                  await db
-                    .update(schema.liveMatchParticipation)
-                    .set({
-                      data: typedParse(LiveMatchParticipationData, {
-                        ...myParticipation.data,
-                        ready: true,
-                      }),
-                    })
-                    .where(
-                      eq(schema.liveMatchParticipation.id, myParticipation.id),
-                    )
-                  streamRevalidatePath('/', 'layout')
-                })
-              }}
-            >
-              Ready up!
-            </ActionButton>
-          </>
-        ) : null}
+        {inGame ? (
+          <LiveMatchGameButtons liveMatch={liveMatch} />
+        ) : (
+          <LiveMatchJoinButtons liveMatch={liveMatch} />
+        )}
       </Card>
     </>
   )

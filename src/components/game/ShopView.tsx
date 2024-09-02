@@ -13,7 +13,7 @@ export const ShopView = ({ game }: { game: Game }) => {
         <div className="flex-1" />
         <div className="self-center">
           {game.liveMatchId ? (
-            <LiveMatchCard liveMatchId={game.liveMatchId} />
+            <LiveMatchCard liveMatchId={game.liveMatchId} inGame={true} />
           ) : (
             <FightButton game={game} />
           )}
