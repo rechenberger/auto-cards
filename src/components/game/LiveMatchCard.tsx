@@ -71,7 +71,7 @@ export const LiveMatchCard = async ({
             </div>
           ))}
         </div>
-        {allReady && isHost ? (
+        {allReady && isHost && liveMatch.liveMatchParticipations.length > 1 ? (
           <>
             <ActionButton
               action={async () => {
