@@ -1,11 +1,10 @@
 import { Game } from '@/db/schema-zod'
-import { getItemByName, ItemName } from '@/game/allItems'
-import { calcStats, hasNegativeStats } from '@/game/calcStats'
-import { generateShopItems } from '@/game/generateShopItems'
-import { SeedArray, seedToString } from '@/game/seed'
-import { fn } from '@/lib/fn'
+import { getAllItems, ItemName } from '@/game/allItems'
+import { countifyItems } from '@/game/countifyItems'
+import { orderItems } from '@/game/orderItems'
+import { rngItem, SeedArray, seedToString } from '@/game/seed'
 import { typedParse } from '@/lib/typedParse'
-import { first, range } from 'lodash-es'
+import { range } from 'lodash-es'
 
 export type BotGame = Awaited<ReturnType<typeof generateBotsWithItems>>[number]
 
@@ -55,72 +54,26 @@ export const generateBotsWithItems = async ({
         liveMatchId: null,
       })
 
-      game.data.shopItems = await generateShopItems({
-        game,
-        skipRarityWeights: true,
-      })
-
-      while (true) {
-        const shopItems = await Promise.all(
-          game.data.shopItems.map(async (shopItem, idx) => {
-            const item = await getItemByName(shopItem.name)
-            const buyable = await fn(async () => {
-              if (shopItem.isSold) {
-                return false
-              }
-
-              if (item.price > game.data.gold) {
-                return false
-              }
-
-              const stats = await calcStats({
-                loadout: {
-                  ...game.data.currentLoadout,
-                  items: [
-                    ...game.data.currentLoadout.items,
-                    { name: shopItem.name },
-                  ],
-                },
-              })
-              if (hasNegativeStats({ stats })) {
-                return false
-              }
-
-              return true
-            })
-
-            return {
-              ...shopItem,
-              idx,
-              item,
-              buyable,
-            }
-          }),
+      while (game.data.gold > 0) {
+        let buyables = await getAllItems()
+        buyables = buyables.filter(
+          (item) => item.price && item.price <= game.data.gold, // TODO: check negative stats?
         )
-        const buyables = shopItems.filter((item) => item.buyable)
-
-        const item = first(buyables)
+        const item = rngItem({
+          seed: [bot.seed, 'buy', game.data.gold],
+          items: buyables,
+        })
         if (!item) {
-          // REROLL
-          const rerollPrice = 1
-          if (game.data.gold >= rerollPrice) {
-            game.data.gold -= rerollPrice
-            game.data.shopRerolls++
-            game.data.shopItems = await generateShopItems({
-              game,
-              skipRarityWeights: true,
-            })
-            continue
-          }
-
-          // Not enough gold to reroll
           break
         }
 
-        game.data.gold -= item.item.price
-        game.data.shopItems[item.idx].isSold = true
+        game.data.gold -= item.price
         game.data.currentLoadout.items.push({ name: item.name })
       }
+
+      game.data.currentLoadout.items = await orderItems(
+        countifyItems(game.data.currentLoadout.items),
+      )
 
       return {
         ...bot,
