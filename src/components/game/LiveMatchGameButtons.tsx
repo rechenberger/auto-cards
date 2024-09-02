@@ -34,6 +34,7 @@ export const LiveMatchGameButtons = async ({
       {allReady && isHost && liveMatch.liveMatchParticipations.length > 1 ? (
         <>
           <ActionButton
+            catchToast
             action={async () => {
               'use server'
               return superAction(async () => {
@@ -54,6 +55,7 @@ export const LiveMatchGameButtons = async ({
       ) : myParticipation && !myParticipation.data.ready ? (
         <>
           <ActionButton
+            catchToast
             action={async () => {
               'use server'
               return superAction(async () => {

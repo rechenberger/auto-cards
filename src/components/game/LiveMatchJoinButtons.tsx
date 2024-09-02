@@ -76,6 +76,7 @@ export const LiveMatchJoinButtons = async ({
         </ActionButton>
       ) : (
         <ActionButton
+          catchToast
           action={async () => {
             'use server'
             return superAction(async () => {
