@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { notFound } from 'next/navigation'
 import { SimpleRefresher } from '../simple/SimpleRefresher'
 import { Card } from '../ui/card'
+import { LiveMatchCopyButton } from './LiveMatchCopyButton'
 import { LiveMatchGameButtons } from './LiveMatchGameButtons'
 import { LiveMatchJoinButtons } from './LiveMatchJoinButtons'
 
@@ -67,6 +68,9 @@ export const LiveMatchCard = async ({
             )
           })}
         </div>
+        {liveMatch.status === 'open' && (
+          <LiveMatchCopyButton liveMatchId={liveMatchId} />
+        )}
         {inGame ? (
           <LiveMatchGameButtons liveMatch={liveMatch} />
         ) : (
