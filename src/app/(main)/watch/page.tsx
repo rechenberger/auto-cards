@@ -2,6 +2,7 @@ import { TimeAgo } from '@/components/simple/TimeAgo'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { countifyItems } from '@/game/countifyItems'
+import { getUserName } from '@/game/getUserName'
 import { orderItems } from '@/game/orderItems'
 import { desc } from 'drizzle-orm'
 import { Metadata } from 'next'
@@ -68,9 +69,9 @@ const MatchEntry = async ({ match }: { match: Match }) => {
         <div>
           <div>
             {p1.status === 'won' && '👑 '}
-            {p1.user?.name ?? 'Bot'}
+            {p1.user ? getUserName({ user: p1.user }) : 'Bot'}
             {' vs '}
-            {p2.user?.name ?? 'Bot'}
+            {p2.user ? getUserName({ user: p2.user }) : 'Bot'}
             {p2.status === 'won' && ' 👑'}
           </div>
           <div>
