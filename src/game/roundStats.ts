@@ -24,7 +24,9 @@ export const roundStats: RoundStats[] = [
     // health: 50,
     experience: 0,
     rarityWeights: {
-      common: 1,
+      common: 95,
+      uncommon: 4,
+      rare: 1,
     },
   },
   {
@@ -33,8 +35,9 @@ export const roundStats: RoundStats[] = [
     // health: 70,
     experience: 1,
     rarityWeights: {
-      common: 2,
-      uncommon: 1,
+      common: 70,
+      uncommon: 25,
+      rare: 5,
     },
   },
   {
@@ -43,8 +46,9 @@ export const roundStats: RoundStats[] = [
     // health: 90,
     experience: 1,
     rarityWeights: {
-      common: 1,
-      uncommon: 1,
+      common: 50,
+      uncommon: 40,
+      rare: 10,
     },
   },
   {
