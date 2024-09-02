@@ -3,6 +3,7 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { LiveMatchParticipationData } from '@/db/schema-zod'
 import { createGame } from '@/game/createGame'
+import { getUserName } from '@/game/getUserName'
 import { typedParse } from '@/lib/typedParse'
 import {
   streamToast,
@@ -56,7 +57,9 @@ export default async function Page({
       <h1>Live Match</h1>
       <div>
         {liveMatch.liveMatchParticipations.map((participation) => (
-          <div key={participation.id}>{participation.user.name}</div>
+          <div key={participation.id}>
+            {getUserName({ user: participation.user })}
+          </div>
         ))}
       </div>
       {!isParticipating ? (

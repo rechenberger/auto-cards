@@ -2,6 +2,7 @@
 
 import { getBotName } from '@/game/botName'
 import { MatchReport } from '@/game/generateMatch'
+import { getUserName } from '@/game/getUserName'
 import { cn } from '@/lib/utils'
 import { useAtomValue } from 'jotai'
 import { Crown } from 'lucide-react'
@@ -19,10 +20,9 @@ export const MatchSide = ({
   matchReport: MatchReport
 }) => {
   const isEnemy = sideIdx === 1
-  const name =
-    participant.user?.name ||
-    participant.user?.email ||
-    getBotName({ seed: participant.loadout.id })
+  const name = participant.user
+    ? getUserName({ user: participant.user })
+    : getBotName({ seed: participant.loadout.id })
 
   const isWinner = matchReport.winner.sideIdx === sideIdx
   const activeMatchLog = useAtomValue(activeMatchLogAtom)

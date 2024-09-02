@@ -11,6 +11,7 @@ import {
 import { Switch } from '@/components/ui/switch'
 import { db } from '@/db/db'
 import { users as usersTable } from '@/db/schema-auth'
+import { getUserName } from '@/game/getUserName'
 import {
   streamToast,
   superAction,
@@ -52,7 +53,7 @@ export default async function Page() {
             <Fragment key={user.id}>
               <Card>
                 <CardHeader>
-                  <CardTitle>{user.name ?? user.email}</CardTitle>
+                  <CardTitle>{getUserName({ user })}</CardTitle>
                   <CardDescription>{user.id}</CardDescription>
                   {tags.length && (
                     <div className="flex flex-row gap-2">

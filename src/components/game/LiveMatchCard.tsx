@@ -3,6 +3,7 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { LiveMatchParticipationData } from '@/db/schema-zod'
 import { fightLiveMatch } from '@/game/fightLiveMatch'
+import { getUserName } from '@/game/getUserName'
 import { typedParse } from '@/lib/typedParse'
 import { cn } from '@/lib/utils'
 import { superAction } from '@/super-action/action/createSuperAction'
@@ -62,7 +63,7 @@ export const LiveMatchCard = async ({
               )}
             >
               <div className="flex-1">
-                {participation.user.name}
+                {getUserName({ user: participation.user })}
                 {participation.data.isHost && ' (Host)'}
               </div>
               <div className="text-right">

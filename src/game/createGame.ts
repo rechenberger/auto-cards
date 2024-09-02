@@ -9,6 +9,7 @@ import { first } from 'lodash-es'
 import { GAME_DATA_VERSION } from './config'
 import { generateShopItems } from './generateShopItems'
 import { roundStats } from './roundStats'
+import { getUserName } from './getUserName'
 
 export const createGame = async ({
   userId,
@@ -56,7 +57,7 @@ export const createGame = async ({
   const user = await getMyUser()
   if (user && !user.isAdmin) {
     await sendDiscordMessage({
-      content: `${user.name ?? user.email} playing ${game.id}`,
+      content: `${getUserName({ user })} playing ${game.id}`,
     })
   }
 

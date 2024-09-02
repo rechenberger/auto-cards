@@ -5,6 +5,9 @@ import { schema } from './schema-export'
 
 const seed = z.string().default(() => createSeed())
 
+export const User = createSelectSchema(schema.users)
+export type User = z.infer<typeof User>
+
 export const LoadoutData = z.object({
   items: z.array(
     z.object({
