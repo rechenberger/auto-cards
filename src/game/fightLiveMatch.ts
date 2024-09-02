@@ -40,14 +40,13 @@ export const fightLiveMatch = async ({
   )
 
   // DETERMINE MATCHUP
-
   const seedLiveMatch = [liveMatch.data.seed, 'fightLiveMatch', roundNo]
-
   const games = rngOrder({
     seed: [seedLiveMatch, 'gameOrder'],
     items: liveMatch.games,
   })
 
+  // SAVE LOADOUTS
   const gamesAndLoadouts = await Promise.all(
     games.map(async (game) => {
       const loadout = await db
@@ -66,6 +65,7 @@ export const fightLiveMatch = async ({
     }),
   )
 
+  // FIGHT MATCHES
   for (const matchIdx of range(Math.ceil(gamesAndLoadouts.length / 2))) {
     const seedMatch = seedToString({
       seed: [seedLiveMatch, 'match', matchIdx],
