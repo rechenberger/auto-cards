@@ -37,6 +37,10 @@ export const MainTop = async () => {
       href: '/items',
     },
     {
+      name: 'Docs',
+      href: '/docs',
+    },
+    {
       name: 'Playground',
       href: '/playground',
       hidden: !isAdminOrDev,
