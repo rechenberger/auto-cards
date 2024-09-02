@@ -24,19 +24,22 @@ export const generateShopItems = async ({
     'shop',
   ]
 
+  const oldItems = game.data.shopItems.filter((item) => item.isReserved)
+  const itemsToGenerate = NO_OF_SHOP_ITEMS - oldItems.length
+
   let items: ItemDefinition[] = []
   const roundStat = roundStats[game.data.roundNo]
   if (skipRarityWeights || !roundStat.rarityWeights) {
     items = rngItems({
       seed: shopSeed,
       items: itemsForSale,
-      count: NO_OF_SHOP_ITEMS,
+      count: itemsToGenerate,
     })
   } else {
     const counts = rarityCountsByWeights({
       rarityWeights: roundStat.rarityWeights,
       seed: shopSeed,
-      count: NO_OF_SHOP_ITEMS,
+      count: itemsToGenerate,
     })
     forEach(counts, (count, rarity) => {
       if (!count) return
@@ -51,11 +54,6 @@ export const generateShopItems = async ({
   }
 
   const shopItems: GameData['shopItems'] = items.map((newItem, idx) => {
-    const oldItem = game.data.shopItems[idx]
-    if (oldItem?.isReserved) {
-      return oldItem
-    }
-
     const itemSeed = [...shopSeed, idx]
 
     const isOnSale =
@@ -68,6 +66,7 @@ export const generateShopItems = async ({
       isOnSale,
     }
   })
+  shopItems.push(...oldItems)
 
   return shopItems
 }
