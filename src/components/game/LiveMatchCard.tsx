@@ -76,6 +76,12 @@ export const LiveMatchCard = async ({
               action={async () => {
                 'use server'
                 return superAction(async () => {
+                  await db
+                    .update(schema.liveMatch)
+                    .set({
+                      status: 'locked',
+                    })
+                    .where(eq(schema.liveMatch.id, liveMatch.id))
                   streamRevalidatePath('/', 'layout')
                 })
               }}
