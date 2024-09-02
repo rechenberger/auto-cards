@@ -29,7 +29,7 @@ export default async function Page({ params: { itemName } }: PageProps) {
   }
   return (
     <>
-      <div className="flex flex-row gap-4">
+      <div className="flex flex-col lg:flex-row gap-4">
         <ItemCard name={itemName} size="480" />
         <div className="flex-1 flex flex-col gap-4">
           <div className="p-4 bg-border rounded-lg">
