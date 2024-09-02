@@ -1,5 +1,7 @@
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
+import { LiveMatchParticipationData } from '@/db/schema-zod'
+import { typedParse } from '@/lib/typedParse'
 import assert from 'assert'
 import { eq } from 'drizzle-orm'
 import { cloneDeep, first, range } from 'lodash-es'
@@ -144,4 +146,19 @@ export const fightLiveMatch = async ({
       }),
     )
   }
+
+  // SET ALL READY TO FALSE
+  await Promise.all(
+    liveMatch.liveMatchParticipations.map(async (p) => {
+      await db
+        .update(schema.liveMatchParticipation)
+        .set({
+          data: typedParse(LiveMatchParticipationData, {
+            ...p.data,
+            ready: false,
+          }),
+        })
+        .where(eq(schema.liveMatchParticipation.id, p.id))
+    }),
+  )
 }

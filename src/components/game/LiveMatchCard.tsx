@@ -2,6 +2,7 @@ import { getMyUserId } from '@/auth/getMyUser'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { LiveMatchParticipationData } from '@/db/schema-zod'
+import { fightLiveMatch } from '@/game/fightLiveMatch'
 import { typedParse } from '@/lib/typedParse'
 import { cn } from '@/lib/utils'
 import { superAction } from '@/super-action/action/createSuperAction'
@@ -82,6 +83,7 @@ export const LiveMatchCard = async ({
                       status: 'locked',
                     })
                     .where(eq(schema.liveMatch.id, liveMatch.id))
+                  await fightLiveMatch({ liveMatchId: liveMatch.id })
                   streamRevalidatePath('/', 'layout')
                 })
               }}
