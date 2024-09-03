@@ -460,7 +460,7 @@ const allItemsConst = [
     triggers: [
       {
         type: 'interval',
-        cooldown: 2_000,
+        cooldown: 3_000,
         statsSelf: {
           luck: 2,
         },
