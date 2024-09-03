@@ -235,7 +235,13 @@ export const generateMatch = async ({
           ? sumStats2(mySide.stats, item.statsItem)
           : mySide.stats
 
-        const { statsRequired, statsSelf, statsEnemy, attack } = trigger
+        const {
+          statsRequired,
+          statsSelf,
+          statsEnemy,
+          attack,
+          statsEnemyOnHit,
+        } = trigger
         let hasRequiredStats = true
         if (statsRequired) {
           const enough = hasStats(statsForItem, statsRequired)
@@ -372,6 +378,16 @@ export const generateMatch = async ({
                       msg: `Life Steal`,
                       targetSideIdx: mySide.sideIdx,
                       stats: lifeStealStats,
+                    })
+                  }
+
+                  // ENEMY STATS ON HIT
+                  if (statsEnemyOnHit) {
+                    tryAddStats(otherSide.stats, statsEnemyOnHit)
+                    log({
+                      ...action,
+                      stats: statsEnemyOnHit,
+                      targetSideIdx: otherSide.sideIdx,
                     })
                   }
 

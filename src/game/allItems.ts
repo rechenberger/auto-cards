@@ -206,7 +206,7 @@ const allItemsConst = [
         statsSelf: {
           stamina: -2,
         },
-        statsEnemy: {
+        statsEnemyOnHit: {
           thorns: -2,
           regen: -2,
         },
@@ -405,7 +405,7 @@ const allItemsConst = [
           accuracy: 80,
           damage: 2,
         },
-        statsEnemy: {
+        statsEnemyOnHit: {
           flying: -1,
         },
       },
