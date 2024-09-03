@@ -7,6 +7,7 @@ import {
   BicepsFlexed,
   Bird,
   Carrot,
+  Clover,
   Coins,
   Crosshair,
   Eye,
@@ -166,6 +167,12 @@ const heroStats = [
     icon: EyeOff,
     bgClass: 'bg-amber-500',
     tooltip: 'Reduces accuracy by X%.',
+  },
+  {
+    name: 'luck',
+    icon: Clover,
+    bgClass: 'bg-emerald-500',
+    tooltip: 'Increases accuracy by X%.',
   },
 ] as const satisfies StatDefinitionPre[]
 

@@ -13,6 +13,7 @@ export const Trigger = z.object({
   statsRequired: Stats.optional(),
   statsSelf: Stats.optional(),
   statsEnemy: Stats.optional(),
+  statsEnemyOnHit: Stats.optional(),
   attack: Stats.optional(),
   statsItem: Stats.optional(),
 })

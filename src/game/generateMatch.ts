@@ -235,7 +235,13 @@ export const generateMatch = async ({
           ? sumStats2(mySide.stats, item.statsItem)
           : mySide.stats
 
-        const { statsRequired, statsSelf, statsEnemy, attack } = trigger
+        const {
+          statsRequired,
+          statsSelf,
+          statsEnemy,
+          attack,
+          statsEnemyOnHit,
+        } = trigger
         let hasRequiredStats = true
         if (statsRequired) {
           const enough = hasStats(statsForItem, statsRequired)
@@ -303,6 +309,9 @@ export const generateMatch = async ({
                 if (statsForItem.drunk) {
                   accuracy -= statsForItem.drunk
                 }
+                if (statsForItem.luck) {
+                  accuracy += statsForItem.luck
+                }
                 const doesHit = accuracyRng <= accuracy
                 if (doesHit) {
                   let damage = attack.damage ?? 0
@@ -355,6 +364,16 @@ export const generateMatch = async ({
                         stats: removeAimStats,
                       })
                     }
+                  }
+
+                  // ENEMY STATS ON HIT
+                  if (statsEnemyOnHit) {
+                    tryAddStats(otherSide.stats, statsEnemyOnHit)
+                    log({
+                      ...action,
+                      stats: statsEnemyOnHit,
+                      targetSideIdx: otherSide.sideIdx,
+                    })
                   }
 
                   // LIFESTEAL
