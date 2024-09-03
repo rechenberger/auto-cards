@@ -467,6 +467,17 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'energyDrink',
+    tags: ['potion'],
+    rarity: 'common',
+    price: 2,
+    stats: {
+      space: space(-2),
+      staminaMax: 2,
+      stamina: 2,
+    },
+  },
 ] as const satisfies ItemDefinition[]
 
 export type ItemName = (typeof allItemsConst)[number]['name']
