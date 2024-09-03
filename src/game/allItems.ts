@@ -456,17 +456,9 @@ const allItemsConst = [
     price: 2,
     stats: {
       space: space(-2),
+      staminaMax: 2,
+      stamina: 2,
     },
-    triggers: [
-      {
-        type: 'startOfBattle',
-        cooldown: 0,
-        statsSelf: {
-          staminaMax: 2,
-          stamina: 2,
-        },
-      },
-    ],
   },
 ] as const satisfies ItemDefinition[]
 
