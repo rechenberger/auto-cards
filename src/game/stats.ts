@@ -4,6 +4,7 @@ import {
   Backpack,
   Banana,
   Beer,
+  BicepsFlexed,
   Bird,
   Carrot,
   Coins,
@@ -70,10 +71,10 @@ const heroStats = [
   },
   {
     name: 'staminaMax',
-    icon: Banana,
+    icon: BicepsFlexed,
     bgClass: 'bg-yellow-500',
     tooltip: 'Max Stamina points.',
-    hidden: true,
+    // hidden: true,
   },
   {
     name: 'staminaRegen',
