@@ -303,6 +303,9 @@ export const generateMatch = async ({
                 if (statsForItem.drunk) {
                   accuracy -= statsForItem.drunk
                 }
+                if (statsForItem.luck) {
+                  accuracy += statsForItem.luck
+                }
                 const doesHit = accuracyRng <= accuracy
                 if (doesHit) {
                   let damage = attack.damage ?? 0
