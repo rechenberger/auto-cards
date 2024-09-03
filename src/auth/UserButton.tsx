@@ -1,10 +1,9 @@
-import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
+import { ThemeSwitchButton } from '@/components/game/ThemeSwitchButton'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
@@ -32,12 +31,16 @@ export const UserButton = async () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuLabel>
+            {/* <DropdownMenuLabel>
               <SimpleDataCard
                 data={session.user}
                 classNameCell="max-w-40 overflow-hidden text-ellipsis"
               />
             </DropdownMenuLabel>
+            <DropdownMenuSeparator /> */}
+            <div className="w-full flex flex-col">
+              <ThemeSwitchButton />
+            </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <ActionButton
@@ -51,6 +54,7 @@ export const UserButton = async () => {
                 Change Username
               </ActionButton>
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <ActionButton
                 variant={'ghost'}
