@@ -363,6 +363,16 @@ export const generateMatch = async ({
                     }
                   }
 
+                  // ENEMY STATS ON HIT
+                  if (statsEnemyOnHit) {
+                    tryAddStats(otherSide.stats, statsEnemyOnHit)
+                    log({
+                      ...action,
+                      stats: statsEnemyOnHit,
+                      targetSideIdx: otherSide.sideIdx,
+                    })
+                  }
+
                   // LIFESTEAL
                   if (statsForItem.lifeSteal && damage > 0) {
                     const lifeStealDamage = Math.ceil(
@@ -378,16 +388,6 @@ export const generateMatch = async ({
                       msg: `Life Steal`,
                       targetSideIdx: mySide.sideIdx,
                       stats: lifeStealStats,
-                    })
-                  }
-
-                  // ENEMY STATS ON HIT
-                  if (statsEnemyOnHit) {
-                    tryAddStats(otherSide.stats, statsEnemyOnHit)
-                    log({
-                      ...action,
-                      stats: statsEnemyOnHit,
-                      targetSideIdx: otherSide.sideIdx,
                     })
                   }
 
