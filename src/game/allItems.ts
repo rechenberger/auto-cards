@@ -455,6 +455,7 @@ const allItemsConst = [
   },
   {
     name: 'horseShoe',
+    prompt: 'a horseshoe with a four leaf clover on it',
     tags: ['accessory'],
     rarity: 'common',
     price: 2,
