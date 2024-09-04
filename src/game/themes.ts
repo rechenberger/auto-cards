@@ -1,4 +1,6 @@
 import { constArrayMap } from '@/lib/constArrayMap'
+import { fontCreepy, fontMagical, fontPixel } from '@/lib/fonts'
+import { cn } from '@/lib/utils'
 import { z } from 'zod'
 
 export const PLACEHOLDER_ITEM_PROMPT = '[ITEM_PROMPT]' as const
@@ -8,6 +10,8 @@ export type ThemeDefinitionRaw = {
   name: string
   prompt: string
   hidden?: boolean
+  classTop?: string
+  classBottom?: string
 }
 
 const allThemeDefinitions = [
@@ -23,6 +27,8 @@ const allThemeDefinitions = [
   {
     name: 'halloween',
     prompt: `Crazy scary image of ${PLACEHOLDER_ITEM_PROMPT}. Halloween theme. ${IMAGE_MODEL_PROMPT}`,
+    classTop: fontCreepy.className,
+    classBottom: fontCreepy.className,
   },
   {
     name: 'royal',
@@ -31,10 +37,14 @@ const allThemeDefinitions = [
   {
     name: 'magical',
     prompt: `Stunning Image of ${PLACEHOLDER_ITEM_PROMPT} as a wizard item with magical effects. Background is a magical forest with a river and a wizards tower in the background. Everything very magical and mystical. ${IMAGE_MODEL_PROMPT}`,
+    classTop: fontMagical.className,
+    classBottom: fontMagical.className,
   },
   {
     name: 'pixels',
     prompt: `Image of a pixelated ${PLACEHOLDER_ITEM_PROMPT} represented by a pixelated object like a video game. ${IMAGE_MODEL_PROMPT}`,
+    classTop: cn(fontPixel.className, 'text-sm'),
+    classBottom: cn(fontPixel.className, 'text-[10px]'),
   },
 ] as const satisfies ThemeDefinitionRaw[]
 
