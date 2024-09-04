@@ -37,6 +37,9 @@ export const AiImageRaw = async (props: AiImageProps) => {
           catchToast
           stopPropagation
           variant={'outline'}
+          command={{
+            label: `Generate Image for ${itemId || prompt}`,
+          }}
           action={async () => {
             'use server'
             return generateAiImage({ ...props, force: false })
@@ -58,9 +61,9 @@ export const AiImageRaw = async (props: AiImageProps) => {
           return generateAiImage(props)
         }}
         title={prompt}
-        command={{
-          label: `Generate Image for ${itemId || prompt}`,
-        }}
+        // command={{
+        //   label: `Generate Image for ${itemId || prompt}`,
+        // }}
         hideButton
       >
         Generate
