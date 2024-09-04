@@ -66,3 +66,10 @@ export const getThemeDefinition = async (
   }
   return def
 }
+
+export const fallbackThemeId = async (
+  themeId: ThemeId | undefined | null,
+): Promise<ThemeId> => {
+  const theme = await getThemeDefinition(themeId ?? undefined)
+  return theme.name
+}

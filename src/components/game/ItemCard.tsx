@@ -3,7 +3,7 @@ import { getItemByName } from '@/game/allItems'
 import { Changemaker } from '@/game/generateChangemakers'
 import { getRarityDefinition } from '@/game/rarities'
 import { getTagDefinition } from '@/game/tags'
-import { defaultThemeId, getThemeDefinition, ThemeId } from '@/game/themes'
+import { defaultThemeId, fallbackThemeId, ThemeId } from '@/game/themes'
 import { fontHeading } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
@@ -44,7 +44,7 @@ export const ItemCard = async ({
   if (!themeId) {
     themeId = await getMyUserThemeIdWithFallback()
   } else {
-    themeId = (await getThemeDefinition(themeId)).name
+    themeId = await fallbackThemeId(themeId)
   }
 
   const rarity = item.rarity ? getRarityDefinition(item.rarity) : undefined
