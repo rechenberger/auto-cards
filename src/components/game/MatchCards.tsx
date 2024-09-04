@@ -3,6 +3,7 @@ import { countifyItems } from '@/game/countifyItems'
 import { Changemakers } from '@/game/generateChangemakers'
 import { MatchReport } from '@/game/generateMatch'
 import { orderItems } from '@/game/orderItems'
+import { ThemeId } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { find, map, take } from 'lodash-es'
 import { Fragment } from 'react'
@@ -16,12 +17,14 @@ export const MatchCards = async ({
   sideIdx,
   changemakers,
   matchReport,
+  themeId,
 }: {
   items: LoadoutData['items']
   game?: Game
   sideIdx: number
   changemakers?: Changemakers
   matchReport: MatchReport
+  themeId?: ThemeId
 }) => {
   items = countifyItems(items)
   items = await orderItems(items)
@@ -55,6 +58,7 @@ export const MatchCards = async ({
                     size={isBig ? '160' : '80'}
                     changemaker={changemaker}
                     tooltipOnClick
+                    themeId={themeId}
                   />
                   <MatchCardOverlay
                     sideIdx={sideIdx}
@@ -71,6 +75,7 @@ export const MatchCards = async ({
                     name={item.name}
                     count={item.count}
                     size="320"
+                    themeId={themeId}
                   />
 
                   <div className="absolute -bottom-6 flex flex-col items-center inset-x-0">

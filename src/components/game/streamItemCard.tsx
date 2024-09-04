@@ -1,6 +1,7 @@
 'use server'
 
 import { Changemaker } from '@/game/generateChangemakers'
+import { ThemeId } from '@/game/themes'
 import {
   streamToast,
   superAction,
@@ -12,9 +13,11 @@ import { StatDescriptionsItem } from './StatDescriptionsItem'
 export const streamItemCard = async ({
   name,
   changemaker,
+  themeId,
 }: {
   name: string
   changemaker?: Changemaker
+  themeId?: ThemeId
 }) => {
   return superAction(async () => {
     streamToast({

@@ -51,6 +51,7 @@ export const MatchView = async ({
               sideIdx={0}
               changemakers={changemakers}
               matchReport={matchReport}
+              themeId={participants[0].user?.themeId ?? undefined}
             />
           </div>
           <div className="flex-1 flex flex-col gap-2 items-center justify-center self-stretch">
@@ -66,6 +67,7 @@ export const MatchView = async ({
               sideIdx={1}
               changemakers={changemakers}
               matchReport={matchReport}
+              themeId={participants[1].user?.themeId ?? undefined}
             />
           </div>
         </div>
@@ -82,6 +84,7 @@ export const MatchView = async ({
                 sideIdx={0}
                 changemakers={changemakers}
                 matchReport={matchReport}
+                themeId={participants[0].user?.themeId ?? undefined}
               />
             </div>
           </div>
@@ -100,6 +103,7 @@ export const MatchView = async ({
                 sideIdx={1}
                 changemakers={changemakers}
                 matchReport={matchReport}
+                themeId={participants[1].user?.themeId ?? undefined}
               />
             </div>
           </div>

@@ -3,7 +3,7 @@ import { getItemByName } from '@/game/allItems'
 import { Changemaker } from '@/game/generateChangemakers'
 import { getRarityDefinition } from '@/game/rarities'
 import { getTagDefinition } from '@/game/tags'
-import { defaultThemeId, ThemeId } from '@/game/themes'
+import { defaultThemeId, getThemeDefinition, ThemeId } from '@/game/themes'
 import { fontHeading } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
@@ -43,6 +43,8 @@ export const ItemCard = async ({
 
   if (!themeId) {
     themeId = await getMyUserThemeIdWithFallback()
+  } else {
+    themeId = (await getThemeDefinition(themeId)).name
   }
 
   const rarity = item.rarity ? getRarityDefinition(item.rarity) : undefined
@@ -205,7 +207,7 @@ export const ItemCard = async ({
           hideIcon
           action={async () => {
             'use server'
-            return streamItemCard({ name, changemaker })
+            return streamItemCard({ name, changemaker, themeId })
           }}
         >
           {inner}
