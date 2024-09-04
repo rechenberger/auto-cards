@@ -417,6 +417,7 @@ const allItemsConst = [
   },
   {
     name: 'whetstone',
+    prompt: 'a whetstone for sharpening knives',
     tags: ['accessory'],
     rarity: 'rare',
     price: 2,
