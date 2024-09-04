@@ -1,6 +1,7 @@
 import { throwIfNotAdmin } from '@/auth/getIsAdmin'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
+import { getItemByName } from '@/game/allItems'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
@@ -17,6 +18,9 @@ export const AiImageGallery = async (props: AiImageProps) => {
   const { itemId, prompt, className, themeId } = props
   const aiImages = await getAiImages(props)
 
+  const item = itemId ? await getItemByName(itemId) : undefined
+  const subTitle = item ? item.prompt || capitalCase(item.name) : prompt
+
   const active = first(orderBy(aiImages, 'updatedAt', 'desc'))
 
   return (
@@ -25,9 +29,7 @@ export const AiImageGallery = async (props: AiImageProps) => {
         <div className="flex flex-row items-center gap-2">
           <div className="flex flex-col flex-1">
             <h2 className="font-bold text-xl">AI Image Gallery</h2>
-            <h3 className="opacity-60">
-              {itemId ? capitalCase(itemId) : prompt}
-            </h3>
+            <h3 className="opacity-60">{subTitle}</h3>
           </div>
           <ThemeSwitchButton />
           <ActionButton
