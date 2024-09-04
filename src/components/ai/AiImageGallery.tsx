@@ -24,7 +24,7 @@ export const AiImageGallery = async (props: AiImageProps) => {
   return (
     <>
       <div className="flex flex-col gap-4">
-        <div className="flex flex-row items-center">
+        <div className="flex flex-row items-center gap-2">
           <div className="flex flex-col flex-1">
             <h2 className="font-bold text-xl">AI Image Gallery</h2>
             <h3 className="opacity-60">
