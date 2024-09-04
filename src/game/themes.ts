@@ -32,6 +32,10 @@ const allThemeDefinitions = [
     name: 'magical',
     prompt: `Stunning Image of ${PLACEHOLDER_ITEM_PROMPT} as a wizard item with magical effects. Background is a magical forest with a river and a wizards tower in the background. Everything very magical and mystical. ${IMAGE_MODEL_PROMPT}`,
   },
+  {
+    name: 'pixels',
+    prompt: `Image of ${PLACEHOLDER_ITEM_PROMPT} represented by a pixelated object like a video game. ${IMAGE_MODEL_PROMPT}`,
+  },
 ] as const satisfies ThemeDefinitionRaw[]
 
 export type ThemeDefinition = ThemeDefinitionRaw & {
