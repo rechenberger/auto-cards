@@ -21,6 +21,8 @@ const allItemsConst = [
   },
   {
     name: 'experience',
+    prompt:
+      'a campfire in the foreground at the edge of a cliff overlooking a sunset',
     tags: ['hero'],
     price: 0,
     stats: {
