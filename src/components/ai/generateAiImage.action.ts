@@ -1,6 +1,7 @@
 import { throwIfNotAdmin } from '@/auth/getIsAdmin'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
+import { nullThemeId } from '@/game/themes'
 import { fetchTeampilot } from '@teampilot/sdk'
 import { first } from 'lodash-es'
 import { revalidatePath } from 'next/cache'
@@ -9,6 +10,7 @@ import { AiImageProps } from './AiImage'
 export const generateAiImage = async ({
   prompt,
   itemId,
+  themeId,
   force = true,
 }: AiImageProps & { force?: boolean }) => {
   'use server'
@@ -18,6 +20,7 @@ export const generateAiImage = async ({
     prompt,
     url,
     itemId,
+    themeId: themeId ? (themeId === nullThemeId ? null : themeId) : null,
     updatedAt: new Date().toISOString(),
     createdAt: new Date().toISOString(),
   })

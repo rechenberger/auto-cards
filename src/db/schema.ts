@@ -118,6 +118,7 @@ export const aiImage = sqliteTable('aiImage', {
   prompt: text('prompt').notNull(),
   url: text('url').notNull(),
   itemId: text('itemId'),
+  themeId: text('themeId'),
 })
 
 export const liveMatch = sqliteTable('liveMatch', {

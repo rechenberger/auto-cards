@@ -1,18 +1,19 @@
-import { AiImage } from '@/components/ai/AiImage'
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
 import { Changemaker } from '@/game/generateChangemakers'
 import { getRarityDefinition } from '@/game/rarities'
 import { getTagDefinition } from '@/game/tags'
+import { defaultThemeId, ThemeId } from '@/game/themes'
 import { fontHeading } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
 import { first } from 'lodash-es'
 import { Fragment } from 'react'
+import { AiItemImage } from '../ai/AiItemImage'
 import { StatsDisplay } from './StatsDisplay'
 import { TriggerDisplay } from './TriggerDisplay'
-import { getItemAiImagePrompt } from './getItemAiImagePrompt'
+import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 import { streamItemCard } from './streamItemCard'
 
 export const ItemCard = async ({
@@ -24,6 +25,7 @@ export const ItemCard = async ({
   count = 1,
   tooltipOnClick,
   changemaker,
+  themeId,
 }: {
   game?: Game
   name: string
@@ -33,10 +35,15 @@ export const ItemCard = async ({
   count?: number
   tooltipOnClick?: boolean
   changemaker?: Changemaker
+  themeId?: ThemeId
 }) => {
   const item = await getItemByName(name)
   const title = capitalCase(name)
   const tag = getTagDefinition(first(item.tags) ?? 'default')
+
+  if (!themeId) {
+    themeId = await getMyUserThemeIdWithFallback()
+  }
 
   const rarity = item.rarity ? getRarityDefinition(item.rarity) : undefined
 
@@ -116,7 +123,11 @@ export const ItemCard = async ({
               )}
             </div>
             <div className="border-black border-2 rounded-lg overflow-hidden">
-              <AiImage prompt={getItemAiImagePrompt(item)} itemId={item.name} />
+              <AiItemImage
+                className="aspect-square"
+                itemName={item.name}
+                themeId={themeId ?? defaultThemeId}
+              />
             </div>
           </div>
           {count >= 2 && (

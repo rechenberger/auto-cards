@@ -8,18 +8,14 @@ import { desc, eq } from 'drizzle-orm'
 import { first, orderBy } from 'lodash-es'
 import { revalidatePath } from 'next/cache'
 import { Fragment } from 'react'
-import { AiImageProps } from './AiImage'
+import { ThemeSwitchButton } from '../game/ThemeSwitchButton'
+import { AiImageProps, whereAiImage } from './AiImage'
 import { generateAiImage } from './generateAiImage.action'
 
-export const AiImageGallery = async ({
-  itemId,
-  prompt,
-  className,
-}: AiImageProps) => {
+export const AiImageGallery = async (props: AiImageProps) => {
+  const { itemId, prompt, className, themeId } = props
   const aiImages = await db.query.aiImage.findMany({
-    where: itemId
-      ? eq(schema.aiImage.itemId, itemId)
-      : eq(schema.aiImage.prompt, prompt),
+    where: whereAiImage(props),
     orderBy: desc(schema.aiImage.createdAt),
   })
 
@@ -28,19 +24,21 @@ export const AiImageGallery = async ({
   return (
     <>
       <div className="flex flex-col gap-4">
-        <div className="flex flex-row items-center">
+        <div className="flex flex-row items-center gap-2">
           <div className="flex flex-col flex-1">
             <h2 className="font-bold text-xl">AI Image Gallery</h2>
             <h3 className="opacity-60">
               {itemId ? capitalCase(itemId) : prompt}
             </h3>
           </div>
+          <ThemeSwitchButton />
           <ActionButton
             action={async () => {
               'use server'
               return generateAiImage({
                 prompt,
                 itemId,
+                themeId,
                 force: !!aiImages.length,
               })
             }}
