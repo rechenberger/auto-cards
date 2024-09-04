@@ -3,5 +3,10 @@
     "@radix-ui/*",
     "next/router"
   ],
-  "cSpell.words": ["countify", "loadout", "loadouts"]
+  "cSpell.words": [
+    "cooldown",
+    "countify",
+    "loadout",
+    "loadouts"
+  ]
 }

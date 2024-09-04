@@ -9,6 +9,7 @@ import { Fragment } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 import { ItemCard } from './ItemCard'
 import { MatchCardOverlay } from './MatchCardOverlay'
+import { MatchCardTimer } from './MatchCardTimer'
 
 export const MatchCards = async ({
   items,
@@ -55,6 +56,11 @@ export const MatchCards = async ({
                     size={isBig ? '160' : '80'}
                     changemaker={changemaker}
                     tooltipOnClick
+                  />
+                  <MatchCardTimer
+                    sideIdx={sideIdx}
+                    itemIdx={itemIdx}
+                    matchReport={matchReport}
                   />
                   <MatchCardOverlay
                     sideIdx={sideIdx}
