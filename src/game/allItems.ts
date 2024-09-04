@@ -191,6 +191,7 @@ const allItemsConst = [
   },
   {
     name: 'ripsawBlade',
+    prompt: 'a dark sword with big teeth like a saw',
     tags: ['weapon'],
     rarity: 'rare',
     price: 10,
