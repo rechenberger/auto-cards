@@ -21,6 +21,7 @@ export type Trigger = z.infer<typeof Trigger>
 
 export const ItemDefinition = z.object({
   name: z.string(),
+  prompt: z.string().optional(),
   tags: z.array(Tag).optional(),
   triggers: z.array(Trigger).optional(),
   price: z.number(),

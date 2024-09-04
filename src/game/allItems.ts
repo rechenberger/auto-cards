@@ -82,6 +82,7 @@ const allItemsConst = [
   // },
   {
     name: 'woodenBuckler',
+    prompt: 'a small shield made of wood',
     tags: ['shield'],
     rarity: 'common',
     price: 4,
@@ -297,6 +298,7 @@ const allItemsConst = [
   },
   {
     name: 'blockFest',
+    prompt: '"Block Fest" a party where everyone is celebrating shields',
     tags: ['event'],
     rarity: 'rare',
     price: 8,

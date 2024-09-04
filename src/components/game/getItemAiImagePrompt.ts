@@ -1,3 +1,4 @@
+import { getItemByName } from '@/game/allItems'
 import {
   getThemeDefinition,
   PLACEHOLDER_ITEM_PROMPT,
@@ -14,7 +15,9 @@ export const getItemAiImagePrompt = async ({
 }) => {
   const theme = await getThemeDefinition(themeId)
   let prompt = theme.prompt
-  const itemPrompt = capitalCase(name)
+
+  const itemDef = await getItemByName(name)
+  const itemPrompt = itemDef.prompt || capitalCase(name)
   prompt = prompt.replace(PLACEHOLDER_ITEM_PROMPT, itemPrompt)
   return prompt
 }
