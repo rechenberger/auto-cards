@@ -50,6 +50,7 @@ export const AiImageGallery = async (props: AiImageProps) => {
               <ActionButton
                 component="button"
                 hideIcon
+                className="relative"
                 action={async () => {
                   'use server'
                   await throwIfNotAdmin({ allowDev: true })
@@ -71,6 +72,11 @@ export const AiImageGallery = async (props: AiImageProps) => {
                     className,
                   )}
                 />
+                {aiImage.prompt !== prompt && (
+                  <div className="absolute top-4 right-4 bg-orange-500 text-white text-xs px-2 py-1 rounded-md">
+                    <div>Old Prompt</div>
+                  </div>
+                )}
               </ActionButton>
             </Fragment>
           ))}

@@ -277,6 +277,8 @@ const allItemsConst = [
   },
   {
     name: 'thornsFest',
+    prompt:
+      '"Thorns Fest" a party where everyone is celebrating thorny things like thorny roses and thorny bushes',
     tags: ['event'],
     rarity: 'rare',
     price: 8,
