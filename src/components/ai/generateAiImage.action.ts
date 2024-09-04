@@ -9,6 +9,7 @@ import { AiImageProps } from './AiImage'
 export const generateAiImage = async ({
   prompt,
   itemId,
+  themeId,
   force = true,
 }: AiImageProps & { force?: boolean }) => {
   'use server'
@@ -18,6 +19,7 @@ export const generateAiImage = async ({
     prompt,
     url,
     itemId,
+    themeId,
     updatedAt: new Date().toISOString(),
     createdAt: new Date().toISOString(),
   })

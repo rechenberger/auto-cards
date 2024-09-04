@@ -1,7 +1,7 @@
 import { getMyUser } from '@/auth/getMyUser'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
-import { defaultTheme, getAllThemes } from '@/game/themes'
+import { getAllThemes } from '@/game/themes'
 import { superAction } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
@@ -16,10 +16,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
+import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 
 export const ThemeSwitchButton = async () => {
   const user = await getMyUser()
-  const current = user?.themeId ?? defaultTheme
+  const current = await getMyUserThemeIdWithFallback()
 
   const disabled = !user
 
@@ -45,6 +46,7 @@ export const ThemeSwitchButton = async () => {
                     hideIcon
                     className="w-full text-left"
                     size={'sm'}
+                    catchToast
                     action={async () => {
                       'use server'
                       return superAction(async () => {

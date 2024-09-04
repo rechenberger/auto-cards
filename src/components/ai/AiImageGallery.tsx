@@ -4,23 +4,18 @@ import { schema } from '@/db/schema-export'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
-import { desc, eq } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import { first, orderBy } from 'lodash-es'
 import { revalidatePath } from 'next/cache'
 import { Fragment } from 'react'
-import { AiImageProps } from './AiImage'
+import { ThemeSwitchButton } from '../game/ThemeSwitchButton'
+import { AiImageProps, whereAiImage } from './AiImage'
 import { generateAiImage } from './generateAiImage.action'
 
-export const AiImageGallery = async ({
-  itemId,
-  prompt,
-  className,
-}: AiImageProps) => {
+export const AiImageGallery = async (props: AiImageProps) => {
+  const { itemId, prompt, className } = props
   const aiImages = await db.query.aiImage.findMany({
-    where: itemId
-      ? eq(schema.aiImage.itemId, itemId)
-      : eq(schema.aiImage.prompt, prompt),
-    orderBy: desc(schema.aiImage.createdAt),
+    where: whereAiImage(props),
   })
 
   const active = first(orderBy(aiImages, 'updatedAt', 'desc'))
@@ -35,6 +30,7 @@ export const AiImageGallery = async ({
               {itemId ? capitalCase(itemId) : prompt}
             </h3>
           </div>
+          <ThemeSwitchButton />
           <ActionButton
             action={async () => {
               'use server'

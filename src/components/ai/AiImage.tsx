@@ -1,8 +1,9 @@
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
+import { nullThemeId, ThemeId } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { desc, eq } from 'drizzle-orm'
+import { and, eq, isNull } from 'drizzle-orm'
 import { Suspense } from 'react'
 import { generateAiImage } from './generateAiImage.action'
 
@@ -10,36 +11,43 @@ export type AiImageProps = {
   prompt: string
   className?: string
   itemId?: string
+  themeId?: ThemeId
 }
 
 export const AiImage = ({
-  prompt,
   className = 'aspect-square',
-  itemId,
+  ...props
 }: AiImageProps) => {
   return (
     <>
       <Suspense fallback={<div className={cn(className, 'bg-slate-600')} />}>
-        <AiImageRaw prompt={prompt} className={className} itemId={itemId} />
+        <AiImageRaw className={className} {...props} />
       </Suspense>
     </>
   )
 }
 
-export const AiImageRaw = async ({
+export const whereAiImage = ({
   prompt,
-  className,
   itemId,
-}: {
-  prompt: string
-  className?: string
-  itemId?: string
-}) => {
+  themeId,
+}: Omit<AiImageProps, 'className'>) => {
+  return itemId
+    ? and(
+        eq(schema.aiImage.itemId, itemId),
+        themeId
+          ? themeId === nullThemeId
+            ? isNull(schema.aiImage.themeId)
+            : eq(schema.aiImage.themeId, themeId)
+          : undefined,
+      )
+    : eq(schema.aiImage.prompt, prompt)
+}
+
+export const AiImageRaw = async (props: AiImageProps) => {
+  const { prompt, className, itemId } = props
   const aiImage = await db.query.aiImage.findFirst({
-    where: itemId
-      ? eq(schema.aiImage.itemId, itemId)
-      : eq(schema.aiImage.prompt, prompt),
-    orderBy: desc(schema.aiImage.updatedAt),
+    where: whereAiImage(props),
   })
   if (!aiImage) {
     return (
@@ -51,7 +59,7 @@ export const AiImageRaw = async ({
           variant={'outline'}
           action={async () => {
             'use server'
-            return generateAiImage({ prompt, itemId, force: false })
+            return generateAiImage({ ...props, force: false })
           }}
           title={prompt}
         >
@@ -67,7 +75,7 @@ export const AiImageRaw = async ({
         variant={'outline'}
         action={async () => {
           'use server'
-          return generateAiImage({ prompt, itemId })
+          return generateAiImage(props)
         }}
         title={prompt}
         command={{
