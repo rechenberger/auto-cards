@@ -7,12 +7,14 @@ import { first } from 'lodash-es'
 import { revalidatePath } from 'next/cache'
 import { AiImageProps } from './AiImage'
 
+export type GenerateAiImageProps = AiImageProps & { force?: boolean }
+
 export const generateAiImage = async ({
   prompt,
   itemId,
   themeId,
   force = true,
-}: AiImageProps & { force?: boolean }) => {
+}: GenerateAiImageProps) => {
   'use server'
   await throwIfNotAdmin({ allowDev: true })
   const { url } = await generateImage({ prompt, force })

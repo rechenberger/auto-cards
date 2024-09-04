@@ -11,8 +11,8 @@ import { revalidatePath } from 'next/cache'
 import { Fragment } from 'react'
 import { ThemeSwitchButton } from '../game/ThemeSwitchButton'
 import { AiImageProps } from './AiImage'
-import { generateAiImage } from './generateAiImage.action'
 import { getAiImages } from './getAiImage'
+import { NewImageButton } from './NewImageButton'
 
 export const AiImageGallery = async (props: AiImageProps) => {
   const { itemId, prompt, className, themeId } = props
@@ -32,19 +32,12 @@ export const AiImageGallery = async (props: AiImageProps) => {
             <h3 className="opacity-60">{subTitle}</h3>
           </div>
           <ThemeSwitchButton />
-          <ActionButton
-            action={async () => {
-              'use server'
-              return generateAiImage({
-                prompt,
-                itemId,
-                themeId,
-                force: !!aiImages.length,
-              })
-            }}
-          >
-            New Image
-          </ActionButton>
+          <NewImageButton
+            prompt={prompt}
+            itemId={itemId}
+            themeId={themeId}
+            force={!!aiImages.length}
+          />
         </div>
         <div className="grid grid-cols-3 gap-2 items-start">
           {aiImages.map((aiImage) => (
