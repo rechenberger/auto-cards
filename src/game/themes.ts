@@ -34,7 +34,7 @@ const allThemeDefinitions = [
   },
   {
     name: 'pixels',
-    prompt: `Image of ${PLACEHOLDER_ITEM_PROMPT} represented by a pixelated object like a video game. ${IMAGE_MODEL_PROMPT}`,
+    prompt: `Image of a pixelated ${PLACEHOLDER_ITEM_PROMPT} represented by a pixelated object like a video game. ${IMAGE_MODEL_PROMPT}`,
   },
 ] as const satisfies ThemeDefinitionRaw[]
 
