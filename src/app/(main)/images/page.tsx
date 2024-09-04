@@ -17,7 +17,6 @@ export default async function Page() {
     orderBy: desc(aiImage.updatedAt),
     limit: 100,
   })
-
   return (
     <>
       <div className="flex flex-row gap-2 items-center">
@@ -31,6 +30,9 @@ export default async function Page() {
                 <Link href={image.itemId ? `/items/${image.itemId}` : '#'}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={image.url} alt={image.prompt} />
+                  <div className="absolute bottom-4 right-4 bg-black px-2 py-1 text-white rounded-full text-sm capitalize">
+                    {image.themeId}
+                  </div>
                 </Link>
               </div>
               {/* <div className="flex flex-row justify-center">
