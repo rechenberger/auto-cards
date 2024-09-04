@@ -7,13 +7,18 @@ const IMAGE_MODEL_PROMPT = 'Use Flux Schnell and make the image square.'
 export type ThemeDefinitionRaw = {
   name: string
   prompt: string
+  hidden?: boolean
 }
 
 const allThemeDefinitions = [
   {
     name: 'default',
+    prompt: `Cartoony cozy Image of ${PLACEHOLDER_ITEM_PROMPT}. Background is a sunny track trough the mountains or woods whatever fits.`,
+    hidden: true,
+  },
+  {
+    name: 'cozy',
     prompt: `Cartoony cozy Image of ${PLACEHOLDER_ITEM_PROMPT}. Background is a sunny track trough the mountains, surrounded by vibrant trees and a clear blue sky, warm colors, cheerful atmosphere. ${IMAGE_MODEL_PROMPT}`,
-    // prompt: `Cartoony cozy Image of ${PLACEHOLDER_ITEM_PROMPT}. Background is a sunny track trough the mountains or woods whatever fits.`,
   },
   {
     name: 'halloween',
@@ -30,7 +35,7 @@ export type ThemeDefinition = ThemeDefinitionRaw & {
 }
 
 export const nullThemeId: ThemeId = 'default' // Saved in DB as null
-export const defaultThemeId: ThemeId = 'default' // Default theme
+export const defaultThemeId: ThemeId = 'cozy' // Default theme
 
 const allThemes = constArrayMap(allThemeDefinitions, 'name')
 
