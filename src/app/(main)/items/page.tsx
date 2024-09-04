@@ -1,3 +1,4 @@
+import { GenerateAllItemImagesButton } from '@/components/ai/GenerateAllItemImagesButton'
 import { ItemCard } from '@/components/game/ItemCard'
 import { ThemeSwitchButton } from '@/components/game/ThemeSwitchButton'
 import { getAllItems } from '@/game/allItems'
@@ -20,6 +21,7 @@ export default async function Page() {
         <div className="flex flex-col flex-1">
           <h2 className="font-bold text-xl">{items.length} Items</h2>
         </div>
+        <GenerateAllItemImagesButton />
         <ThemeSwitchButton />
       </div>
       <div className="flex flex-row flex-wrap gap-2 justify-center">
