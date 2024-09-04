@@ -417,6 +417,7 @@ const allItemsConst = [
   },
   {
     name: 'whetstone',
+    prompt: 'a whetstone for sharpening knives',
     tags: ['accessory'],
     rarity: 'rare',
     price: 2,
@@ -455,6 +456,7 @@ const allItemsConst = [
   },
   {
     name: 'horseShoe',
+    prompt: 'a horseshoe with a four leaf clover on it',
     tags: ['accessory'],
     rarity: 'common',
     price: 2,
