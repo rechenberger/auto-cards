@@ -257,6 +257,9 @@ const allItemsConst = [
   },
   {
     name: 'beerFest',
+
+    prompt:
+      'people are celebrating beer fest, drinking and dancing. the word beer fest is written in letters of beer foam',
     tags: ['event'],
     rarity: 'rare',
     price: 8,
@@ -279,7 +282,7 @@ const allItemsConst = [
   {
     name: 'thornsFest',
     prompt:
-      '"Thorns Fest" a party where everyone is celebrating thorny things like thorny roses and thorny bushes',
+      'people are celebrating the thorny things like thorny roses and thorny bushes. the word thorns fest is written as letters of rose stems.',
     tags: ['event'],
     rarity: 'rare',
     price: 8,
@@ -301,7 +304,8 @@ const allItemsConst = [
   },
   {
     name: 'blockFest',
-    prompt: '"Block Fest" a party where everyone is celebrating shields',
+    prompt:
+      'people are celebrating their shields and barricades. the word block fest is written as iron letters.',
     tags: ['event'],
     rarity: 'rare',
     price: 8,
@@ -323,6 +327,8 @@ const allItemsConst = [
   },
   {
     name: 'frostFest',
+    prompt:
+      'people are celebrating the cold, ice and snow. the word frost fest is written as ice letters.',
     tags: ['event'],
     rarity: 'rare',
     price: 8,
@@ -344,6 +350,7 @@ const allItemsConst = [
   },
   {
     name: 'frostHammer',
+    prompt: 'a hammer with a frosty head, covered in ice, dripping snowflakes',
     tags: ['weapon'],
     rarity: 'rare',
     price: 6,
@@ -476,6 +483,7 @@ const allItemsConst = [
   },
   {
     name: 'energyDrink',
+    prompt: 'a can of energy drink with a flexing biceps as logo',
     tags: ['potion'],
     rarity: 'common',
     price: 2,
