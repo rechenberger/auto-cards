@@ -1,11 +1,9 @@
-import { db } from '@/db/db'
-import { schema } from '@/db/schema-export'
-import { nullThemeId, ThemeId } from '@/game/themes'
+import { ThemeId } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { and, desc, eq, isNull } from 'drizzle-orm'
 import { Suspense } from 'react'
 import { generateAiImage } from './generateAiImage.action'
+import { getAiImage } from './getAiImage'
 
 export type AiImageProps = {
   prompt: string
@@ -27,29 +25,9 @@ export const AiImage = ({
   )
 }
 
-export const whereAiImage = ({
-  prompt,
-  itemId,
-  themeId,
-}: Omit<AiImageProps, 'className'>) => {
-  return itemId
-    ? and(
-        eq(schema.aiImage.itemId, itemId),
-        themeId
-          ? themeId === nullThemeId
-            ? isNull(schema.aiImage.themeId)
-            : eq(schema.aiImage.themeId, themeId)
-          : undefined,
-      )
-    : eq(schema.aiImage.prompt, prompt)
-}
-
 export const AiImageRaw = async (props: AiImageProps) => {
   const { prompt, className, itemId } = props
-  const aiImage = await db.query.aiImage.findFirst({
-    where: whereAiImage(props),
-    orderBy: desc(schema.aiImage.updatedAt),
-  })
+  const aiImage = await getAiImage(props)
   if (!aiImage) {
     return (
       <div
