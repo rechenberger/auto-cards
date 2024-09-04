@@ -3,7 +3,7 @@ import { schema } from '@/db/schema-export'
 import { nullThemeId, ThemeId } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { and, eq, isNull } from 'drizzle-orm'
+import { and, desc, eq, isNull } from 'drizzle-orm'
 import { Suspense } from 'react'
 import { generateAiImage } from './generateAiImage.action'
 
@@ -48,6 +48,7 @@ export const AiImageRaw = async (props: AiImageProps) => {
   const { prompt, className, itemId } = props
   const aiImage = await db.query.aiImage.findFirst({
     where: whereAiImage(props),
+    orderBy: desc(schema.aiImage.updatedAt),
   })
   if (!aiImage) {
     return (
