@@ -48,7 +48,7 @@ export const NewLiveMatchButton = ({
         })
       }}
     >
-      New Live Match
+      Start Live Match
     </ActionButton>
   )
 }
