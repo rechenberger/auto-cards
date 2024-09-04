@@ -120,6 +120,7 @@ const allItemsConst = [
   },
   {
     name: 'healingHerbs',
+    prompt: 'a bouquet of healing herbs in a flower pot',
     tags: ['food'],
     rarity: 'common',
     price: 4,
