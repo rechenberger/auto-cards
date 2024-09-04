@@ -28,7 +28,8 @@ export default async function Page() {
           <Fragment key={image.id}>
             <div className="flex flex-col gap-2">
               <div className="aspect-square relative">
-                <Link href={image.itemId ? `/items/${image.itemId}` : '#'}>
+                {/* <Link href={image.itemId ? `/items/${image.itemId}` : '#'}> */}
+                <Link href={image.url} target="_blank">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={image.url} alt={image.prompt} />
                 </Link>
