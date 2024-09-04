@@ -1,7 +1,7 @@
 import { getMyUser } from '@/auth/getMyUser'
-import { defaultThemeId } from '@/game/themes'
+import { getThemeDefinition } from '@/game/themes'
 
-export const getMyUserThemeId = async () => {
+const getMyUserThemeId = async () => {
   const user = await getMyUser()
   const themeId = user?.themeId ?? undefined
   return themeId
@@ -9,5 +9,6 @@ export const getMyUserThemeId = async () => {
 
 export const getMyUserThemeIdWithFallback = async () => {
   const themeId = await getMyUserThemeId()
-  return themeId ?? defaultThemeId
+  const theme = await getThemeDefinition(themeId)
+  return theme.name
 }

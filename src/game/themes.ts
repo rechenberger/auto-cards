@@ -49,7 +49,10 @@ export const getAllThemes = async (): Promise<ThemeDefinition[]> => {
 export const getThemeDefinition = async (
   theme: ThemeId = defaultThemeId,
 ): Promise<ThemeDefinition> => {
-  const def = allThemeDefinitions.find((b) => b.name === theme)
+  let def = allThemeDefinitions.find((b) => b.name === theme)
+  if (!def) {
+    def = allThemeDefinitions.find((b) => b.name === defaultThemeId)
+  }
   if (!def) {
     throw new Error(`Unknown theme: ${theme}`)
   }

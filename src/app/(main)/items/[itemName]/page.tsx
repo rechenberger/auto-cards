@@ -1,11 +1,10 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { AiImageGallery } from '@/components/ai/AiImageGallery'
 import { getItemAiImagePrompt } from '@/components/game/getItemAiImagePrompt'
-import { getMyUserThemeId } from '@/components/game/getMyUserThemeId'
+import { getMyUserThemeIdWithFallback } from '@/components/game/getMyUserThemeId'
 import { ItemCard } from '@/components/game/ItemCard'
 import { StatDescriptionsItem } from '@/components/game/StatDescriptionsItem'
 import { getItemByName } from '@/game/allItems'
-import { defaultThemeId } from '@/game/themes'
 import { capitalCase } from 'change-case'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -29,7 +28,7 @@ export default async function Page({ params: { itemName } }: PageProps) {
   } catch (error) {
     notFound()
   }
-  const themeId = (await getMyUserThemeId()) ?? defaultThemeId
+  const themeId = await getMyUserThemeIdWithFallback()
   const prompt = await getItemAiImagePrompt({
     name: itemName,
     themeId,
