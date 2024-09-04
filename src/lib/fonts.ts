@@ -1,7 +1,9 @@
 import {
   Amatic_SC,
+  Caesar_Dressing,
   Comfortaa,
   Creepster,
+  Great_Vibes,
   Indie_Flower,
   Mystery_Quest,
   Press_Start_2P,
@@ -25,6 +27,16 @@ export const fontPixel = Press_Start_2P({
 })
 
 export const fontMagical = Mystery_Quest({
+  weight: '400',
+  subsets: ['latin'],
+})
+
+export const fontRoyal = Great_Vibes({
+  weight: '400',
+  subsets: ['latin'],
+})
+
+export const fontViking = Caesar_Dressing({
   weight: '400',
   subsets: ['latin'],
 })
