@@ -3,7 +3,12 @@ import { getItemByName } from '@/game/allItems'
 import { Changemaker } from '@/game/generateChangemakers'
 import { getRarityDefinition } from '@/game/rarities'
 import { getTagDefinition } from '@/game/tags'
-import { defaultThemeId, fallbackThemeId, ThemeId } from '@/game/themes'
+import {
+  defaultThemeId,
+  fallbackThemeId,
+  getThemeDefinition,
+  ThemeId,
+} from '@/game/themes'
 import { fontHeading } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
@@ -47,6 +52,8 @@ export const ItemCard = async ({
     themeId = await fallbackThemeId(themeId)
   }
 
+  const theme = await getThemeDefinition(themeId)
+
   const rarity = item.rarity ? getRarityDefinition(item.rarity) : undefined
 
   const inner = (
@@ -83,6 +90,7 @@ export const ItemCard = async ({
             'font-bold',
             '[text-shadow:_1px_1px_4px_rgb(0_0_0_/_80%)]',
             fontHeading.className,
+            theme.classTop,
           )}
         >
           <div className="relative rounded-tr-lg rounded-b-lg overflow-hidden">
@@ -97,7 +105,7 @@ export const ItemCard = async ({
                 {title}
               </div>
             </div>
-            <div className="absolute top-3 inset-x-0 flex flex-col items-end gap-1">
+            <div className="absolute top-6 inset-x-0 flex flex-col items-end gap-1">
               {!!item.tags?.length && (
                 <div
                   className={cn(
@@ -165,6 +173,7 @@ export const ItemCard = async ({
             'flex-1 flex flex-col justify-center rounded-lg p-2',
             tag.bgClass,
             tag.bgClass && 'border-2 border-black',
+            theme.classBottom,
           )}
         >
           <div className="flex flex-col items-center gap-2">
