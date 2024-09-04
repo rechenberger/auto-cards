@@ -83,6 +83,12 @@ export default async function Page() {
                       )}
                     </div>
                   </div>
+                  <div>
+                    <div>Theme</div>
+                    <div className="text-muted-foreground">
+                      {user.themeId ?? '-'}
+                    </div>
+                  </div>
                   <label className="">
                     <div className="flex-1">Admin</div>
                     <ActionButton
