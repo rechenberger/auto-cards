@@ -17,10 +17,6 @@ const allThemeDefinitions = [
     name: 'halloween',
     prompt: `Crazy scary image of ${PLACEHOLDER_ITEM_PROMPT}. Halloween theme. Use Flux Schnell and make the image square.`,
   },
-  {
-    name: 'royal',
-    prompt: `Cartoony Image of ${PLACEHOLDER_ITEM_PROMPT}. Background is a royal throne room. the image should be shiny and royal with jewelry and gold.`,
-  },
 ] as const satisfies ThemeDefinitionRaw[]
 
 export type ThemeDefinition = ThemeDefinitionRaw & {
