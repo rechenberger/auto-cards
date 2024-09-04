@@ -57,7 +57,7 @@ const allThemeDefinitions = [
   },
   {
     name: 'viking',
-    prompt: `Image of a viking ${PLACEHOLDER_ITEM_PROMPT}. Background is a viking village with a river and a viking ship in the background. Everything very viking. ${IMAGE_MODEL_PROMPT}`,
+    prompt: `Image of a ${PLACEHOLDER_ITEM_PROMPT}. Background is a viking village with a river and a viking ship in the background. Everything very viking. ${IMAGE_MODEL_PROMPT}`,
     classTop: fontViking.className,
     classBottom: fontViking.className,
   },
