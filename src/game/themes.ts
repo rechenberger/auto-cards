@@ -12,7 +12,7 @@ export type ThemeDefinitionRaw = {
 
 const allThemeDefinitions = [
   {
-    name: 'default',
+    name: 'legacy',
     prompt: `Cartoony cozy Image of ${PLACEHOLDER_ITEM_PROMPT}. Background is a sunny track trough the mountains or woods whatever fits.`,
     hidden: true,
   },
@@ -34,7 +34,7 @@ export type ThemeDefinition = ThemeDefinitionRaw & {
   name: ThemeId
 }
 
-export const nullThemeId: ThemeId = 'default' // Saved in DB as null
+export const nullThemeId: ThemeId = 'legacy' // Saved in DB as null
 export const defaultThemeId: ThemeId = 'cozy' // Default theme
 
 const allThemes = constArrayMap(allThemeDefinitions, 'name')
