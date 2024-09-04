@@ -1,6 +1,7 @@
 import { constArrayMap } from '@/lib/constArrayMap'
 import {
   fontCreepy,
+  fontFuturistic,
   fontMagical,
   fontPixel,
   fontRoyal,
@@ -60,6 +61,22 @@ const allThemeDefinitions = [
     classTop: fontViking.className,
     classBottom: fontViking.className,
   },
+  {
+    name: 'ecotopia',
+    prompt: `Image of a futuristic ${PLACEHOLDER_ITEM_PROMPT}. Background is a city with green plants and trees growing everywhere. Technology and nature combined. Hydroponics, glass domes, water features. Everything very futuristic and green. ${IMAGE_MODEL_PROMPT}`,
+    classTop: fontFuturistic.className,
+    classBottom: fontFuturistic.className,
+  },
+  // future themes
+  // - cyberpunk
+  // - steampunk
+  // - pirate
+  // - samurai
+  // - ninja
+  // - alien
+  // - robot
+  // - monster
+  // - fairy
 ] as const satisfies ThemeDefinitionRaw[]
 
 export type ThemeDefinition = ThemeDefinitionRaw & {

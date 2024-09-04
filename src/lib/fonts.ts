@@ -7,6 +7,7 @@ import {
   Indie_Flower,
   Mystery_Quest,
   Press_Start_2P,
+  Orbitron,
 } from 'next/font/google'
 
 export const fontHeading = Amatic_SC({ weight: '700', subsets: ['latin'] })
@@ -37,6 +38,11 @@ export const fontRoyal = Great_Vibes({
 })
 
 export const fontViking = Caesar_Dressing({
+  weight: '400',
+  subsets: ['latin'],
+})
+
+export const fontFuturistic = Orbitron({
   weight: '400',
   subsets: ['latin'],
 })
