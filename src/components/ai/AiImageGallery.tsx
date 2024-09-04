@@ -13,7 +13,7 @@ import { AiImageProps, whereAiImage } from './AiImage'
 import { generateAiImage } from './generateAiImage.action'
 
 export const AiImageGallery = async (props: AiImageProps) => {
-  const { itemId, prompt, className } = props
+  const { itemId, prompt, className, themeId } = props
   const aiImages = await db.query.aiImage.findMany({
     where: whereAiImage(props),
   })
@@ -37,6 +37,7 @@ export const AiImageGallery = async (props: AiImageProps) => {
               return generateAiImage({
                 prompt,
                 itemId,
+                themeId,
                 force: !!aiImages.length,
               })
             }}
