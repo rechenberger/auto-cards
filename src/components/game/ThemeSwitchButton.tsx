@@ -47,6 +47,7 @@ export const ThemeSwitchButton = async () => {
                     className="w-full text-left"
                     size={'sm'}
                     catchToast
+                    disabled={disabled}
                     action={async () => {
                       'use server'
                       return superAction(async () => {
