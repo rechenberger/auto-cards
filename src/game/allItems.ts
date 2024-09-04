@@ -160,6 +160,7 @@ const allItemsConst = [
   },
   {
     name: 'balloon',
+    prompt: 'hot air balloon flying in the skies',
     tags: ['accessory'],
     rarity: 'uncommon',
     price: 4,
