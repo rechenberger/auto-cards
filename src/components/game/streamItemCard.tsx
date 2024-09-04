@@ -25,7 +25,7 @@ export const streamItemCard = async ({
       description: (
         <>
           <div className="flex flex-col gap-4 max-h-[calc(100vh-80px)] overflow-auto">
-            <ItemCard name={name} size="320" />
+            <ItemCard name={name} size="320" themeId={themeId} />
             {changemaker && (
               <div className="bg-[#313130] text-white px-4 py-1 rounded-md">
                 Necessity: {Math.round(changemaker.necessity * 100)}%
