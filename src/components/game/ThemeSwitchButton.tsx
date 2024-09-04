@@ -1,4 +1,4 @@
-import { getMyUser } from '@/auth/getMyUser'
+import { getMyUser, getMyUserOrThrow } from '@/auth/getMyUser'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { getAllThemes } from '@/game/themes'
@@ -51,6 +51,8 @@ export const ThemeSwitchButton = async () => {
                     action={async () => {
                       'use server'
                       return superAction(async () => {
+                        const user = await getMyUserOrThrow()
+
                         await db
                           .update(schema.users)
                           .set({ themeId: theme.name })

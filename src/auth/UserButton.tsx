@@ -7,10 +7,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { getUserName } from '@/game/getUserName'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { ChevronDown, KeyRound, LogOut, PersonStanding } from 'lucide-react'
 import { redirect } from 'next/navigation'
-import { auth, signOut } from './auth'
+import { signOut } from './auth'
+import { getMyUser } from './getMyUser'
 import {
   changePasswordWithRedirect,
   changeUsernameWithRedirect,
@@ -18,15 +20,16 @@ import {
 } from './loginWithRedirect'
 
 export const UserButton = async () => {
-  const session = await auth()
+  // const session = await auth()
+  const user = await getMyUser()
 
-  if (!!session?.user) {
+  if (!!user) {
     return (
       <>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline">
-              <span>{session.user?.name ?? session.user?.email ?? 'You'}</span>
+              <span>{getUserName({ user })}</span>
               <ChevronDown className="w-4 h-4 ml-2" />
             </Button>
           </DropdownMenuTrigger>
