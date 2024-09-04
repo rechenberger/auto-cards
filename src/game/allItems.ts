@@ -120,6 +120,7 @@ const allItemsConst = [
   },
   {
     name: 'healingHerbs',
+    prompt: 'a bouquet of healing herbs in a flower pot',
     tags: ['food'],
     rarity: 'common',
     price: 4,
@@ -159,6 +160,7 @@ const allItemsConst = [
   },
   {
     name: 'balloon',
+    prompt: 'hot air balloon flying in the skies',
     tags: ['accessory'],
     rarity: 'uncommon',
     price: 4,
