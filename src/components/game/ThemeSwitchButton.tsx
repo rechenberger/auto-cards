@@ -1,3 +1,4 @@
+import { getIsAdmin } from '@/auth/getIsAdmin'
 import { getMyUser, getMyUserOrThrow } from '@/auth/getMyUser'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
@@ -21,10 +22,23 @@ import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 export const ThemeSwitchButton = async () => {
   const user = await getMyUser()
   const current = await getMyUserThemeIdWithFallback()
+  const isAdmin = await getIsAdmin()
 
   const disabled = !user
 
-  const allThemes = await getAllThemes()
+  let allThemes = await getAllThemes()
+  allThemes = allThemes.filter((theme) => {
+    if (theme.name === current) {
+      return true
+    }
+    if (isAdmin) {
+      return true
+    }
+    if (theme.hidden) {
+      return false
+    }
+    return true
+  })
 
   return (
     <>
