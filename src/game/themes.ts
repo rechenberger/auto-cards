@@ -77,6 +77,7 @@ const allThemeDefinitions = [
   // - robot
   // - monster
   // - fairy
+  // - living in the clouds of venus
 ] as const satisfies ThemeDefinitionRaw[]
 
 export type ThemeDefinition = ThemeDefinitionRaw & {
