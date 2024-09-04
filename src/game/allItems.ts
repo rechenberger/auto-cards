@@ -206,7 +206,7 @@ const allItemsConst = [
         statsSelf: {
           stamina: -2,
         },
-        statsEnemy: {
+        statsEnemyOnHit: {
           thorns: -2,
           regen: -2,
         },
@@ -405,7 +405,7 @@ const allItemsConst = [
           accuracy: 80,
           damage: 2,
         },
-        statsEnemy: {
+        statsEnemyOnHit: {
           flying: -1,
         },
       },
@@ -448,6 +448,35 @@ const allItemsConst = [
         },
       },
     ],
+  },
+  {
+    name: 'horseShoe',
+    tags: ['accessory'],
+    rarity: 'common',
+    price: 2,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        statsSelf: {
+          luck: 2,
+        },
+      },
+    ],
+  },
+  {
+    name: 'energyDrink',
+    tags: ['potion'],
+    rarity: 'common',
+    price: 2,
+    stats: {
+      space: space(-2),
+      staminaMax: 2,
+      stamina: 2,
+    },
   },
 ] as const satisfies ItemDefinition[]
 
