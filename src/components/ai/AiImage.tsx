@@ -57,6 +57,7 @@ export const AiImageRaw = async (props: AiImageProps) => {
       >
         <ActionButton
           catchToast
+          stopPropagation
           variant={'outline'}
           action={async () => {
             'use server'
