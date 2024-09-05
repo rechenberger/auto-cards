@@ -450,7 +450,7 @@ const allItemsConst = [
         statsSelf: {
           stamina: -1,
         },
-        statsEnemyOnHit: {
+        statsEnemy: {
           blind: 3,
         },
         attack: {
