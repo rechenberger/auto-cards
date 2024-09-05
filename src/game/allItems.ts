@@ -210,10 +210,10 @@ const allItemsConst = [
           stamina: 2,
         },
 
-        statsApplied: [
+        statsHandler: [
           {
             target: 'self',
-            statRng: [
+            statRngApply: [
               {
                 stamina: -2,
               },
@@ -221,7 +221,7 @@ const allItemsConst = [
           },
           {
             target: 'enemy',
-            statRng: [
+            statRngApply: [
               {
                 thorns: -2,
                 regen: -2,
@@ -229,6 +229,11 @@ const allItemsConst = [
               {
                 luck: -2,
                 regen: -2,
+              },
+            ],
+            attackIncreasePerStat: [
+              {
+                thorns: 1,
               },
             ],
             applyChance: 50,

@@ -25,13 +25,16 @@ export const Trigger = z.object({
    * Until here
    */
 
-  statsApplied: z
+  statsHandler: z
     .array(
       z.object({
         target: z.enum(['self', 'enemy', 'item']),
-        // stat: Stats,
-        statRng: z.array(Stats),
+
+        statRngApply: z.array(Stats).optional(),
         applyChance: z.number().positive().max(100).default(100).optional(),
+
+        attackIncreasePerStat: z.array(Stats).optional(),
+
         requiresHit: z.boolean().optional(),
         requiresCrit: z.boolean().optional(),
         requiresBlock: z.boolean().optional(),
