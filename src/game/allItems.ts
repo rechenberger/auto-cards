@@ -497,6 +497,35 @@ const allItemsConst = [
       stamina: 2,
     },
   },
+  {
+    name: 'thornsWhip',
+    tags: ['weapon'],
+    rarity: 'common',
+    price: 3,
+    stats: {
+      space: space(-2),
+    },
+    statsItem: {
+      scalesDamageWithThorns: 1,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_500,
+        statsRequired: {
+          stamina: 2,
+        },
+        statsSelf: {
+          stamina: -2,
+          thorns: 1,
+        },
+        attack: {
+          damage: 13,
+          accuracy: 80,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export type ItemName = (typeof allItemsConst)[number]['name']
