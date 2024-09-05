@@ -16,7 +16,7 @@ export const StatsDisplay = ({
   showZero,
   size = 'default',
   canWrap,
-  disableTooltip,
+  disableTooltip = false,
   statClassName,
   hideBars,
   hideCount,
