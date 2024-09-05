@@ -4,7 +4,10 @@ import { Stats } from './stats'
 import { Tag } from './tags'
 
 const triggerEvents = [
-  'onHit',
+  'onAttackBeforeHit',
+  'onAttackAfterHit',
+  'onDefendBeforeHit',
+  'onDefendAfterHit',
   // 'useStats',
   // 'gainedStats',
   // 'onSelfStun', 'onEnemyStun'

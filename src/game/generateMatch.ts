@@ -216,6 +216,7 @@ export const generateMatch = async ({
   type TriggerHandlerInput = {
     seed: Seed
     action: FutureActionItem
+    baseLogMsg?: string
   }
 
   const triggerHandler = (input: TriggerHandlerInput) => {
@@ -232,6 +233,7 @@ export const generateMatch = async ({
       sideIdx,
       itemIdx,
       triggerIdx,
+      msg: input.baseLogMsg,
     }
 
     const statsForItem = item.statsItem
@@ -320,6 +322,18 @@ export const generateMatch = async ({
             }
             const doesHit = accuracyRng <= accuracy
             if (doesHit) {
+              triggerEvents({
+                eventType: 'onAttackBeforeHit',
+                parentTrigger: input,
+                itemIdx,
+                sideIdx,
+              })
+              triggerEvents({
+                eventType: 'onDefendBeforeHit',
+                parentTrigger: input,
+                sideIdx: otherSide.sideIdx,
+              })
+
               let damage = attack.damage ?? 0
 
               if (statsForItem.drunk) {
@@ -424,8 +438,15 @@ export const generateMatch = async ({
               }
 
               triggerEvents({
-                eventType: 'onHit',
+                eventType: 'onAttackAfterHit',
                 parentTrigger: input,
+                itemIdx,
+                sideIdx,
+              })
+              triggerEvents({
+                eventType: 'onDefendAfterHit',
+                parentTrigger: input,
+                sideIdx: otherSide.sideIdx,
               })
             } else {
               log({
@@ -451,16 +472,20 @@ export const generateMatch = async ({
   const triggerEvents = ({
     eventType,
     parentTrigger,
+    itemIdx,
+    sideIdx,
   }: {
     eventType: TriggerEventType
     parentTrigger: TriggerHandlerInput
+    itemIdx?: number
+    sideIdx: number
   }) => {
     // Find Actions
     const actions = futureActions.filter(
       (a) =>
         a.type === eventType &&
-        a.sideIdx === parentTrigger.action.sideIdx &&
-        a.itemIdx === parentTrigger.action.itemIdx,
+        a.sideIdx === sideIdx &&
+        (!itemIdx || a.itemIdx === itemIdx),
     )
 
     // Trigger Actions
@@ -470,6 +495,7 @@ export const generateMatch = async ({
       triggerHandler({
         seed: [parentTrigger.seed, eventType, action.triggerIdx],
         action,
+        baseLogMsg: eventType,
       })
     }
   }

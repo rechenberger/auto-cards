@@ -74,10 +74,10 @@ const allItemsConst = [
         },
       },
       {
-        type: 'onHit',
+        type: 'onAttackAfterHit',
         cooldown: 0,
         maxCount: 1,
-        statsSelf: {
+        statsEnemy: {
           thorns: 100,
         },
       },
@@ -107,6 +107,13 @@ const allItemsConst = [
         cooldown: 3_000,
         statsSelf: {
           block: 3,
+        },
+      },
+      {
+        type: 'onDefendAfterHit',
+        cooldown: 0,
+        statsEnemy: {
+          stamina: -1,
         },
       },
     ],
