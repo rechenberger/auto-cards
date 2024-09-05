@@ -112,6 +112,7 @@ const allItemsConst = [
       {
         type: 'onDefendAfterHit',
         cooldown: 0,
+        chancePercent: 50,
         statsEnemy: {
           stamina: -1,
         },

@@ -247,6 +247,15 @@ export const generateMatch = async ({
       return
     }
 
+    if (trigger.chancePercent) {
+      const chancePercent = trigger.chancePercent
+      const doesTrigger =
+        rngFloat({ seed: [seedAction, 'chance'], max: 100 }) <= chancePercent
+      if (!doesTrigger) {
+        return
+      }
+    }
+
     let hasRequiredStats = true
     if (statsRequired) {
       const enough = hasStats(statsForItem, statsRequired)
