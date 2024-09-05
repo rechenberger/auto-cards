@@ -3,20 +3,38 @@ import { Rarity } from './rarities'
 import { Stats } from './stats'
 import { Tag } from './tags'
 
-export const Trigger = z.object({
-  type: z.enum([
-    'interval',
-    'startOfBattle',
-    // 'onSelfStun', 'onEnemyStun'
-  ]),
-  cooldown: z.number(),
-  statsRequired: Stats.optional(),
-  statsSelf: Stats.optional(),
-  statsEnemy: Stats.optional(),
-  statsEnemyOnHit: Stats.optional(),
-  attack: Stats.optional(),
-  statsItem: Stats.optional(),
+const triggerEvents = [
+  'onAttackBeforeHit',
+  'onAttackAfterHit',
+  'onDefendBeforeHit',
+  'onDefendAfterHit',
+  // 'useStats',
+  // 'gainedStats',
+  // 'onSelfStun', 'onEnemyStun'
+] as const
+
+export type TriggerEventType = (typeof triggerEvents)[number]
+
+const TriggerWithoutCooldown = z.object({
+  type: z.enum(['startOfBattle', ...triggerEvents]),
 })
+const TriggerWithCooldown = z.object({
+  type: z.enum(['interval']),
+  cooldown: z.number(),
+})
+
+export const Trigger = z
+  .object({
+    chancePercent: z.number().optional(),
+    chanceGroup: z.string().optional(),
+    statsRequired: Stats.optional(),
+    statsSelf: Stats.optional(),
+    statsEnemy: Stats.optional(),
+    attack: Stats.optional(),
+    statsItem: Stats.optional(),
+    maxCount: z.number().optional(),
+  })
+  .and(TriggerWithCooldown.or(TriggerWithoutCooldown))
 export type Trigger = z.infer<typeof Trigger>
 
 export const ItemDefinition = z.object({

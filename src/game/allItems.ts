@@ -13,9 +13,9 @@ const allItemsConst = [
     stats: {
       health: 50,
       healthMax: 50,
-      stamina: 5,
-      staminaMax: 5,
-      staminaRegen: 1,
+      stamina: 50,
+      staminaMax: 50,
+      staminaRegen: 10,
       space: space(14),
     },
   },
@@ -44,7 +44,7 @@ const allItemsConst = [
         cooldown: 3_000,
         statsSelf: {
           health: 4,
-          stamina: 2,
+          stamina: 20,
         },
       },
     ],
@@ -62,14 +62,14 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 3_000,
         statsRequired: {
-          stamina: 3,
+          stamina: 20,
         },
         statsSelf: {
-          stamina: -3,
+          stamina: -20,
         },
         attack: {
-          damage: 6,
-          accuracy: 70,
+          damage: 10,
+          accuracy: 80,
         },
       },
     ],
@@ -90,14 +90,30 @@ const allItemsConst = [
     price: 4,
     stats: {
       space: space(-4),
-      block: 30,
+      // block: 30,
     },
     triggers: [
+      // {
+      //   type: 'interval',
+      //   cooldown: 3_000,
+      //   statsSelf: {
+      //     block: 3,
+      //   },
+      // },
       {
-        type: 'interval',
-        cooldown: 3_000,
+        type: 'onDefendBeforeHit',
+        chancePercent: 30,
+        chanceGroup: 'block',
         statsSelf: {
-          block: 3,
+          block: 5,
+        },
+      },
+      {
+        type: 'onDefendAfterHit',
+        chancePercent: 30,
+        chanceGroup: 'block',
+        statsEnemy: {
+          stamina: -3,
         },
       },
     ],
@@ -113,7 +129,7 @@ const allItemsConst = [
     triggers: [
       {
         type: 'interval',
-        cooldown: 3_000,
+        cooldown: 4_000,
         statsEnemy: {
           poison: 1,
         },
@@ -198,7 +214,7 @@ const allItemsConst = [
     prompt: 'a dark sword with big teeth like a saw',
     tags: ['weapon'],
     rarity: 'rare',
-    price: 10,
+    price: 9,
     stats: {
       space: space(-2),
     },
@@ -207,18 +223,21 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 2_000,
         statsRequired: {
-          stamina: 2,
+          stamina: 20,
         },
         statsSelf: {
-          stamina: -2,
-        },
-        statsEnemyOnHit: {
-          thorns: -2,
-          regen: -2,
+          stamina: -20,
         },
         attack: {
           damage: 18,
           accuracy: 90,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsEnemy: {
+          thorns: -2,
+          regen: -2,
         },
       },
     ],
@@ -245,14 +264,14 @@ const allItemsConst = [
     name: 'beer',
     tags: ['food'],
     rarity: 'uncommon',
-    price: 5,
+    price: 2,
     stats: {
       space: space(-2),
     },
     triggers: [
       {
         type: 'interval',
-        cooldown: 1_000,
+        cooldown: 2_000,
         statsSelf: {
           drunk: 1,
         },
@@ -273,7 +292,6 @@ const allItemsConst = [
     triggers: [
       {
         type: 'startOfBattle',
-        cooldown: 0,
         statsSelf: {
           drunk: 20,
         },
@@ -296,7 +314,6 @@ const allItemsConst = [
     triggers: [
       {
         type: 'startOfBattle',
-        cooldown: 0,
         statsSelf: {
           thorns: 20,
         },
@@ -319,7 +336,6 @@ const allItemsConst = [
     triggers: [
       {
         type: 'startOfBattle',
-        cooldown: 0,
         statsSelf: {
           block: 100,
         },
@@ -342,7 +358,6 @@ const allItemsConst = [
     triggers: [
       {
         type: 'startOfBattle',
-        cooldown: 0,
         statsSelf: {
           slow: 20,
         },
@@ -357,7 +372,7 @@ const allItemsConst = [
     prompt: 'a hammer with a frosty head, covered in ice, dripping snowflakes',
     tags: ['weapon'],
     rarity: 'rare',
-    price: 6,
+    price: 9,
     stats: {
       space: space(-4),
     },
@@ -370,11 +385,11 @@ const allItemsConst = [
           damage: 20,
         },
         statsRequired: {
-          stamina: 4,
+          stamina: 30,
         },
         statsSelf: {
           slow: 5,
-          stamina: -4,
+          stamina: -30,
         },
         statsEnemy: {
           slow: 5,
@@ -411,17 +426,14 @@ const allItemsConst = [
       {
         type: 'interval',
         cooldown: 1_000,
-        statsRequired: {
-          stamina: 1,
-        },
-        statsSelf: {
-          stamina: -1,
-        },
         attack: {
           accuracy: 80,
           damage: 2,
         },
-        statsEnemyOnHit: {
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsEnemy: {
           flying: -1,
         },
       },
@@ -451,17 +463,17 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 1_500,
         statsRequired: {
-          stamina: 2,
+          stamina: 10,
         },
         statsSelf: {
-          stamina: -2,
+          stamina: -10,
         },
         statsEnemy: {
-          blind: 4,
+          blind: 3,
         },
         attack: {
-          damage: 2,
-          accuracy: 80,
+          damage: 6,
+          accuracy: 90,
         },
       },
     ],
@@ -493,8 +505,8 @@ const allItemsConst = [
     price: 2,
     stats: {
       space: space(-2),
-      staminaMax: 2,
-      stamina: 2,
+      staminaMax: 20,
+      stamina: 20,
     },
   },
   {
