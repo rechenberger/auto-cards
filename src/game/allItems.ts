@@ -245,14 +245,14 @@ const allItemsConst = [
     name: 'beer',
     tags: ['food'],
     rarity: 'uncommon',
-    price: 1,
+    price: 2,
     stats: {
       space: space(-2),
     },
     triggers: [
       {
         type: 'interval',
-        cooldown: 1_000,
+        cooldown: 2_000,
         statsSelf: {
           drunk: 1,
         },
