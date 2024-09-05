@@ -62,14 +62,14 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 3_000,
         statsRequired: {
-          stamina: 3,
+          stamina: 2,
         },
         statsSelf: {
-          stamina: -3,
+          stamina: -2,
         },
         attack: {
-          damage: 6,
-          accuracy: 70,
+          damage: 5,
+          accuracy: 80,
         },
       },
     ],
@@ -217,8 +217,8 @@ const allItemsConst = [
           regen: -2,
         },
         attack: {
-          damage: 18,
-          accuracy: 70,
+          damage: 10,
+          accuracy: 80,
         },
       },
     ],
@@ -370,11 +370,11 @@ const allItemsConst = [
           damage: 20,
         },
         statsRequired: {
-          stamina: 1,
+          stamina: 2,
         },
         statsSelf: {
           slow: 5,
-          stamina: -1,
+          stamina: -2,
         },
         statsEnemy: {
           slow: 5,
@@ -411,12 +411,6 @@ const allItemsConst = [
       {
         type: 'interval',
         cooldown: 1_000,
-        statsRequired: {
-          stamina: 1,
-        },
-        statsSelf: {
-          stamina: -1,
-        },
         attack: {
           accuracy: 80,
           damage: 2,
@@ -451,17 +445,17 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 1_500,
         statsRequired: {
-          stamina: 2,
+          stamina: 1,
         },
         statsSelf: {
-          stamina: -2,
+          stamina: -1,
         },
         statsEnemy: {
-          blind: 4,
+          blind: 3,
         },
         attack: {
-          damage: 2,
-          accuracy: 80,
+          damage: 3,
+          accuracy: 90,
         },
       },
     ],
