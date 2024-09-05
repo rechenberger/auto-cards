@@ -357,7 +357,7 @@ const allItemsConst = [
     prompt: 'a hammer with a frosty head, covered in ice, dripping snowflakes',
     tags: ['weapon'],
     rarity: 'rare',
-    price: 6,
+    price: 9,
     stats: {
       space: space(-4),
     },
@@ -370,11 +370,11 @@ const allItemsConst = [
           damage: 20,
         },
         statsRequired: {
-          stamina: 2,
+          stamina: 3,
         },
         statsSelf: {
           slow: 5,
-          stamina: -2,
+          stamina: -3,
         },
         statsEnemy: {
           slow: 5,
