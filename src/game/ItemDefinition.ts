@@ -7,8 +7,12 @@ export const Trigger = z.object({
   type: z.enum([
     'interval',
     'startOfBattle',
+    'onHit',
+    // 'useStats',
+    // 'gainedStats',
     // 'onSelfStun', 'onEnemyStun'
   ]),
+  chance: z.number().optional(),
   cooldown: z.number(),
   statsRequired: Stats.optional(),
   statsSelf: Stats.optional(),
@@ -16,6 +20,7 @@ export const Trigger = z.object({
   statsEnemyOnHit: Stats.optional(),
   attack: Stats.optional(),
   statsItem: Stats.optional(),
+  maxCount: z.number().optional(),
 })
 export type Trigger = z.infer<typeof Trigger>
 

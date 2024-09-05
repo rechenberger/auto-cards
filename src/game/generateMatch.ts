@@ -77,14 +77,13 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
       return side.items.flatMap((item, itemIdx) => {
         return (
           item.triggers?.flatMap((trigger, triggerIdx) => {
-            if (!['interval', 'startOfBattle'].includes(trigger.type)) return []
             const cooldown = calcCooldown({
               cooldown: trigger.cooldown,
               stats: side.stats,
               tags: item.tags ?? [],
             })
             return range(item.count ?? 1).map((itemCounter) => ({
-              type: 'itemTrigger' as const,
+              type: trigger.type,
               time: trigger.type === 'startOfBattle' ? 0 : cooldown,
               lastUsed: 0,
               sideIdx: side.sideIdx,
@@ -223,7 +222,8 @@ export const generateMatch = async ({
             })
           }
         }
-      } else if (action.type === 'itemTrigger') {
+      } else {
+        // TRIGGER ITEM
         const seedAction = [...seedTick, action]
         const mySide = sides[action.sideIdx]
         const otherSide = sides[1 - action.sideIdx] // lol
@@ -436,11 +436,6 @@ export const generateMatch = async ({
         //   cooldown: trigger.cooldown,
         //   stats: mySide.stats,
         // })
-      } else {
-        const exhaustiveCheck: never = action
-        throw new Error(
-          `Unhandled action type: ${JSON.stringify(exhaustiveCheck)}`,
-        )
       }
 
       // END OF ACTION CHECK
@@ -453,7 +448,7 @@ export const generateMatch = async ({
     // UPDATE COOLDOWN
     for (const action of futureActions) {
       if (action.time !== time) continue
-      if (action.type === 'itemTrigger') {
+      if (action.type !== 'baseTick') {
         const side = sides[action.sideIdx]
         const item = side.items[action.itemIdx]
         const trigger = item.triggers![action.triggerIdx]
