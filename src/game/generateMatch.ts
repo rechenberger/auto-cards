@@ -69,41 +69,48 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
     }),
   )
 
-  const futureActions = [
-    { type: 'baseTick' as const, time: 0 },
-    ...rngOrder({
-      items: sides,
-      seed: [...input.seed, 'futureActions'],
-    }).flatMap((side) => {
-      return side.items.flatMap((item, itemIdx) => {
-        return (
-          item.triggers?.flatMap((trigger, triggerIdx) => {
-            const cooldown = calcCooldown({
-              cooldown: trigger.cooldown,
-              stats: side.stats,
-              tags: item.tags ?? [],
-            })
-            return range(item.count ?? 1).map((itemCounter) => ({
-              type: trigger.type,
-              time:
-                trigger.type === 'startOfBattle'
-                  ? 0
-                  : trigger.type === 'interval'
-                    ? cooldown
-                    : undefined,
-              lastUsed: 0,
-              sideIdx: side.sideIdx,
-              itemIdx,
-              triggerIdx,
-              itemCounter, // to have different seed for each item in a stack
-            }))
-          }) || []
-        )
-      })
-    }),
-  ]
-  return { sides, futureActions }
+  const futureActionsBase = [{ type: 'baseTick' as const, time: 0 }]
+
+  const futureActionsItems = rngOrder({
+    items: sides,
+    seed: [...input.seed, 'futureActions'],
+  }).flatMap((side) => {
+    return side.items.flatMap((item, itemIdx) => {
+      return (
+        item.triggers?.flatMap((trigger, triggerIdx) => {
+          const cooldown = calcCooldown({
+            cooldown: trigger.cooldown,
+            stats: side.stats,
+            tags: item.tags ?? [],
+          })
+          return range(item.count ?? 1).map((itemCounter) => ({
+            type: trigger.type,
+            time:
+              trigger.type === 'startOfBattle'
+                ? 0
+                : trigger.type === 'interval'
+                  ? cooldown
+                  : undefined,
+            lastUsed: 0,
+            usedCount: 0,
+            sideIdx: side.sideIdx,
+            itemIdx,
+            triggerIdx,
+            itemCounter, // to have different seed for each item in a stack
+          }))
+        }) || []
+      )
+    })
+  })
+
+  const futureActions = [...futureActionsBase, ...futureActionsItems]
+  return { sides, futureActions, futureActionsItems }
 }
+
+type FutureActionItem = Awaited<
+  ReturnType<typeof generateMatchState>
+>['futureActionsItems'][number]
+
 export type MatchState = Awaited<ReturnType<typeof generateMatchState>>
 
 export const generateMatch = async ({
@@ -208,13 +215,13 @@ export const generateMatch = async ({
 
   type TriggerHandlerInput = {
     seed: Seed
-    sideIdx: number
-    itemIdx: number
-    triggerIdx: number
+    action: FutureActionItem
   }
 
   const triggerHandler = (input: TriggerHandlerInput) => {
-    const { seed, sideIdx, itemIdx, triggerIdx } = input
+    const { seed, action } = input
+
+    const { sideIdx, itemIdx, triggerIdx } = action
     const seedAction = seed
     const mySide = sides[sideIdx]
     const otherSide = sides[1 - sideIdx] // lol
@@ -233,6 +240,11 @@ export const generateMatch = async ({
 
     const { statsRequired, statsSelf, statsEnemy, attack, statsEnemyOnHit } =
       trigger
+
+    if (trigger.maxCount && action.usedCount >= trigger.maxCount) {
+      return
+    }
+
     let hasRequiredStats = true
     if (statsRequired) {
       const enough = hasStats(statsForItem, statsRequired)
@@ -246,7 +258,10 @@ export const generateMatch = async ({
         hasRequiredStats = false
       }
     }
+
     if (hasRequiredStats) {
+      action.usedCount++
+
       if (statsSelf) {
         tryAddStats(mySide.stats, statsSelf)
         log({
@@ -424,6 +439,8 @@ export const generateMatch = async ({
       }
     }
 
+    action.lastUsed = time
+
     // We do that after all actions, so that haste is applied to the cooldown
     // action.time += calcCooldown({
     //   cooldown: trigger.cooldown,
@@ -442,19 +459,17 @@ export const generateMatch = async ({
     const actions = futureActions.filter(
       (a) =>
         a.type === eventType &&
-        a.sideIdx === parentTrigger.sideIdx &&
-        a.itemIdx === parentTrigger.itemIdx,
+        a.sideIdx === parentTrigger.action.sideIdx &&
+        a.itemIdx === parentTrigger.action.itemIdx,
     )
 
     // Trigger Actions
-    for (const onHit of actions) {
-      if (onHit.type !== eventType) continue // type guard
+    for (const action of actions) {
+      if (action.type !== eventType) continue // type guard
       // check uses etc
       triggerHandler({
-        seed: [parentTrigger.seed, eventType, onHit.triggerIdx],
-        sideIdx: onHit.sideIdx,
-        itemIdx: onHit.itemIdx,
-        triggerIdx: onHit.triggerIdx,
+        seed: [parentTrigger.seed, eventType, action.triggerIdx],
+        action,
       })
     }
   }
@@ -485,12 +500,9 @@ export const generateMatch = async ({
         }
       } else {
         // TRIGGER ITEM
-        action.lastUsed = time
         triggerHandler({
           seed: [...seedTick, action],
-          sideIdx: action.sideIdx,
-          itemIdx: action.itemIdx,
-          triggerIdx: action.triggerIdx,
+          action,
         })
       }
 

@@ -61,22 +61,24 @@ const allItemsConst = [
       {
         type: 'interval',
         cooldown: 3_000,
+        maxCount: 3,
         statsRequired: {
-          stamina: 2,
+          stamina: 5,
         },
         statsSelf: {
-          stamina: -2,
+          stamina: -5,
         },
         attack: {
           damage: 10,
-          accuracy: 20,
+          accuracy: 90,
         },
       },
       {
         type: 'onHit',
         cooldown: 0,
+        maxCount: 1,
         statsSelf: {
-          haste: 100,
+          thorns: 100,
         },
       },
     ],
