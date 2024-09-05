@@ -13,9 +13,9 @@ const allItemsConst = [
     stats: {
       health: 50,
       healthMax: 50,
-      stamina: 5,
-      staminaMax: 5,
-      staminaRegen: 1,
+      stamina: 50,
+      staminaMax: 50,
+      staminaRegen: 10,
       space: space(14),
     },
   },
@@ -44,7 +44,7 @@ const allItemsConst = [
         cooldown: 3_000,
         statsSelf: {
           health: 4,
-          stamina: 2,
+          stamina: 20,
         },
       },
     ],
@@ -62,10 +62,10 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 3_000,
         statsRequired: {
-          stamina: 2,
+          stamina: 20,
         },
         statsSelf: {
-          stamina: -2,
+          stamina: -20,
         },
         attack: {
           damage: 10,
@@ -113,7 +113,7 @@ const allItemsConst = [
         chancePercent: 30,
         chanceGroup: 'block',
         statsEnemy: {
-          stamina: -1,
+          stamina: -3,
         },
       },
     ],
@@ -223,10 +223,10 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 2_000,
         statsRequired: {
-          stamina: 2,
+          stamina: 20,
         },
         statsSelf: {
-          stamina: -2,
+          stamina: -20,
         },
         attack: {
           damage: 18,
@@ -385,11 +385,11 @@ const allItemsConst = [
           damage: 20,
         },
         statsRequired: {
-          stamina: 3,
+          stamina: 30,
         },
         statsSelf: {
           slow: 5,
-          stamina: -3,
+          stamina: -30,
         },
         statsEnemy: {
           slow: 5,
@@ -463,10 +463,10 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 1_500,
         statsRequired: {
-          stamina: 1,
+          stamina: 10,
         },
         statsSelf: {
-          stamina: -1,
+          stamina: -10,
         },
         statsEnemy: {
           blind: 3,
@@ -505,8 +505,8 @@ const allItemsConst = [
     price: 2,
     stats: {
       space: space(-2),
-      staminaMax: 2,
-      stamina: 2,
+      staminaMax: 20,
+      stamina: 20,
     },
   },
 ] as const satisfies ItemDefinition[]
