@@ -511,9 +511,11 @@ const allItemsConst = [
   },
   {
     name: 'thornsWhip',
+    prompt:
+      'a whip with thorns on the end, the handle is made of a thorny vine',
     tags: ['weapon'],
-    rarity: 'common',
-    price: 3,
+    rarity: 'rare',
+    price: 7,
     stats: {
       space: space(-2),
     },
@@ -525,15 +527,20 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 2_500,
         statsRequired: {
-          stamina: 2,
+          stamina: 25,
         },
         statsSelf: {
-          stamina: -2,
-          thorns: 1,
+          stamina: -25,
         },
         attack: {
-          damage: 13,
+          damage: 15,
           accuracy: 80,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsSelf: {
+          thorns: 1,
         },
       },
     ],
