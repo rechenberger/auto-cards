@@ -354,12 +354,12 @@ export const generateMatch = async ({
 
               let damage = attack.damage ?? 0
 
-              if (statsForItem.drunk) {
-                damage *= 1 + statsForItem.drunk / 100
-              }
-
               if (statsForItem.scalesDamageWithThorns && statsForItem.thorns) {
                 damage += statsForItem.thorns
+              }
+
+              if (statsForItem.drunk) {
+                damage *= 1 + statsForItem.drunk / 100
               }
 
               const critChance = statsForItem.aim ?? 0
