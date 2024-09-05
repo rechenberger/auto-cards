@@ -205,7 +205,7 @@ export const generateMatch = async ({
     }
   }
 
-  const trigger = ({
+  const triggerHandler = ({
     seed,
     sideIdx,
     itemIdx,
@@ -408,6 +408,25 @@ export const generateMatch = async ({
                   itemIdx: undefined,
                 })
               }
+
+              // Trigger onHit
+              const onHits = futureActions.filter(
+                (a) =>
+                  a.type === 'onHit' &&
+                  a.sideIdx === sideIdx &&
+                  a.itemIdx === itemIdx,
+              )
+              for (const onHit of onHits) {
+                if (onHit.type !== 'onHit') continue
+                // check cooldown
+                // check uses etc
+                triggerHandler({
+                  seed: [seedAction, 'onHit'],
+                  sideIdx: onHit.sideIdx,
+                  itemIdx: onHit.itemIdx,
+                  triggerIdx: onHit.triggerIdx,
+                })
+              }
             } else {
               log({
                 ...baseLog,
@@ -454,7 +473,7 @@ export const generateMatch = async ({
       } else {
         // TRIGGER ITEM
         action.lastUsed = time
-        trigger({
+        triggerHandler({
           seed: [...seedTick, action],
           sideIdx: action.sideIdx,
           itemIdx: action.itemIdx,

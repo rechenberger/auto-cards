@@ -69,7 +69,14 @@ const allItemsConst = [
         },
         attack: {
           damage: 10,
-          accuracy: 80,
+          accuracy: 20,
+        },
+      },
+      {
+        type: 'onHit',
+        cooldown: 0,
+        statsSelf: {
+          haste: 100,
         },
       },
     ],
