@@ -104,6 +104,7 @@ const allItemsConst = [
         type: 'onDefendBeforeHit',
         cooldown: 0,
         chancePercent: 30,
+        chanceGroup: 'block',
         statsSelf: {
           block: 2,
         },
@@ -112,6 +113,7 @@ const allItemsConst = [
         type: 'onDefendAfterHit',
         cooldown: 0,
         chancePercent: 30,
+        chanceGroup: 'block',
         statsEnemy: {
           stamina: -1,
         },

@@ -223,7 +223,7 @@ export const generateMatch = async ({
     const { seed, action } = input
 
     const { sideIdx, itemIdx, triggerIdx } = action
-    const seedAction = seed
+    const seedAction = [seed, action]
     const mySide = sides[sideIdx]
     const otherSide = sides[1 - sideIdx] // lol
     const item = mySide.items[itemIdx]
@@ -249,8 +249,17 @@ export const generateMatch = async ({
 
     if (trigger.chancePercent) {
       const chancePercent = trigger.chancePercent
-      const doesTrigger =
-        rngFloat({ seed: [seedAction, 'chance'], max: 100 }) <= chancePercent
+      const chanceSeed = trigger.chanceGroup
+        ? [
+            input.seed,
+            'triggerChanceGroup',
+            action.itemIdx, // different item has different chance
+            action.itemCounter, // different item in stack has different chance
+            trigger.chanceGroup, // group multiple triggers together
+          ]
+        : seedAction
+      const chanceRng = rngFloat({ seed: chanceSeed, max: 100 })
+      const doesTrigger = chanceRng <= chancePercent
       if (!doesTrigger) {
         return
       }
@@ -502,7 +511,7 @@ export const generateMatch = async ({
       if (action.type !== eventType) continue // type guard
       // check uses etc
       triggerHandler({
-        seed: [parentTrigger.seed, eventType, action.triggerIdx],
+        seed: parentTrigger.seed,
         action,
         baseLogMsg: eventType,
       })

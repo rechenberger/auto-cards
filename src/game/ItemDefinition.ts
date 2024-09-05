@@ -18,6 +18,7 @@ export type TriggerEventType = (typeof triggerEvents)[number]
 export const Trigger = z.object({
   type: z.enum(['interval', 'startOfBattle', ...triggerEvents]),
   chancePercent: z.number().optional(),
+  chanceGroup: z.string().optional(),
   cooldown: z.number(), // TODO: only for interval!
   statsRequired: Stats.optional(),
   statsSelf: Stats.optional(),
