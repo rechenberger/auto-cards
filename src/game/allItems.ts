@@ -102,7 +102,6 @@ const allItemsConst = [
       // },
       {
         type: 'onDefendBeforeHit',
-        cooldown: 0,
         chancePercent: 30,
         chanceGroup: 'block',
         statsSelf: {
@@ -111,7 +110,6 @@ const allItemsConst = [
       },
       {
         type: 'onDefendAfterHit',
-        cooldown: 0,
         chancePercent: 30,
         chanceGroup: 'block',
         statsEnemy: {
@@ -237,7 +235,6 @@ const allItemsConst = [
       },
       {
         type: 'onAttackAfterHit',
-        cooldown: 0,
         statsEnemy: {
           thorns: -2,
           regen: -2,
@@ -295,7 +292,6 @@ const allItemsConst = [
     triggers: [
       {
         type: 'startOfBattle',
-        cooldown: 0,
         statsSelf: {
           drunk: 20,
         },
@@ -318,7 +314,6 @@ const allItemsConst = [
     triggers: [
       {
         type: 'startOfBattle',
-        cooldown: 0,
         statsSelf: {
           thorns: 20,
         },
@@ -341,7 +336,6 @@ const allItemsConst = [
     triggers: [
       {
         type: 'startOfBattle',
-        cooldown: 0,
         statsSelf: {
           block: 100,
         },
@@ -364,7 +358,6 @@ const allItemsConst = [
     triggers: [
       {
         type: 'startOfBattle',
-        cooldown: 0,
         statsSelf: {
           slow: 20,
         },
@@ -440,7 +433,6 @@ const allItemsConst = [
       },
       {
         type: 'onAttackAfterHit',
-        cooldown: 0,
         statsEnemy: {
           flying: -1,
         },

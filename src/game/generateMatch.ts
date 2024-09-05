@@ -78,19 +78,20 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
     return side.items.flatMap((item, itemIdx) => {
       return (
         item.triggers?.flatMap((trigger, triggerIdx) => {
-          const cooldown = calcCooldown({
-            cooldown: trigger.cooldown,
-            stats: side.stats,
-            tags: item.tags ?? [],
-          })
+          const time =
+            trigger.type === 'interval'
+              ? calcCooldown({
+                  cooldown: trigger.cooldown,
+                  stats: side.stats,
+                  tags: item.tags ?? [],
+                })
+              : trigger.type === 'startOfBattle'
+                ? 0
+                : undefined
+
           return range(item.count ?? 1).map((itemCounter) => ({
             type: trigger.type,
-            time:
-              trigger.type === 'startOfBattle'
-                ? 0
-                : trigger.type === 'interval'
-                  ? cooldown
-                  : undefined,
+            time,
             lastUsed: 0,
             usedCount: 0,
             sideIdx: side.sideIdx,
@@ -554,17 +555,18 @@ export const generateMatch = async ({
         const item = side.items[action.itemIdx]
         const trigger = item.triggers![action.triggerIdx]
         if (trigger.type === 'startOfBattle') {
-          action.time = MAX_MATCH_TIME
+          action.time = MAX_MATCH_TIME // TODO: find a more elegant solution
+        } else if (trigger.type === 'interval') {
+          const statsForItem = item.statsItem
+            ? sumStats2(side.stats, item.statsItem)
+            : side.stats
+          const cooldown = calcCooldown({
+            cooldown: trigger.cooldown,
+            stats: statsForItem,
+            tags: item.tags ?? [],
+          })
+          action.time += cooldown
         }
-        const statsForItem = item.statsItem
-          ? sumStats2(side.stats, item.statsItem)
-          : side.stats
-        const cooldown = calcCooldown({
-          cooldown: trigger.cooldown,
-          stats: statsForItem,
-          tags: item.tags ?? [],
-        })
-        action.time += cooldown
       }
     }
 
