@@ -198,7 +198,7 @@ const allItemsConst = [
     prompt: 'a dark sword with big teeth like a saw',
     tags: ['weapon'],
     rarity: 'rare',
-    price: 10,
+    price: 9,
     stats: {
       space: space(-2),
     },
