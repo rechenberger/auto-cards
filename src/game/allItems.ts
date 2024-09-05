@@ -579,7 +579,7 @@ const allItemsConst = [
     ],
   },
   {
-    name: 'garlic',
+    name: 'Garlic',
     prompt: 'a garlic bulb with a strong smell',
     tags: ['food'],
     rarity: 'common',
@@ -602,6 +602,80 @@ const allItemsConst = [
           lifeSteal: -1,
         },
         chancePercent: 30,
+      },
+    ],
+  },
+  {
+    name: 'Chili Pepper',
+    prompt: 'a red chili pepper',
+    tags: ['food'],
+    rarity: 'common',
+    price: 5,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 4_000,
+        statsSelf: {
+          haste: 2,
+          health: 5,
+        },
+      },
+    ],
+  },
+  {
+    name: 'Tusk Poker',
+    prompt: 'a shortbow and arrow made out of thorny wood',
+    tags: ['weapon'],
+    rarity: 'rare',
+    price: 8,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        statsRequired: {
+          stamina: 7,
+        },
+        statsItem: {
+          ranged: 1,
+        },
+        statsSelf: {
+          stamina: -7,
+        },
+        attack: {
+          damage: 5,
+          accuracy: 85,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsEnemy: {
+          thorns: 1,
+        },
+        chancePercent: 50,
+      },
+    ],
+  },
+  {
+    name: 'Leather Armor',
+    prompt: 'a leather armor on an armor stand',
+    tags: ['accessory'],
+    rarity: 'uncommon',
+    price: 7,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          block: 45,
+        },
       },
     ],
   },
