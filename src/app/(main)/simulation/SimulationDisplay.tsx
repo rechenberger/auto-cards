@@ -12,7 +12,9 @@ import { LoadoutData } from '@/db/schema-zod'
 import { countifyItems } from '@/game/countifyItems'
 import { ItemDefinition } from '@/game/ItemDefinition'
 import { cloneDeep, omit, orderBy, sum, sumBy } from 'lodash-es'
+import Link from 'next/link'
 import { Fragment } from 'react'
+import { playgroundHref } from '../playground/page'
 import { SimulationInput, SimulationResult } from './simulate'
 import { TinyItem } from './TinyItem'
 
@@ -138,8 +140,16 @@ export const SimulationDisplay = async ({
                     </TableCell>
                   )}
                   <TableCell className="w-max">
-                    {bot.wins}&nbsp;(
-                    {Math.round((bot.wins / bot.matches) * 100)}%)
+                    <Link
+                      href={playgroundHref([
+                        bot.game.data.currentLoadout.items,
+                        bot.game.data.currentLoadout.items,
+                      ])}
+                      target="_blank"
+                    >
+                      {bot.wins}&nbsp;(
+                      {Math.round((bot.wins / bot.matches) * 100)}%)
+                    </Link>
                   </TableCell>
                 </TableRow>
               </Fragment>

@@ -34,10 +34,16 @@ const decode = (q: string) => {
     )
 }
 
-const encode = (sides: { name: string; count: number }[][]) => {
+const encodePlaygroundQuery = (sides: { name: string; count?: number }[][]) => {
   return sides
-    .map((side) => side.map((item) => `${item.count}:${item.name}`).join(','))
+    .map((side) =>
+      side.map((item) => `${item.count ?? 1}:${item.name}`).join(','),
+    )
     .join('~')
+}
+
+export const playgroundHref = (sides: { name: string; count?: number }[][]) => {
+  return `/playground?q=${encodePlaygroundQuery(sides)}`
 }
 
 export default async function Page({
@@ -110,7 +116,7 @@ export default async function Page({
                     if (minusItem && minusItem.count > 0) {
                       minusItem.count--
                     }
-                    const minusQuery = encode(minus)
+                    const minusQuery = encodePlaygroundQuery(minus)
                     const minusHref = `?q=${minusQuery}`
 
                     const plus = cloneDeep(sides)
@@ -122,7 +128,7 @@ export default async function Page({
                     } else {
                       plus[sideIdx].push({ name: item.name, count: 1 })
                     }
-                    const plusQuery = encode(plus)
+                    const plusQuery = encodePlaygroundQuery(plus)
                     const plusHref = `?q=${plusQuery}`
 
                     return (
