@@ -3,19 +3,29 @@ import { Rarity } from './rarities'
 import { Stats } from './stats'
 import { Tag } from './tags'
 
+const triggerEvents = [
+  'onAttackBeforeHit',
+  'onAttackAfterHit',
+  'onDefendBeforeHit',
+  'onDefendAfterHit',
+  // 'useStats',
+  // 'gainedStats',
+  // 'onSelfStun', 'onEnemyStun'
+] as const
+
+export type TriggerEventType = (typeof triggerEvents)[number]
+
 export const Trigger = z.object({
-  type: z.enum([
-    'interval',
-    'startOfBattle',
-    // 'onSelfStun', 'onEnemyStun'
-  ]),
-  cooldown: z.number(),
+  type: z.enum(['interval', 'startOfBattle', ...triggerEvents]),
+  chancePercent: z.number().optional(),
+  chanceGroup: z.string().optional(),
+  cooldown: z.number(), // TODO: only for interval!
   statsRequired: Stats.optional(),
   statsSelf: Stats.optional(),
   statsEnemy: Stats.optional(),
-  statsEnemyOnHit: Stats.optional(),
   attack: Stats.optional(),
   statsItem: Stats.optional(),
+  maxCount: z.number().optional(),
 })
 export type Trigger = z.infer<typeof Trigger>
 

@@ -90,14 +90,32 @@ const allItemsConst = [
     price: 4,
     stats: {
       space: space(-4),
-      block: 30,
+      // block: 30,
     },
     triggers: [
+      // {
+      //   type: 'interval',
+      //   cooldown: 3_000,
+      //   statsSelf: {
+      //     block: 3,
+      //   },
+      // },
       {
-        type: 'interval',
-        cooldown: 3_000,
+        type: 'onDefendBeforeHit',
+        cooldown: 0,
+        chancePercent: 30,
+        chanceGroup: 'block',
         statsSelf: {
-          block: 3,
+          block: 5,
+        },
+      },
+      {
+        type: 'onDefendAfterHit',
+        cooldown: 0,
+        chancePercent: 30,
+        chanceGroup: 'block',
+        statsEnemy: {
+          stamina: -1,
         },
       },
     ],
@@ -212,13 +230,17 @@ const allItemsConst = [
         statsSelf: {
           stamina: -2,
         },
-        statsEnemyOnHit: {
-          thorns: -2,
-          regen: -2,
-        },
         attack: {
           damage: 18,
           accuracy: 90,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        cooldown: 0,
+        statsEnemy: {
+          thorns: -2,
+          regen: -2,
         },
       },
     ],
@@ -415,7 +437,11 @@ const allItemsConst = [
           accuracy: 80,
           damage: 2,
         },
-        statsEnemyOnHit: {
+      },
+      {
+        type: 'onAttackAfterHit',
+        cooldown: 0,
+        statsEnemy: {
           flying: -1,
         },
       },

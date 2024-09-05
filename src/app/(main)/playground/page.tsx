@@ -42,7 +42,7 @@ const encodePlaygroundQuery = (sides: { name: string; count?: number }[][]) => {
     .join('~')
 }
 
-export const playgroundHref = (sides: { name: string; count?: number }[][]) => {
+const playgroundHref = (sides: { name: string; count?: number }[][]) => {
   return `/playground?q=${encodePlaygroundQuery(sides)}`
 }
 

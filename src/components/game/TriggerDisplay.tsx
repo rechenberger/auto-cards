@@ -32,12 +32,6 @@ export const TriggerDisplay = ({ trigger }: { trigger: Trigger }) => {
             <StatsDisplay relative stats={trigger.statsEnemy} />
           </div>
         )}
-        {trigger.statsEnemyOnHit && (
-          <div className="flex flex-row gap-2">
-            <div>Enemy (on hit):</div>
-            <StatsDisplay relative stats={trigger.statsEnemyOnHit} />
-          </div>
-        )}
         {trigger.attack && (
           <div className="flex flex-row gap-2">
             {/* <div>Attack:</div> */}

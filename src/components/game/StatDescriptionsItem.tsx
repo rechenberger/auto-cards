@@ -12,7 +12,6 @@ export const StatDescriptionsItem = async ({ name }: { name: string }) => {
     ...(item.triggers?.flatMap((t) => [
       t.statsSelf,
       t.statsEnemy,
-      t.statsEnemyOnHit,
       t.statsItem,
       t.attack,
     ]) ?? []),
