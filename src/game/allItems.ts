@@ -545,6 +545,39 @@ const allItemsConst = [
       },
     ],
   },
+
+  {
+    name: 'spear',
+    prompt: 'a long spear with pointy tip',
+    tags: ['weapon'],
+    rarity: 'uncommon',
+    price: 6,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        statsRequired: {
+          stamina: 10,
+        },
+        statsSelf: {
+          stamina: -10,
+        },
+        attack: {
+          damage: 12,
+          accuracy: 80,
+        },
+      },
+      {
+        type: 'onAttackBeforeHit',
+        statsEnemy: {
+          block: -8,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export type ItemName = (typeof allItemsConst)[number]['name']
