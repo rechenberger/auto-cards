@@ -17,6 +17,7 @@ import {
   MAX_MATCH_TIME,
   MAX_THORNS_MULTIPLIER,
 } from './config'
+import { TriggerEventType } from './ItemDefinition'
 import { orderItems } from './orderItems'
 import { Stats } from './stats'
 
@@ -434,7 +435,7 @@ export const generateMatch = async ({
     eventType,
     parentTrigger,
   }: {
-    eventType: 'onHit'
+    eventType: TriggerEventType
     parentTrigger: TriggerHandlerInput
   }) => {
     // Find Actions
@@ -447,7 +448,7 @@ export const generateMatch = async ({
 
     // Trigger Actions
     for (const onHit of actions) {
-      if (onHit.type !== eventType) continue
+      if (onHit.type !== eventType) continue // type guard
       // check cooldown
       // check uses etc
       triggerHandler({
