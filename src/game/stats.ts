@@ -167,7 +167,7 @@ const heroStats = [
     name: 'scalesDamageWithThorns',
     icon: Triangle,
     bgClass: 'bg-red-500',
-    tooltip: 'Deals 1 more damage for each thorns on you.',
+    tooltip: 'Deals 1 more damage for each thorns you have.',
     hideCount: true,
   },
   {
