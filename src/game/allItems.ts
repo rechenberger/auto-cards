@@ -230,13 +230,17 @@ const allItemsConst = [
         statsSelf: {
           stamina: -2,
         },
-        statsEnemyOnHit: {
-          thorns: -2,
-          regen: -2,
-        },
         attack: {
           damage: 18,
           accuracy: 90,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        cooldown: 0,
+        statsEnemy: {
+          thorns: -2,
+          regen: -2,
         },
       },
     ],
@@ -433,7 +437,11 @@ const allItemsConst = [
           accuracy: 80,
           damage: 2,
         },
-        statsEnemyOnHit: {
+      },
+      {
+        type: 'onAttackAfterHit',
+        cooldown: 0,
+        statsEnemy: {
           flying: -1,
         },
       },

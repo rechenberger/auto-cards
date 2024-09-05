@@ -240,8 +240,7 @@ export const generateMatch = async ({
       ? sumStats2(mySide.stats, item.statsItem)
       : mySide.stats
 
-    const { statsRequired, statsSelf, statsEnemy, attack, statsEnemyOnHit } =
-      trigger
+    const { statsRequired, statsSelf, statsEnemy, attack } = trigger
 
     if (trigger.maxCount && action.usedCount >= trigger.maxCount) {
       return
@@ -399,16 +398,6 @@ export const generateMatch = async ({
                     stats: removeAimStats,
                   })
                 }
-              }
-
-              // ENEMY STATS ON HIT
-              if (statsEnemyOnHit) {
-                tryAddStats(otherSide.stats, statsEnemyOnHit)
-                log({
-                  ...baseLog,
-                  stats: statsEnemyOnHit,
-                  targetSideIdx: otherSide.sideIdx,
-                })
               }
 
               // LIFESTEAL
