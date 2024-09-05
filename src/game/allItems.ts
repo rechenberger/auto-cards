@@ -509,6 +509,42 @@ const allItemsConst = [
       stamina: 20,
     },
   },
+  {
+    name: 'thornsWhip',
+    prompt:
+      'a whip with thorns on the end, the handle is made of a thorny vine',
+    tags: ['weapon'],
+    rarity: 'rare',
+    price: 7,
+    stats: {
+      space: space(-2),
+    },
+    statsItem: {
+      scalesDamageWithThorns: 1,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_500,
+        statsRequired: {
+          stamina: 25,
+        },
+        statsSelf: {
+          stamina: -25,
+        },
+        attack: {
+          damage: 15,
+          accuracy: 80,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsSelf: {
+          thorns: 1,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export type ItemName = (typeof allItemsConst)[number]['name']
