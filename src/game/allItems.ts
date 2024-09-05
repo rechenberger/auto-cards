@@ -209,13 +209,39 @@ const allItemsConst = [
         statsRequired: {
           stamina: 2,
         },
-        statsSelf: {
-          stamina: -2,
-        },
-        statsEnemyOnHit: {
-          thorns: -2,
-          regen: -2,
-        },
+
+        statsApplied: [
+          {
+            target: 'self',
+            statRng: [
+              {
+                stamina: -2,
+              },
+            ],
+          },
+          {
+            target: 'enemy',
+            statRng: [
+              {
+                thorns: -2,
+                regen: -2,
+              },
+              {
+                luck: -2,
+                regen: -2,
+              },
+            ],
+            applyChance: 50,
+            requiresHit: true,
+          },
+        ],
+        // statsSelf: {
+        //   stamina: -2,
+        // },
+        // statsEnemyOnHit: {
+        //   thorns: -2,
+        //   regen: -2,
+        // },
         attack: {
           damage: 18,
           accuracy: 90,

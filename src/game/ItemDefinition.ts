@@ -11,11 +11,33 @@ export const Trigger = z.object({
   ]),
   cooldown: z.number(),
   statsRequired: Stats.optional(),
+  attack: Stats.optional(),
+
+  /**
+   * Remove this part when refactor is done
+   * just keeping it so not everything explodes
+   */
   statsSelf: Stats.optional(),
   statsEnemy: Stats.optional(),
   statsEnemyOnHit: Stats.optional(),
-  attack: Stats.optional(),
   statsItem: Stats.optional(),
+  /**
+   * Until here
+   */
+
+  statsApplied: z
+    .array(
+      z.object({
+        target: z.enum(['self', 'enemy', 'item']),
+        // stat: Stats,
+        statRng: z.array(Stats),
+        applyChance: z.number().positive().max(100).default(100).optional(),
+        requiresHit: z.boolean().optional(),
+        requiresCrit: z.boolean().optional(),
+        requiresBlock: z.boolean().optional(),
+      }),
+    )
+    .optional(),
 })
 export type Trigger = z.infer<typeof Trigger>
 
