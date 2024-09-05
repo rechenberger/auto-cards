@@ -40,13 +40,17 @@ export default async function Page() {
   return (
     <>
       <TitleScreen />
-      <div className="flex flex-row gap-2 items-center">
+      <div className="flex flex-col md:flex-row gap-2 items-center">
         <div className="font-bold flex-1">My Games</div>
-        {isAdmin && (
+        {/* {isAdmin && (
           <ActionButton
             variant={'outline'}
             hideIcon
-            askForConfirmation
+            askForConfirmation={{
+              title: 'Delete All Games',
+              content:
+                'Are you sure you want to delete all games of all players?',
+            }}
             action={async () => {
               'use server'
               await db
@@ -58,9 +62,11 @@ export default async function Page() {
           >
             Delete All
           </ActionButton>
-        )}
-        <NewGameButton />
-        <NewLiveMatchButton />
+        )} */}
+        <div className="flex flex-row gap-2">
+          <NewLiveMatchButton variant={'outline'} />
+          <NewGameButton />
+        </div>
       </div>
       <div className="grid lg:grid-cols-3 gap-4">
         {games.map((game) => (

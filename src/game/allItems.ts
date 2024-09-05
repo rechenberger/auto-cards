@@ -21,6 +21,8 @@ const allItemsConst = [
   },
   {
     name: 'experience',
+    prompt:
+      'a campfire in the foreground at the edge of a cliff overlooking a sunset',
     tags: ['hero'],
     price: 0,
     stats: {
@@ -82,6 +84,7 @@ const allItemsConst = [
   // },
   {
     name: 'woodenBuckler',
+    prompt: 'a small shield made of wood',
     tags: ['shield'],
     rarity: 'common',
     price: 4,
@@ -119,6 +122,7 @@ const allItemsConst = [
   },
   {
     name: 'healingHerbs',
+    prompt: 'a bouquet of healing herbs in a flower pot',
     tags: ['food'],
     rarity: 'common',
     price: 4,
@@ -158,6 +162,7 @@ const allItemsConst = [
   },
   {
     name: 'balloon',
+    prompt: 'hot air balloon flying in the skies',
     tags: ['accessory'],
     rarity: 'uncommon',
     price: 4,
@@ -190,6 +195,7 @@ const allItemsConst = [
   },
   {
     name: 'ripsawBlade',
+    prompt: 'a dark sword with big teeth like a saw',
     tags: ['weapon'],
     rarity: 'rare',
     price: 10,
@@ -206,7 +212,7 @@ const allItemsConst = [
         statsSelf: {
           stamina: -2,
         },
-        statsEnemy: {
+        statsEnemyOnHit: {
           thorns: -2,
           regen: -2,
         },
@@ -255,6 +261,9 @@ const allItemsConst = [
   },
   {
     name: 'beerFest',
+
+    prompt:
+      'people are celebrating beer fest, drinking and dancing. the word beer fest is written in letters of beer foam',
     tags: ['event'],
     rarity: 'rare',
     price: 8,
@@ -276,6 +285,8 @@ const allItemsConst = [
   },
   {
     name: 'thornsFest',
+    prompt:
+      'people are celebrating the thorny things like thorny roses and thorny bushes. the word thorns fest is written as letters of rose stems.',
     tags: ['event'],
     rarity: 'rare',
     price: 8,
@@ -297,6 +308,8 @@ const allItemsConst = [
   },
   {
     name: 'blockFest',
+    prompt:
+      'people are celebrating their shields and barricades. the word block fest is written as iron letters.',
     tags: ['event'],
     rarity: 'rare',
     price: 8,
@@ -318,6 +331,8 @@ const allItemsConst = [
   },
   {
     name: 'frostFest',
+    prompt:
+      'people are celebrating the cold, ice and snow. the word frost fest is written as ice letters.',
     tags: ['event'],
     rarity: 'rare',
     price: 8,
@@ -339,6 +354,7 @@ const allItemsConst = [
   },
   {
     name: 'frostHammer',
+    prompt: 'a hammer with a frosty head, covered in ice, dripping snowflakes',
     tags: ['weapon'],
     rarity: 'rare',
     price: 6,
@@ -405,7 +421,7 @@ const allItemsConst = [
           accuracy: 80,
           damage: 2,
         },
-        statsEnemy: {
+        statsEnemyOnHit: {
           flying: -1,
         },
       },
@@ -413,6 +429,7 @@ const allItemsConst = [
   },
   {
     name: 'whetstone',
+    prompt: 'a whetstone for sharpening knives',
     tags: ['accessory'],
     rarity: 'rare',
     price: 2,
@@ -448,6 +465,37 @@ const allItemsConst = [
         },
       },
     ],
+  },
+  {
+    name: 'horseShoe',
+    prompt: 'a horseshoe with a four leaf clover on it',
+    tags: ['accessory'],
+    rarity: 'common',
+    price: 2,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        statsSelf: {
+          luck: 2,
+        },
+      },
+    ],
+  },
+  {
+    name: 'energyDrink',
+    prompt: 'a can of energy drink with a flexing biceps as logo',
+    tags: ['potion'],
+    rarity: 'common',
+    price: 2,
+    stats: {
+      space: space(-2),
+      staminaMax: 2,
+      stamina: 2,
+    },
   },
 ] as const satisfies ItemDefinition[]
 

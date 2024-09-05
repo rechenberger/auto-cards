@@ -13,6 +13,7 @@ export const Trigger = z.object({
   statsRequired: Stats.optional(),
   statsSelf: Stats.optional(),
   statsEnemy: Stats.optional(),
+  statsEnemyOnHit: Stats.optional(),
   attack: Stats.optional(),
   statsItem: Stats.optional(),
 })
@@ -20,6 +21,7 @@ export type Trigger = z.infer<typeof Trigger>
 
 export const ItemDefinition = z.object({
   name: z.string(),
+  prompt: z.string().optional(),
   tags: z.array(Tag).optional(),
   triggers: z.array(Trigger).optional(),
   price: z.number(),

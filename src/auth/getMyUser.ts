@@ -28,8 +28,8 @@ export const getMyUserIdOrLogin = async () => {
 }
 
 export const getIsLoggedIn = async () => {
-  const userId = await getMyUserId()
-  return !!userId
+  const user = await getMyUser()
+  return !!user
 }
 
 export const getMyUser = async () => {
@@ -38,6 +38,7 @@ export const getMyUser = async () => {
   const user = await db.query.users.findFirst({
     where: eq(users.id, userId),
   })
+  if (!user) return null
   const parsed = omit(user, ['passwordHash'])
   return parsed
 }

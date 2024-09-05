@@ -1,6 +1,7 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { AiImageGallery } from '@/components/ai/AiImageGallery'
 import { getItemAiImagePrompt } from '@/components/game/getItemAiImagePrompt'
+import { getMyUserThemeIdWithFallback } from '@/components/game/getMyUserThemeId'
 import { ItemCard } from '@/components/game/ItemCard'
 import { StatDescriptionsItem } from '@/components/game/StatDescriptionsItem'
 import { getItemByName } from '@/game/allItems'
@@ -27,6 +28,11 @@ export default async function Page({ params: { itemName } }: PageProps) {
   } catch (error) {
     notFound()
   }
+  const themeId = await getMyUserThemeIdWithFallback()
+  const prompt = await getItemAiImagePrompt({
+    name: itemName,
+    themeId,
+  })
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-4">
@@ -38,9 +44,10 @@ export default async function Page({ params: { itemName } }: PageProps) {
           {isAdmin && (
             <div className="flex-1 p-4 bg-border rounded-lg">
               <AiImageGallery
-                prompt={getItemAiImagePrompt({ name: itemName })}
                 itemId={itemName}
                 className="border-black border-2 rounded-lg"
+                prompt={prompt}
+                themeId={themeId}
               />
             </div>
           )}

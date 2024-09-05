@@ -27,6 +27,10 @@ export const allTagsDefinition = [
     bgClass: 'bg-purple-500/50',
   },
   {
+    name: 'potion',
+    bgClass: 'bg-yellow-500/50',
+  },
+  {
     name: 'default',
     bgClass: '',
   },

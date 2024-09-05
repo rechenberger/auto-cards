@@ -1,16 +1,20 @@
 import { throwIfNotAdmin } from '@/auth/getIsAdmin'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
+import { nullThemeId } from '@/game/themes'
 import { fetchTeampilot } from '@teampilot/sdk'
 import { first } from 'lodash-es'
 import { revalidatePath } from 'next/cache'
 import { AiImageProps } from './AiImage'
 
+export type GenerateAiImageProps = AiImageProps & { force?: boolean }
+
 export const generateAiImage = async ({
   prompt,
   itemId,
+  themeId,
   force = true,
-}: AiImageProps & { force?: boolean }) => {
+}: GenerateAiImageProps) => {
   'use server'
   await throwIfNotAdmin({ allowDev: true })
   const { url } = await generateImage({ prompt, force })
@@ -18,6 +22,7 @@ export const generateAiImage = async ({
     prompt,
     url,
     itemId,
+    themeId: themeId ? (themeId === nullThemeId ? null : themeId) : null,
     updatedAt: new Date().toISOString(),
     createdAt: new Date().toISOString(),
   })

@@ -1,18 +1,24 @@
-import { AiImage } from '@/components/ai/AiImage'
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
 import { Changemaker } from '@/game/generateChangemakers'
 import { getRarityDefinition } from '@/game/rarities'
 import { getTagDefinition } from '@/game/tags'
+import {
+  defaultThemeId,
+  fallbackThemeId,
+  getThemeDefinition,
+  ThemeId,
+} from '@/game/themes'
 import { fontHeading } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
 import { first } from 'lodash-es'
 import { Fragment } from 'react'
+import { AiItemImage } from '../ai/AiItemImage'
 import { StatsDisplay } from './StatsDisplay'
 import { TriggerDisplay } from './TriggerDisplay'
-import { getItemAiImagePrompt } from './getItemAiImagePrompt'
+import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 import { streamItemCard } from './streamItemCard'
 
 export const ItemCard = async ({
@@ -24,6 +30,7 @@ export const ItemCard = async ({
   count = 1,
   tooltipOnClick,
   changemaker,
+  themeId,
 }: {
   game?: Game
   name: string
@@ -33,10 +40,19 @@ export const ItemCard = async ({
   count?: number
   tooltipOnClick?: boolean
   changemaker?: Changemaker
+  themeId?: ThemeId
 }) => {
   const item = await getItemByName(name)
   const title = capitalCase(name)
   const tag = getTagDefinition(first(item.tags) ?? 'default')
+
+  if (!themeId) {
+    themeId = await getMyUserThemeIdWithFallback()
+  } else {
+    themeId = await fallbackThemeId(themeId)
+  }
+
+  const theme = await getThemeDefinition(themeId)
 
   const rarity = item.rarity ? getRarityDefinition(item.rarity) : undefined
 
@@ -74,6 +90,7 @@ export const ItemCard = async ({
             'font-bold',
             '[text-shadow:_1px_1px_4px_rgb(0_0_0_/_80%)]',
             fontHeading.className,
+            theme.classTop,
           )}
         >
           <div className="relative rounded-tr-lg rounded-b-lg overflow-hidden">
@@ -88,7 +105,7 @@ export const ItemCard = async ({
                 {title}
               </div>
             </div>
-            <div className="absolute top-3 inset-x-0 flex flex-col items-end gap-1">
+            <div className="absolute top-6 inset-x-0 flex flex-col items-end gap-1">
               {!!item.tags?.length && (
                 <div
                   className={cn(
@@ -116,7 +133,11 @@ export const ItemCard = async ({
               )}
             </div>
             <div className="border-black border-2 rounded-lg overflow-hidden">
-              <AiImage prompt={getItemAiImagePrompt(item)} itemId={item.name} />
+              <AiItemImage
+                className="aspect-square"
+                itemName={item.name}
+                themeId={themeId ?? defaultThemeId}
+              />
             </div>
           </div>
           {count >= 2 && (
@@ -152,6 +173,7 @@ export const ItemCard = async ({
             'flex-1 flex flex-col justify-center rounded-lg p-2',
             tag.bgClass,
             tag.bgClass && 'border-2 border-black',
+            theme.classBottom,
           )}
         >
           <div className="flex flex-col items-center gap-2">
@@ -194,7 +216,7 @@ export const ItemCard = async ({
           hideIcon
           action={async () => {
             'use server'
-            return streamItemCard({ name, changemaker })
+            return streamItemCard({ name, changemaker, themeId })
           }}
         >
           {inner}

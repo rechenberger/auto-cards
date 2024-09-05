@@ -4,8 +4,10 @@ import {
   Backpack,
   Banana,
   Beer,
+  BicepsFlexed,
   Bird,
   Carrot,
+  Clover,
   Coins,
   Crosshair,
   Eye,
@@ -70,10 +72,10 @@ const heroStats = [
   },
   {
     name: 'staminaMax',
-    icon: Banana,
+    icon: BicepsFlexed,
     bgClass: 'bg-yellow-500',
     tooltip: 'Max Stamina points.',
-    hidden: true,
+    // hidden: true,
   },
   {
     name: 'staminaRegen',
@@ -165,6 +167,12 @@ const heroStats = [
     icon: EyeOff,
     bgClass: 'bg-amber-500',
     tooltip: 'Reduces accuracy by X%.',
+  },
+  {
+    name: 'luck',
+    icon: Clover,
+    bgClass: 'bg-emerald-500',
+    tooltip: 'Increases accuracy by X%.',
   },
 ] as const satisfies StatDefinitionPre[]
 

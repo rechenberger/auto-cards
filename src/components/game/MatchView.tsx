@@ -1,6 +1,7 @@
 import { Game, Match } from '@/db/schema-zod'
 import { generateChangemakers } from '@/game/generateChangemakers'
 import { generateMatch } from '@/game/generateMatch'
+import { fallbackThemeId } from '@/game/themes'
 import { every } from 'lodash-es'
 import { AlertCircle, Swords } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
@@ -51,6 +52,7 @@ export const MatchView = async ({
               sideIdx={0}
               changemakers={changemakers}
               matchReport={matchReport}
+              themeId={await fallbackThemeId(participants[0].user?.themeId)}
             />
           </div>
           <div className="flex-1 flex flex-col gap-2 items-center justify-center self-stretch">
@@ -66,6 +68,7 @@ export const MatchView = async ({
               sideIdx={1}
               changemakers={changemakers}
               matchReport={matchReport}
+              themeId={await fallbackThemeId(participants[1].user?.themeId)}
             />
           </div>
         </div>
@@ -82,6 +85,7 @@ export const MatchView = async ({
                 sideIdx={0}
                 changemakers={changemakers}
                 matchReport={matchReport}
+                themeId={await fallbackThemeId(participants[0].user?.themeId)}
               />
             </div>
           </div>
@@ -100,6 +104,7 @@ export const MatchView = async ({
                 sideIdx={1}
                 changemakers={changemakers}
                 matchReport={matchReport}
+                themeId={await fallbackThemeId(participants[1].user?.themeId)}
               />
             </div>
           </div>
