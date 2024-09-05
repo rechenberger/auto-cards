@@ -62,14 +62,14 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 3_000,
         statsRequired: {
-          stamina: 3,
+          stamina: 2,
         },
         statsSelf: {
-          stamina: -3,
+          stamina: -2,
         },
         attack: {
-          damage: 6,
-          accuracy: 70,
+          damage: 10,
+          accuracy: 80,
         },
       },
     ],
@@ -113,7 +113,7 @@ const allItemsConst = [
     triggers: [
       {
         type: 'interval',
-        cooldown: 3_000,
+        cooldown: 4_000,
         statsEnemy: {
           poison: 1,
         },
@@ -198,7 +198,7 @@ const allItemsConst = [
     prompt: 'a dark sword with big teeth like a saw',
     tags: ['weapon'],
     rarity: 'rare',
-    price: 10,
+    price: 9,
     stats: {
       space: space(-2),
     },
@@ -245,7 +245,7 @@ const allItemsConst = [
     name: 'beer',
     tags: ['food'],
     rarity: 'uncommon',
-    price: 5,
+    price: 1,
     stats: {
       space: space(-2),
     },
@@ -357,7 +357,7 @@ const allItemsConst = [
     prompt: 'a hammer with a frosty head, covered in ice, dripping snowflakes',
     tags: ['weapon'],
     rarity: 'rare',
-    price: 6,
+    price: 9,
     stats: {
       space: space(-4),
     },
@@ -370,11 +370,11 @@ const allItemsConst = [
           damage: 20,
         },
         statsRequired: {
-          stamina: 4,
+          stamina: 3,
         },
         statsSelf: {
           slow: 5,
-          stamina: -4,
+          stamina: -3,
         },
         statsEnemy: {
           slow: 5,
@@ -411,12 +411,6 @@ const allItemsConst = [
       {
         type: 'interval',
         cooldown: 1_000,
-        statsRequired: {
-          stamina: 1,
-        },
-        statsSelf: {
-          stamina: -1,
-        },
         attack: {
           accuracy: 80,
           damage: 2,
@@ -451,17 +445,17 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 1_500,
         statsRequired: {
-          stamina: 2,
+          stamina: 1,
         },
         statsSelf: {
-          stamina: -2,
+          stamina: -1,
         },
         statsEnemy: {
-          blind: 4,
+          blind: 3,
         },
         attack: {
-          damage: 2,
-          accuracy: 80,
+          damage: 6,
+          accuracy: 90,
         },
       },
     ],
