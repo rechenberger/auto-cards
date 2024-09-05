@@ -12,25 +12,25 @@ export const TriggerDisplay = ({ trigger }: { trigger: Trigger }) => {
             : `${capitalCase(trigger.type)}`}
         </div>
         {trigger.statsSelf && (
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-2 items-center">
             {/* <div>Self:</div> */}
             <StatsDisplay relative stats={trigger.statsSelf} />
           </div>
         )}
         {trigger.statsItem && (
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-2 items-center">
             <div>Item:</div>
             <StatsDisplay relative stats={trigger.statsItem} />
           </div>
         )}
         {trigger.statsEnemy && (
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-2 items-center">
             <div>Enemy:</div>
             <StatsDisplay relative stats={trigger.statsEnemy} />
           </div>
         )}
         {trigger.attack && (
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-2 items-center">
             {/* <div>Attack:</div> */}
             <StatsDisplay stats={trigger.attack as any} />
           </div>
