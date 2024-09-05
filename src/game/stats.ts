@@ -218,6 +218,7 @@ export const getStatDefinition = (stat: Stat) => {
 
 export const allStats = constArrayMap(allStatsDefinitionConst, 'name')
 
+export const Stat = z.enum(allStats)
 export type Stat = (typeof allStats)[number]
 
 // Construct an object schema with all keys required

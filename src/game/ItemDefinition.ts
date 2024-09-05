@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { Rarity } from './rarities'
-import { Stats } from './stats'
+import { Stat, Stats } from './stats'
 import { Tag } from './tags'
 
 const triggerEvents = [
@@ -26,6 +26,28 @@ export const Trigger = z.object({
   attack: Stats.optional(),
   statsItem: Stats.optional(),
   maxCount: z.number().optional(),
+
+  // Für jede Waffe oder Schild (bis zu 3) addiere 3 Damage
+  // Für jedes Thorns addiere 1 Damage
+  // Für jedes Food multipliziere die Damage mit 1.5
+
+  modifiers: z
+    .array(
+      z.object({
+        arithmetic: z.enum(['multiply', 'add']),
+        targetStat: Stat,
+        targetStats: z.enum([
+          'statsSelf',
+          'statsEnemy',
+          'statsItem',
+          'statsRequired',
+        ]),
+        sourceMultiplier: z.number(),
+        source: z.array(Tag.or(Stat)),
+        sourceCountMax: z.number().optional(),
+      }),
+    )
+    .optional(),
 })
 export type Trigger = z.infer<typeof Trigger>
 
