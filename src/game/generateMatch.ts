@@ -316,8 +316,8 @@ export const generateMatch = async ({
                 if (doesHit) {
                   let damage = attack.damage ?? 0
 
-                  if (otherSide.stats.drunk) {
-                    damage *= 1 + otherSide.stats.drunk / 100
+                  if (statsForItem.drunk) {
+                    damage *= 1 + statsForItem.drunk / 100
                   }
 
                   const critChance = statsForItem.aim ?? 0
