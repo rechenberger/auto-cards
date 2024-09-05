@@ -578,6 +578,33 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'garlic',
+    prompt: 'a garlic bulb with a strong smell',
+    tags: ['food'],
+    rarity: 'common',
+    price: 2,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 4_000,
+        statsSelf: {
+          block: 3,
+        },
+      },
+      {
+        type: 'interval',
+        cooldown: 4_000,
+        statsEnemy: {
+          lifeSteal: -1,
+        },
+        chancePercent: 30,
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export type ItemName = (typeof allItemsConst)[number]['name']
