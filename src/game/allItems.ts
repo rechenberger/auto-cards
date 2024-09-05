@@ -68,7 +68,7 @@ const allItemsConst = [
           stamina: -2,
         },
         attack: {
-          damage: 5,
+          damage: 10,
           accuracy: 80,
         },
       },
@@ -217,7 +217,7 @@ const allItemsConst = [
           regen: -2,
         },
         attack: {
-          damage: 10,
+          damage: 18,
           accuracy: 90,
         },
       },
@@ -450,11 +450,11 @@ const allItemsConst = [
         statsSelf: {
           stamina: -1,
         },
-        statsEnemy: {
-          blind: 3,
+        statsEnemyOnHit: {
+          blind: 2,
         },
         attack: {
-          damage: 3,
+          damage: 6,
           accuracy: 90,
         },
       },
