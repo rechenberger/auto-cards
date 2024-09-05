@@ -567,6 +567,39 @@ const allItemsConst = [
       },
     ],
   },
+
+  {
+    name: 'torch',
+    prompt: 'an unlit torch with a wooden handle and a cloth on top',
+    tags: ['weapon'],
+    rarity: 'common',
+    price: 5,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        statsRequired: {
+          stamina: 10,
+        },
+        statsSelf: {
+          stamina: -10,
+        },
+        attack: {
+          damage: 6,
+          accuracy: 90,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsItem: {
+          empower: -1,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export type ItemName = (typeof allItemsConst)[number]['name']
