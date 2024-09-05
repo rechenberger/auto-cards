@@ -358,6 +358,10 @@ export const generateMatch = async ({
                 damage *= 1 + statsForItem.drunk / 100
               }
 
+              if (statsForItem.scalesDamageWithThorns && statsForItem.thorns) {
+                damage += statsForItem.thorns
+              }
+
               const critChance = statsForItem.aim ?? 0
               const doesCrit =
                 rngFloat({ seed: [...seedAction, 'crit'], max: 100 }) <=
