@@ -449,7 +449,6 @@ export const generateMatch = async ({
     // Trigger Actions
     for (const onHit of actions) {
       if (onHit.type !== eventType) continue // type guard
-      // check cooldown
       // check uses etc
       triggerHandler({
         seed: [parentTrigger.seed, eventType, onHit.triggerIdx],
