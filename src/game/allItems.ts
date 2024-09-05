@@ -61,24 +61,15 @@ const allItemsConst = [
       {
         type: 'interval',
         cooldown: 3_000,
-        maxCount: 3,
         statsRequired: {
-          stamina: 5,
+          stamina: 2,
         },
         statsSelf: {
-          stamina: -5,
+          stamina: -2,
         },
         attack: {
           damage: 10,
-          accuracy: 90,
-        },
-      },
-      {
-        type: 'onAttackAfterHit',
-        cooldown: 0,
-        maxCount: 1,
-        statsEnemy: {
-          thorns: 100,
+          accuracy: 80,
         },
       },
     ],
@@ -102,17 +93,25 @@ const allItemsConst = [
       block: 30,
     },
     triggers: [
+      // {
+      //   type: 'interval',
+      //   cooldown: 3_000,
+      //   statsSelf: {
+      //     block: 3,
+      //   },
+      // },
       {
-        type: 'interval',
-        cooldown: 3_000,
+        type: 'onDefendBeforeHit',
+        cooldown: 0,
+        chancePercent: 30,
         statsSelf: {
-          block: 3,
+          block: 2,
         },
       },
       {
         type: 'onDefendAfterHit',
         cooldown: 0,
-        chancePercent: 50,
+        chancePercent: 30,
         statsEnemy: {
           stamina: -1,
         },
