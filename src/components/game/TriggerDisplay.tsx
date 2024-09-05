@@ -3,16 +3,13 @@ import { capitalCase } from 'change-case'
 import { StatsDisplay } from './StatsDisplay'
 
 export const TriggerDisplay = ({ trigger }: { trigger: Trigger }) => {
-  const seconds = `${trigger.cooldown / 1000}s`
   return (
     <>
       <div className="px-2 py-2 bg-border/40 rounded-md flex flex-col gap-1 items-center min-w-40">
         <div>
           {trigger.type === 'interval'
-            ? `Every ${seconds}`
-            : `${capitalCase(trigger.type)}${
-                trigger.cooldown ? ` (${seconds} cooldown)` : ''
-              }`}
+            ? `Every ${trigger.cooldown / 1000}s`
+            : `${capitalCase(trigger.type)}`}
         </div>
         {trigger.statsSelf && (
           <div className="flex flex-row gap-2">
