@@ -90,7 +90,7 @@ const allItemsConst = [
     price: 4,
     stats: {
       space: space(-4),
-      block: 30,
+      // block: 30,
     },
     triggers: [
       // {
@@ -106,7 +106,7 @@ const allItemsConst = [
         chancePercent: 30,
         chanceGroup: 'block',
         statsSelf: {
-          block: 2,
+          block: 5,
         },
       },
       {
