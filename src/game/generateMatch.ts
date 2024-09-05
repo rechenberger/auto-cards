@@ -205,17 +205,15 @@ export const generateMatch = async ({
     }
   }
 
-  const triggerHandler = ({
-    seed,
-    sideIdx,
-    itemIdx,
-    triggerIdx,
-  }: {
+  type TriggerHandlerInput = {
     seed: Seed
     sideIdx: number
     itemIdx: number
     triggerIdx: number
-  }) => {
+  }
+
+  const triggerHandler = (input: TriggerHandlerInput) => {
+    const { seed, sideIdx, itemIdx, triggerIdx } = input
     const seedAction = seed
     const mySide = sides[sideIdx]
     const otherSide = sides[1 - sideIdx] // lol
@@ -409,24 +407,10 @@ export const generateMatch = async ({
                 })
               }
 
-              // Trigger onHit
-              const onHits = futureActions.filter(
-                (a) =>
-                  a.type === 'onHit' &&
-                  a.sideIdx === sideIdx &&
-                  a.itemIdx === itemIdx,
-              )
-              for (const onHit of onHits) {
-                if (onHit.type !== 'onHit') continue
-                // check cooldown
-                // check uses etc
-                triggerHandler({
-                  seed: [seedAction, 'onHit'],
-                  sideIdx: onHit.sideIdx,
-                  itemIdx: onHit.itemIdx,
-                  triggerIdx: onHit.triggerIdx,
-                })
-              }
+              triggerEvents({
+                eventType: 'onHit',
+                parentTrigger: input,
+              })
             } else {
               log({
                 ...baseLog,
@@ -444,6 +428,35 @@ export const generateMatch = async ({
     //   cooldown: trigger.cooldown,
     //   stats: mySide.stats,
     // })
+  }
+
+  const triggerEvents = ({
+    eventType,
+    parentTrigger,
+  }: {
+    eventType: 'onHit'
+    parentTrigger: TriggerHandlerInput
+  }) => {
+    // Find Actions
+    const actions = futureActions.filter(
+      (a) =>
+        a.type === eventType &&
+        a.sideIdx === parentTrigger.sideIdx &&
+        a.itemIdx === parentTrigger.itemIdx,
+    )
+
+    // Trigger Actions
+    for (const onHit of actions) {
+      if (onHit.type !== eventType) continue
+      // check cooldown
+      // check uses etc
+      triggerHandler({
+        seed: [parentTrigger.seed, eventType, onHit.triggerIdx],
+        sideIdx: onHit.sideIdx,
+        itemIdx: onHit.itemIdx,
+        triggerIdx: onHit.triggerIdx,
+      })
+    }
   }
 
   while (true) {
