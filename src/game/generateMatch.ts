@@ -142,6 +142,69 @@ export const generateMatch = async ({
     return { logs, winner, loser, time }
   }
 
+  const baseTick = ({ side }: { side: MatchState['sides'][number] }) => {
+    // REGEN
+    const missingHealth = (side.stats.healthMax ?? 0) - (side.stats.health ?? 0)
+    const missingStamina =
+      (side.stats.staminaMax ?? 0) - (side.stats.stamina ?? 0)
+    const regenStats = {
+      health: Math.min(missingHealth, side.stats.regen ?? 0),
+      stamina: Math.min(missingStamina, side.stats.staminaRegen ?? 0),
+    }
+    if (regenStats.health > 0 || regenStats.stamina > 0) {
+      addStats(side.stats, regenStats)
+      log({
+        msg: 'Regenerate',
+        sideIdx: side.sideIdx,
+        stats: regenStats,
+        targetSideIdx: side.sideIdx,
+      })
+    }
+
+    // POISON
+    if (side.stats.poison) {
+      const poisonStats = {
+        health: -1 * side.stats.poison ?? 0,
+      }
+      addStats(side.stats, poisonStats)
+      log({
+        msg: 'Poison',
+        sideIdx: side.sideIdx,
+        stats: poisonStats,
+        targetSideIdx: side.sideIdx,
+      })
+    }
+
+    // FLYING
+    if (side.stats.flying) {
+      const flyingStats = {
+        flying: -1,
+      }
+      addStats(side.stats, flyingStats)
+      log({
+        msg: 'Flying',
+        sideIdx: side.sideIdx,
+        stats: flyingStats,
+        targetSideIdx: side.sideIdx,
+      })
+    }
+
+    // FATIGUE
+    const fatigue = Math.max(1 + (time - FATIGUE_STARTS_AT) / BASE_TICK_TIME, 0)
+    if (fatigue > 0) {
+      const fatigueStats = {
+        health: -1 * fatigue,
+      }
+      addStats(side.stats, fatigueStats)
+      log({
+        msg: 'Fatigue',
+        sideIdx: side.sideIdx,
+        stats: fatigueStats,
+        targetSideIdx: side.sideIdx,
+      })
+    }
+  }
+
   const trigger = ({
     seed,
     sideIdx,
@@ -384,70 +447,9 @@ export const generateMatch = async ({
           items: sides,
           seed: [...seedTick, 'actions'],
         })) {
-          // REGEN
-          const missingHealth =
-            (side.stats.healthMax ?? 0) - (side.stats.health ?? 0)
-          const missingStamina =
-            (side.stats.staminaMax ?? 0) - (side.stats.stamina ?? 0)
-          const regenStats = {
-            health: Math.min(missingHealth, side.stats.regen ?? 0),
-            stamina: Math.min(missingStamina, side.stats.staminaRegen ?? 0),
-          }
-          if (regenStats.health > 0 || regenStats.stamina > 0) {
-            addStats(side.stats, regenStats)
-            log({
-              msg: 'Regenerate',
-              sideIdx: side.sideIdx,
-              stats: regenStats,
-              targetSideIdx: side.sideIdx,
-            })
-          }
-
-          // POISON
-          if (side.stats.poison) {
-            const poisonStats = {
-              health: -1 * side.stats.poison ?? 0,
-            }
-            addStats(side.stats, poisonStats)
-            log({
-              msg: 'Poison',
-              sideIdx: side.sideIdx,
-              stats: poisonStats,
-              targetSideIdx: side.sideIdx,
-            })
-          }
-
-          // FLYING
-          if (side.stats.flying) {
-            const flyingStats = {
-              flying: -1,
-            }
-            addStats(side.stats, flyingStats)
-            log({
-              msg: 'Flying',
-              sideIdx: side.sideIdx,
-              stats: flyingStats,
-              targetSideIdx: side.sideIdx,
-            })
-          }
-
-          // FATIGUE
-          const fatigue = Math.max(
-            1 + (time - FATIGUE_STARTS_AT) / BASE_TICK_TIME,
-            0,
-          )
-          if (fatigue > 0) {
-            const fatigueStats = {
-              health: -1 * fatigue,
-            }
-            addStats(side.stats, fatigueStats)
-            log({
-              msg: 'Fatigue',
-              sideIdx: side.sideIdx,
-              stats: fatigueStats,
-              targetSideIdx: side.sideIdx,
-            })
-          }
+          baseTick({
+            side,
+          })
         }
       } else {
         // TRIGGER ITEM
