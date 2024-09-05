@@ -211,8 +211,8 @@ export const ItemCard = async ({
     return (
       <>
         <ActionButton
-          variant="vanilla"
-          size="vanilla"
+          component={'div' as any} // no button, so no invalid html, so no hydration errors
+          className="cursor-pointer flex"
           hideIcon
           action={async () => {
             'use server'

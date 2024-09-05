@@ -110,7 +110,7 @@ export const MatchCardOverlay = ({
       for (const stats of [statsMySide, statsOtherSide]) {
         if (hasAnyStats({ stats })) {
           addAnimation({
-            content: <StatsDisplay stats={stats} size="sm" />,
+            content: <StatsDisplay stats={stats} size="sm" disableTooltip />,
           })
         }
       }
