@@ -31,6 +31,8 @@ export const ItemCard = async ({
   tooltipOnClick,
   changemaker,
   themeId,
+  sideIdx,
+  itemIdx,
 }: {
   game?: Game
   name: string
@@ -41,6 +43,8 @@ export const ItemCard = async ({
   tooltipOnClick?: boolean
   changemaker?: Changemaker
   themeId?: ThemeId
+  sideIdx?: number
+  itemIdx?: number
 }) => {
   const item = await getItemByName(name)
   const title = capitalCase(name)
@@ -186,7 +190,11 @@ export const ItemCard = async ({
             )}
             {item.triggers?.map((trigger, idx) => (
               <Fragment key={idx}>
-                <TriggerDisplay trigger={trigger} />
+                <TriggerDisplay
+                  trigger={trigger}
+                  itemIdx={itemIdx}
+                  sideIdx={sideIdx}
+                />
               </Fragment>
             ))}
           </div>

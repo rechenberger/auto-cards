@@ -59,6 +59,8 @@ export const MatchCards = async ({
                     changemaker={changemaker}
                     tooltipOnClick
                     themeId={themeId}
+                    itemIdx={itemIdx}
+                    sideIdx={sideIdx}
                   />
                   <MatchCardOverlay
                     sideIdx={sideIdx}
@@ -76,6 +78,8 @@ export const MatchCards = async ({
                     count={item.count}
                     size="320"
                     themeId={themeId}
+                    itemIdx={itemIdx}
+                    sideIdx={sideIdx}
                   />
 
                   <div className="absolute -bottom-6 flex flex-col items-center inset-x-0">
