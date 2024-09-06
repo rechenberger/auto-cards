@@ -803,6 +803,7 @@ export const getItemByName = async (name: string) => {
       name,
       tags: [],
       price: 0,
+      shop: false,
     }
   }
   return item
