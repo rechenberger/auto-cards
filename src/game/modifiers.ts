@@ -1,8 +1,7 @@
 import { filter, some, sumBy } from 'lodash-es'
 import { z } from 'zod'
-import { sumStats2 } from './calcStats'
 import { MatchState } from './generateMatch'
-import { Stat } from './stats'
+import { Stat, Stats } from './stats'
 import { Tag } from './tags'
 
 // Für jede Waffe oder Schild (bis zu 3) addiere 3 Damage
@@ -15,6 +14,7 @@ export const ModifierTargetStats = z.enum([
   'statsItem',
   'statsRequired',
   'attack',
+  'statsForItem',
 ])
 export type ModifierTargetStats = z.infer<typeof ModifierTargetStats>
 
@@ -35,21 +35,20 @@ export const getModifiedStats = ({
   itemIdx,
   triggerIdx,
   stats,
+  statsForItem,
 }: {
   state: MatchState
   sideIdx: number
   itemIdx: number
   triggerIdx: number
   stats: ModifierTargetStats
+  statsForItem: Stats
 }) => {
   const side = state.sides[sideIdx]
   const item = side.items[itemIdx]
   const trigger = item.triggers![triggerIdx]
-  const statsForItem = item.statsItem
-    ? sumStats2(side.stats, item.statsItem)
-    : side.stats
 
-  let result = trigger[stats]
+  let result = stats === 'statsForItem' ? statsForItem : trigger[stats]
   const modifiers = filter(trigger.modifiers, (m) => m.targetStats === stats)
   if (!modifiers.length) return result
 
@@ -100,6 +99,7 @@ export const getAllModifiedStats = (props: {
   sideIdx: number
   itemIdx: number
   triggerIdx: number
+  statsForItem: Stats
 }) => {
   return {
     statsSelf: getModifiedStats({
@@ -121,6 +121,10 @@ export const getAllModifiedStats = (props: {
     attack: getModifiedStats({
       ...props,
       stats: 'attack',
+    }),
+    statsForItem: getModifiedStats({
+      ...props,
+      stats: 'statsForItem',
     }),
   }
 }

@@ -238,17 +238,19 @@ export const generateMatch = async ({
       msg: input.baseLogMsg,
     }
 
-    const statsForItem = item.statsItem
+    let statsForItem = item.statsItem
       ? sumStats2(mySide.stats, item.statsItem)
       : mySide.stats
 
-    const { statsRequired, statsSelf, statsEnemy, attack } =
-      getAllModifiedStats({
-        state,
-        itemIdx,
-        sideIdx,
-        triggerIdx,
-      })
+    const allStats = getAllModifiedStats({
+      state,
+      itemIdx,
+      sideIdx,
+      triggerIdx,
+      statsForItem,
+    })
+    const { statsRequired, statsSelf, statsEnemy, attack } = allStats
+    statsForItem = allStats.statsForItem ?? statsForItem
 
     if (trigger.maxCount && action.usedCount >= trigger.maxCount) {
       return
