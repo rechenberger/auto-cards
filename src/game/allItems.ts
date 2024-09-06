@@ -545,6 +545,216 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'torch',
+    prompt: 'an unlit torch with a wooden handle and a cloth on top',
+    tags: ['weapon'],
+    rarity: 'common',
+    price: 5,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        statsRequired: {
+          stamina: 10,
+        },
+        statsSelf: {
+          stamina: -10,
+        },
+        attack: {
+          damage: 6,
+          accuracy: 90,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        chancePercent: 30,
+        statsItem: {
+          empower: 1,
+        },
+      },
+    ],
+  },
+  {
+    name: 'spear',
+    prompt: 'a long spear with pointy tip',
+    tags: ['weapon'],
+    rarity: 'uncommon',
+    price: 6,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        statsRequired: {
+          stamina: 10,
+        },
+        statsSelf: {
+          stamina: -10,
+        },
+        attack: {
+          damage: 12,
+          accuracy: 80,
+        },
+      },
+      {
+        type: 'onAttackBeforeHit',
+        statsEnemy: {
+          block: -8,
+        },
+      },
+    ],
+  },
+  {
+    name: 'garlic',
+    prompt: 'a garlic bulb with a strong smell',
+    tags: ['food'],
+    rarity: 'common',
+    price: 2,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 4_000,
+        statsSelf: {
+          block: 3,
+        },
+      },
+      {
+        type: 'interval',
+        cooldown: 4_000,
+        statsEnemy: {
+          lifeSteal: -1,
+        },
+        chancePercent: 30,
+      },
+    ],
+  },
+  {
+    name: 'chiliPepper',
+    prompt: 'a red chili pepper',
+    tags: ['food'],
+    rarity: 'common',
+    price: 5,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 4_000,
+        statsSelf: {
+          haste: 2,
+          health: 5,
+        },
+      },
+    ],
+  },
+  {
+    name: 'tuskPoker',
+    prompt: 'a bow and arrow made out of thorny wood',
+    tags: ['weapon'],
+    rarity: 'rare',
+    price: 8,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        statsRequired: {
+          stamina: 7,
+        },
+        statsItem: {
+          ranged: 1,
+        },
+        statsSelf: {
+          stamina: -7,
+        },
+        attack: {
+          damage: 5,
+          accuracy: 85,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsEnemy: {
+          thorns: 1,
+        },
+        chancePercent: 50,
+      },
+    ],
+  },
+  {
+    name: 'leatherArmor',
+    prompt: 'a leather armor on an armor stand',
+    tags: ['accessory'],
+    rarity: 'uncommon',
+    price: 7,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          block: 45,
+        },
+      },
+    ],
+  },
+  {
+    name: 'carrot',
+    tags: ['food'],
+    rarity: 'common',
+    price: 3,
+    stats: {
+      space: space(-3),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        statsRequired: {
+          luck: 4,
+        },
+        statsSelf: {
+          empower: 1,
+        },
+        chancePercent: 50,
+      },
+    ],
+  },
+  {
+    name: 'forgingHammer',
+    prompt: 'a small forging hammer',
+    tags: ['weapon'],
+    rarity: 'common',
+    price: 3,
+    stats: {
+      space: space(-3),
+    },
+    statsItem: {
+      scalesDamageWithEmpower: 1,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_500,
+        attack: {
+          damage: 7,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export type ItemName = (typeof allItemsConst)[number]['name']
