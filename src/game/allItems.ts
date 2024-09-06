@@ -1,3 +1,5 @@
+import { constArrayMap } from '@/lib/constArrayMap'
+import { z } from 'zod'
 import { IGNORE_SPACE } from './config'
 import { ItemDefinition } from './ItemDefinition'
 
@@ -517,6 +519,14 @@ const allItemsConst = [
         statsSelf: {
           luck: 2,
         },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'poison',
+            targetStats: 'statsSelf',
+            valueAddingTags: ['accessory'],
+          },
+        ],
       },
     ],
   },
@@ -544,9 +554,6 @@ const allItemsConst = [
     stats: {
       space: space(-2),
     },
-    statsItem: {
-      scalesDamageWithThorns: 1,
-    },
     triggers: [
       {
         type: 'interval',
@@ -561,6 +568,20 @@ const allItemsConst = [
           damage: 15,
           accuracy: 80,
         },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['thorns'],
+          },
+          {
+            arithmetic: 'multiply',
+            targetStat: 'lifeSteal',
+            targetStats: 'statsForItem',
+            valueBase: 3,
+          },
+        ],
       },
       {
         type: 'onAttackAfterHit',
@@ -790,7 +811,10 @@ const allItemsConst = [
   },
 ] as const satisfies ItemDefinition[]
 
-export type ItemName = (typeof allItemsConst)[number]['name']
+export const allItemNames = constArrayMap(allItemsConst, 'name')
+export const ItemName = z.enum(allItemNames)
+export type ItemName = z.infer<typeof ItemName>
+
 const allItems: ItemDefinition[] = allItemsConst
 
 export const getAllItems = async () => allItems
