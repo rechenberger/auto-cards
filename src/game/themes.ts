@@ -22,11 +22,11 @@ export type ThemeDefinitionRaw = {
 }
 
 const allThemeDefinitions = [
-  {
-    name: 'legacy',
-    prompt: `Cartoony cozy Image of ${PLACEHOLDER_ITEM_PROMPT}. Background is a sunny track trough the mountains or woods whatever fits.`,
-    hidden: true,
-  },
+  // {
+  //   name: 'legacy',
+  //   prompt: `Cartoony cozy Image of ${PLACEHOLDER_ITEM_PROMPT}. Background is a sunny track trough the mountains or woods whatever fits.`,
+  //   hidden: true,
+  // },
   {
     name: 'cozy',
     prompt: `Cartoony cozy Image of ${PLACEHOLDER_ITEM_PROMPT}. Background is a sunny track trough the mountains, surrounded by vibrant trees and a clear blue sky, warm colors, cheerful atmosphere. ${IMAGE_MODEL_PROMPT}`,
@@ -83,7 +83,7 @@ export type ThemeDefinition = ThemeDefinitionRaw & {
   name: ThemeId
 }
 
-export const nullThemeId: ThemeId = 'legacy' // Saved in DB as null
+export const nullThemeId: ThemeId = 'legacy' as any // Saved in DB as null
 export const defaultThemeId: ThemeId = 'cozy' // Default theme
 
 const allThemes = constArrayMap(allThemeDefinitions, 'name')
