@@ -22,11 +22,11 @@ export const Modifier = z.object({
   arithmetic: z.enum(['multiply', 'add', 'subtract', 'divide']),
   targetStat: Stat,
   targetStats: ModifierTargetStats,
-  sourceMultiplier: z.number().optional(),
-  sourceTags: z.array(Tag).optional(),
-  sourceStats: z.array(Stat).optional(),
-  sourceCountMax: z.number().optional(),
-  sourceBase: z.number().optional(),
+  valueBase: z.number().optional(),
+  valueAddingTags: z.array(Tag).optional(),
+  valueAddingStats: z.array(Stat).optional(),
+  valueMultiplier: z.number().optional(),
+  valueMax: z.number().optional(),
 })
 export type Modifier = z.infer<typeof Modifier>
 
@@ -56,23 +56,23 @@ export const getModifiedStats = ({
   result = { ...result }
 
   for (const modifier of modifiers) {
-    let sourceCount = modifier.sourceBase ?? 0
-    if (modifier.sourceStats) {
-      for (const stat of modifier.sourceStats) {
+    let sourceCount = modifier.valueBase ?? 0
+    if (modifier.valueAddingStats) {
+      for (const stat of modifier.valueAddingStats) {
         sourceCount += statsForItem[stat] ?? 0
       }
     }
-    if (modifier.sourceTags) {
+    if (modifier.valueAddingTags) {
       const itemsWithTags = filter(side.items, (i) =>
-        some(item.tags, (tag) => !!modifier.sourceTags?.includes(tag)),
+        some(item.tags, (tag) => !!modifier.valueAddingTags?.includes(tag)),
       )
       sourceCount += sumBy(itemsWithTags, (i) => i.count ?? 1)
     }
-    if (modifier.sourceCountMax) {
-      sourceCount = Math.min(sourceCount, modifier.sourceCountMax)
+    if (modifier.valueMultiplier) {
+      sourceCount *= modifier.valueMultiplier
     }
-    if (modifier.sourceMultiplier) {
-      sourceCount *= modifier.sourceMultiplier
+    if (modifier.valueMax) {
+      sourceCount = Math.min(sourceCount, modifier.valueMax)
     }
 
     if (modifier.arithmetic === 'multiply') {
