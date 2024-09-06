@@ -15,41 +15,49 @@ const triggerEvents = [
 
 export type TriggerEventType = (typeof triggerEvents)[number]
 
-export const Trigger = z.object({
-  type: z.enum(['interval', 'startOfBattle', ...triggerEvents]),
-  chancePercent: z.number().optional(),
-  chanceGroup: z.string().optional(),
-  cooldown: z.number(), // TODO: only for interval!
-  statsRequired: Stats.optional(),
-  statsSelf: Stats.optional(),
-  statsEnemy: Stats.optional(),
-  attack: Stats.optional(),
-  statsItem: Stats.optional(),
-  maxCount: z.number().optional(),
-
-  // Für jede Waffe oder Schild (bis zu 3) addiere 3 Damage
-  // Für jedes Thorns addiere 1 Damage
-  // Für jedes Food multipliziere die Damage mit 1.5
-
-  modifiers: z
-    .array(
-      z.object({
-        arithmetic: z.enum(['multiply', 'add']),
-        targetStat: Stat,
-        targetStats: z.enum([
-          'statsSelf',
-          'statsEnemy',
-          'statsItem',
-          'statsRequired',
-          'attack',
-        ]),
-        sourceMultiplier: z.number(),
-        source: z.array(Tag.or(Stat)),
-        sourceCountMax: z.number().optional(),
-      }),
-    )
-    .optional(),
+const TriggerWithoutCooldown = z.object({
+  type: z.enum(['startOfBattle', ...triggerEvents]),
 })
+const TriggerWithCooldown = z.object({
+  type: z.enum(['interval']),
+  cooldown: z.number(),
+})
+
+export const Trigger = z
+  .object({
+    chancePercent: z.number().optional(),
+    chanceGroup: z.string().optional(),
+    statsRequired: Stats.optional(),
+    statsSelf: Stats.optional(),
+    statsEnemy: Stats.optional(),
+    attack: Stats.optional(),
+    statsItem: Stats.optional(),
+    maxCount: z.number().optional(),
+
+    // Für jede Waffe oder Schild (bis zu 3) addiere 3 Damage
+    // Für jedes Thorns addiere 1 Damage
+    // Für jedes Food multipliziere die Damage mit 1.5
+
+    modifiers: z
+      .array(
+        z.object({
+          arithmetic: z.enum(['multiply', 'add']),
+          targetStat: Stat,
+          targetStats: z.enum([
+            'statsSelf',
+            'statsEnemy',
+            'statsItem',
+            'statsRequired',
+            'attack',
+          ]),
+          sourceMultiplier: z.number(),
+          source: z.array(Tag.or(Stat)),
+          sourceCountMax: z.number().optional(),
+        }),
+      )
+      .optional(),
+  })
+  .and(TriggerWithCooldown.or(TriggerWithoutCooldown))
 export type Trigger = z.infer<typeof Trigger>
 
 export const ItemDefinition = z.object({

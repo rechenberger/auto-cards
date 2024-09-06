@@ -13,9 +13,9 @@ const allItemsConst = [
     stats: {
       health: 50,
       healthMax: 50,
-      stamina: 5,
-      staminaMax: 5,
-      staminaRegen: 1,
+      stamina: 50,
+      staminaMax: 50,
+      staminaRegen: 10,
       space: space(14),
     },
   },
@@ -44,7 +44,7 @@ const allItemsConst = [
         cooldown: 3_000,
         statsSelf: {
           health: 4,
-          stamina: 2,
+          stamina: 20,
         },
       },
     ],
@@ -62,10 +62,10 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 3_000,
         statsRequired: {
-          stamina: 2,
+          stamina: 20,
         },
         statsSelf: {
-          stamina: -2,
+          stamina: -20,
         },
         attack: {
           damage: 10,
@@ -90,7 +90,7 @@ const allItemsConst = [
     price: 4,
     stats: {
       space: space(-4),
-      block: 30,
+      // block: 30,
     },
     triggers: [
       // {
@@ -102,20 +102,18 @@ const allItemsConst = [
       // },
       {
         type: 'onDefendBeforeHit',
-        cooldown: 0,
         chancePercent: 30,
         chanceGroup: 'block',
         statsSelf: {
-          block: 2,
+          block: 5,
         },
       },
       {
         type: 'onDefendAfterHit',
-        cooldown: 0,
         chancePercent: 30,
         chanceGroup: 'block',
         statsEnemy: {
-          stamina: -1,
+          stamina: -3,
         },
       },
     ],
@@ -225,10 +223,10 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 2_000,
         statsRequired: {
-          stamina: 2,
+          stamina: 20,
         },
         statsSelf: {
-          stamina: -2,
+          stamina: -20,
         },
         attack: {
           damage: 18,
@@ -237,7 +235,6 @@ const allItemsConst = [
       },
       {
         type: 'onAttackAfterHit',
-        cooldown: 0,
         statsEnemy: {
           thorns: -2,
           regen: -2,
@@ -295,7 +292,6 @@ const allItemsConst = [
     triggers: [
       {
         type: 'startOfBattle',
-        cooldown: 0,
         statsSelf: {
           drunk: 20,
         },
@@ -318,7 +314,6 @@ const allItemsConst = [
     triggers: [
       {
         type: 'startOfBattle',
-        cooldown: 0,
         statsSelf: {
           thorns: 20,
         },
@@ -341,7 +336,6 @@ const allItemsConst = [
     triggers: [
       {
         type: 'startOfBattle',
-        cooldown: 0,
         statsSelf: {
           block: 100,
         },
@@ -364,7 +358,6 @@ const allItemsConst = [
     triggers: [
       {
         type: 'startOfBattle',
-        cooldown: 0,
         statsSelf: {
           slow: 20,
         },
@@ -392,11 +385,11 @@ const allItemsConst = [
           damage: 20,
         },
         statsRequired: {
-          stamina: 3,
+          stamina: 30,
         },
         statsSelf: {
           slow: 5,
-          stamina: -3,
+          stamina: -30,
         },
         statsEnemy: {
           slow: 5,
@@ -440,7 +433,6 @@ const allItemsConst = [
       },
       {
         type: 'onAttackAfterHit',
-        cooldown: 0,
         statsEnemy: {
           flying: -1,
         },
@@ -471,10 +463,10 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 1_500,
         statsRequired: {
-          stamina: 1,
+          stamina: 10,
         },
         statsSelf: {
-          stamina: -1,
+          stamina: -10,
         },
         statsEnemy: {
           blind: 3,
@@ -513,9 +505,255 @@ const allItemsConst = [
     price: 2,
     stats: {
       space: space(-2),
-      staminaMax: 2,
-      stamina: 2,
+      staminaMax: 20,
+      stamina: 20,
     },
+  },
+  {
+    name: 'thornsWhip',
+    prompt:
+      'a whip with thorns on the end, the handle is made of a thorny vine',
+    tags: ['weapon'],
+    rarity: 'rare',
+    price: 7,
+    stats: {
+      space: space(-2),
+    },
+    statsItem: {
+      scalesDamageWithThorns: 1,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_500,
+        statsRequired: {
+          stamina: 25,
+        },
+        statsSelf: {
+          stamina: -25,
+        },
+        attack: {
+          damage: 15,
+          accuracy: 80,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsSelf: {
+          thorns: 1,
+        },
+      },
+    ],
+  },
+  {
+    name: 'torch',
+    prompt: 'an unlit torch with a wooden handle and a cloth on top',
+    tags: ['weapon'],
+    rarity: 'common',
+    price: 5,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        statsRequired: {
+          stamina: 10,
+        },
+        statsSelf: {
+          stamina: -10,
+        },
+        attack: {
+          damage: 6,
+          accuracy: 90,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        chancePercent: 30,
+        statsItem: {
+          empower: 1,
+        },
+      },
+    ],
+  },
+  {
+    name: 'spear',
+    prompt: 'a long spear with pointy tip',
+    tags: ['weapon'],
+    rarity: 'uncommon',
+    price: 6,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        statsRequired: {
+          stamina: 10,
+        },
+        statsSelf: {
+          stamina: -10,
+        },
+        attack: {
+          damage: 12,
+          accuracy: 80,
+        },
+      },
+      {
+        type: 'onAttackBeforeHit',
+        statsEnemy: {
+          block: -8,
+        },
+      },
+    ],
+  },
+  {
+    name: 'garlic',
+    prompt: 'a garlic bulb with a strong smell',
+    tags: ['food'],
+    rarity: 'common',
+    price: 2,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 4_000,
+        statsSelf: {
+          block: 3,
+        },
+      },
+      {
+        type: 'interval',
+        cooldown: 4_000,
+        statsEnemy: {
+          lifeSteal: -1,
+        },
+        chancePercent: 30,
+      },
+    ],
+  },
+  {
+    name: 'chiliPepper',
+    prompt: 'a red chili pepper',
+    tags: ['food'],
+    rarity: 'common',
+    price: 5,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 4_000,
+        statsSelf: {
+          haste: 2,
+          health: 5,
+        },
+      },
+    ],
+  },
+  {
+    name: 'tuskPoker',
+    prompt: 'a bow and arrow made out of thorny wood',
+    tags: ['weapon'],
+    rarity: 'rare',
+    price: 8,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        statsRequired: {
+          stamina: 7,
+        },
+        statsItem: {
+          ranged: 1,
+        },
+        statsSelf: {
+          stamina: -7,
+        },
+        attack: {
+          damage: 5,
+          accuracy: 85,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsEnemy: {
+          thorns: 1,
+        },
+        chancePercent: 50,
+      },
+    ],
+  },
+  {
+    name: 'leatherArmor',
+    prompt: 'a leather armor on an armor stand',
+    tags: ['accessory'],
+    rarity: 'uncommon',
+    price: 7,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          block: 45,
+        },
+      },
+    ],
+  },
+  {
+    name: 'carrot',
+    tags: ['food'],
+    rarity: 'common',
+    price: 3,
+    stats: {
+      space: space(-3),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        statsRequired: {
+          luck: 4,
+        },
+        statsSelf: {
+          empower: 1,
+        },
+        chancePercent: 50,
+      },
+    ],
+  },
+  {
+    name: 'forgingHammer',
+    prompt: 'a small forging hammer',
+    tags: ['weapon'],
+    rarity: 'common',
+    price: 3,
+    stats: {
+      space: space(-3),
+    },
+    statsItem: {
+      scalesDamageWithEmpower: 1,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_500,
+        attack: {
+          damage: 7,
+        },
+      },
+    ],
   },
 ] as const satisfies ItemDefinition[]
 

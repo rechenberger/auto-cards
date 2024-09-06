@@ -1,5 +1,6 @@
 import { constArrayMap } from '@/lib/constArrayMap'
 import {
+  ArrowBigUp,
   Axe,
   Backpack,
   Banana,
@@ -23,6 +24,7 @@ import {
   Sword,
   Syringe,
   Target,
+  Triangle,
 } from 'lucide-react'
 import { z } from 'zod'
 import { IGNORE_SPACE, MAX_THORNS_MULTIPLIER } from './config'
@@ -144,6 +146,12 @@ const heroStats = [
     tooltip: 'X% chance to crit. Removed on crit.',
   },
   {
+    name: 'empower',
+    icon: ArrowBigUp,
+    bgClass: 'bg-orange-500',
+    tooltip: 'X more damage',
+  },
+  {
     name: 'drunk',
     icon: Beer,
     bgClass: 'bg-yellow-500',
@@ -160,6 +168,20 @@ const heroStats = [
     icon: Target,
     bgClass: 'bg-red-500',
     tooltip: 'Can hit flying enemies. Not affected by thorns.',
+    hideCount: true,
+  },
+  {
+    name: 'scalesDamageWithThorns',
+    icon: Triangle,
+    bgClass: 'bg-red-500',
+    tooltip: 'Deals 1 more damage for each thorns you have.',
+    hideCount: true,
+  },
+  {
+    name: 'scalesDamageWithEmpower',
+    icon: ArrowBigUp,
+    bgClass: 'bg-red-500',
+    tooltip: 'Deals 1 more damage for each empower you have.',
     hideCount: true,
   },
   {
