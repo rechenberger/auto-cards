@@ -26,6 +26,7 @@ export const Modifier = z.object({
   sourceTags: z.array(Tag).optional(),
   sourceStats: z.array(Stat).optional(),
   sourceCountMax: z.number().optional(),
+  sourceBase: z.number().optional(),
 })
 export type Modifier = z.infer<typeof Modifier>
 
@@ -55,7 +56,7 @@ export const getModifiedStats = ({
   result = { ...result }
 
   for (const modifier of modifiers) {
-    let sourceCount = 0
+    let sourceCount = modifier.sourceBase ?? 0
     if (modifier.sourceStats) {
       for (const stat of modifier.sourceStats) {
         sourceCount += statsForItem[stat] ?? 0
