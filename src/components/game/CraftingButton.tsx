@@ -6,6 +6,9 @@ import {
   superAction,
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
+import { ExternalLink } from 'lucide-react'
+import Link from 'next/link'
+import { Button } from '../ui/button'
 import { CraftingList } from './CraftingList'
 
 export const CraftingButton = async ({ game }: { game: Game }) => {
@@ -29,6 +32,12 @@ export const CraftingButton = async ({ game }: { game: Game }) => {
               content: (
                 <>
                   <CraftingList game={game} />
+                  <Button asChild variant="outline" className="mx-auto">
+                    <Link href="/docs/crafting" target="_blank">
+                      View All Recipes
+                      <ExternalLink className="size-4 ml-2" />
+                    </Link>
+                  </Button>
                 </>
               ),
             })
