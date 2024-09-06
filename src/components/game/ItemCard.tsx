@@ -1,5 +1,6 @@
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
+import { countifyItems } from '@/game/countifyItems'
 import { gameAction } from '@/game/gameAction'
 import { Changemaker } from '@/game/generateChangemakers'
 import { getRarityDefinition } from '@/game/rarities'
@@ -118,7 +119,21 @@ export const ItemCard = async ({
                 return gameAction({
                   gameId: gameId!,
                   action: async ({ ctx }) => {
-                    // TODO: sell item
+                    ctx.game.data.currentLoadout.items = countifyItems(
+                      ctx.game.data.currentLoadout.items,
+                    )
+                    const myItem = ctx.game.data.currentLoadout.items.find(
+                      (i) => i.name === name,
+                    )
+                    if (!myItem) {
+                      throw new Error('Item not found')
+                    }
+                    myItem.count = (myItem.count ?? 1) - 1
+                    ctx.game.data.currentLoadout.items =
+                      ctx.game.data.currentLoadout.items.filter(
+                        (i) => i.count !== 0,
+                      )
+                    ctx.game.data.gold += sellPrice
                   },
                 })
               }}
