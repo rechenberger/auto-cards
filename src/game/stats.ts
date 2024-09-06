@@ -1,4 +1,5 @@
 import { constArrayMap } from '@/lib/constArrayMap'
+import { includes } from 'lodash-es'
 import {
   ArrowBigUp,
   Axe,
@@ -8,6 +9,7 @@ import {
   BicepsFlexed,
   Bird,
   Carrot,
+  CircleHelp,
   Clover,
   Coins,
   Crosshair,
@@ -19,6 +21,7 @@ import {
   LucideIcon,
   Pyramid,
   Shield,
+  ShieldQuestion,
   Skull,
   Snowflake,
   Sword,
@@ -37,6 +40,7 @@ type StatDefinitionPre = {
   bar?: boolean
   hidden?: boolean
   hideCount?: boolean
+  subset?: StatDefinitionPost[]
 }
 
 type StatDefinitionPost = StatDefinitionPre & {
@@ -196,6 +200,18 @@ const heroStats = [
     bgClass: 'bg-emerald-500',
     tooltip: 'Increases accuracy by X%.',
   },
+  {
+    name: 'randomBuff',
+    icon: ShieldQuestion,
+    bgClass: 'bg-gray-500',
+    tooltip: 'Applies a random Buff',
+  },
+  {
+    name: 'randomDebuff',
+    icon: CircleHelp,
+    bgClass: 'bg-gray-500',
+    tooltip: 'Applies a random Debuff',
+  },
 ] as const satisfies StatDefinitionPre[]
 
 const attackStats = [
@@ -241,6 +257,28 @@ export const getStatDefinition = (stat: Stat) => {
 export const allStats = constArrayMap(allStatsDefinitionConst, 'name')
 
 export type Stat = (typeof allStats)[number]
+
+const heroBuffs = [
+  'thorns',
+  'luck',
+  'empower',
+  'lifeSteal',
+  'regen',
+  'drunk',
+] as const satisfies (typeof allStats)[number][]
+
+export const buffsForRandomAccess = allStats.filter((s) =>
+  includes(heroBuffs, s),
+) as Stat[]
+export const heroDebuffs = [
+  'poison',
+  'slow',
+  'blind',
+] as const satisfies (typeof allStats)[number][]
+
+export const debuffsForRandomAccess = allStats.filter((s) =>
+  includes(heroDebuffs, s),
+) as Stat[]
 
 // Construct an object schema with all keys required
 const statsObjectSchema = allStats.reduce(

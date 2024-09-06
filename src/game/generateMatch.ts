@@ -1,6 +1,16 @@
 import { LoadoutData } from '@/db/schema-zod'
 import { rngFloat, rngOrder, Seed, SeedArray } from '@/game/seed'
-import { cloneDeep, minBy, orderBy, range } from 'lodash-es'
+import {
+  cloneDeep,
+  includes,
+  keys,
+  minBy,
+  omit,
+  orderBy,
+  range,
+  some,
+  times,
+} from 'lodash-es'
 import { getItemByName } from './allItems'
 import { calcCooldown } from './calcCooldown'
 import {
@@ -19,7 +29,7 @@ import {
 } from './config'
 import { TriggerEventType } from './ItemDefinition'
 import { orderItems } from './orderItems'
-import { Stats } from './stats'
+import { buffsForRandomAccess, debuffsForRandomAccess, Stats } from './stats'
 
 export type MatchLog = {
   logIdx: number
@@ -282,12 +292,109 @@ export const generateMatch = async ({
     if (hasRequiredStats) {
       action.usedCount++
 
+      const applyStatsToSide = ({
+        sideStats,
+        statsToApply,
+        sideIdx,
+      }: {
+        sideStats: Stats
+        statsToApply: Stats
+        sideIdx: number
+      }) => {
+        // RESOLVE RANDOM BUFF
+        if (statsToApply.randomBuff) {
+          times(Math.abs(statsToApply.randomBuff), (i) => {
+            const buffSeed = [...seedAction, 'randomBuff', i]
+            let pickedBuff
+            if (statsToApply.randomBuff! >= 1) {
+              const pickedBuffName = rngOrder({
+                seed: buffSeed,
+                items: buffsForRandomAccess,
+              })[0]
+              pickedBuff = { [pickedBuffName]: 1 }
+            } else if (statsToApply.randomBuff! <= -1) {
+              const buffsToPick = keys(sideStats).filter((key) =>
+                includes(buffsForRandomAccess, key),
+              )
+              if (buffsToPick.length > 0) {
+                const pickedBuffName = rngOrder({
+                  seed: buffSeed,
+                  items: buffsToPick,
+                })[0]
+                pickedBuff = { [pickedBuffName]: -1 }
+              }
+            }
+            if (pickedBuff) {
+              tryAddStats(sideStats, pickedBuff)
+              log({
+                ...baseLog,
+                stats: pickedBuff,
+                targetSideIdx: sideIdx,
+              })
+            }
+          })
+        }
+
+        // RESOLVE RANDOM DEBUFF
+        if (statsToApply.randomDebuff) {
+          times(Math.abs(statsToApply.randomDebuff), (i) => {
+            const buffSeed = [...seedAction, 'randomDebuff', i]
+            let pickedDebuff
+            if (statsToApply.randomDebuff! >= 1) {
+              const pickedDebuffName = rngOrder({
+                seed: buffSeed,
+                items: debuffsForRandomAccess,
+              })[0]
+              pickedDebuff = { [pickedDebuffName]: 1 }
+            } else if (statsToApply.randomDebuff! <= -1) {
+              const debuffsToPick = keys(sideStats).filter((key) =>
+                includes(debuffsForRandomAccess, key),
+              )
+              if (debuffsToPick.length > 0) {
+                const pickedDebuffName = rngOrder({
+                  seed: buffSeed,
+                  items: debuffsToPick,
+                })[0]
+                pickedDebuff = { [pickedDebuffName]: -1 }
+              }
+            }
+
+            if (pickedDebuff) {
+              tryAddStats(sideStats, pickedDebuff)
+              log({
+                ...baseLog,
+                stats: pickedDebuff,
+                targetSideIdx: sideIdx,
+              })
+            }
+          })
+        }
+
+        // RESOLVE OTHER STATS
+        if (
+          some(
+            statsToApply,
+            (v, k) => k !== 'randomBuff' && k !== 'randomDebuff',
+          )
+        ) {
+          const withoutRandomBuff = omit(statsToApply, [
+            'randomBuff',
+            'randomDebuff',
+          ])
+          tryAddStats(sideStats, withoutRandomBuff)
+          log({
+            ...baseLog,
+            stats: withoutRandomBuff,
+            targetSideIdx: sideIdx,
+          })
+        }
+      }
+
       if (statsSelf) {
-        tryAddStats(mySide.stats, statsSelf)
-        log({
-          ...baseLog,
-          stats: statsSelf,
-          targetSideIdx: mySide.sideIdx,
+        applyStatsToSide({
+          sideStats: mySide.stats,
+          statsToApply: statsSelf,
+          sideIdx: mySide.sideIdx,
         })
       }
       if (trigger.statsItem) {
@@ -316,11 +423,10 @@ export const generateMatch = async ({
           })
         } else {
           if (statsEnemy) {
-            tryAddStats(otherSide.stats, statsEnemy)
-            log({
-              ...baseLog,
-              stats: statsEnemy,
-              targetSideIdx: otherSide.sideIdx,
+            applyStatsToSide({
+              sideStats: otherSide.stats,
+              statsToApply: statsEnemy,
+              sideIdx: otherSide.sideIdx,
             })
           }
           if (attack) {
