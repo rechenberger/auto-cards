@@ -14,7 +14,6 @@ import { CraftingList } from './CraftingList'
 export const CraftingButton = async ({ game }: { game: Game }) => {
   const recipes = await getCraftingRecipesGame({ game })
   const countReady = recipes.filter((r) => r.hasAll).length
-  const gameId = game.id
 
   return (
     <>
