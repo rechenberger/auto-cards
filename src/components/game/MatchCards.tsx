@@ -3,13 +3,14 @@ import { countifyItems } from '@/game/countifyItems'
 import { Changemakers } from '@/game/generateChangemakers'
 import { MatchReport } from '@/game/generateMatch'
 import { orderItems } from '@/game/orderItems'
-import { ThemeId } from '@/game/themes'
+import { fallbackThemeId, getThemeDefinition, ThemeId } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { find, map, take } from 'lodash-es'
 import { Fragment } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 import { ItemCard } from './ItemCard'
 import { MatchCardOverlay } from './MatchCardOverlay'
+import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 
 export const MatchCards = async ({
   items,
@@ -32,6 +33,13 @@ export const MatchCards = async ({
   const noOfChangemakers = items.length >= 7 ? 2 : 1
   const topChangemakers = take(changemakers?.[sideIdx], noOfChangemakers)
 
+  if (!themeId) {
+    themeId = await getMyUserThemeIdWithFallback()
+  } else {
+    themeId = await fallbackThemeId(themeId)
+  }
+
+  const theme = await getThemeDefinition(themeId)
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-4 grid-flow-dense">
@@ -64,6 +72,7 @@ export const MatchCards = async ({
                     sideIdx={sideIdx}
                     itemIdx={itemIdx}
                     matchReport={matchReport}
+                    theme={theme}
                   />
                 </TooltipTrigger>
                 <TooltipContent
