@@ -41,6 +41,7 @@ export const Trigger = z.object({
           'statsEnemy',
           'statsItem',
           'statsRequired',
+          'attack',
         ]),
         sourceMultiplier: z.number(),
         source: z.array(Tag.or(Stat)),
