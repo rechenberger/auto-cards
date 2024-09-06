@@ -3,9 +3,9 @@ import { every, filter, map, orderBy, some } from 'lodash-es'
 import { countifyItems } from './countifyItems'
 import { getCraftingRecipes } from './craftingRecipes'
 
-export const getCraftingRecipesGame = async ({ game }: { game: Game }) => {
+export const getCraftingRecipesGame = async ({ game }: { game?: Game }) => {
   const all = await getCraftingRecipes()
-  const myItems = countifyItems(game.data.currentLoadout.items)
+  const myItems = countifyItems(game?.data.currentLoadout.items ?? [])
 
   let results = map(all, (recipe) => {
     const input = map(recipe.input, (item) => {
@@ -31,8 +31,10 @@ export const getCraftingRecipesGame = async ({ game }: { game: Game }) => {
     }
   })
 
-  results = filter(results, (r) => r.hasSome)
-  results = orderBy(results, (r) => r.hasAll, 'desc')
+  if (game) {
+    results = filter(results, (r) => r.hasSome)
+    results = orderBy(results, (r) => r.hasAll, 'desc')
+  }
 
   return results
 }
