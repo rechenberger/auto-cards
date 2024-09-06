@@ -1,7 +1,7 @@
 import { Game } from '@/db/schema-zod'
-import { countifyItems } from '@/game/countifyItems'
 import { gameAction } from '@/game/gameAction'
 import { getCraftingRecipesGame } from '@/game/getCraftingRecipesGame'
+import { negativeItems, sumItems } from '@/game/sumItems'
 import { streamDialog } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { map } from 'lodash-es'
@@ -63,39 +63,10 @@ export const CraftingList = async ({ game }: { game?: Game }) => {
                       return gameAction({
                         gameId,
                         action: async ({ ctx }) => {
-                          ctx.game.data.currentLoadout.items = countifyItems(
+                          ctx.game.data.currentLoadout.items = sumItems(
                             ctx.game.data.currentLoadout.items,
-                          )
-
-                          // Take Input
-                          for (const item of recipe.input) {
-                            const itemInInventory =
-                              ctx.game.data.currentLoadout.items.find(
-                                (i) => i.name === item.name,
-                              )
-                            if (!itemInInventory) {
-                              throw new Error(`Missing ${item.name}`)
-                            }
-                            itemInInventory.count =
-                              (itemInInventory.count ?? 1) - (item.count ?? 1)
-                            if (itemInInventory.count < 0) {
-                              throw new Error(`Missing ${item.name}`)
-                            }
-                          }
-                          ctx.game.data.currentLoadout.items =
-                            ctx.game.data.currentLoadout.items.filter(
-                              (i) => i.count !== 0,
-                            )
-
-                          // Give Output
-                          for (const item of recipe.output) {
-                            ctx.game.data.currentLoadout.items.push({
-                              name: item.name,
-                              count: item.count ?? 1,
-                            })
-                          }
-                          ctx.game.data.currentLoadout.items = countifyItems(
-                            ctx.game.data.currentLoadout.items,
+                            negativeItems(recipe.input),
+                            recipe.output,
                           )
 
                           streamDialog(null)

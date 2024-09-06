@@ -1,6 +1,6 @@
-import { countifyItems } from '@/game/countifyItems'
 import { gameAction } from '@/game/gameAction'
 import { ItemDefinition } from '@/game/ItemDefinition'
+import { negativeItems, sumItems } from '@/game/sumItems'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
 import { StatsDisplay } from './StatsDisplay'
@@ -47,20 +47,10 @@ export const ItemSellButton = ({
             return gameAction({
               gameId: gameId!,
               action: async ({ ctx }) => {
-                ctx.game.data.currentLoadout.items = countifyItems(
+                ctx.game.data.currentLoadout.items = sumItems(
                   ctx.game.data.currentLoadout.items,
+                  negativeItems([item]),
                 )
-                const myItem = ctx.game.data.currentLoadout.items.find(
-                  (i) => i.name === item.name,
-                )
-                if (!myItem) {
-                  throw new Error('Item not found')
-                }
-                myItem.count = (myItem.count ?? 1) - 1
-                ctx.game.data.currentLoadout.items =
-                  ctx.game.data.currentLoadout.items.filter(
-                    (i) => i.count !== 0,
-                  )
                 ctx.game.data.gold += sellPrice
               },
             })
