@@ -16,6 +16,7 @@ import { capitalCase } from 'change-case'
 import { first } from 'lodash-es'
 import { Fragment } from 'react'
 import { AiItemImage } from '../ai/AiItemImage'
+import { ItemSellButton } from './ItemSellButton'
 import { StatsDisplay } from './StatsDisplay'
 import { TriggerDisplay } from './TriggerDisplay'
 import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
@@ -33,6 +34,7 @@ export const ItemCard = async ({
   themeId,
   sideIdx,
   itemIdx,
+  canSell,
 }: {
   game?: Game
   name: string
@@ -45,6 +47,7 @@ export const ItemCard = async ({
   themeId?: ThemeId
   sideIdx?: number
   itemIdx?: number
+  canSell?: boolean
 }) => {
   const item = await getItemByName(name)
   const title = capitalCase(name)
@@ -59,6 +62,7 @@ export const ItemCard = async ({
   const theme = await getThemeDefinition(themeId)
 
   const rarity = item.rarity ? getRarityDefinition(item.rarity) : undefined
+  const gameId = game?.id
 
   const inner = (
     <>
@@ -86,6 +90,7 @@ export const ItemCard = async ({
           className,
         )}
       >
+        {canSell && <ItemSellButton gameId={gameId} item={item} />}
         <div
           className={cn(
             'aspect-square relative rounded-tr-lg rounded-b-lg overflow-hidden bg-black',
