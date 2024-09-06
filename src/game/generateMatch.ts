@@ -18,6 +18,7 @@ import {
   MAX_THORNS_MULTIPLIER,
 } from './config'
 import { TriggerEventType } from './ItemDefinition'
+import { getAllModifiedStats } from './modifiers'
 import { orderItems } from './orderItems'
 import { Stats } from './stats'
 
@@ -241,7 +242,13 @@ export const generateMatch = async ({
       ? sumStats2(mySide.stats, item.statsItem)
       : mySide.stats
 
-    const { statsRequired, statsSelf, statsEnemy, attack } = trigger
+    const { statsRequired, statsSelf, statsEnemy, attack } =
+      getAllModifiedStats({
+        state,
+        itemIdx,
+        sideIdx,
+        triggerIdx,
+      })
 
     if (trigger.maxCount && action.usedCount >= trigger.maxCount) {
       return

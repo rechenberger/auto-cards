@@ -94,3 +94,33 @@ export const getModifiedStats = ({
 
   return result
 }
+
+export const getAllModifiedStats = (props: {
+  state: MatchState
+  sideIdx: number
+  itemIdx: number
+  triggerIdx: number
+}) => {
+  return {
+    statsSelf: getModifiedStats({
+      ...props,
+      stats: 'statsSelf',
+    }),
+    statsEnemy: getModifiedStats({
+      ...props,
+      stats: 'statsEnemy',
+    }),
+    statsItem: getModifiedStats({
+      ...props,
+      stats: 'statsItem',
+    }),
+    statsRequired: getModifiedStats({
+      ...props,
+      stats: 'statsRequired',
+    }),
+    attack: getModifiedStats({
+      ...props,
+      stats: 'attack',
+    }),
+  }
+}
