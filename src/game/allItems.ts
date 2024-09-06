@@ -711,6 +711,28 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'carrot',
+    tags: ['food'],
+    rarity: 'common',
+    price: 3,
+    stats: {
+      space: space(-3),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        statsRequired: {
+          luck: 4,
+        },
+        statsSelf: {
+          empower: 1,
+        },
+        chancePercent: 50,
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export type ItemName = (typeof allItemsConst)[number]['name']
