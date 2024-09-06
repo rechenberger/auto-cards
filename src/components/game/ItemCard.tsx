@@ -1,5 +1,6 @@
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
+import { gameAction } from '@/game/gameAction'
 import { Changemaker } from '@/game/generateChangemakers'
 import { getRarityDefinition } from '@/game/rarities'
 import { getTagDefinition } from '@/game/tags'
@@ -31,6 +32,7 @@ export const ItemCard = async ({
   tooltipOnClick,
   changemaker,
   themeId,
+  canSell,
 }: {
   game?: Game
   name: string
@@ -41,6 +43,7 @@ export const ItemCard = async ({
   tooltipOnClick?: boolean
   changemaker?: Changemaker
   themeId?: ThemeId
+  canSell?: boolean
 }) => {
   const item = await getItemByName(name)
   const title = capitalCase(name)
@@ -55,6 +58,10 @@ export const ItemCard = async ({
   const theme = await getThemeDefinition(themeId)
 
   const rarity = item.rarity ? getRarityDefinition(item.rarity) : undefined
+  const gameId = game?.id
+
+  const sellPrice = Math.ceil(item.price / 2)
+  const sellable = canSell && gameId && sellPrice > 0
 
   const inner = (
     <>
@@ -82,6 +89,49 @@ export const ItemCard = async ({
           className,
         )}
       >
+        {sellable && (
+          <div className="absolute opacity-0 group-hover:opacity-100 transition-opacity inset-x-0 top-12 z-10 flex flex-col items-center">
+            <ActionButton
+              variant="outline"
+              size="sm"
+              askForConfirmation={{
+                title: `Sell ${capitalCase(name)}?`,
+                confirm: (
+                  <>
+                    <div className="flex flex-row gap-2 items-center">
+                      <div>Yes</div>
+                      <StatsDisplay
+                        stats={{ gold: sellPrice }}
+                        showZero
+                        size="sm"
+                        disableTooltip
+                      />
+                    </div>
+                  </>
+                ),
+              }}
+              stopPropagation
+              hideIcon
+              className="flex flex-row gap-2 items-center"
+              action={async () => {
+                'use server'
+                return gameAction({
+                  gameId: gameId!,
+                  action: async ({ ctx }) => {
+                    // TODO: sell item
+                  },
+                })
+              }}
+            >
+              <div>Sell</div>
+              <StatsDisplay
+                stats={{ gold: sellPrice }}
+                showZero
+                disableTooltip
+              />
+            </ActionButton>
+          </div>
+        )}
         <div
           className={cn(
             'aspect-square relative rounded-tr-lg rounded-b-lg overflow-hidden bg-black',
