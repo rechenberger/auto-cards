@@ -21,7 +21,11 @@ export const ShopView = ({ game }: { game: Game }) => {
           <CraftingButton game={game} />
         </div>
         <div className="flex-1" />
-        <LoadoutDisplay game={game} loadout={game.data.currentLoadout} />
+        <LoadoutDisplay
+          game={game}
+          loadout={game.data.currentLoadout}
+          canSell
+        />
         <MatchReportResetter />
       </div>
     </>
