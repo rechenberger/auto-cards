@@ -1,4 +1,6 @@
 import { Game } from '@/db/schema-zod'
+import { countifyItems } from '@/game/countifyItems'
+import { gameAction } from '@/game/gameAction'
 import { getCraftingRecipesGame } from '@/game/getCraftingRecipesGame'
 import { cn } from '@/lib/utils'
 import {
@@ -15,6 +17,7 @@ import { ItemCard } from './ItemCard'
 export const CraftingButton = async ({ game }: { game: Game }) => {
   const recipes = await getCraftingRecipesGame({ game })
   const countReady = recipes.filter((r) => r.hasAll).length
+  const gameId = game.id
 
   return (
     <>
@@ -70,8 +73,49 @@ export const CraftingButton = async ({ game }: { game: Game }) => {
                               className="md:mb-12"
                               action={async () => {
                                 'use server'
-                                return superAction(async () => {
-                                  // await craftRecipe({ game, recipe })
+                                return gameAction({
+                                  gameId,
+                                  action: async ({ ctx }) => {
+                                    ctx.game.data.currentLoadout.items =
+                                      countifyItems(
+                                        ctx.game.data.currentLoadout.items,
+                                      )
+
+                                    // Take Input
+                                    for (const item of recipe.input) {
+                                      const itemInInventory =
+                                        ctx.game.data.currentLoadout.items.find(
+                                          (i) => i.name === item.name,
+                                        )
+                                      if (!itemInInventory) {
+                                        throw new Error(`Missing ${item.name}`)
+                                      }
+                                      itemInInventory.count =
+                                        (itemInInventory.count ?? 1) -
+                                        (item.count ?? 1)
+                                      if (itemInInventory.count < 0) {
+                                        throw new Error(`Missing ${item.name}`)
+                                      }
+                                    }
+                                    ctx.game.data.currentLoadout.items =
+                                      ctx.game.data.currentLoadout.items.filter(
+                                        (i) => i.count !== 0,
+                                      )
+
+                                    // Give Output
+                                    for (const item of recipe.output) {
+                                      ctx.game.data.currentLoadout.items.push({
+                                        name: item.name,
+                                        count: item.count ?? 1,
+                                      })
+                                    }
+                                    ctx.game.data.currentLoadout.items =
+                                      countifyItems(
+                                        ctx.game.data.currentLoadout.items,
+                                      )
+
+                                    streamDialog(null)
+                                  },
                                 })
                               }}
                             >
