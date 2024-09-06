@@ -10,6 +10,7 @@ const allItemsConst = [
     name: 'hero',
     tags: ['hero'],
     price: 0,
+    shop: false,
     stats: {
       health: 50,
       healthMax: 50,
@@ -25,6 +26,7 @@ const allItemsConst = [
       'a campfire in the foreground at the edge of a cliff overlooking a sunset',
     tags: ['hero'],
     price: 0,
+    shop: false,
     stats: {
       health: 20,
       healthMax: 20,
@@ -35,6 +37,7 @@ const allItemsConst = [
     tags: ['food'],
     rarity: 'common',
     price: 3,
+    shop: true,
     stats: {
       space: space(-3),
     },
@@ -54,6 +57,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'common',
     price: 3,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -88,6 +92,7 @@ const allItemsConst = [
     tags: ['shield'],
     rarity: 'common',
     price: 4,
+    shop: true,
     stats: {
       space: space(-4),
       // block: 30,
@@ -123,6 +128,7 @@ const allItemsConst = [
     tags: ['food'],
     rarity: 'uncommon',
     price: 3,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -142,6 +148,7 @@ const allItemsConst = [
     tags: ['food'],
     rarity: 'common',
     price: 4,
+    shop: true,
     stats: {
       space: space(-1),
       regen: 2,
@@ -152,6 +159,7 @@ const allItemsConst = [
     tags: ['food'],
     rarity: 'uncommon',
     price: 7,
+    shop: true,
     stats: {
       space: space(-3),
     },
@@ -171,6 +179,7 @@ const allItemsConst = [
     tags: ['accessory'],
     rarity: 'uncommon',
     price: 4,
+    shop: true,
     stats: {
       space: space(-1),
       lifeSteal: 20,
@@ -182,6 +191,7 @@ const allItemsConst = [
     tags: ['accessory'],
     rarity: 'uncommon',
     price: 4,
+    shop: true,
     stats: {
       space: space(-2),
       flying: 5,
@@ -192,6 +202,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'uncommon',
     price: 3,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -215,6 +226,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'rare',
     price: 9,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -247,6 +259,7 @@ const allItemsConst = [
     tags: ['accessory'],
     rarity: 'rare',
     price: 3,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -265,6 +278,7 @@ const allItemsConst = [
     tags: ['food'],
     rarity: 'uncommon',
     price: 2,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -286,6 +300,7 @@ const allItemsConst = [
     tags: ['event'],
     rarity: 'rare',
     price: 8,
+    shop: true,
     stats: {
       space: space(-4),
     },
@@ -308,6 +323,7 @@ const allItemsConst = [
     tags: ['event'],
     rarity: 'rare',
     price: 8,
+    shop: true,
     stats: {
       space: space(-4),
     },
@@ -330,6 +346,7 @@ const allItemsConst = [
     tags: ['event'],
     rarity: 'rare',
     price: 8,
+    shop: true,
     stats: {
       space: space(-4),
     },
@@ -352,6 +369,7 @@ const allItemsConst = [
     tags: ['event'],
     rarity: 'rare',
     price: 8,
+    shop: true,
     stats: {
       space: space(-4),
     },
@@ -373,6 +391,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'rare',
     price: 9,
+    shop: true,
     stats: {
       space: space(-4),
     },
@@ -416,6 +435,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'uncommon',
     price: 3,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -445,6 +465,7 @@ const allItemsConst = [
     tags: ['accessory'],
     rarity: 'rare',
     price: 2,
+    shop: true,
     stats: {
       space: space(-2),
       critDamage: 30,
@@ -455,6 +476,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'common',
     price: 3,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -484,6 +506,7 @@ const allItemsConst = [
     tags: ['accessory'],
     rarity: 'common',
     price: 2,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -503,6 +526,7 @@ const allItemsConst = [
     tags: ['potion'],
     rarity: 'common',
     price: 2,
+    shop: true,
     stats: {
       space: space(-2),
       staminaMax: 20,
@@ -516,6 +540,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'rare',
     price: 7,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -551,6 +576,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'common',
     price: 5,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -584,6 +610,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'uncommon',
     price: 6,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -616,6 +643,7 @@ const allItemsConst = [
     tags: ['food'],
     rarity: 'common',
     price: 2,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -643,6 +671,7 @@ const allItemsConst = [
     tags: ['food'],
     rarity: 'common',
     price: 5,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -663,6 +692,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'rare',
     price: 8,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -699,6 +729,7 @@ const allItemsConst = [
     tags: ['accessory'],
     rarity: 'uncommon',
     price: 7,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -716,6 +747,7 @@ const allItemsConst = [
     tags: ['food'],
     rarity: 'common',
     price: 3,
+    shop: true,
     stats: {
       space: space(-3),
     },
@@ -739,6 +771,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'common',
     price: 3,
+    shop: true,
     stats: {
       space: space(-3),
     },
