@@ -15,13 +15,10 @@ export const MatchCardCooldown = ({
     (fai) =>
       fai.type === 'interval' &&
       fai.itemIdx === itemIdx &&
-      fai.sideIdx === sideIdx,
+      fai.sideIdx === sideIdx &&
+      !!fai.currentCooldown,
   )
-  const lastused = item?.lastUsed ?? 0
-  const nextuse = item?.time ?? 0
 
-  //TODO: sometimes lastused and nextuse is same value, which causes 0s flickering
-
-  const currentCooldown = nextuse - lastused
+  const currentCooldown = item?.currentCooldown ?? 0
   return `Every ${currentCooldown / 1000}s`
 }

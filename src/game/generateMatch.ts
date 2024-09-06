@@ -94,6 +94,8 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
             time,
             lastUsed: 0,
             usedCount: 0,
+            currentCooldown:
+              trigger.type === 'interval' ? trigger.cooldown : undefined,
             sideIdx: side.sideIdx,
             itemIdx,
             triggerIdx,
@@ -580,6 +582,7 @@ export const generateMatch = async ({
             tags: item.tags ?? [],
           })
           action.time += cooldown
+          action.currentCooldown = cooldown
         }
       }
     }
