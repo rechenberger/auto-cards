@@ -12,8 +12,9 @@ export const calcCooldown = ({
   tags: Tag[]
 }) => {
   let divisor = 1
+  let multiplier = 1
   if (stats.slow) {
-    divisor -= stats.slow / 100
+    multiplier += stats.slow / 100
   }
   if (stats.haste) {
     divisor += stats.haste / 100
@@ -22,7 +23,7 @@ export const calcCooldown = ({
     divisor += stats.drunk / 100
   }
 
-  let result = cooldown / divisor
+  let result = (cooldown / divisor) * multiplier
   result = Math.ceil(result / COOLDOWN_PRECISION) * COOLDOWN_PRECISION
   result = Math.max(result, MIN_COOLDOWN)
   return result
