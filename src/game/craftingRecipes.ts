@@ -12,7 +12,10 @@ export type CraftingRecipe = {
 
 export const craftingRecipes: CraftingRecipe[] = [
   {
-    input: [{ name: 'beer', count: 3 }],
+    input: [
+      { name: 'beer', count: 3 },
+      { name: 'woodenSword', count: 1 },
+    ],
     output: [{ name: 'beerFest' }],
   },
   {

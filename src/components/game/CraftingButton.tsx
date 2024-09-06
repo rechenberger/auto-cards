@@ -1,18 +1,18 @@
 import { Game } from '@/db/schema-zod'
-import { getCraftingRecipes } from '@/game/craftingRecipes'
+import { getCraftingRecipesGame } from '@/game/getCraftingRecipesGame'
 import {
   streamDialog,
   superAction,
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { filter, map, sumBy } from 'lodash-es'
+import { map } from 'lodash-es'
 import { ArrowRight, Check, Plus, X } from 'lucide-react'
 import { Fragment } from 'react'
 import { Card } from '../ui/card'
 import { ItemCard } from './ItemCard'
 
 export const CraftingButton = async ({ game }: { game: Game }) => {
-  const recipes = await getCraftingRecipes()
+  const recipes = await getCraftingRecipesGame({ game })
 
   return (
     <>
@@ -31,15 +31,6 @@ export const CraftingButton = async ({ game }: { game: Game }) => {
                       <Card className="p-4">
                         <div className="flex flex-row gap-2 items-center">
                           {recipe.input.map((item, idx) => {
-                            const currentCount = sumBy(
-                              filter(
-                                game.data.currentLoadout.items,
-                                (i) => i.name === item.name,
-                              ),
-                              (i) => i.count ?? 1,
-                            )
-                            const requiredCount = item.count ?? 1
-                            const hasEnough = currentCount >= requiredCount
                             return (
                               <Fragment key={idx}>
                                 {idx > 0 && <Plus className="size-8 mb-12" />}
@@ -51,13 +42,13 @@ export const CraftingButton = async ({ game }: { game: Game }) => {
                                     size="160"
                                   />
                                   <div className="flex flex-row gap-1 items-center">
-                                    {hasEnough ? (
+                                    {item.hasEnough ? (
                                       <Check className="size-4 text-green-500" />
                                     ) : (
                                       <X className="size-4 text-red-500" />
                                     )}
                                     <div className="text-sm text-gray-500">
-                                      {currentCount} of {requiredCount}
+                                      {item.countCurrent} of {item.count ?? 1}
                                     </div>
                                   </div>
                                 </div>
