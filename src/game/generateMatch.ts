@@ -94,8 +94,7 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
             time,
             lastUsed: 0,
             usedCount: 0,
-            currentCooldown:
-              trigger.type === 'interval' ? trigger.cooldown : undefined,
+            currentCooldown: trigger.type === 'interval' ? time : undefined,
             sideIdx: side.sideIdx,
             itemIdx,
             triggerIdx,
