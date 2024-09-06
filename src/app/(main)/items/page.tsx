@@ -1,4 +1,5 @@
-import { GenerateAllItemImagesButton } from '@/components/ai/GenerateAllItemImagesButton'
+import { GenerateAllImagesButton } from '@/components/ai/GenerateAllImagesButton'
+import { getMyUserThemeIdWithFallback } from '@/components/game/getMyUserThemeId'
 import { ItemCard } from '@/components/game/ItemCard'
 import { ThemeSwitchButton } from '@/components/game/ThemeSwitchButton'
 import { getAllItems } from '@/game/allItems'
@@ -15,13 +16,15 @@ export default async function Page() {
   let items = await getAllItems()
   items = await orderItems(items)
 
+  const themeId = await getMyUserThemeIdWithFallback()
+
   return (
     <>
       <div className="flex flex-row items-center gap-2">
         <div className="flex flex-col flex-1">
           <h2 className="font-bold text-xl">{items.length} Items</h2>
         </div>
-        <GenerateAllItemImagesButton />
+        <GenerateAllImagesButton themeId={themeId} />
         <ThemeSwitchButton />
       </div>
       <div className="flex flex-row flex-wrap gap-2 justify-center">
