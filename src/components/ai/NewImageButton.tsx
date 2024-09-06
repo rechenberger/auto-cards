@@ -22,6 +22,7 @@ export const NewImageButton = (props: GenerateAiImageProps) => {
           className="rounded-r-none"
           catchToast
           hideIcon
+          size="sm"
           action={async () => {
             'use server'
             return generateAiImage({
@@ -33,7 +34,7 @@ export const NewImageButton = (props: GenerateAiImageProps) => {
         </ActionButton>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button size={'icon'} className="rounded-l-none">
+            <Button size={'sm'} className="rounded-l-none">
               <ChevronDown className="size-4" />
             </Button>
           </DropdownMenuTrigger>
