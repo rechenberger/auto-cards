@@ -733,6 +733,28 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'forgingHammer',
+    prompt: 'a small forging hammer',
+    tags: ['weapon'],
+    rarity: 'common',
+    price: 3,
+    stats: {
+      space: space(-3),
+    },
+    statsItem: {
+      scalesDamageWithEmpower: 1,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_500,
+        attack: {
+          damage: 7,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export type ItemName = (typeof allItemsConst)[number]['name']
