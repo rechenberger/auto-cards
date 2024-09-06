@@ -63,6 +63,7 @@ export const CraftingButton = async ({ game }: { game: Game }) => {
                             <ActionButton
                               disabled={!recipe.hasAll}
                               variant={recipe.hasAll ? 'default' : 'outline'}
+                              className="md:mb-12"
                               action={async () => {
                                 'use server'
                                 return superAction(async () => {
