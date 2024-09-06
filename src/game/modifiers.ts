@@ -22,11 +22,12 @@ export const Modifier = z.object({
   arithmetic: z.enum(['multiply', 'add', 'subtract', 'divide']),
   targetStat: Stat,
   targetStats: ModifierTargetStats,
-  valueBase: z.number().optional(),
-  valueAddingTags: z.array(Tag).optional(),
-  valueAddingStats: z.array(Stat).optional(),
-  valueMultiplier: z.number().optional(),
-  valueMax: z.number().optional(),
+
+  valueBase: z.number().optional(), // value = base
+  valueAddingTags: z.array(Tag).optional(), // value += count(tag)
+  valueAddingStats: z.array(Stat).optional(), // value += sum(stats)
+  valueMultiplier: z.number().optional(), // value *= multiplier
+  valueMax: z.number().optional(), // value = min(value, max)
 })
 export type Modifier = z.infer<typeof Modifier>
 
