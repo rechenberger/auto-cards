@@ -1,7 +1,5 @@
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
-import { countifyItems } from '@/game/countifyItems'
-import { gameAction } from '@/game/gameAction'
 import { Changemaker } from '@/game/generateChangemakers'
 import { getRarityDefinition } from '@/game/rarities'
 import { getTagDefinition } from '@/game/tags'
@@ -18,6 +16,7 @@ import { capitalCase } from 'change-case'
 import { first } from 'lodash-es'
 import { Fragment } from 'react'
 import { AiItemImage } from '../ai/AiItemImage'
+import { ItemSellButton } from './ItemSellButton'
 import { StatsDisplay } from './StatsDisplay'
 import { TriggerDisplay } from './TriggerDisplay'
 import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
@@ -61,9 +60,6 @@ export const ItemCard = async ({
   const rarity = item.rarity ? getRarityDefinition(item.rarity) : undefined
   const gameId = game?.id
 
-  const sellPrice = Math.ceil(item.price / 2)
-  const sellable = canSell && gameId && sellPrice > 0
-
   const inner = (
     <>
       {/* <HoverCard>
@@ -90,63 +86,7 @@ export const ItemCard = async ({
           className,
         )}
       >
-        {sellable && (
-          <div className="absolute opacity-0 group-hover:opacity-100 transition-opacity inset-x-0 top-12 z-10 flex flex-col items-center">
-            <ActionButton
-              variant="outline"
-              size="sm"
-              askForConfirmation={{
-                title: `Sell ${capitalCase(name)}?`,
-                confirm: (
-                  <>
-                    <div className="flex flex-row gap-2 items-center">
-                      <div>Yes</div>
-                      <StatsDisplay
-                        stats={{ gold: sellPrice }}
-                        showZero
-                        size="sm"
-                        disableTooltip
-                      />
-                    </div>
-                  </>
-                ),
-              }}
-              stopPropagation
-              hideIcon
-              className="flex flex-row gap-2 items-center"
-              action={async () => {
-                'use server'
-                return gameAction({
-                  gameId: gameId!,
-                  action: async ({ ctx }) => {
-                    ctx.game.data.currentLoadout.items = countifyItems(
-                      ctx.game.data.currentLoadout.items,
-                    )
-                    const myItem = ctx.game.data.currentLoadout.items.find(
-                      (i) => i.name === name,
-                    )
-                    if (!myItem) {
-                      throw new Error('Item not found')
-                    }
-                    myItem.count = (myItem.count ?? 1) - 1
-                    ctx.game.data.currentLoadout.items =
-                      ctx.game.data.currentLoadout.items.filter(
-                        (i) => i.count !== 0,
-                      )
-                    ctx.game.data.gold += sellPrice
-                  },
-                })
-              }}
-            >
-              <div>Sell</div>
-              <StatsDisplay
-                stats={{ gold: sellPrice }}
-                showZero
-                disableTooltip
-              />
-            </ActionButton>
-          </div>
-        )}
+        {canSell && <ItemSellButton gameId={gameId} item={item} />}
         <div
           className={cn(
             'aspect-square relative rounded-tr-lg rounded-b-lg overflow-hidden bg-black',
