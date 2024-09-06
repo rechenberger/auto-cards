@@ -22,7 +22,7 @@ export const Modifier = z.object({
   arithmetic: z.enum(['multiply', 'add', 'subtract', 'divide']),
   targetStat: Stat,
   targetStats: ModifierTargetStats,
-  sourceMultiplier: z.number(),
+  sourceMultiplier: z.number().optional(),
   sourceTags: z.array(Tag).optional(),
   sourceStats: z.array(Stat).optional(),
   sourceCountMax: z.number().optional(),
