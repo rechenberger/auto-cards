@@ -11,18 +11,18 @@ export const calcCooldown = ({
   stats: Stats
   tags: Tag[]
 }) => {
-  let multiplier = 1
+  let divisor = 1
   if (stats.slow) {
-    multiplier += stats.slow / 100
+    divisor -= stats.slow / 100
   }
   if (stats.haste) {
-    multiplier -= stats.haste / 100
+    divisor += stats.haste / 100
   }
   if (stats.drunk && tags.includes('food')) {
-    multiplier -= stats.drunk / 100
+    divisor += stats.drunk / 100
   }
 
-  let result = cooldown * multiplier
+  let result = cooldown / divisor
   result = Math.ceil(result / COOLDOWN_PRECISION) * COOLDOWN_PRECISION
   result = Math.max(result, MIN_COOLDOWN)
   return result
