@@ -1,4 +1,5 @@
 import { Game } from '@/db/schema-zod'
+import { CraftingButton } from './CraftingButton'
 import { FightButton } from './FightButton'
 import { LiveMatchCard } from './LiveMatchCard'
 import { LoadoutDisplay } from './LoadoutDisplay'
@@ -11,12 +12,13 @@ export const ShopView = ({ game }: { game: Game }) => {
       <div className="flex-1 flex flex-col gap-4">
         <Shop game={game} />
         <div className="flex-1" />
-        <div className="self-center">
+        <div className="self-center flex flex-col gap-2">
           {game.liveMatchId ? (
             <LiveMatchCard liveMatchId={game.liveMatchId} inGame={true} />
           ) : (
             <FightButton game={game} />
           )}
+          <CraftingButton game={game} />
         </div>
         <div className="flex-1" />
         <LoadoutDisplay
