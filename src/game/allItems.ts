@@ -567,7 +567,6 @@ const allItemsConst = [
       },
     ],
   },
-
   {
     name: 'torch',
     prompt: 'an unlit torch with a wooden handle and a cloth on top',
