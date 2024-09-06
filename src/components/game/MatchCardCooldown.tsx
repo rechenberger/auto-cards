@@ -19,6 +19,9 @@ export const MatchCardCooldown = ({
   )
   const lastused = item?.lastUsed ?? 0
   const nextuse = item?.time ?? 0
+
+  //TODO: sometimes lastused and nextuse is same value, which causes 0s flickering
+
   const currentCooldown = nextuse - lastused
   return `Every ${currentCooldown / 1000}s`
 }
