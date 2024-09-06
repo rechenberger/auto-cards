@@ -579,7 +579,7 @@ const allItemsConst = [
     ],
   },
   {
-    name: 'Garlic',
+    name: 'garlic',
     prompt: 'a garlic bulb with a strong smell',
     tags: ['food'],
     rarity: 'common',
@@ -606,7 +606,7 @@ const allItemsConst = [
     ],
   },
   {
-    name: 'Chili Pepper',
+    name: 'chiliPepper',
     prompt: 'a red chili pepper',
     tags: ['food'],
     rarity: 'common',
@@ -626,8 +626,8 @@ const allItemsConst = [
     ],
   },
   {
-    name: 'Tusk Poker',
-    prompt: 'a shortbow and arrow made out of thorny wood',
+    name: 'tuskPoker',
+    prompt: 'a bow and arrow made out of thorny wood',
     tags: ['weapon'],
     rarity: 'rare',
     price: 8,
@@ -662,7 +662,7 @@ const allItemsConst = [
     ],
   },
   {
-    name: 'Leather Armor',
+    name: 'leatherArmor',
     prompt: 'a leather armor on an armor stand',
     tags: ['accessory'],
     rarity: 'uncommon',
