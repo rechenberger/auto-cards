@@ -47,7 +47,7 @@ type GenerateMatchInput = {
   skipLogs?: boolean
 }
 
-export const generateMatchState = async (input: GenerateMatchInput) => {
+const generateMatchStateSides = async (input: GenerateMatchInput) => {
   const sides = await Promise.all(
     input.participants.map(async (p, idx) => {
       let items = await Promise.all(
@@ -70,9 +70,13 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
       }
     }),
   )
+  return sides
+}
 
-  const futureActionsBase = [{ type: 'baseTick' as const, time: 0 }]
-
+const generateMatchStateFutureActionsItems = async (
+  input: GenerateMatchInput,
+) => {
+  const sides = await generateMatchStateSides(input)
   const futureActionsItems = rngOrder({
     items: sides,
     seed: [...input.seed, 'futureActions'],
@@ -96,6 +100,7 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
             time,
             lastUsed: 0,
             usedCount: 0,
+            currentCooldown: trigger.type === 'interval' ? time : undefined,
             sideIdx: side.sideIdx,
             itemIdx,
             triggerIdx,
@@ -105,14 +110,22 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
       )
     })
   })
-
-  const futureActions = [...futureActionsBase, ...futureActionsItems]
-  return { sides, futureActions, futureActionsItems }
+  return { sides, futureActionsItems }
 }
 
 type FutureActionItem = Awaited<
-  ReturnType<typeof generateMatchState>
+  ReturnType<typeof generateMatchStateFutureActionsItems>
 >['futureActionsItems'][number]
+
+export const generateMatchState = async (input: GenerateMatchInput) => {
+  const { sides, futureActionsItems } =
+    await generateMatchStateFutureActionsItems(input)
+
+  const futureActionsBase = [{ type: 'baseTick' as const, time: 0 }]
+
+  const futureActions = [...futureActionsBase, ...futureActionsItems]
+  return { sides, futureActions }
+}
 
 export type MatchState = Awaited<ReturnType<typeof generateMatchState>>
 
@@ -617,6 +630,7 @@ export const generateMatch = async ({
             tags: item.tags ?? [],
           })
           action.time += cooldown
+          action.currentCooldown = cooldown
         }
       }
     }
