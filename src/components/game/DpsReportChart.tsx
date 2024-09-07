@@ -25,7 +25,7 @@ export const DpsReportChart = ({
             <TabsTrigger
               key={stat}
               value={stat}
-              className="text-white flex flex-row gap-1"
+              className="text-white flex flex-row gap-2 justify-start items-center"
             >
               <StatDisplay stat={getStatDefinition(stat)} size="sm" hideCount />
               {capitalCase(stat)}
