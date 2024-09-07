@@ -789,6 +789,7 @@ const allItemsConst = [
         cooldown: 3_500,
         attack: {
           damage: 7,
+          accuracy: 95,
         },
         modifiers: [
           {
