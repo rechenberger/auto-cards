@@ -1,7 +1,7 @@
 import { dpsReport } from '@/game/dpsReport'
 import { MatchReport } from '@/game/generateMatch'
 import { capitalCase } from 'change-case'
-import { first, uniq } from 'lodash-es'
+import { first, keyBy, mapValues, orderBy, uniq } from 'lodash-es'
 import { Fragment } from 'react'
 import { SimpleDataCard } from '../simple/SimpleDataCard'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
@@ -43,12 +43,14 @@ export const DpsReportChart = ({
                           entry.sourceSideIdx === sourceSideIdx &&
                           entry.targetSideIdx === targetSideIdx,
                       )
-                      const simple = entriesSide.map((entry) => {
+                      let simple = entriesSide.map((entry) => {
                         return {
-                          name: entry.source,
+                          name: capitalCase(entry.source),
                           value: entry.negative ? -entry.value : entry.value,
                         }
                       })
+                      simple = orderBy(simple, 'value', 'desc')
+                      const simpler = mapValues(keyBy(simple, 'name'), 'value')
                       return (
                         <Fragment key={sourceSideIdx}>
                           <Card>
@@ -58,7 +60,7 @@ export const DpsReportChart = ({
                               </CardTitle>
                             </CardHeader>
                             <CardContent>
-                              <SimpleDataCard data={simple} />
+                              <SimpleDataCard data={simpler} />
                             </CardContent>
                           </Card>
                         </Fragment>
