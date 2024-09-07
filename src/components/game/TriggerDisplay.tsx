@@ -42,7 +42,7 @@ export const TriggerDisplay = ({ trigger }: { trigger: Trigger }) => {
           </div>
         )}
         {trigger.modifiers && (
-          <div className="flex flex-col gap-1 text-xs">
+          <div className="flex flex-col gap-1 text-xs text-center">
             {trigger.modifiers.map((modifier) => (
               <TextKeywordDisplay
                 key={modifier.description}
