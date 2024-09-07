@@ -13,7 +13,7 @@ export const MatchCardCooldown = ({
   triggerIdx: number
 }) => {
   const activeMatchLog = useAtomValue(activeMatchLogAtom)
-  const item = activeMatchLog?.log.stateSnapshot.futureActionsItems.find(
+  const item = activeMatchLog?.log.stateSnapshot.futureActions.find(
     (fai) =>
       fai.type === 'interval' &&
       fai.itemIdx === itemIdx &&
@@ -22,7 +22,8 @@ export const MatchCardCooldown = ({
       !!fai.currentCooldown,
   )
 
-  const currentCooldown = item?.currentCooldown ?? 0
+  const currentCooldown =
+    item?.type === 'interval' ? (item?.currentCooldown ?? 0) : 0
   return (
     <>
       Every <strong className="text-primary">{currentCooldown / 1000}s</strong>
