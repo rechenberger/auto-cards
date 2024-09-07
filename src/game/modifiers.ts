@@ -24,6 +24,7 @@ export const Modifier = z.object({
   targetStats: ModifierTargetStats,
 
   valueBase: z.number().optional(), // value = base
+  valueAddingItems: z.array(z.string()).optional(), // value += count(item)
   valueAddingTags: z.array(Tag).optional(), // value += count(tag)
   valueAddingStats: z.array(Stat).optional(), // value += sum(stats)
   valueMultiplier: z.number().optional(), // value *= multiplier
@@ -68,6 +69,14 @@ export const getModifiedStats = ({
         some(item.tags, (tag) => !!modifier.valueAddingTags?.includes(tag)),
       )
       sourceCount += sumBy(itemsWithTags, (i) => i.count ?? 1)
+    }
+    if (modifier.valueAddingItems) {
+      for (const itemName of modifier.valueAddingItems) {
+        const item = side.items.find((i) => i.name === itemName)
+        if (item) {
+          sourceCount += item.count ?? 1
+        }
+      }
     }
     if (modifier.valueMultiplier) {
       sourceCount *= modifier.valueMultiplier
