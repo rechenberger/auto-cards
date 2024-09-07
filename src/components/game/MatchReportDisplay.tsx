@@ -1,5 +1,6 @@
 'use client'
 
+import { dpsReport } from '@/game/dpsReport'
 import { MatchReport } from '@/game/generateMatch'
 import { cn } from '@/lib/utils'
 import { capitalCase } from 'change-case'
@@ -21,6 +22,8 @@ export const MatchReportDisplay = ({
 }) => {
   const [activeMatchLog, setActiveMatchLog] = useAtom(activeMatchLogAtom)
   const [isPlaying, setIsPlaying] = useAtom(matchPlaybackPlayingAtom)
+
+  console.log(dpsReport({ matchReport }))
 
   return (
     <>
