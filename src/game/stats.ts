@@ -42,6 +42,8 @@ type StatDefinitionPost = StatDefinitionPre & {
   name: Stat
 }
 
+export type StatDefinition = StatDefinitionPre
+
 const heroStats = [
   {
     name: 'health',
