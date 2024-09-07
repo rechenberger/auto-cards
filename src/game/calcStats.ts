@@ -2,6 +2,7 @@ import { LoadoutData } from '@/db/schema-zod'
 import { capitalCase } from 'change-case'
 import { keys, map, omitBy, range, sumBy, uniq } from 'lodash-es'
 import { getItemByName } from './allItems'
+import { randomStats } from './randomStats'
 import { Stats } from './stats'
 
 export const calcStats = async ({ loadout }: { loadout: LoadoutData }) => {
@@ -45,7 +46,7 @@ export const tryAddStats = (a: Stats, b: Stats) => {
   for (const key in b) {
     const k = key as keyof Stats
     a[k] = (a[k] || 0) + (b[k] || 0)
-    if (key !== 'health' && (a[k] || 0) < 0) {
+    if (!['health', ...randomStats].includes(key) && (a[k] || 0) < 0) {
       a[k] = 0
     }
   }

@@ -2,7 +2,7 @@ import { filter, mapValues, some, times } from 'lodash-es'
 import { tryAddStats } from './calcStats'
 import { RandomStat, randomStatDefinitions } from './randomStats'
 import { rngItem, Seed } from './seed'
-import { Stat, Stats } from './stats'
+import { Stats } from './stats'
 
 export const randomStatsResolve = ({
   stats,
@@ -11,7 +11,7 @@ export const randomStatsResolve = ({
 }: {
   stats: Stats
   seed: Seed
-  onRandomStat?: (props: { stats: Stat; randomStat: RandomStat }) => void
+  onRandomStat?: (props: { stats: Stats; randomStat: RandomStat }) => void
 }) => {
   for (const randomStatDefinition of randomStatDefinitions) {
     const randomStatValue = stats[randomStatDefinition.name]
