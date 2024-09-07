@@ -6,9 +6,11 @@ import { activeMatchLogAtom } from './matchPlaybackState'
 export const MatchCardCooldown = ({
   itemIdx,
   sideIdx,
+  triggerIdx,
 }: {
   itemIdx: number
   sideIdx: number
+  triggerIdx: number
 }) => {
   const activeMatchLog = useAtomValue(activeMatchLogAtom)
   const item = activeMatchLog?.log.stateSnapshot.futureActionsItems.find(
@@ -16,9 +18,14 @@ export const MatchCardCooldown = ({
       fai.type === 'interval' &&
       fai.itemIdx === itemIdx &&
       fai.sideIdx === sideIdx &&
+      fai.triggerIdx === triggerIdx &&
       !!fai.currentCooldown,
   )
 
   const currentCooldown = item?.currentCooldown ?? 0
-  return `Every ${currentCooldown / 1000}s`
+  return (
+    <>
+      Every <strong className="text-primary">{currentCooldown / 1000}s</strong>
+    </>
+  )
 }

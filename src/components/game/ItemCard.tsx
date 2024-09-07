@@ -199,6 +199,7 @@ export const ItemCard = async ({
                   trigger={trigger}
                   itemIdx={itemIdx}
                   sideIdx={sideIdx}
+                  triggerIdx={idx}
                 />
               </Fragment>
             ))}

@@ -8,10 +8,12 @@ export const TriggerDisplay = ({
   trigger,
   sideIdx,
   itemIdx,
+  triggerIdx,
 }: {
   trigger: Trigger
   sideIdx?: number
   itemIdx?: number
+  triggerIdx?: number
 }) => {
   return (
     <>
@@ -19,8 +21,14 @@ export const TriggerDisplay = ({
         <div className="flex flex-row gap-1 justify-center">
           <div className="">
             {trigger.type === 'interval' ? (
-              sideIdx !== undefined && itemIdx !== undefined ? (
-                <MatchCardCooldown sideIdx={sideIdx} itemIdx={itemIdx} />
+              sideIdx !== undefined &&
+              itemIdx !== undefined &&
+              triggerIdx !== undefined ? (
+                <MatchCardCooldown
+                  sideIdx={sideIdx}
+                  itemIdx={itemIdx}
+                  triggerIdx={triggerIdx}
+                />
               ) : (
                 `Every ${trigger.cooldown / 1000}s`
               )
