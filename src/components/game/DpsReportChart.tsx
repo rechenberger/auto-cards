@@ -1,11 +1,13 @@
 import { dpsReport } from '@/game/dpsReport'
 import { MatchReport } from '@/game/generateMatch'
+import { getStatDefinition } from '@/game/stats'
 import { capitalCase } from 'change-case'
 import { keyBy, mapValues, orderBy, uniq } from 'lodash-es'
 import { Fragment } from 'react'
 import { SimpleDataCard } from '../simple/SimpleDataCard'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
+import { StatDisplay } from './StatsDisplay'
 
 export const DpsReportChart = ({
   matchReport,
@@ -20,7 +22,12 @@ export const DpsReportChart = ({
       <Tabs defaultValue={'damage'}>
         <TabsList className="grid grid-cols-4 h-auto">
           {stats.map((stat) => (
-            <TabsTrigger key={stat} value={stat}>
+            <TabsTrigger
+              key={stat}
+              value={stat}
+              className="text-white flex flex-row gap-1"
+            >
+              <StatDisplay stat={getStatDefinition(stat)} size="sm" hideCount />
               {capitalCase(stat)}
             </TabsTrigger>
           ))}
