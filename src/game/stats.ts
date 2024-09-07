@@ -1,5 +1,4 @@
 import { constArrayMap } from '@/lib/constArrayMap'
-import { includes } from 'lodash-es'
 import {
   ArrowBigUp,
   Axe,
@@ -9,7 +8,6 @@ import {
   BicepsFlexed,
   Bird,
   Carrot,
-  CircleHelp,
   Clover,
   Coins,
   Crosshair,
@@ -21,7 +19,6 @@ import {
   LucideIcon,
   Pyramid,
   Shield,
-  ShieldQuestion,
   Skull,
   Snowflake,
   Sword,
@@ -30,8 +27,9 @@ import {
 } from 'lucide-react'
 import { z } from 'zod'
 import { IGNORE_SPACE, MAX_THORNS_MULTIPLIER } from './config'
+import { randomStatDefinitionsRaw } from './randomStats'
 
-type StatDefinitionPre = {
+export type StatDefinitionPre = {
   name: string
   icon: LucideIcon
   bgClass: string
@@ -187,19 +185,10 @@ const heroStats = [
     bgClass: 'bg-emerald-500',
     tooltip: 'Increases accuracy by X%.',
   },
-  {
-    name: 'randomBuff',
-    icon: ShieldQuestion,
-    bgClass: 'bg-gray-500',
-    tooltip: 'Applies a random Buff',
-  },
-  {
-    name: 'randomDebuff',
-    icon: CircleHelp,
-    bgClass: 'bg-gray-500',
-    tooltip: 'Applies a random Debuff',
-  },
 ] as const satisfies StatDefinitionPre[]
+export const allHeroStats = constArrayMap(heroStats, 'name')
+export const HeroStat = z.enum(allHeroStats)
+export type HeroStat = z.infer<typeof HeroStat>
 
 const attackStats = [
   {
@@ -229,6 +218,7 @@ export const allStatsDefinitionConst = [
   ...otherStats,
   ...heroStats,
   ...attackStats,
+  ...randomStatDefinitionsRaw,
 ] as const satisfies StatDefinitionPre[]
 
 export const allStatsDefinition: StatDefinitionPost[] = allStatsDefinitionConst
@@ -245,28 +235,6 @@ export const allStats = constArrayMap(allStatsDefinitionConst, 'name')
 
 export const Stat = z.enum(allStats)
 export type Stat = (typeof allStats)[number]
-
-const heroBuffs = [
-  'thorns',
-  'luck',
-  'empower',
-  'lifeSteal',
-  'regen',
-  'drunk',
-] as const satisfies (typeof allStats)[number][]
-
-export const buffsForRandomAccess = allStats.filter((s) =>
-  includes(heroBuffs, s),
-) as Stat[]
-export const heroDebuffs = [
-  'poison',
-  'slow',
-  'blind',
-] as const satisfies (typeof allStats)[number][]
-
-export const debuffsForRandomAccess = allStats.filter((s) =>
-  includes(heroDebuffs, s),
-) as Stat[]
 
 // Construct an object schema with all keys required
 const statsObjectSchema = allStats.reduce(

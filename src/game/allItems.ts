@@ -539,7 +539,13 @@ const allItemsConst = [
         cooldown: 3_000,
         statsSelf: {
           luck: 2,
+          // randomBuff: 3,
+          // randomDebuff: -3,
         },
+        // statsEnemy: {
+        //   randomBuff: -3,
+        //   randomDebuff: 3,
+        // },
       },
     ],
   },
