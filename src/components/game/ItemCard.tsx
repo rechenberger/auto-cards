@@ -22,20 +22,7 @@ import { TriggerDisplay } from './TriggerDisplay'
 import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 import { streamItemCard } from './streamItemCard'
 
-export const ItemCard = async ({
-  game,
-  name,
-  shopItem,
-  size = '200',
-  className,
-  count = 1,
-  tooltipOnClick,
-  changemaker,
-  themeId,
-  sideIdx,
-  itemIdx,
-  canSell,
-}: {
+export type ItemCardProps = {
   game?: Game
   name: string
   shopItem?: Game['data']['shopItems'][number] & { idx: number }
@@ -48,7 +35,24 @@ export const ItemCard = async ({
   sideIdx?: number
   itemIdx?: number
   canSell?: boolean
-}) => {
+}
+
+export const ItemCard = async (props: ItemCardProps) => {
+  let {
+    game,
+    name,
+    shopItem,
+    size = '200',
+    className,
+    count = 1,
+    tooltipOnClick,
+    changemaker,
+    themeId,
+    sideIdx,
+    itemIdx,
+    canSell,
+  } = props
+
   const item = await getItemByName(name)
   const title = capitalCase(name)
   const tag = getTagDefinition(first(item.tags) ?? 'default')
@@ -230,7 +234,7 @@ export const ItemCard = async ({
           hideIcon
           action={async () => {
             'use server'
-            return streamItemCard({ name, changemaker, themeId })
+            return streamItemCard(props)
           }}
         >
           {inner}
