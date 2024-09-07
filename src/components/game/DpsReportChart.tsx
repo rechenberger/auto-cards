@@ -1,7 +1,7 @@
 import { dpsReport } from '@/game/dpsReport'
 import { MatchReport } from '@/game/generateMatch'
 import { capitalCase } from 'change-case'
-import { first, keyBy, mapValues, orderBy, uniq } from 'lodash-es'
+import { keyBy, mapValues, orderBy, uniq } from 'lodash-es'
 import { Fragment } from 'react'
 import { SimpleDataCard } from '../simple/SimpleDataCard'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
@@ -17,7 +17,7 @@ export const DpsReportChart = ({
 
   return (
     <>
-      <Tabs defaultValue={first(stats)}>
+      <Tabs defaultValue={'damage'}>
         <TabsList className="grid grid-cols-4 h-auto">
           {stats.map((stat) => (
             <TabsTrigger key={stat} value={stat}>

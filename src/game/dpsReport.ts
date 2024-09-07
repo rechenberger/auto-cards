@@ -16,6 +16,17 @@ type DpsReportEntry = DpsReportKey & { value: number }
 export const dpsReport = ({ matchReport }: { matchReport: MatchReport }) => {
   const dpsMap = new Map<string, DpsReportEntry>()
 
+  const add = ({ key, value }: { key: DpsReportKey; value: number }) => {
+    value = Math.abs(value)
+    const keyString = hash(key)
+    const entryBefore = dpsMap.get(keyString)
+    if (entryBefore) {
+      entryBefore.value += value
+    } else {
+      dpsMap.set(keyString, { ...key, value })
+    }
+  }
+
   for (const log of matchReport.logs) {
     const stats = log.stats
     if (!stats) continue
@@ -42,16 +53,20 @@ export const dpsReport = ({ matchReport }: { matchReport: MatchReport }) => {
         stat,
         negative,
       }
-      const keyString = hash(key)
-      const entryBefore = dpsMap.get(keyString)
-      if (entryBefore) {
-        entryBefore.value += Math.abs(value)
-      } else {
-        const newEntry: DpsReportEntry = {
-          ...key,
-          value: Math.abs(value),
-        }
-        dpsMap.set(keyString, newEntry)
+      add({ key, value })
+
+      if (
+        ['health', 'block'].includes(key.stat) &&
+        key.sourceSideIdx !== key.targetSideIdx
+      ) {
+        add({
+          key: {
+            ...key,
+            stat: 'damage',
+            negative: !negative,
+          },
+          value,
+        })
       }
     })
   }
