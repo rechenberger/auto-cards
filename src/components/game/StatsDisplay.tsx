@@ -85,17 +85,17 @@ export const StatDisplay = ({
   )
 
   if (disableTooltip) {
-    return <Fragment key={stat.name}>{inner}</Fragment>
+    return inner
   }
 
   return (
-    <Fragment key={stat.name}>
+    <>
       <Tooltip>
         <TooltipTrigger tabIndex={-1}>{inner}</TooltipTrigger>
         <TooltipContent className="bg-none border-none shadow-none p-0">
           <CardTooltip name={stat.name} text={stat.tooltip} />
         </TooltipContent>
       </Tooltip>
-    </Fragment>
+    </>
   )
 }
