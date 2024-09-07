@@ -53,13 +53,15 @@ export const DpsReportChart = ({
                         )
                         let simple = entriesSide.map((entry) => {
                           return {
-                            name: capitalCase(entry.source),
+                            name:
+                              capitalCase(entry.source) +
+                              (entry.negative ? ' ' : ''), // a little hack to make negative label != positive label and show both
                             value: entry.negative ? -entry.value : entry.value,
                           }
                         })
                         simple = orderBy(simple, 'value', 'desc')
                         const simpler = mapValues(
-                          keyBy(simple, 'name'),
+                          keyBy(simple, (e) => e.name),
                           'value',
                         )
                         if (!simple.length) return <div key={sourceSideIdx} />
