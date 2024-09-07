@@ -27,8 +27,9 @@ import {
 } from 'lucide-react'
 import { z } from 'zod'
 import { IGNORE_SPACE, MAX_THORNS_MULTIPLIER } from './config'
+import { randomStatDefinitionsRaw } from './randomStats'
 
-type StatDefinitionPre = {
+export type StatDefinitionPre = {
   name: string
   icon: LucideIcon
   bgClass: string
@@ -36,6 +37,7 @@ type StatDefinitionPre = {
   bar?: boolean
   hidden?: boolean
   hideCount?: boolean
+  subset?: StatDefinitionPost[]
 }
 
 type StatDefinitionPost = StatDefinitionPre & {
@@ -184,6 +186,9 @@ const heroStats = [
     tooltip: 'Increases accuracy by X%.',
   },
 ] as const satisfies StatDefinitionPre[]
+export const allHeroStats = constArrayMap(heroStats, 'name')
+export const HeroStat = z.enum(allHeroStats)
+export type HeroStat = z.infer<typeof HeroStat>
 
 const attackStats = [
   {
@@ -213,6 +218,7 @@ export const allStatsDefinitionConst = [
   ...otherStats,
   ...heroStats,
   ...attackStats,
+  ...randomStatDefinitionsRaw,
 ] as const satisfies StatDefinitionPre[]
 
 export const allStatsDefinition: StatDefinitionPost[] = allStatsDefinitionConst

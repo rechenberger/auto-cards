@@ -20,6 +20,7 @@ import {
 import { TriggerEventType } from './ItemDefinition'
 import { getAllModifiedStats } from './modifiers'
 import { orderItems } from './orderItems'
+import { randomStatsResolve } from './randomStatsResolve'
 import { Stats } from './stats'
 
 export type MatchLog = {
@@ -298,6 +299,18 @@ export const generateMatch = async ({
           stats: statsSelf,
           targetSideIdx: mySide.sideIdx,
         })
+        randomStatsResolve({
+          stats: mySide.stats,
+          seed: [seedAction, 'randomStatsResolve', 'statsSelf'],
+          onRandomStat: ({ stats, randomStat }) => {
+            log({
+              ...baseLog,
+              stats,
+              msg: randomStat,
+              targetSideIdx: mySide.sideIdx,
+            })
+          },
+        })
       }
       if (trigger.statsItem) {
         if (!item.statsItem) {
@@ -310,6 +323,19 @@ export const generateMatch = async ({
           stats: trigger.statsItem,
           targetSideIdx: mySide.sideIdx,
           targetItemIdx: itemIdx,
+        })
+        randomStatsResolve({
+          stats: item.statsItem,
+          seed: [seedAction, 'randomStatsResolve', 'statsItem'],
+          onRandomStat: ({ stats, randomStat }) => {
+            log({
+              ...baseLog,
+              stats,
+              msg: randomStat,
+              targetSideIdx: mySide.sideIdx,
+              targetItemIdx: itemIdx,
+            })
+          },
         })
       }
       const tryingToReach = !!statsEnemy || !!attack
@@ -330,6 +356,18 @@ export const generateMatch = async ({
               ...baseLog,
               stats: statsEnemy,
               targetSideIdx: otherSide.sideIdx,
+            })
+            randomStatsResolve({
+              stats: otherSide.stats,
+              seed: [seedAction, 'randomStatsResolve', 'statsEnemy'],
+              onRandomStat: ({ stats, randomStat }) => {
+                log({
+                  ...baseLog,
+                  stats,
+                  msg: randomStat,
+                  targetSideIdx: otherSide.sideIdx,
+                })
+              },
             })
           }
           if (attack) {
