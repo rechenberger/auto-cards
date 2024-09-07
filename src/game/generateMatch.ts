@@ -294,14 +294,22 @@ export const generateMatch = async ({
 
       if (statsSelf) {
         tryAddStats(mySide.stats, statsSelf)
-        randomStatsResolve({
-          stats: mySide.stats,
-          seed: [seedAction, 'randomStatsResolve', 'statsSelf'],
-        })
         log({
           ...baseLog,
           stats: statsSelf,
           targetSideIdx: mySide.sideIdx,
+        })
+        randomStatsResolve({
+          stats: mySide.stats,
+          seed: [seedAction, 'randomStatsResolve', 'statsSelf'],
+          onRandomStat: ({ stats, randomStat }) => {
+            log({
+              ...baseLog,
+              stats,
+              msg: randomStat,
+              targetSideIdx: mySide.sideIdx,
+            })
+          },
         })
       }
       if (trigger.statsItem) {
@@ -309,16 +317,25 @@ export const generateMatch = async ({
           item.statsItem = {}
         }
         tryAddStats(item.statsItem, trigger.statsItem)
-        randomStatsResolve({
-          stats: item.statsItem,
-          seed: [seedAction, 'randomStatsResolve', 'statsItem'],
-        })
         log({
           ...baseLog,
           msg: 'apply to item',
           stats: trigger.statsItem,
           targetSideIdx: mySide.sideIdx,
           targetItemIdx: itemIdx,
+        })
+        randomStatsResolve({
+          stats: item.statsItem,
+          seed: [seedAction, 'randomStatsResolve', 'statsItem'],
+          onRandomStat: ({ stats, randomStat }) => {
+            log({
+              ...baseLog,
+              stats,
+              msg: randomStat,
+              targetSideIdx: mySide.sideIdx,
+              targetItemIdx: itemIdx,
+            })
+          },
         })
       }
       const tryingToReach = !!statsEnemy || !!attack
@@ -335,14 +352,22 @@ export const generateMatch = async ({
         } else {
           if (statsEnemy) {
             tryAddStats(otherSide.stats, statsEnemy)
-            randomStatsResolve({
-              stats: otherSide.stats,
-              seed: [seedAction, 'randomStatsResolve', 'statsEnemy'],
-            })
             log({
               ...baseLog,
               stats: statsEnemy,
               targetSideIdx: otherSide.sideIdx,
+            })
+            randomStatsResolve({
+              stats: otherSide.stats,
+              seed: [seedAction, 'randomStatsResolve', 'statsEnemy'],
+              onRandomStat: ({ stats, randomStat }) => {
+                log({
+                  ...baseLog,
+                  stats,
+                  msg: randomStat,
+                  targetSideIdx: otherSide.sideIdx,
+                })
+              },
             })
           }
           if (attack) {
