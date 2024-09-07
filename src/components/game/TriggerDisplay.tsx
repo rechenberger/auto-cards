@@ -40,6 +40,13 @@ export const TriggerDisplay = ({ trigger }: { trigger: Trigger }) => {
             <StatsDisplay stats={trigger.attack as any} />
           </div>
         )}
+        {trigger.modifiers && (
+          <div className="flex flex-col gap-1 text-xs">
+            {trigger.modifiers.map((modifier) => (
+              <div key={modifier.description}>{modifier.description}</div>
+            ))}
+          </div>
+        )}
       </div>
     </>
   )

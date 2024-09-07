@@ -363,16 +363,6 @@ export const generateMatch = async ({
 
               let damage = attack.damage ?? 0
 
-              if (statsForItem.scalesDamageWithThorns && statsForItem.thorns) {
-                damage += statsForItem.thorns
-              }
-              if (
-                statsForItem.scalesDamageWithEmpower &&
-                statsForItem.empower
-              ) {
-                damage += statsForItem.empower
-              }
-
               if (statsForItem.empower) {
                 damage += statsForItem.empower
               }

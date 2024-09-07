@@ -519,14 +519,6 @@ const allItemsConst = [
         statsSelf: {
           luck: 2,
         },
-        modifiers: [
-          {
-            arithmetic: 'add',
-            targetStat: 'poison',
-            targetStats: 'statsSelf',
-            valueAddingTags: ['accessory'],
-          },
-        ],
       },
     ],
   },
@@ -574,12 +566,7 @@ const allItemsConst = [
             targetStat: 'damage',
             targetStats: 'attack',
             valueAddingStats: ['thorns'],
-          },
-          {
-            arithmetic: 'multiply',
-            targetStat: 'lifeSteal',
-            targetStats: 'statsForItem',
-            valueBase: 3,
+            description: '+1 damage per thorns',
           },
         ],
       },
@@ -796,9 +783,6 @@ const allItemsConst = [
     stats: {
       space: space(-3),
     },
-    statsItem: {
-      scalesDamageWithEmpower: 1,
-    },
     triggers: [
       {
         type: 'interval',
@@ -806,6 +790,15 @@ const allItemsConst = [
         attack: {
           damage: 7,
         },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['empower'],
+            description: 'Additional +1 damage per empower',
+          },
+        ],
       },
     ],
   },

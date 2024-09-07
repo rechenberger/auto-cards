@@ -29,6 +29,8 @@ export const Modifier = z.object({
   valueAddingStats: z.array(Stat).optional(), // value += sum(stats)
   valueMultiplier: z.number().optional(), // value *= multiplier
   valueMax: z.number().optional(), // value = min(value, max)
+
+  description: z.string(),
 })
 export type Modifier = z.infer<typeof Modifier>
 
