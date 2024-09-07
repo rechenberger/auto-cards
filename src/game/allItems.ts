@@ -291,6 +291,27 @@ const allItemsConst = [
         statsSelf: {
           drunk: 1,
         },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueMax: 3,
+            valueAddingItems: ['beerFest'],
+            valueMultiplier: 3,
+            description:
+              'Also attack with **3** *damage* and **90** *accuracy* when you have *beerFest*',
+          },
+          {
+            arithmetic: 'add',
+            targetStat: 'accuracy',
+            targetStats: 'attack',
+            valueMax: 90,
+            valueAddingItems: ['beerFest'],
+            valueMultiplier: 90,
+            description: '',
+          },
+        ],
       },
     ],
   },
