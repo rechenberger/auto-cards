@@ -1,6 +1,9 @@
 import { TinyItem } from '@/app/(main)/simulation/TinyItem'
 import { getAllItems } from '@/game/allItems'
 import { allStatsDefinition } from '@/game/stats'
+import { allTagsDefinition } from '@/game/tags'
+import { cn } from '@/lib/utils'
+import { capitalCase } from 'change-case'
 import ReactMarkdown from 'react-markdown'
 import { StatDisplay } from './StatsDisplay'
 
@@ -21,6 +24,15 @@ export const TextKeywordDisplay = async ({ text }: { text: string }) => {
               return <TinyItem name={item.name} />
             }
 
+            const tag = allTagsDefinition.find((tag) => tag.name === text)
+            if (tag) {
+              return (
+                <span className={cn('px-1 py-0.5 rounded', tag.bgClass)}>
+                  {capitalCase(tag.name)}
+                </span>
+              )
+            }
+
             const stat = allStatsDefinition.find((stat) => stat.name === text)
             if (stat) {
               return (
@@ -30,7 +42,7 @@ export const TextKeywordDisplay = async ({ text }: { text: string }) => {
                     value={1}
                     hideCount
                     size="sm"
-                    statClassName=""
+                    statClassName="translate-y-0.5"
                   />
                 </span>
               )
