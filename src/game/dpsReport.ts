@@ -1,6 +1,6 @@
 import { forEach } from 'lodash-es'
 import hash from 'object-hash'
-import { MatchReport } from './generateMatch'
+import { MatchReport, NOT_ENOUGH_MSG } from './generateMatch'
 import { Stat } from './stats'
 
 type DpsReportKey = {
@@ -39,6 +39,8 @@ export const dpsReport = ({ matchReport }: { matchReport: MatchReport }) => {
 
     const targetSideIdx = log.targetSideIdx
     if (targetSideIdx === undefined) continue
+
+    if (log.msg === NOT_ENOUGH_MSG) continue
 
     // if (log.targetItemIdx) continue
 

@@ -2,7 +2,7 @@
 
 import { hasAnyStats, sumStats } from '@/game/calcStats'
 import { MATCH_CARD_ANIMATION_DURATION } from '@/game/config'
-import { MatchLog, MatchReport } from '@/game/generateMatch'
+import { MatchLog, MatchReport, NOT_ENOUGH_MSG } from '@/game/generateMatch'
 import { ThemeDefinition } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
@@ -102,12 +102,18 @@ export const MatchCardOverlay = ({
       )
       const statsMySide = sumStats(
         ...logs
-          .filter((log) => log.targetSideIdx === sideIdx)
+          .filter(
+            (log) =>
+              log.targetSideIdx === sideIdx && log.msg !== NOT_ENOUGH_MSG,
+          )
           .map((log) => log.stats || {}),
       )
       const statsOtherSide = sumStats(
         ...logs
-          .filter((log) => log.targetSideIdx !== sideIdx)
+          .filter(
+            (log) =>
+              log.targetSideIdx !== sideIdx && log.msg !== NOT_ENOUGH_MSG,
+          )
           .map((log) => log.stats || {}),
       )
 

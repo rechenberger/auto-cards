@@ -129,6 +129,8 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
 
 export type MatchState = Awaited<ReturnType<typeof generateMatchState>>
 
+export const NOT_ENOUGH_MSG = 'Not enough'
+
 export const generateMatch = async ({
   skipLogs,
   participants,
@@ -294,7 +296,7 @@ export const generateMatch = async ({
       if (!enough) {
         log({
           ...baseLog,
-          msg: `Not enough`,
+          msg: NOT_ENOUGH_MSG,
           targetSideIdx: mySide.sideIdx,
           stats: statsRequired,
         })
