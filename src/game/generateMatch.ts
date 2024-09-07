@@ -18,6 +18,7 @@ import {
   MAX_THORNS_MULTIPLIER,
 } from './config'
 import { TriggerEventType } from './ItemDefinition'
+import { getAllModifiedStats } from './modifiers'
 import { orderItems } from './orderItems'
 import { Stats } from './stats'
 
@@ -237,11 +238,19 @@ export const generateMatch = async ({
       msg: input.baseLogMsg,
     }
 
-    const statsForItem = item.statsItem
+    let statsForItem = item.statsItem
       ? sumStats2(mySide.stats, item.statsItem)
       : mySide.stats
 
-    const { statsRequired, statsSelf, statsEnemy, attack } = trigger
+    const allStats = getAllModifiedStats({
+      state,
+      itemIdx,
+      sideIdx,
+      triggerIdx,
+      statsForItem,
+    })
+    const { statsRequired, statsSelf, statsEnemy, attack } = allStats
+    statsForItem = allStats.statsForItem ?? statsForItem
 
     if (trigger.maxCount && action.usedCount >= trigger.maxCount) {
       return
@@ -353,16 +362,6 @@ export const generateMatch = async ({
               })
 
               let damage = attack.damage ?? 0
-
-              if (statsForItem.scalesDamageWithThorns && statsForItem.thorns) {
-                damage += statsForItem.thorns
-              }
-              if (
-                statsForItem.scalesDamageWithEmpower &&
-                statsForItem.empower
-              ) {
-                damage += statsForItem.empower
-              }
 
               if (statsForItem.empower) {
                 damage += statsForItem.empower

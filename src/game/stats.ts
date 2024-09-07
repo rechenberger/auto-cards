@@ -24,7 +24,6 @@ import {
   Sword,
   Syringe,
   Target,
-  Triangle,
 } from 'lucide-react'
 import { z } from 'zod'
 import { IGNORE_SPACE, MAX_THORNS_MULTIPLIER } from './config'
@@ -42,6 +41,8 @@ type StatDefinitionPre = {
 type StatDefinitionPost = StatDefinitionPre & {
   name: Stat
 }
+
+export type StatDefinition = StatDefinitionPre
 
 const heroStats = [
   {
@@ -171,20 +172,6 @@ const heroStats = [
     hideCount: true,
   },
   {
-    name: 'scalesDamageWithThorns',
-    icon: Triangle,
-    bgClass: 'bg-red-500',
-    tooltip: 'Deals 1 more damage for each thorns you have.',
-    hideCount: true,
-  },
-  {
-    name: 'scalesDamageWithEmpower',
-    icon: ArrowBigUp,
-    bgClass: 'bg-red-500',
-    tooltip: 'Deals 1 more damage for each empower you have.',
-    hideCount: true,
-  },
-  {
     name: 'blind',
     icon: EyeOff,
     bgClass: 'bg-amber-500',
@@ -240,6 +227,7 @@ export const getStatDefinition = (stat: Stat) => {
 
 export const allStats = constArrayMap(allStatsDefinitionConst, 'name')
 
+export const Stat = z.enum(allStats)
 export type Stat = (typeof allStats)[number]
 
 // Construct an object schema with all keys required

@@ -1,6 +1,7 @@
 import { Trigger } from '@/game/ItemDefinition'
 import { capitalCase } from 'change-case'
 import { StatsDisplay } from './StatsDisplay'
+import { TextKeywordDisplay } from './TextKeywordDisplay'
 
 export const TriggerDisplay = ({ trigger }: { trigger: Trigger }) => {
   return (
@@ -38,6 +39,16 @@ export const TriggerDisplay = ({ trigger }: { trigger: Trigger }) => {
           <div className="flex flex-row gap-2 items-center">
             {/* <div>Attack:</div> */}
             <StatsDisplay stats={trigger.attack as any} />
+          </div>
+        )}
+        {trigger.modifiers && (
+          <div className="flex flex-col gap-1 text-xs text-center">
+            {trigger.modifiers.map((modifier) => (
+              <TextKeywordDisplay
+                key={modifier.description}
+                text={modifier.description}
+              />
+            ))}
           </div>
         )}
       </div>

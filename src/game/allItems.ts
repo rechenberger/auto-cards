@@ -1,3 +1,5 @@
+import { constArrayMap } from '@/lib/constArrayMap'
+import { z } from 'zod'
 import { IGNORE_SPACE } from './config'
 import { ItemDefinition } from './ItemDefinition'
 
@@ -289,6 +291,27 @@ const allItemsConst = [
         statsSelf: {
           drunk: 1,
         },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueMax: 3,
+            valueAddingItems: ['beerFest'],
+            valueMultiplier: 3,
+            description:
+              'Also attack with **3** *damage* and **90** *accuracy* when you have *beerFest*',
+          },
+          {
+            arithmetic: 'add',
+            targetStat: 'accuracy',
+            targetStats: 'attack',
+            valueMax: 90,
+            valueAddingItems: ['beerFest'],
+            valueMultiplier: 90,
+            description: '',
+          },
+        ],
       },
     ],
   },
@@ -544,9 +567,6 @@ const allItemsConst = [
     stats: {
       space: space(-2),
     },
-    statsItem: {
-      scalesDamageWithThorns: 1,
-    },
     triggers: [
       {
         type: 'interval',
@@ -561,6 +581,15 @@ const allItemsConst = [
           damage: 15,
           accuracy: 80,
         },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['thorns'],
+            description: '**+1** *damage* per *thorns*',
+          },
+        ],
       },
       {
         type: 'onAttackAfterHit',
@@ -775,22 +804,32 @@ const allItemsConst = [
     stats: {
       space: space(-3),
     },
-    statsItem: {
-      scalesDamageWithEmpower: 1,
-    },
     triggers: [
       {
         type: 'interval',
         cooldown: 3_500,
         attack: {
           damage: 7,
+          accuracy: 95,
         },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['empower'],
+            description: 'Additional **+1** *damage* per *empower*',
+          },
+        ],
       },
     ],
   },
 ] as const satisfies ItemDefinition[]
 
-export type ItemName = (typeof allItemsConst)[number]['name']
+export const allItemNames = constArrayMap(allItemsConst, 'name')
+export const ItemName = z.enum(allItemNames)
+export type ItemName = z.infer<typeof ItemName>
+
 const allItems: ItemDefinition[] = allItemsConst
 
 export const getAllItems = async () => allItems
