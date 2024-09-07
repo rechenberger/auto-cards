@@ -1,5 +1,6 @@
 import { filter, some, sumBy } from 'lodash-es'
 import { z } from 'zod'
+import { hasAnyStats } from './calcStats'
 import { MatchState } from './generateMatch'
 import { Stat, Stats } from './stats'
 import { Tag } from './tags'
@@ -103,6 +104,8 @@ export const getModifiedStats = ({
       const exhaustiveCheck: never = modifier.arithmetic
     }
   }
+
+  if (!hasAnyStats({ stats: result })) return undefined
 
   return result
 }
