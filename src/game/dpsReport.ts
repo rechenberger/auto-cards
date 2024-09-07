@@ -1,4 +1,5 @@
 import { forEach } from 'lodash-es'
+import hash from 'object-hash'
 import { MatchReport } from './generateMatch'
 import { Stat } from './stats'
 
@@ -13,7 +14,7 @@ type DpsReportKey = {
 type DpsReportEntry = DpsReportKey & { value: number }
 
 export const dpsReport = ({ matchReport }: { matchReport: MatchReport }) => {
-  const dpsMap = new Map<DpsReportKey, number>()
+  const dpsMap = new Map<string, DpsReportEntry>()
 
   for (const log of matchReport.logs) {
     const stats = log.stats
@@ -41,19 +42,21 @@ export const dpsReport = ({ matchReport }: { matchReport: MatchReport }) => {
         stat,
         negative,
       }
-      const valueBefore = dpsMap.get(key) ?? 0
-      const valueNew = Math.abs(value) + valueBefore
-      dpsMap.set(key, valueNew)
+      const keyString = hash(key)
+      const entryBefore = dpsMap.get(keyString)
+      if (entryBefore) {
+        entryBefore.value += Math.abs(value)
+      } else {
+        const newEntry: DpsReportEntry = {
+          ...key,
+          value: Math.abs(value),
+        }
+        dpsMap.set(keyString, newEntry)
+      }
     })
   }
 
-  const entries: DpsReportEntry[] = []
-  dpsMap.forEach((value, key) => {
-    entries.push({
-      ...key,
-      value,
-    })
-  })
+  const entries: DpsReportEntry[] = Array.from(dpsMap.values())
 
-  return entries
+  return { entries }
 }
