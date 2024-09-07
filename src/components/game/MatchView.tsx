@@ -5,6 +5,7 @@ import { fallbackThemeId } from '@/game/themes'
 import { every } from 'lodash-es'
 import { AlertCircle, Swords } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
+import { DpsReportChart } from './DpsReportChart'
 import { MatchCards } from './MatchCards'
 import { getMatchParticipants } from './MatchParticipants'
 import { MatchReportDisplayToggle } from './MatchReportDisplayToggle'
@@ -58,6 +59,7 @@ export const MatchView = async ({
           <div className="flex-1 flex flex-col gap-2 items-center justify-center self-stretch">
             <MatchReportPlaybackControls matchReport={matchReport} />
             <MatchReportDisplayToggle matchReport={matchReport} />
+            <DpsReportChart matchReport={matchReport} />
             <div className="flex-1" />
             {!!game && <NextRoundButton game={game} />}
           </div>

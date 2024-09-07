@@ -17,6 +17,7 @@ specifiers:
   '@radix-ui/react-slider': ^1.2.0
   '@radix-ui/react-slot': ^1.0.2
   '@radix-ui/react-switch': ^1.0.3
+  '@radix-ui/react-tabs': ^1.1.0
   '@radix-ui/react-toast': ^1.1.5
   '@radix-ui/react-tooltip': ^1.1.2
   '@react-three/drei': ^9.111.0
@@ -88,6 +89,7 @@ dependencies:
   '@radix-ui/react-slider': 1.2.0_mamxk47imhpkk7la3qn33clm2m
   '@radix-ui/react-slot': 1.1.0_lomi5twezyempkulqdwn3wzlzy
   '@radix-ui/react-switch': 1.1.0_mamxk47imhpkk7la3qn33clm2m
+  '@radix-ui/react-tabs': 1.1.0_mamxk47imhpkk7la3qn33clm2m
   '@radix-ui/react-toast': 1.2.1_mamxk47imhpkk7la3qn33clm2m
   '@radix-ui/react-tooltip': 1.1.2_mamxk47imhpkk7la3qn33clm2m
   '@react-three/drei': 9.111.0_5gvve6hhrea47x7plabeg5bsgu
@@ -1971,6 +1973,33 @@ packages:
       '@radix-ui/react-use-controllable-state': 1.1.0_lomi5twezyempkulqdwn3wzlzy
       '@radix-ui/react-use-previous': 1.1.0_lomi5twezyempkulqdwn3wzlzy
       '@radix-ui/react-use-size': 1.1.0_lomi5twezyempkulqdwn3wzlzy
+      '@types/react': 18.2.78
+      '@types/react-dom': 18.2.25
+      react: 18.3.1
+      react-dom: 18.3.1_react@18.3.1
+    dev: false
+
+  /@radix-ui/react-tabs/1.1.0_mamxk47imhpkk7la3qn33clm2m:
+    resolution: {integrity: sha512-bZgOKB/LtZIij75FSuPzyEti/XBhJH52ExgtdVqjCIh+Nx/FW+LhnbXtbCzIi34ccyMsyOja8T0thCzoHFXNKA==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+    dependencies:
+      '@radix-ui/primitive': 1.1.0
+      '@radix-ui/react-context': 1.1.0_lomi5twezyempkulqdwn3wzlzy
+      '@radix-ui/react-direction': 1.1.0_lomi5twezyempkulqdwn3wzlzy
+      '@radix-ui/react-id': 1.1.0_lomi5twezyempkulqdwn3wzlzy
+      '@radix-ui/react-presence': 1.1.0_mamxk47imhpkk7la3qn33clm2m
+      '@radix-ui/react-primitive': 2.0.0_mamxk47imhpkk7la3qn33clm2m
+      '@radix-ui/react-roving-focus': 1.1.0_mamxk47imhpkk7la3qn33clm2m
+      '@radix-ui/react-use-controllable-state': 1.1.0_lomi5twezyempkulqdwn3wzlzy
       '@types/react': 18.2.78
       '@types/react-dom': 18.2.25
       react: 18.3.1
