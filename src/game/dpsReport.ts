@@ -61,7 +61,8 @@ export const dpsReport = ({ matchReport }: { matchReport: MatchReport }) => {
 
       if (
         ['health', 'block'].includes(key.stat) &&
-        key.sourceSideIdx !== key.targetSideIdx
+        // key.sourceSideIdx !== key.targetSideIdx
+        key.negative
       ) {
         add({
           key: {
