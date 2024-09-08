@@ -1,4 +1,4 @@
-import { forEach } from 'lodash-es'
+import { forEach, last } from 'lodash-es'
 import hash from 'object-hash'
 import { MatchReport, NOT_ENOUGH_MSG } from './generateMatch'
 import { Stat } from './stats'
@@ -12,11 +12,11 @@ type DpsReportKey = {
   negative: boolean
 }
 
-export type DpsReportEntry = DpsReportKey & { value: number }
+export type DpsReportEntry = DpsReportKey & { value: number; perSecond: number }
 
 export const dpsReport = ({ matchReport }: { matchReport: MatchReport }) => {
   const dpsMap = new Map<string, DpsReportEntry>()
-
+  const matchTime = last(matchReport.logs)?.time ?? 0
   const add = ({ key, value }: { key: DpsReportKey; value: number }) => {
     value = Math.abs(value)
     const keyString = hash(key)
@@ -24,7 +24,7 @@ export const dpsReport = ({ matchReport }: { matchReport: MatchReport }) => {
     if (entryBefore) {
       entryBefore.value += value
     } else {
-      dpsMap.set(keyString, { ...key, value })
+      dpsMap.set(keyString, { ...key, value, perSecond: 0 })
     }
   }
 
@@ -77,6 +77,10 @@ export const dpsReport = ({ matchReport }: { matchReport: MatchReport }) => {
   }
 
   const entries: DpsReportEntry[] = Array.from(dpsMap.values())
+
+  forEach(entries, (entry) => {
+    entry.perSecond = entry.value / (matchTime / 1000)
+  })
 
   return { entries }
 }

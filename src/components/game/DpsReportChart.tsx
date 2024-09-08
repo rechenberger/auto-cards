@@ -104,13 +104,14 @@ export function DpsReportChart({
             // fill="var(--color-red)"
             radius={4}
           >
-            {/* <LabelList
-              dataKey="source"
-              position="insideLeft"
-              offset={8}
+            <LabelList
+              dataKey="perSecond"
+              position="outside"
+              offset={6}
               className="fill-[--color-label]"
               fontSize={12}
-            /> */}
+              formatter={(value: number) => `${value.toFixed(1)}/s`}
+            />
             <LabelList
               dataKey="valueN"
               position="right"
