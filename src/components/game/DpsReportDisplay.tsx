@@ -34,11 +34,13 @@ export const DpsReportDisplay = ({
           ))}
         </TabsList>
         {stats.map((stat) => {
-          const entriesStat = entries.filter((entry) => entry.stat === stat)
+          let entriesStat = entries.filter((entry) => entry.stat === stat)
           if (!entriesStat.length) return null
+          entriesStat = orderBy(entriesStat, (e) => e.value, 'desc')
           return (
             <TabsContent key={stat} value={stat}>
-              <div className="grid grid-cols-1 gap-2">
+              <DpsReportChart data={entriesStat} />
+              <div className="grid grid-cols-2 gap-2">
                 {['self', 'enemy'].map((target) => {
                   const entriesTarget = entriesStat.filter((entry) =>
                     target === 'self'
@@ -82,7 +84,6 @@ export const DpsReportDisplay = ({
                                 </CardTitle>
                               </CardHeader>
                               <CardContent>
-                                <DpsReportChart data={simple} />
                                 {!!simple.length && (
                                   <SimpleDataCard data={simpler} />
                                 )}

@@ -6,12 +6,13 @@ import { Stat } from './stats'
 type DpsReportKey = {
   sourceSideIdx: number
   targetSideIdx: number
+  target: 'self' | 'enemy'
   source: string
   stat: Stat
   negative: boolean
 }
 
-type DpsReportEntry = DpsReportKey & { value: number }
+export type DpsReportEntry = DpsReportKey & { value: number }
 
 export const dpsReport = ({ matchReport }: { matchReport: MatchReport }) => {
   const dpsMap = new Map<string, DpsReportEntry>()
@@ -51,6 +52,7 @@ export const dpsReport = ({ matchReport }: { matchReport: MatchReport }) => {
       const key: DpsReportKey = {
         sourceSideIdx: log.sideIdx,
         targetSideIdx,
+        target: log.sideIdx === targetSideIdx ? 'self' : 'enemy',
         source,
         stat,
         negative,

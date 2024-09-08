@@ -8,15 +8,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart'
-
-const chartData = [
-  { source: 'January', value: 186 },
-  { source: 'February', value: 305 },
-  { source: 'March', value: 237 },
-  { source: 'April', value: 73 },
-  { source: 'May', value: 209 },
-  { source: 'June', value: 214 },
-]
+import { DpsReportEntry } from '@/game/dpsReport'
+import { capitalCase } from 'change-case'
 
 const chartConfig = {
   value: {
@@ -26,19 +19,33 @@ const chartConfig = {
   label: {
     color: 'hsl(var(--background))',
   },
+  blue: {
+    color: 'hsl(var(--chart-1))',
+  },
+  red: {
+    color: 'hsl(var(--chart-2))',
+  },
 } satisfies ChartConfig
 
-export function DpsReportChart({
-  data = chartData,
-}: {
-  data: { source: string; value: number }[]
-}) {
+export function DpsReportChart({ data }: { data: DpsReportEntry[] }) {
+  const betterData = data.map((item) => ({
+    ...item,
+    source: capitalCase(item.source),
+    fill:
+      item.sourceSideIdx === 0
+        ? item.target === 'enemy'
+          ? 'hsla(217, 91%, 60%, 1)'
+          : 'hsla(217, 91%, 60%, 0.5)'
+        : item.target === 'enemy'
+          ? 'hsla(0, 84%, 60%, 1)'
+          : 'hsla(0, 84%, 60%, 0.5)',
+  }))
   return (
     <>
       <ChartContainer config={chartConfig}>
         <BarChart
           accessibilityLayer
-          data={data}
+          data={betterData}
           layout="vertical"
           margin={{
             right: 16,
@@ -51,7 +58,6 @@ export function DpsReportChart({
             tickLine={false}
             tickMargin={10}
             axisLine={false}
-            // tickFormatter={(value) => value.slice(0, 3)}
           />
           <XAxis dataKey="value" type="number" hide />
           <ChartTooltip
@@ -61,7 +67,7 @@ export function DpsReportChart({
           <Bar
             dataKey="value"
             layout="vertical"
-            fill="var(--color-value)"
+            // fill="var(--color-red)"
             radius={4}
           >
             {/* <LabelList
