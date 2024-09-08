@@ -12,8 +12,10 @@ import { StatDisplay } from './StatsDisplay'
 
 export const DpsReportDisplay = ({
   matchReport,
+  showCards,
 }: {
   matchReport: MatchReport
+  showCards?: boolean
 }) => {
   const { entries } = dpsReport({ matchReport })
   const stats = uniq(entries.map((entry) => entry.stat))
@@ -43,62 +45,69 @@ export const DpsReportDisplay = ({
                 data={entriesStat}
                 valueLabel={capitalCase(stat)}
               />
-              <div className="grid grid-cols-2 gap-2">
-                {['self', 'enemy'].map((target) => {
-                  const entriesTarget = entriesStat.filter((entry) =>
-                    target === 'self'
-                      ? entry.targetSideIdx === entry.sourceSideIdx
-                      : entry.targetSideIdx !== entry.sourceSideIdx,
-                  )
-                  if (!entriesTarget.length) return null
-                  return (
-                    <Fragment key={target}>
-                      {[0, 1].map((sourceSideIdx) => {
-                        const playerName = sourceSideIdx === 0 ? 'blue' : 'red'
+              {showCards && (
+                <div className="grid grid-cols-2 gap-2">
+                  {['self', 'enemy'].map((target) => {
+                    const entriesTarget = entriesStat.filter((entry) =>
+                      target === 'self'
+                        ? entry.targetSideIdx === entry.sourceSideIdx
+                        : entry.targetSideIdx !== entry.sourceSideIdx,
+                    )
+                    if (!entriesTarget.length) return null
+                    return (
+                      <Fragment key={target}>
+                        {[0, 1].map((sourceSideIdx) => {
+                          const playerName =
+                            sourceSideIdx === 0 ? 'blue' : 'red'
 
-                        const targetSideIdx =
-                          target === 'self' ? sourceSideIdx : 1 - sourceSideIdx
+                          const targetSideIdx =
+                            target === 'self'
+                              ? sourceSideIdx
+                              : 1 - sourceSideIdx
 
-                        const entriesSide = entriesStat.filter(
-                          (entry) =>
-                            entry.sourceSideIdx === sourceSideIdx &&
-                            entry.targetSideIdx === targetSideIdx,
-                        )
-                        let simple = entriesSide.map((entry) => {
-                          return {
-                            source:
-                              capitalCase(entry.source) +
-                              (entry.negative ? ' ' : ''), // a little hack to make negative label != positive label and show both
-                            value: entry.negative ? -entry.value : entry.value,
-                          }
-                        })
-                        simple = orderBy(simple, 'value', 'desc')
-                        const simpler = mapValues(
-                          keyBy(simple, (e) => e.source),
-                          'value',
-                        )
-                        if (!simple.length) return <div key={sourceSideIdx} />
-                        return (
-                          <Fragment key={sourceSideIdx}>
-                            <Card>
-                              <CardHeader>
-                                <CardTitle>
-                                  {playerName} {target}
-                                </CardTitle>
-                              </CardHeader>
-                              <CardContent>
-                                {!!simple.length && (
-                                  <SimpleDataCard data={simpler} />
-                                )}
-                              </CardContent>
-                            </Card>
-                          </Fragment>
-                        )
-                      })}
-                    </Fragment>
-                  )
-                })}
-              </div>
+                          const entriesSide = entriesStat.filter(
+                            (entry) =>
+                              entry.sourceSideIdx === sourceSideIdx &&
+                              entry.targetSideIdx === targetSideIdx,
+                          )
+                          let simple = entriesSide.map((entry) => {
+                            return {
+                              source:
+                                capitalCase(entry.source) +
+                                (entry.negative ? ' ' : ''), // a little hack to make negative label != positive label and show both
+                              value: entry.negative
+                                ? -entry.value
+                                : entry.value,
+                            }
+                          })
+                          simple = orderBy(simple, 'value', 'desc')
+                          const simpler = mapValues(
+                            keyBy(simple, (e) => e.source),
+                            'value',
+                          )
+                          if (!simple.length) return <div key={sourceSideIdx} />
+                          return (
+                            <Fragment key={sourceSideIdx}>
+                              <Card>
+                                <CardHeader>
+                                  <CardTitle>
+                                    {playerName} {target}
+                                  </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                  {!!simple.length && (
+                                    <SimpleDataCard data={simpler} />
+                                  )}
+                                </CardContent>
+                              </Card>
+                            </Fragment>
+                          )
+                        })}
+                      </Fragment>
+                    )
+                  })}
+                </div>
+              )}
             </TabsContent>
           )
         })}

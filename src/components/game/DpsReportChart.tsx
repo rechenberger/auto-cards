@@ -64,6 +64,7 @@ export function DpsReportChart({
             tickLine={false}
             tickMargin={10}
             axisLine={false}
+            width={140}
           />
           <XAxis dataKey="value" type="number" hide />
           <ChartTooltip
