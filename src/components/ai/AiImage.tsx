@@ -65,9 +65,9 @@ export const AiImageRaw = async (props: AiImageProps) => {
           return generateAiImage(props)
         }}
         title={prompt}
-        // command={{
-        //   label: `Generate Image for ${itemId || prompt}`,
-        // }}
+        command={{
+          label: `Re-Generate Image for ${itemId || prompt}`,
+        }}
         hideButton
       >
         Generate
