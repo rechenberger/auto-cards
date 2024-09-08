@@ -27,14 +27,14 @@ export default async function Page({
     <>
       <Tabs defaultValue={options.mode} className="self-center">
         <TabsList>
-          <TabsTrigger value="edit">
-            <Link href={playgroundHref({ ...options, mode: 'edit' })}>
-              Edit
-            </Link>
-          </TabsTrigger>
           <TabsTrigger value="fight" asChild>
             <Link href={playgroundHref({ ...options, mode: 'fight' })}>
               Fight
+            </Link>
+          </TabsTrigger>
+          <TabsTrigger value="edit">
+            <Link href={playgroundHref({ ...options, mode: 'edit' })}>
+              Edit
             </Link>
           </TabsTrigger>
         </TabsList>
