@@ -61,7 +61,7 @@ export default async function Page({
   const sides = decode(q)
 
   const loadouts: LoadoutData[] = sides.map((side) => ({
-    items: side,
+    items: side.filter((i) => i.count > 0),
   }))
 
   const mode = !!searchParams?.fight ? 'fight' : 'edit'
