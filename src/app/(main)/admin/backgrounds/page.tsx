@@ -35,6 +35,7 @@ export default async function Page() {
                 <MatchBackground
                   themeIds={[t0.name, t1.name]}
                   variant="inline"
+                  // autoGenerate
                 />
               </Fragment>
             ))}
