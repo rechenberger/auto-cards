@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/chart'
 import { DpsReportEntry } from '@/game/dpsReport'
 import { capitalCase } from 'change-case'
+import { first } from 'lodash-es'
 
 export function DpsReportChart({
   data,
@@ -30,6 +31,7 @@ export function DpsReportChart({
           ? 'hsla(0, 84%, 60%, 1)'
           : 'hsla(0, 84%, 60%, 0.5)',
     valueN: item.negative ? -item.value : item.value,
+    labelFull: item.negative ? '🔴' : '🟢',
   }))
   const chartConfig = {
     value: {
@@ -44,6 +46,9 @@ export function DpsReportChart({
     },
     red: {
       color: 'hsl(var(--chart-2))',
+    },
+    labelFull: {
+      label: 'lol',
     },
   } satisfies ChartConfig
   return (
@@ -69,7 +74,35 @@ export function DpsReportChart({
           <XAxis dataKey="value" type="number" hide />
           <ChartTooltip
             cursor={false}
-            content={<ChartTooltipContent indicator="line" />}
+            content={(props) => {
+              let payload = first(props.payload)
+              const entry: DpsReportEntry = payload?.payload
+              if (payload) {
+                console.log(payload)
+                payload = { ...payload }
+                if (payload.value && entry?.negative) {
+                  payload.value = -payload.value
+                }
+              }
+              let label: string | undefined
+              if (entry) {
+                console.log({ entry })
+                label = entry.source
+                // label += entry.sourceSideIdx === 0 ? ' from blue' : ' from red'
+                label += entry.target === 'self' ? ' on self' : ' against enemy'
+                // if (entry.negative) {
+                //   label += ' (negative)'
+                // }
+              }
+              return (
+                <ChartTooltipContent
+                  {...(props as any)}
+                  payload={payload ? [payload] : []}
+                  indicator="line"
+                  label={label}
+                />
+              )
+            }}
           />
           <Bar
             dataKey="value"
