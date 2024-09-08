@@ -74,7 +74,6 @@ export function DpsReportChart({
               let payload = first(props.payload)
               const entry: DpsReportEntry = payload?.payload
               if (payload) {
-                console.log(payload)
                 payload = { ...payload }
                 if (payload.value && entry?.negative) {
                   payload.value = -payload.value
@@ -82,7 +81,6 @@ export function DpsReportChart({
               }
               let label: string | undefined
               if (entry) {
-                console.log({ entry })
                 label = entry.source
                 // label += entry.sourceSideIdx === 0 ? ' from blue' : ' from red'
                 label += entry.target === 'self' ? ' on self' : ' against enemy'
