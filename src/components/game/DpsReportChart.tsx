@@ -31,7 +31,6 @@ export function DpsReportChart({
           ? 'hsla(0, 84%, 60%, 1)'
           : 'hsla(0, 84%, 60%, 0.5)',
     valueN: item.negative ? -item.value : item.value,
-    labelFull: item.negative ? '🔴' : '🟢',
   }))
   const chartConfig = {
     value: {
@@ -47,9 +46,6 @@ export function DpsReportChart({
     red: {
       color: 'hsl(var(--chart-2))',
     },
-    labelFull: {
-      label: 'lol',
-    },
   } satisfies ChartConfig
   return (
     <>
@@ -59,7 +55,7 @@ export function DpsReportChart({
           data={betterData}
           layout="vertical"
           margin={{
-            right: 16,
+            right: 32,
           }}
         >
           {/* <CartesianGrid horizontal={false} /> */}
