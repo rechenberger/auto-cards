@@ -25,7 +25,7 @@ export default async function Page({
 
   return (
     <>
-      <Tabs defaultValue={options.mode} className="self-center">
+      <Tabs value={options.mode} className="self-center">
         <TabsList>
           <TabsTrigger value="fight" asChild>
             <Link href={playgroundHref({ ...options, mode: 'fight' })}>
@@ -40,9 +40,7 @@ export default async function Page({
         </TabsList>
       </Tabs>
       {options.mode === 'edit' && <PlaygroundEdit options={options} />}
-      {options.mode === 'fight' && (
-        <PlaygroundMatchView loadouts={options.loadouts} />
-      )}
+      {options.mode === 'fight' && <PlaygroundMatchView options={options} />}
     </>
   )
 }
