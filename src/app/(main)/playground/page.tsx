@@ -70,7 +70,7 @@ export default async function Page({
     <>
       {mode === 'edit' && (
         <>
-          <div className="flex flex-col gap-4 self-center max-w-96">
+          <div className="flex flex-col gap-4 self-center">
             {/* <ActionButton
               catchToast
               className="mb-8"
@@ -112,7 +112,7 @@ export default async function Page({
               {sides.map((side, sideIdx) => {
                 return (
                   <Fragment key={sideIdx}>
-                    <div className="flex flex-col gap-1">
+                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-1">
                       {allItems.map((item) => {
                         const count =
                           side.find((i) => i.name === item.name)?.count ?? 0
