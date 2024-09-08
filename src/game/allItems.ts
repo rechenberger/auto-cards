@@ -525,7 +525,7 @@ const allItemsConst = [
   },
   {
     name: 'horseShoe',
-    prompt: 'a horseshoe with a four leaf clover on it',
+    prompt: 'a horseshoe that is open at the top with a four leaf clover on it',
     tags: ['accessory'],
     rarity: 'common',
     price: 2,
