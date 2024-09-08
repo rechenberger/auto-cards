@@ -68,6 +68,7 @@ const allThemeDefinitions = [
     classBottom: fontFuturistic.className,
   },
   // future themes
+  // - solarpunk
   // - cyberpunk
   // - steampunk
   // - pirate
