@@ -28,7 +28,7 @@ export const PlaygroundEdit = async ({
           {loadouts.map((loadout, sideIdx) => {
             return (
               <Fragment key={sideIdx}>
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-1">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
                   {allItems.map((item) => {
                     const count =
                       loadout.items.find((i) => i.name === item.name)?.count ??
@@ -60,32 +60,38 @@ export const PlaygroundEdit = async ({
 
                     return (
                       <Fragment key={item.name}>
-                        <div
-                          className={cn(
-                            // count <= 0 && 'grayscale',
-                            'flex flex-col',
-                          )}
-                        >
-                          <TinyItem name={item.name} />
-                        </div>
-                        <div className="flex flex-row gap-1 mb-4 items-center">
-                          {count >= 1 && (
-                            <>
-                              <Link
-                                className="flex-1 text-center font-bold py-1"
-                                href={minusHref}
-                              >
-                                -
-                              </Link>
-                              <div>{count}</div>
-                            </>
-                          )}
-                          <Link
-                            className="flex-1 text-center font-bold py-1"
-                            href={plusHref}
+                        <div className="flex flex-row gap-1 items-center group">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            asChild
+                            className={cn(count <= 0 && 'invisible')}
                           >
-                            +
-                          </Link>
+                            <Link
+                              className="text-center font-bold py-1"
+                              href={minusHref}
+                            >
+                              -
+                            </Link>
+                          </Button>
+                          <div
+                            className={cn(
+                              count <= 0 &&
+                                'opacity-20 group-hover:opacity-100',
+                              'flex flex-col',
+                              'flex-1',
+                            )}
+                          >
+                            <TinyItem name={item.name} count={count} />
+                          </div>
+                          <Button size="sm" variant="ghost" asChild>
+                            <Link
+                              className="text-center font-bold py-1"
+                              href={plusHref}
+                            >
+                              +
+                            </Link>
+                          </Button>
                         </div>
                       </Fragment>
                     )
