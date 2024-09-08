@@ -7,13 +7,17 @@ import { first } from 'lodash-es'
 import { revalidatePath } from 'next/cache'
 import { AiImageProps } from './AiImage'
 
-export type GenerateAiImageProps = AiImageProps & { force?: boolean }
+export type GenerateAiImageProps = AiImageProps & {
+  force?: boolean
+  skipRevalidate?: boolean
+}
 
 export const generateAiImage = async ({
   prompt,
   itemId,
   themeId,
   force = true,
+  skipRevalidate,
 }: GenerateAiImageProps) => {
   'use server'
   await throwIfNotAdmin({ allowDev: true })
@@ -26,7 +30,9 @@ export const generateAiImage = async ({
     updatedAt: new Date().toISOString(),
     createdAt: new Date().toISOString(),
   })
-  revalidatePath('/', 'layout')
+  if (!skipRevalidate) {
+    revalidatePath('/', 'layout')
+  }
 }
 
 const generateImage = async ({

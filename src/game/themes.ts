@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils'
 import { z } from 'zod'
 
 export const PLACEHOLDER_ITEM_PROMPT = '[ITEM_PROMPT]' as const
-const IMAGE_MODEL_PROMPT = 'Use Flux Schnell and make the image square.'
+export const IMAGE_MODEL_PROMPT = 'Use Flux Schnell and make the image square.'
 
 export type ThemeDefinitionRaw = {
   name: string
@@ -86,6 +86,7 @@ const allThemeDefinitions = [
   // - robot
   // - monster
   // - fairy
+  // - living in the clouds of venus
 ] as const satisfies ThemeDefinitionRaw[]
 
 export type ThemeDefinition = ThemeDefinitionRaw & {

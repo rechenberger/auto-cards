@@ -839,8 +839,14 @@ export type ItemName = z.infer<typeof ItemName>
 const allItems: ItemDefinition[] = allItemsConst
 
 export const getAllItems = async () => allItems
-export const getItemByName = async (name: string) => {
+
+export const tryGetItemByName = async (name: string) => {
   const item = allItems.find((item) => item.name === name)
+  return item
+}
+
+export const getItemByName = async (name: string) => {
+  const item = await tryGetItemByName(name)
   if (!item) {
     // throw new Error(`Item not found: ${name}`)
     console.warn(`Item not found: ${name}`)

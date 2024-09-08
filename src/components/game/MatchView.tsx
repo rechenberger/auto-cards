@@ -5,6 +5,7 @@ import { fallbackThemeId } from '@/game/themes'
 import { every } from 'lodash-es'
 import { AlertCircle, Swords } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
+import { MatchBackground } from './MatchBackground'
 import { MatchCards } from './MatchCards'
 import { getMatchParticipants, MatchParticipant } from './MatchParticipants'
 import { MatchReportPlaybackControls } from './MatchReportPlaybackControls'
@@ -45,8 +46,13 @@ export const MatchView = async ({
 
   const changemakers = await generateChangemakers({ match, participants })
 
+  const themeIds = await Promise.all(
+    participants.map((p) => fallbackThemeId(p.user?.themeId)),
+  )
+
   return (
     <>
+      <MatchBackground themeIds={themeIds} autoGenerate={true} />
       <div className="flex flex-col gap-4 flex-1">
         <div className="flex flex-col xl:flex-row gap-2 flex-1 items-center">
           <div className="hidden xl:flex">
@@ -55,7 +61,7 @@ export const MatchView = async ({
               sideIdx={0}
               changemakers={changemakers}
               matchReport={matchReport}
-              themeId={await fallbackThemeId(participants[0].user?.themeId)}
+              themeId={themeIds[0]}
             />
           </div>
           <div className="flex-1 flex flex-col gap-2 items-center justify-center self-stretch">
@@ -75,7 +81,7 @@ export const MatchView = async ({
               sideIdx={1}
               changemakers={changemakers}
               matchReport={matchReport}
-              themeId={await fallbackThemeId(participants[1].user?.themeId)}
+              themeId={themeIds[1]}
             />
           </div>
         </div>
@@ -92,7 +98,7 @@ export const MatchView = async ({
                 sideIdx={0}
                 changemakers={changemakers}
                 matchReport={matchReport}
-                themeId={await fallbackThemeId(participants[0].user?.themeId)}
+                themeId={themeIds[0]}
               />
             </div>
           </div>
@@ -111,7 +117,7 @@ export const MatchView = async ({
                 sideIdx={1}
                 changemakers={changemakers}
                 matchReport={matchReport}
-                themeId={await fallbackThemeId(participants[1].user?.themeId)}
+                themeId={themeIds[1]}
               />
             </div>
           </div>

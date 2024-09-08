@@ -15,6 +15,7 @@ export default function Layout({
           { name: 'Simulation', href: '/admin/simulation' },
           { name: 'Bot', href: '/admin/bot' },
           { name: 'Images', href: '/admin/images' },
+          { name: 'Backgrounds', href: '/admin/backgrounds' },
           { name: 'Users', href: '/admin/users' },
         ]}
       />
