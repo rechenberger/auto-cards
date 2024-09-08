@@ -6,7 +6,7 @@ import { every } from 'lodash-es'
 import { AlertCircle, Swords } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { MatchCards } from './MatchCards'
-import { getMatchParticipants } from './MatchParticipants'
+import { getMatchParticipants, MatchParticipant } from './MatchParticipants'
 import { MatchReportPlaybackControls } from './MatchReportPlaybackControls'
 import { MatchReportTabs } from './MatchReportTabs'
 import { MatchSide } from './MatchSide'
@@ -15,11 +15,14 @@ import { NextRoundButton } from './NextRoundButton'
 export const MatchView = async ({
   game,
   match,
+  forceParticipants,
 }: {
   game?: Game
   match: Match
+  forceParticipants?: MatchParticipant[]
 }) => {
-  const participants = await getMatchParticipants({ matchId: match.id })
+  const participants =
+    forceParticipants ?? (await getMatchParticipants({ matchId: match.id }))
   if (participants.length !== 2 || !every(participants, (p) => p.loadout)) {
     return (
       <>
