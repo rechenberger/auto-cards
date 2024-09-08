@@ -39,7 +39,10 @@ export const DpsReportDisplay = ({
           entriesStat = orderBy(entriesStat, (e) => e.value, 'desc')
           return (
             <TabsContent key={stat} value={stat}>
-              <DpsReportChart data={entriesStat} />
+              <DpsReportChart
+                data={entriesStat}
+                valueLabel={capitalCase(stat)}
+              />
               <div className="grid grid-cols-2 gap-2">
                 {['self', 'enemy'].map((target) => {
                   const entriesTarget = entriesStat.filter((entry) =>

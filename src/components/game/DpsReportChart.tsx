@@ -11,23 +11,13 @@ import {
 import { DpsReportEntry } from '@/game/dpsReport'
 import { capitalCase } from 'change-case'
 
-const chartConfig = {
-  value: {
-    label: 'Value',
-    color: 'hsl(var(--chart-1))',
-  },
-  label: {
-    color: 'hsl(var(--background))',
-  },
-  blue: {
-    color: 'hsl(var(--chart-1))',
-  },
-  red: {
-    color: 'hsl(var(--chart-2))',
-  },
-} satisfies ChartConfig
-
-export function DpsReportChart({ data }: { data: DpsReportEntry[] }) {
+export function DpsReportChart({
+  data,
+  valueLabel,
+}: {
+  data: DpsReportEntry[]
+  valueLabel?: string
+}) {
   const betterData = data.map((item) => ({
     ...item,
     source: capitalCase(item.source),
@@ -39,7 +29,23 @@ export function DpsReportChart({ data }: { data: DpsReportEntry[] }) {
         : item.target === 'enemy'
           ? 'hsla(0, 84%, 60%, 1)'
           : 'hsla(0, 84%, 60%, 0.5)',
+    valueN: item.negative ? -item.value : item.value,
   }))
+  const chartConfig = {
+    value: {
+      label: valueLabel ?? 'Value',
+      color: 'hsl(var(--chart-1))',
+    },
+    label: {
+      color: 'hsl(var(--background))',
+    },
+    blue: {
+      color: 'hsl(var(--chart-1))',
+    },
+    red: {
+      color: 'hsl(var(--chart-2))',
+    },
+  } satisfies ChartConfig
   return (
     <>
       <ChartContainer config={chartConfig}>
@@ -78,7 +84,7 @@ export function DpsReportChart({ data }: { data: DpsReportEntry[] }) {
               fontSize={12}
             /> */}
             <LabelList
-              dataKey="value"
+              dataKey="valueN"
               position="right"
               offset={8}
               className="fill-foreground"
