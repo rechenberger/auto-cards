@@ -43,6 +43,8 @@ Use Flux Schnell and make it 16:9 aspect ratio.`
         <AiImage
           prompt={prompt}
           className="w-full h-full object-cover brightness-90"
+          itemId={`match-bg`}
+          themeId={themeIds.join('~')}
         />
         <div className="absolute inset-0 bg-black opacity-30"></div>
       </div>

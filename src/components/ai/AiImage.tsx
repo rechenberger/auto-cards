@@ -1,4 +1,3 @@
-import { ThemeId } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { Suspense } from 'react'
@@ -9,7 +8,7 @@ export type AiImageProps = {
   prompt: string
   className?: string
   itemId?: string
-  themeId?: ThemeId
+  themeId?: string
 }
 
 export const AiImage = ({
