@@ -28,6 +28,34 @@ export const decodeLoadouts = (encoded: string): LoadoutData[] => {
   return encoded.split('~').map(decodeLoadout)
 }
 
-export const playgroundHref = ({ loadouts }: { loadouts: LoadoutData[] }) => {
-  return `/playground?loadouts=${encodeLoadouts(loadouts)}`
+export type PlaygroundParams = {
+  loadouts?: string
+  seed?: string
+  mode?: 'edit' | 'fight'
+}
+
+export type PlaygroundOptions = Omit<PlaygroundParams, 'loadouts'> & {
+  loadouts?: LoadoutData[]
+}
+
+export const playgroundHref = (options: PlaygroundOptions) => {
+  const searchParams = new URLSearchParams()
+  if (options.loadouts) {
+    searchParams.set('loadouts', encodeLoadouts(options.loadouts))
+  }
+  if (options.seed) {
+    searchParams.set('seed', options.seed)
+  }
+  if (options.mode) {
+    searchParams.set('mode', options.mode)
+  }
+  return `/playground?${searchParams.toString()}`
+}
+
+export const decodePlaygroundParams = (params: PlaygroundParams) => {
+  return {
+    loadouts: decodeLoadouts(params.loadouts ?? '1:hero~1:hero'),
+    seed: params.seed,
+    mode: params.mode ?? 'edit',
+  }
 }

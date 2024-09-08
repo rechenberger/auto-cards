@@ -9,7 +9,11 @@ import Link from 'next/link'
 import { Fragment } from 'react'
 import { TinyItem } from '../simulation/TinyItem'
 import { PlaygroundMatchView } from './PlaygroundMatchView'
-import { decodeLoadouts, encodeLoadouts } from './playgroundHref'
+import {
+  decodePlaygroundParams,
+  playgroundHref,
+  PlaygroundParams,
+} from './playgroundHref'
 
 export const metadata: Metadata = {
   title: 'Playground',
@@ -18,27 +22,19 @@ export const metadata: Metadata = {
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: {
-    loadouts?: string
-    seed?: string
-    fight?: string
-  }
+  searchParams?: PlaygroundParams
 }) {
   await notFoundIfNotAdmin({ allowDev: true })
   let allItems = await getAllItems()
   allItems = await orderItems(allItems)
 
-  const seed = searchParams?.seed ?? '1'
+  const options = decodePlaygroundParams(searchParams ?? {})
 
-  const loadouts = decodeLoadouts(searchParams?.loadouts ?? '1:hero~1:hero')
-
-  console.log(JSON.stringify(loadouts, null, 2))
-
-  const mode = !!searchParams?.fight ? 'fight' : 'edit'
+  const loadouts = options.loadouts
 
   return (
     <>
-      {mode === 'edit' && (
+      {options.mode === 'edit' && (
         <>
           <div className="flex flex-col gap-4 self-center">
             {/* <ActionButton
@@ -76,9 +72,7 @@ export default async function Page({
               Fight
             </ActionButton> */}
             <Button asChild>
-              <Link
-                href={`/playground?loadouts=${searchParams?.loadouts}&fight=true`}
-              >
+              <Link href={playgroundHref({ ...options, mode: 'fight' })}>
                 Fight
               </Link>
             </Button>
@@ -101,16 +95,20 @@ export default async function Page({
                             : loadout.items
                         const minusLoadouts = [...loadouts]
                         minusLoadouts[sideIdx] = { items: minusItems }
-                        const minusQuery = encodeLoadouts(minusLoadouts)
-                        const minusHref = `?loadouts=${minusQuery}`
+                        const minusHref = playgroundHref({
+                          ...options,
+                          loadouts: minusLoadouts,
+                        })
 
                         const plusItems = sumItems(loadout.items, [
                           { name: item.name, count: 1 },
                         ])
                         const plusLoadouts = [...loadouts]
                         plusLoadouts[sideIdx] = { items: plusItems }
-                        const plusQuery = encodeLoadouts(plusLoadouts)
-                        const plusHref = `?loadouts=${plusQuery}`
+                        const plusHref = playgroundHref({
+                          ...options,
+                          loadouts: plusLoadouts,
+                        })
 
                         return (
                           <Fragment key={item.name}>
@@ -152,7 +150,7 @@ export default async function Page({
           </div>
         </>
       )}
-      {mode === 'fight' && <PlaygroundMatchView loadouts={loadouts} />}
+      {options.mode === 'fight' && <PlaygroundMatchView loadouts={loadouts} />}
     </>
   )
 }
