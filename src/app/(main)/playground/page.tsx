@@ -10,36 +10,10 @@ import Link from 'next/link'
 import { Fragment } from 'react'
 import { TinyItem } from '../simulation/TinyItem'
 import { PlaygroundMatchView } from './PlaygroundMatchView'
+import { decodePlaygroundQuery, encodePlaygroundQuery } from './playgroundHref'
 
 export const metadata: Metadata = {
   title: 'Playground',
-}
-
-const decode = (q: string) => {
-  return q
-    .split('~')
-    .map((side) => side.split(','))
-    .map((side) =>
-      side.map((item) => {
-        const [count, name] = item.split(':')
-        return {
-          name,
-          count: Number(count),
-        }
-      }),
-    )
-}
-
-const encodePlaygroundQuery = (sides: { name: string; count?: number }[][]) => {
-  return sides
-    .map((side) =>
-      side.map((item) => `${item.count ?? 1}:${item.name}`).join(','),
-    )
-    .join('~')
-}
-
-const playgroundHref = (sides: { name: string; count?: number }[][]) => {
-  return `/playground?q=${encodePlaygroundQuery(sides)}`
 }
 
 export default async function Page({
@@ -58,7 +32,7 @@ export default async function Page({
   const q = searchParams?.q ?? '1:hero~1:hero'
   const seed = searchParams?.seed ?? '1'
 
-  const sides = decode(q)
+  const sides = decodePlaygroundQuery(q)
 
   const loadouts: LoadoutData[] = sides.map((side) => ({
     items: side.filter((i) => i.count > 0),
