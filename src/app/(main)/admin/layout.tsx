@@ -14,6 +14,7 @@ export default function Layout({
           { name: 'Playground', href: '/admin/playground' },
           { name: 'Simulation', href: '/admin/simulation' },
           { name: 'Bot', href: '/admin/bot' },
+          { name: 'Images', href: '/admin/images' },
           { name: 'Users', href: '/admin/users' },
         ]}
       />
