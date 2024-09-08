@@ -1,7 +1,7 @@
 import { throwIfNotAdmin } from '@/auth/getIsAdmin'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
-import { getItemByName } from '@/game/allItems'
+import { tryGetItemByName } from '@/game/allItems'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
@@ -20,7 +20,7 @@ export const AiImageGallery = async (props: AiImageGalleryProps) => {
   const { itemId, prompt, className, themeId, tiny } = props
   const aiImages = await getAiImages(props)
 
-  const item = itemId ? await getItemByName(itemId) : undefined
+  const item = itemId ? await tryGetItemByName(itemId) : undefined
   const subTitle = item ? item.prompt || capitalCase(item.name) : prompt
 
   const active = first(orderBy(aiImages, 'updatedAt', 'desc'))
