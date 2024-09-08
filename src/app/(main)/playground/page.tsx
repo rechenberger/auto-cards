@@ -1,16 +1,15 @@
 import { notFoundIfNotAdmin } from '@/auth/getIsAdmin'
 import { Button } from '@/components/ui/button'
-import { LoadoutData } from '@/db/schema-zod'
 import { getAllItems } from '@/game/allItems'
 import { orderItems } from '@/game/orderItems'
+import { negativeItems, sumItems } from '@/game/sumItems'
 import { cn } from '@/lib/utils'
-import { cloneDeep } from 'lodash-es'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { Fragment } from 'react'
 import { TinyItem } from '../simulation/TinyItem'
 import { PlaygroundMatchView } from './PlaygroundMatchView'
-import { decodePlaygroundQuery, encodePlaygroundQuery } from './playgroundHref'
+import { decodeLoadouts, encodeLoadouts } from './playgroundHref'
 
 export const metadata: Metadata = {
   title: 'Playground',
@@ -20,7 +19,7 @@ export default async function Page({
   searchParams,
 }: {
   searchParams?: {
-    q?: string
+    loadouts?: string
     seed?: string
     fight?: string
   }
@@ -29,14 +28,11 @@ export default async function Page({
   let allItems = await getAllItems()
   allItems = await orderItems(allItems)
 
-  const q = searchParams?.q ?? '1:hero~1:hero'
   const seed = searchParams?.seed ?? '1'
 
-  const sides = decodePlaygroundQuery(q)
+  const loadouts = decodeLoadouts(searchParams?.loadouts ?? '1:hero~1:hero')
 
-  const loadouts: LoadoutData[] = sides.map((side) => ({
-    items: side.filter((i) => i.count > 0),
-  }))
+  console.log(JSON.stringify(loadouts, null, 2))
 
   const mode = !!searchParams?.fight ? 'fight' : 'edit'
 
@@ -80,38 +76,41 @@ export default async function Page({
               Fight
             </ActionButton> */}
             <Button asChild>
-              <Link href={`/playground?q=${q}&fight=true`}>Fight</Link>
+              <Link
+                href={`/playground?loadouts=${searchParams?.loadouts}&fight=true`}
+              >
+                Fight
+              </Link>
             </Button>
             <div className="grid grid-cols-2 gap-8">
-              {sides.map((side, sideIdx) => {
+              {loadouts.map((loadout, sideIdx) => {
                 return (
                   <Fragment key={sideIdx}>
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-1">
                       {allItems.map((item) => {
                         const count =
-                          side.find((i) => i.name === item.name)?.count ?? 0
+                          loadout.items.find((i) => i.name === item.name)
+                            ?.count ?? 0
 
-                        const minus = cloneDeep(sides)
-                        const minusItem = minus[sideIdx]?.find(
-                          (i) => i.name === item.name,
-                        )
-                        if (minusItem && minusItem.count > 0) {
-                          minusItem.count--
-                        }
-                        const minusQuery = encodePlaygroundQuery(minus)
-                        const minusHref = `?q=${minusQuery}`
+                        const minusItems =
+                          count > 0
+                            ? sumItems(
+                                loadout.items,
+                                negativeItems([{ name: item.name, count: 1 }]),
+                              )
+                            : loadout.items
+                        const minusLoadouts = [...loadouts]
+                        minusLoadouts[sideIdx] = { items: minusItems }
+                        const minusQuery = encodeLoadouts(minusLoadouts)
+                        const minusHref = `?loadouts=${minusQuery}`
 
-                        const plus = cloneDeep(sides)
-                        const plusItem = plus[sideIdx]?.find(
-                          (i) => i.name === item.name,
-                        )
-                        if (plusItem) {
-                          plusItem.count++
-                        } else {
-                          plus[sideIdx].push({ name: item.name, count: 1 })
-                        }
-                        const plusQuery = encodePlaygroundQuery(plus)
-                        const plusHref = `?q=${plusQuery}`
+                        const plusItems = sumItems(loadout.items, [
+                          { name: item.name, count: 1 },
+                        ])
+                        const plusLoadouts = [...loadouts]
+                        plusLoadouts[sideIdx] = { items: plusItems }
+                        const plusQuery = encodeLoadouts(plusLoadouts)
+                        const plusHref = `?loadouts=${plusQuery}`
 
                         return (
                           <Fragment key={item.name}>
