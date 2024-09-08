@@ -1,6 +1,4 @@
 import { notFoundIfNotAdmin } from '@/auth/getIsAdmin'
-import { getAllItems } from '@/game/allItems'
-import { orderItems } from '@/game/orderItems'
 import { Metadata } from 'next'
 import { PlaygroundEdit } from './PlaygroundEdit'
 import { PlaygroundMatchView } from './PlaygroundMatchView'
