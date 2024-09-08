@@ -4,12 +4,15 @@ import {
   PLACEHOLDER_ITEM_PROMPT,
   ThemeId,
 } from '@/game/themes'
+import { cn } from '@/lib/utils'
 import { AiImage } from '../ai/AiImage'
 
 export const MatchBackground = async ({
   themeIds,
+  variant = 'fixed',
 }: {
   themeIds: ThemeId[]
+  variant?: 'fixed' | 'inline'
 }) => {
   if (themeIds.length !== 2) return null
 
@@ -39,14 +42,16 @@ Use Flux Schnell and make it 16:9 aspect ratio.`
 
   return (
     <>
-      <div className="fixed -z-10 inset-0">
+      <div className={cn(variant === 'fixed' && 'fixed -z-10 inset-0')}>
         <AiImage
           prompt={prompt}
           className="w-full h-full object-cover brightness-90"
           itemId={`match-bg`}
           themeId={themeIds.join('~')}
         />
-        <div className="absolute inset-0 bg-black opacity-30"></div>
+        {variant === 'fixed' && (
+          <div className="absolute inset-0 bg-black opacity-30"></div>
+        )}
       </div>
     </>
   )
