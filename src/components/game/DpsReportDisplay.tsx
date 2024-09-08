@@ -1,6 +1,6 @@
 import { dpsReport } from '@/game/dpsReport'
 import { MatchReport } from '@/game/generateMatch'
-import { getStatDefinition } from '@/game/stats'
+import { getStatDefinition, Stat } from '@/game/stats'
 import { capitalCase } from 'change-case'
 import { keyBy, mapValues, orderBy, uniq } from 'lodash-es'
 import { Fragment } from 'react'
@@ -10,6 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import { DpsReportChart } from './DpsReportChart'
 import { StatDisplay } from './StatsDisplay'
 
+const statOrder: Stat[] = ['damage', 'health', 'block', 'stamina']
+
 export const DpsReportDisplay = ({
   matchReport,
   showCards,
@@ -18,8 +20,11 @@ export const DpsReportDisplay = ({
   showCards?: boolean
 }) => {
   const { entries } = dpsReport({ matchReport })
-  const stats = uniq(entries.map((entry) => entry.stat))
-
+  let stats = uniq(entries.map((entry) => entry.stat))
+  stats = orderBy(stats, (stat) => {
+    const idx = statOrder.indexOf(stat)
+    return idx === -1 ? Infinity : idx
+  })
   return (
     <>
       <Tabs defaultValue={'damage'}>
