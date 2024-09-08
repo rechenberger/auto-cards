@@ -70,6 +70,7 @@ export const StatDisplay = ({
         'rounded-full border px-1 py-0.5 flex flex-row items-center',
         stat.bgClass,
         '[text-shadow:_0px_0px_2px_rgb(0_0_0_/_80%)]',
+        'text-white',
         statClassName,
       )}
     >
