@@ -1,4 +1,4 @@
-import { TinyItem } from '@/app/(main)/simulation/TinyItem'
+import { TinyItem } from '@/components/game/TinyItem'
 import { getAllItems } from '@/game/allItems'
 import { allStatsDefinition } from '@/game/stats'
 import { allTagsDefinition } from '@/game/tags'

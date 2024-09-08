@@ -1,3 +1,4 @@
+import { TinyItem } from '@/components/game/TinyItem'
 import { TimeAgo } from '@/components/simple/TimeAgo'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
@@ -8,7 +9,6 @@ import { desc } from 'drizzle-orm'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { Fragment } from 'react'
-import { TinyItem } from '../simulation/TinyItem'
 
 export const metadata: Metadata = {
   title: 'Watch',

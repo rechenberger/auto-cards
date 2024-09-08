@@ -42,22 +42,22 @@ export const MainTop = async () => {
     },
     {
       name: 'Playground',
-      href: '/playground',
+      href: '/admin/playground',
       hidden: !isAdminOrDev,
     },
     {
       name: 'Simulation',
-      href: '/simulation',
+      href: '/admin/simulation',
       hidden: !isAdminOrDev,
     },
     {
       name: 'Bot',
-      href: '/bot',
+      href: '/admin/bot',
       hidden: !isAdminOrDev,
     },
     {
       name: 'Users',
-      href: '/users',
+      href: '/admin/users',
       hidden: !isAdminOrDev,
     },
   ].filter((entry) => !entry.hidden)

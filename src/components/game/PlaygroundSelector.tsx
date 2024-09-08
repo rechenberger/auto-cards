@@ -5,7 +5,7 @@ import {
   defaultLoadoutString,
   encodeLoadout,
   playgroundHref,
-} from '@/app/(main)/playground/playgroundHref'
+} from '@/app/(main)/admin/playground/playgroundHref'
 import { LoadoutData } from '@/db/schema-zod'
 import { createSeed } from '@/game/seed'
 import { cn } from '@/lib/utils'

@@ -1,4 +1,4 @@
-import { playgroundHref } from '@/app/(main)/playground/playgroundHref'
+import { playgroundHref } from '@/app/(main)/admin/playground/playgroundHref'
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { LoadoutData } from '@/db/schema-zod'
 import { MatchReport } from '@/game/generateMatch'

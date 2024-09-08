@@ -51,7 +51,7 @@ export const playgroundHref = (options: PlaygroundOptions) => {
   if (options.mode) {
     searchParams.set('mode', options.mode)
   }
-  return `/playground?${searchParams.toString()}`
+  return `/admin/playground?${searchParams.toString()}`
 }
 
 export const defaultLoadoutString = '1:hero'

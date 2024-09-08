@@ -1,3 +1,4 @@
+import { TinyItem } from '@/components/game/TinyItem'
 import { Button } from '@/components/ui/button'
 import { getAllItems } from '@/game/allItems'
 import { orderItems } from '@/game/orderItems'
@@ -5,7 +6,6 @@ import { negativeItems, sumItems } from '@/game/sumItems'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { Fragment } from 'react'
-import { TinyItem } from '../simulation/TinyItem'
 import { playgroundHref, PlaygroundOptions } from './playgroundHref'
 
 export const PlaygroundEdit = async ({

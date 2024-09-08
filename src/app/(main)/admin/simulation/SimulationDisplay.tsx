@@ -1,4 +1,5 @@
 import { PlaygroundSelector } from '@/components/game/PlaygroundSelector'
+import { TinyItem } from '@/components/game/TinyItem'
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import { Progress } from '@/components/ui/progress'
 import {
@@ -15,7 +16,6 @@ import { ItemDefinition } from '@/game/ItemDefinition'
 import { cloneDeep, omit, orderBy, sum, sumBy } from 'lodash-es'
 import { Fragment } from 'react'
 import { SimulationInput, SimulationResult } from './simulate'
-import { TinyItem } from './TinyItem'
 
 export const SimulationDisplay = async ({
   input,
