@@ -1,3 +1,5 @@
+import { PlaygroundSelector } from '@/components/game/PlaygroundSelector'
+import { TinyItem } from '@/components/game/TinyItem'
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import { Progress } from '@/components/ui/progress'
 import {
@@ -14,7 +16,6 @@ import { ItemDefinition } from '@/game/ItemDefinition'
 import { cloneDeep, omit, orderBy, sum, sumBy } from 'lodash-es'
 import { Fragment } from 'react'
 import { SimulationInput, SimulationResult } from './simulate'
-import { TinyItem } from './TinyItem'
 
 export const SimulationDisplay = async ({
   input,
@@ -107,6 +108,7 @@ export const SimulationDisplay = async ({
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>Playground</TableHead>
               <TableHead>Loadout</TableHead>
               <TableHead title="Selection rounds survived">Age</TableHead>
               <TableHead title="average match time">ØTime</TableHead>
@@ -118,6 +120,11 @@ export const SimulationDisplay = async ({
             {bots.map((bot, idx) => (
               <Fragment key={idx}>
                 <TableRow>
+                  <TableCell>
+                    <PlaygroundSelector
+                      loadout={bot.game.data.currentLoadout}
+                    />
+                  </TableCell>
                   <TableCell className="flex flex-row gap-1 overflow-hidden">
                     {countifyItems(
                       withoutStartingItems(bot.game.data.currentLoadout.items),
@@ -140,6 +147,7 @@ export const SimulationDisplay = async ({
                   <TableCell className="w-max">
                     {bot.wins}&nbsp;(
                     {Math.round((bot.wins / bot.matches) * 100)}%)
+                    {/* </Link> */}
                   </TableCell>
                 </TableRow>
               </Fragment>

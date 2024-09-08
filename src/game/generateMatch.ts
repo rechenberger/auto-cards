@@ -1,5 +1,5 @@
 import { LoadoutData } from '@/db/schema-zod'
-import { rngFloat, rngOrder, SeedArray } from '@/game/seed'
+import { rngFloat, rngOrder, Seed, SeedArray } from '@/game/seed'
 import { cloneDeep, minBy, orderBy, range } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { calcCooldown } from './calcCooldown'
@@ -17,7 +17,10 @@ import {
   MAX_MATCH_TIME,
   MAX_THORNS_MULTIPLIER,
 } from './config'
+import { TriggerEventType } from './ItemDefinition'
+import { getAllModifiedStats } from './modifiers'
 import { orderItems } from './orderItems'
+import { randomStatsResolve } from './randomStatsResolve'
 import { Stats } from './stats'
 
 export type MatchLog = {
@@ -44,7 +47,7 @@ type GenerateMatchInput = {
   skipLogs?: boolean
 }
 
-export const generateMatchState = async (input: GenerateMatchInput) => {
+const generateMatchStateSides = async (input: GenerateMatchInput) => {
   const sides = await Promise.all(
     input.participants.map(async (p, idx) => {
       let items = await Promise.all(
@@ -67,39 +70,66 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
       }
     }),
   )
+  return sides
+}
 
-  const futureActions = [
-    { type: 'baseTick' as const, time: 0 },
-    ...rngOrder({
-      items: sides,
-      seed: [...input.seed, 'futureActions'],
-    }).flatMap((side) => {
-      return side.items.flatMap((item, itemIdx) => {
-        return (
-          item.triggers?.flatMap((trigger, triggerIdx) => {
-            if (!['interval', 'startOfBattle'].includes(trigger.type)) return []
-            const cooldown = calcCooldown({
-              cooldown: trigger.cooldown,
-              stats: side.stats,
-              tags: item.tags ?? [],
-            })
-            return range(item.count ?? 1).map((itemCounter) => ({
-              type: 'itemTrigger' as const,
-              time: trigger.type === 'startOfBattle' ? 0 : cooldown,
-              lastUsed: 0,
-              sideIdx: side.sideIdx,
-              itemIdx,
-              triggerIdx,
-              itemCounter, // to have different seed for each item in a stack
-            }))
-          }) || []
-        )
-      })
-    }),
-  ]
+const generateMatchStateFutureActionsItems = async (
+  input: GenerateMatchInput,
+) => {
+  const sides = await generateMatchStateSides(input)
+  const futureActionsItems = rngOrder({
+    items: sides,
+    seed: [...input.seed, 'futureActions'],
+  }).flatMap((side) => {
+    return side.items.flatMap((item, itemIdx) => {
+      return (
+        item.triggers?.flatMap((trigger, triggerIdx) => {
+          const time =
+            trigger.type === 'interval'
+              ? calcCooldown({
+                  cooldown: trigger.cooldown,
+                  stats: side.stats,
+                  tags: item.tags ?? [],
+                })
+              : trigger.type === 'startOfBattle'
+                ? 0
+                : undefined
+
+          return range(item.count ?? 1).map((itemCounter) => ({
+            type: trigger.type,
+            time,
+            lastUsed: 0,
+            usedCount: 0,
+            currentCooldown: trigger.type === 'interval' ? time : undefined,
+            sideIdx: side.sideIdx,
+            itemIdx,
+            triggerIdx,
+            itemCounter, // to have different seed for each item in a stack
+          }))
+        }) || []
+      )
+    })
+  })
+  return { sides, futureActionsItems }
+}
+
+type FutureActionItem = Awaited<
+  ReturnType<typeof generateMatchStateFutureActionsItems>
+>['futureActionsItems'][number]
+
+export const generateMatchState = async (input: GenerateMatchInput) => {
+  const { sides, futureActionsItems } =
+    await generateMatchStateFutureActionsItems(input)
+
+  const futureActionsBase = [{ type: 'baseTick' as const, time: 0 }]
+
+  const futureActions = [...futureActionsBase, ...futureActionsItems]
   return { sides, futureActions }
 }
+
 export type MatchState = Awaited<ReturnType<typeof generateMatchState>>
+
+export const NOT_ENOUGH_MSG = 'Not enough'
 
 export const generateMatch = async ({
   skipLogs,
@@ -138,10 +168,416 @@ export const generateMatch = async ({
     return { logs, winner, loser, time }
   }
 
+  const baseTick = ({ side }: { side: MatchState['sides'][number] }) => {
+    // REGEN
+    const missingHealth = (side.stats.healthMax ?? 0) - (side.stats.health ?? 0)
+    const missingStamina =
+      (side.stats.staminaMax ?? 0) - (side.stats.stamina ?? 0)
+    const regenStats = {
+      health: Math.min(missingHealth, side.stats.regen ?? 0),
+      stamina: Math.min(missingStamina, side.stats.staminaRegen ?? 0),
+    }
+    if (regenStats.health > 0 || regenStats.stamina > 0) {
+      addStats(side.stats, regenStats)
+      log({
+        msg: 'Regenerate',
+        sideIdx: side.sideIdx,
+        stats: regenStats,
+        targetSideIdx: side.sideIdx,
+      })
+    }
+
+    // POISON
+    if (side.stats.poison) {
+      const poisonStats = {
+        health: -1 * side.stats.poison ?? 0,
+      }
+      addStats(side.stats, poisonStats)
+      log({
+        msg: 'Poison',
+        sideIdx: side.sideIdx,
+        stats: poisonStats,
+        targetSideIdx: side.sideIdx,
+      })
+    }
+
+    // FLYING
+    if (side.stats.flying) {
+      const flyingStats = {
+        flying: -1,
+      }
+      addStats(side.stats, flyingStats)
+      log({
+        msg: 'Flying',
+        sideIdx: side.sideIdx,
+        stats: flyingStats,
+        targetSideIdx: side.sideIdx,
+      })
+    }
+
+    // FATIGUE
+    const fatigue = Math.max(1 + (time - FATIGUE_STARTS_AT) / BASE_TICK_TIME, 0)
+    if (fatigue > 0) {
+      const fatigueStats = {
+        health: -1 * fatigue,
+      }
+      addStats(side.stats, fatigueStats)
+      log({
+        msg: 'Fatigue',
+        sideIdx: side.sideIdx,
+        stats: fatigueStats,
+        targetSideIdx: side.sideIdx,
+      })
+    }
+  }
+
+  type TriggerHandlerInput = {
+    seed: Seed
+    action: FutureActionItem
+    baseLogMsg?: string
+  }
+
+  const triggerHandler = (input: TriggerHandlerInput) => {
+    const { seed, action } = input
+
+    const { sideIdx, itemIdx, triggerIdx } = action
+    const seedAction = [seed, action]
+    const mySide = sides[sideIdx]
+    const otherSide = sides[1 - sideIdx] // lol
+    const item = mySide.items[itemIdx]
+    const trigger = item.triggers![triggerIdx]
+
+    const baseLog = {
+      sideIdx,
+      itemIdx,
+      triggerIdx,
+      msg: input.baseLogMsg,
+    }
+
+    let statsForItem = item.statsItem
+      ? sumStats2(mySide.stats, item.statsItem)
+      : mySide.stats
+
+    const allStats = getAllModifiedStats({
+      state,
+      itemIdx,
+      sideIdx,
+      triggerIdx,
+      statsForItem,
+    })
+    const { statsRequired, statsSelf, statsEnemy, attack } = allStats
+    statsForItem = allStats.statsForItem ?? statsForItem
+
+    if (trigger.maxCount && action.usedCount >= trigger.maxCount) {
+      return
+    }
+
+    if (trigger.chancePercent) {
+      const chancePercent = trigger.chancePercent
+      const chanceSeed = trigger.chanceGroup
+        ? [
+            input.seed,
+            'triggerChanceGroup',
+            action.itemIdx, // different item has different chance
+            action.itemCounter, // different item in stack has different chance
+            trigger.chanceGroup, // group multiple triggers together
+          ]
+        : seedAction
+      const chanceRng = rngFloat({ seed: chanceSeed, max: 100 })
+      const doesTrigger = chanceRng <= chancePercent
+      if (!doesTrigger) {
+        return
+      }
+    }
+
+    let hasRequiredStats = true
+    if (statsRequired) {
+      const enough = hasStats(statsForItem, statsRequired)
+      if (!enough) {
+        log({
+          ...baseLog,
+          msg: NOT_ENOUGH_MSG,
+          targetSideIdx: mySide.sideIdx,
+          stats: statsRequired,
+        })
+        hasRequiredStats = false
+      }
+    }
+
+    if (hasRequiredStats) {
+      action.usedCount++
+
+      if (statsSelf) {
+        tryAddStats(mySide.stats, statsSelf)
+        log({
+          ...baseLog,
+          stats: statsSelf,
+          targetSideIdx: mySide.sideIdx,
+        })
+        randomStatsResolve({
+          stats: mySide.stats,
+          seed: [seedAction, 'randomStatsResolve', 'statsSelf'],
+          onRandomStat: ({ stats, randomStat }) => {
+            log({
+              ...baseLog,
+              stats,
+              msg: randomStat,
+              targetSideIdx: mySide.sideIdx,
+            })
+          },
+        })
+      }
+      if (trigger.statsItem) {
+        if (!item.statsItem) {
+          item.statsItem = {}
+        }
+        tryAddStats(item.statsItem, trigger.statsItem)
+        log({
+          ...baseLog,
+          msg: 'apply to item',
+          stats: trigger.statsItem,
+          targetSideIdx: mySide.sideIdx,
+          targetItemIdx: itemIdx,
+        })
+        randomStatsResolve({
+          stats: item.statsItem,
+          seed: [seedAction, 'randomStatsResolve', 'statsItem'],
+          onRandomStat: ({ stats, randomStat }) => {
+            log({
+              ...baseLog,
+              stats,
+              msg: randomStat,
+              targetSideIdx: mySide.sideIdx,
+              targetItemIdx: itemIdx,
+            })
+          },
+        })
+      }
+      const tryingToReach = !!statsEnemy || !!attack
+      if (tryingToReach) {
+        const canReachEnemy = otherSide.stats.flying
+          ? !!statsForItem.flying || !!statsForItem.ranged
+          : true
+        if (!canReachEnemy) {
+          log({
+            ...baseLog,
+            targetSideIdx: otherSide.sideIdx,
+            msg: 'Cannot Reach',
+          })
+        } else {
+          if (statsEnemy) {
+            tryAddStats(otherSide.stats, statsEnemy)
+            log({
+              ...baseLog,
+              stats: statsEnemy,
+              targetSideIdx: otherSide.sideIdx,
+            })
+            randomStatsResolve({
+              stats: otherSide.stats,
+              seed: [seedAction, 'randomStatsResolve', 'statsEnemy'],
+              onRandomStat: ({ stats, randomStat }) => {
+                log({
+                  ...baseLog,
+                  stats,
+                  msg: randomStat,
+                  targetSideIdx: otherSide.sideIdx,
+                })
+              },
+            })
+          }
+          if (attack) {
+            const accuracyRng = rngFloat({
+              seed: [...seedAction, 'hit'],
+              max: 100,
+            })
+            let accuracy = attack.accuracy ?? 0
+            if (statsForItem.blind) {
+              accuracy -= statsForItem.blind
+            }
+            if (statsForItem.drunk) {
+              accuracy -= statsForItem.drunk
+            }
+            if (statsForItem.luck) {
+              accuracy += statsForItem.luck
+            }
+            const doesHit = accuracyRng <= accuracy
+            if (doesHit) {
+              triggerEvents({
+                eventType: 'onAttackBeforeHit',
+                parentTrigger: input,
+                itemIdx,
+                sideIdx,
+              })
+              triggerEvents({
+                eventType: 'onDefendBeforeHit',
+                parentTrigger: input,
+                sideIdx: otherSide.sideIdx,
+              })
+
+              let damage = attack.damage ?? 0
+
+              if (statsForItem.empower) {
+                damage += statsForItem.empower
+              }
+
+              if (statsForItem.drunk) {
+                damage *= 1 + statsForItem.drunk / 100
+              }
+
+              const critChance = statsForItem.aim ?? 0
+              const doesCrit =
+                rngFloat({ seed: [...seedAction, 'crit'], max: 100 }) <=
+                critChance
+              if (doesCrit) {
+                damage *= CRIT_MULTIPLIER
+                if (statsEnemy?.critDamage) {
+                  damage *= 1 + statsEnemy.critDamage / 100
+                }
+              }
+              damage = Math.round(damage)
+
+              const blockedDamage = Math.min(damage, otherSide.stats.block ?? 0)
+              damage -= blockedDamage
+              const targetStats: Stats = {
+                health: -1 * damage,
+                block: -1 * blockedDamage,
+              }
+              addStats(otherSide.stats, targetStats)
+              log({
+                ...baseLog,
+                msg: doesCrit ? `Critical Hit` : `Hit`,
+                targetSideIdx: otherSide.sideIdx,
+                stats: targetStats,
+              })
+              if (doesCrit) {
+                if (statsForItem.aim) {
+                  const removeAimStats: Stats = {
+                    aim: -1 * statsForItem.aim,
+                  }
+                  tryAddStats(mySide.stats, removeAimStats)
+                  if (item.statsItem) {
+                    tryAddStats(item.statsItem, removeAimStats)
+                  }
+                  log({
+                    ...baseLog,
+                    msg: `Reset Aim`,
+                    targetSideIdx: mySide.sideIdx,
+                    stats: removeAimStats,
+                  })
+                }
+              }
+
+              // LIFESTEAL
+              if (statsForItem.lifeSteal && damage > 0) {
+                const lifeStealDamage = Math.ceil(
+                  damage * (statsForItem.lifeSteal / 100),
+                )
+                const lifeStealStats: Stats = {
+                  health: lifeStealDamage,
+                }
+                tryAddStats(mySide.stats, lifeStealStats)
+                log({
+                  ...baseLog,
+                  sideIdx: mySide.sideIdx,
+                  msg: `Life Steal`,
+                  targetSideIdx: mySide.sideIdx,
+                  stats: lifeStealStats,
+                })
+              }
+
+              // THORNS
+              if (
+                otherSide.stats.thorns &&
+                damage > 0 &&
+                !statsForItem.ranged
+              ) {
+                let thornsDamage = otherSide.stats.thorns
+                const maxThornsDamage = Math.round(
+                  damage * MAX_THORNS_MULTIPLIER,
+                )
+                thornsDamage = Math.min(maxThornsDamage, thornsDamage)
+
+                const thornsStats: Stats = {
+                  health: -1 * thornsDamage,
+                }
+                addStats(mySide.stats, thornsStats)
+                log({
+                  ...baseLog,
+                  sideIdx: otherSide.sideIdx,
+                  msg: `Thorns`,
+                  targetSideIdx: mySide.sideIdx,
+                  stats: thornsStats,
+                  itemIdx: undefined,
+                })
+              }
+
+              triggerEvents({
+                eventType: 'onAttackAfterHit',
+                parentTrigger: input,
+                itemIdx,
+                sideIdx,
+              })
+              triggerEvents({
+                eventType: 'onDefendAfterHit',
+                parentTrigger: input,
+                sideIdx: otherSide.sideIdx,
+              })
+            } else {
+              log({
+                ...baseLog,
+                msg: 'Miss',
+                targetSideIdx: otherSide.sideIdx,
+              })
+            }
+          }
+        }
+      }
+    }
+
+    action.lastUsed = time
+
+    // We do that after all actions, so that haste is applied to the cooldown
+    // action.time += calcCooldown({
+    //   cooldown: trigger.cooldown,
+    //   stats: mySide.stats,
+    // })
+  }
+
+  const triggerEvents = ({
+    eventType,
+    parentTrigger,
+    itemIdx,
+    sideIdx,
+  }: {
+    eventType: TriggerEventType
+    parentTrigger: TriggerHandlerInput
+    itemIdx?: number
+    sideIdx: number
+  }) => {
+    // Find Actions
+    const actions = futureActions.filter(
+      (a) =>
+        a.type === eventType &&
+        a.sideIdx === sideIdx &&
+        (!itemIdx || a.itemIdx === itemIdx),
+    )
+
+    // Trigger Actions
+    for (const action of actions) {
+      if (action.type !== eventType) continue // type guard
+      // check uses etc
+      triggerHandler({
+        seed: parentTrigger.seed,
+        action,
+        baseLogMsg: eventType,
+      })
+    }
+  }
+
   while (true) {
     const seedTick = [...seed, time]
 
-    const nextTime = minBy(futureActions, (a) => a.time)?.time
+    const nextTime = minBy(futureActions, (a) => a.time ?? Infinity)?.time
     if (nextTime === undefined) {
       throw new Error('no next time')
     }
@@ -158,289 +594,16 @@ export const generateMatch = async ({
           items: sides,
           seed: [...seedTick, 'actions'],
         })) {
-          // REGEN
-          const missingHealth =
-            (side.stats.healthMax ?? 0) - (side.stats.health ?? 0)
-          const missingStamina =
-            (side.stats.staminaMax ?? 0) - (side.stats.stamina ?? 0)
-          const regenStats = {
-            health: Math.min(missingHealth, side.stats.regen ?? 0),
-            stamina: Math.min(missingStamina, side.stats.staminaRegen ?? 0),
-          }
-          if (regenStats.health > 0 || regenStats.stamina > 0) {
-            addStats(side.stats, regenStats)
-            log({
-              msg: 'Regenerate',
-              sideIdx: side.sideIdx,
-              stats: regenStats,
-              targetSideIdx: side.sideIdx,
-            })
-          }
-
-          // POISON
-          if (side.stats.poison) {
-            const poisonStats = {
-              health: -1 * side.stats.poison ?? 0,
-            }
-            addStats(side.stats, poisonStats)
-            log({
-              msg: 'Poison',
-              sideIdx: side.sideIdx,
-              stats: poisonStats,
-              targetSideIdx: side.sideIdx,
-            })
-          }
-
-          // FLYING
-          if (side.stats.flying) {
-            const flyingStats = {
-              flying: -1,
-            }
-            addStats(side.stats, flyingStats)
-            log({
-              msg: 'Flying',
-              sideIdx: side.sideIdx,
-              stats: flyingStats,
-              targetSideIdx: side.sideIdx,
-            })
-          }
-
-          // FATIGUE
-          const fatigue = Math.max(
-            1 + (time - FATIGUE_STARTS_AT) / BASE_TICK_TIME,
-            0,
-          )
-          if (fatigue > 0) {
-            const fatigueStats = {
-              health: -1 * fatigue,
-            }
-            addStats(side.stats, fatigueStats)
-            log({
-              msg: 'Fatigue',
-              sideIdx: side.sideIdx,
-              stats: fatigueStats,
-              targetSideIdx: side.sideIdx,
-            })
-          }
+          baseTick({
+            side,
+          })
         }
-      } else if (action.type === 'itemTrigger') {
-        const seedAction = [...seedTick, action]
-        const mySide = sides[action.sideIdx]
-        const otherSide = sides[1 - action.sideIdx] // lol
-        const item = mySide.items[action.itemIdx]
-        const trigger = item.triggers![action.triggerIdx]
-        action.lastUsed = time
-
-        const statsForItem = item.statsItem
-          ? sumStats2(mySide.stats, item.statsItem)
-          : mySide.stats
-
-        const {
-          statsRequired,
-          statsSelf,
-          statsEnemy,
-          attack,
-          statsEnemyOnHit,
-        } = trigger
-        let hasRequiredStats = true
-        if (statsRequired) {
-          const enough = hasStats(statsForItem, statsRequired)
-          if (!enough) {
-            log({
-              ...action,
-              msg: `Not enough`,
-              targetSideIdx: mySide.sideIdx,
-              stats: statsRequired,
-            })
-            hasRequiredStats = false
-          }
-        }
-        if (hasRequiredStats) {
-          if (statsSelf) {
-            tryAddStats(mySide.stats, statsSelf)
-            log({
-              ...action,
-              stats: statsSelf,
-              targetSideIdx: mySide.sideIdx,
-            })
-          }
-          if (trigger.statsItem) {
-            if (!item.statsItem) {
-              item.statsItem = {}
-            }
-            tryAddStats(item.statsItem, trigger.statsItem)
-            log({
-              ...action,
-              msg: 'apply to item',
-              stats: trigger.statsItem,
-              targetSideIdx: mySide.sideIdx,
-              targetItemIdx: action.itemIdx,
-            })
-          }
-          const tryingToReach = !!statsEnemy || !!attack
-          if (tryingToReach) {
-            const canReachEnemy = otherSide.stats.flying
-              ? !!statsForItem.flying || !!statsForItem.ranged
-              : true
-            if (!canReachEnemy) {
-              log({
-                ...action,
-                targetSideIdx: otherSide.sideIdx,
-                msg: 'Cannot Reach',
-              })
-            } else {
-              if (statsEnemy) {
-                tryAddStats(otherSide.stats, statsEnemy)
-                log({
-                  ...action,
-                  stats: statsEnemy,
-                  targetSideIdx: otherSide.sideIdx,
-                })
-              }
-              if (attack) {
-                const accuracyRng = rngFloat({
-                  seed: [...seedAction, 'hit'],
-                  max: 100,
-                })
-                let accuracy = attack.accuracy ?? 0
-                if (statsForItem.blind) {
-                  accuracy -= statsForItem.blind
-                }
-                if (statsForItem.drunk) {
-                  accuracy -= statsForItem.drunk
-                }
-                if (statsForItem.luck) {
-                  accuracy += statsForItem.luck
-                }
-                const doesHit = accuracyRng <= accuracy
-                if (doesHit) {
-                  let damage = attack.damage ?? 0
-
-                  if (otherSide.stats.drunk) {
-                    damage *= 1 + otherSide.stats.drunk / 100
-                  }
-
-                  const critChance = statsForItem.aim ?? 0
-                  const doesCrit =
-                    rngFloat({ seed: [...seedAction, 'crit'], max: 100 }) <=
-                    critChance
-                  if (doesCrit) {
-                    damage *= CRIT_MULTIPLIER
-                    if (statsEnemy?.critDamage) {
-                      damage *= 1 + statsEnemy.critDamage / 100
-                    }
-                  }
-                  damage = Math.round(damage)
-
-                  const blockedDamage = Math.min(
-                    damage,
-                    otherSide.stats.block ?? 0,
-                  )
-                  damage -= blockedDamage
-                  const targetStats: Stats = {
-                    health: -1 * damage,
-                    block: -1 * blockedDamage,
-                  }
-                  addStats(otherSide.stats, targetStats)
-                  log({
-                    ...action,
-                    msg: doesCrit ? `Critical Hit` : `Hit`,
-                    targetSideIdx: otherSide.sideIdx,
-                    stats: targetStats,
-                  })
-                  if (doesCrit) {
-                    if (statsForItem.aim) {
-                      const removeAimStats: Stats = {
-                        aim: -1 * statsForItem.aim,
-                      }
-                      tryAddStats(mySide.stats, removeAimStats)
-                      if (item.statsItem) {
-                        tryAddStats(item.statsItem, removeAimStats)
-                      }
-                      log({
-                        ...action,
-                        msg: `Reset Aim`,
-                        targetSideIdx: mySide.sideIdx,
-                        stats: removeAimStats,
-                      })
-                    }
-                  }
-
-                  // ENEMY STATS ON HIT
-                  if (statsEnemyOnHit) {
-                    tryAddStats(otherSide.stats, statsEnemyOnHit)
-                    log({
-                      ...action,
-                      stats: statsEnemyOnHit,
-                      targetSideIdx: otherSide.sideIdx,
-                    })
-                  }
-
-                  // LIFESTEAL
-                  if (statsForItem.lifeSteal && damage > 0) {
-                    const lifeStealDamage = Math.ceil(
-                      damage * (statsForItem.lifeSteal / 100),
-                    )
-                    const lifeStealStats: Stats = {
-                      health: lifeStealDamage,
-                    }
-                    tryAddStats(mySide.stats, lifeStealStats)
-                    log({
-                      ...action,
-                      sideIdx: mySide.sideIdx,
-                      msg: `Life Steal`,
-                      targetSideIdx: mySide.sideIdx,
-                      stats: lifeStealStats,
-                    })
-                  }
-
-                  // THORNS
-                  if (
-                    otherSide.stats.thorns &&
-                    damage > 0 &&
-                    !statsForItem.ranged
-                  ) {
-                    let thornsDamage = otherSide.stats.thorns
-                    const maxThornsDamage = Math.round(
-                      damage * MAX_THORNS_MULTIPLIER,
-                    )
-                    thornsDamage = Math.min(maxThornsDamage, thornsDamage)
-
-                    const thornsStats: Stats = {
-                      health: -1 * thornsDamage,
-                    }
-                    addStats(mySide.stats, thornsStats)
-                    log({
-                      ...action,
-                      sideIdx: otherSide.sideIdx,
-                      msg: `Thorns`,
-                      targetSideIdx: mySide.sideIdx,
-                      stats: thornsStats,
-                      itemIdx: undefined,
-                    })
-                  }
-                } else {
-                  log({
-                    ...action,
-                    msg: 'Miss',
-                    targetSideIdx: otherSide.sideIdx,
-                  })
-                }
-              }
-            }
-          }
-        }
-
-        // We do that after all actions, so that haste is applied to the cooldown
-        // action.time += calcCooldown({
-        //   cooldown: trigger.cooldown,
-        //   stats: mySide.stats,
-        // })
       } else {
-        const exhaustiveCheck: never = action
-        throw new Error(
-          `Unhandled action type: ${JSON.stringify(exhaustiveCheck)}`,
-        )
+        // TRIGGER ITEM
+        triggerHandler({
+          seed: [...seedTick, action],
+          action,
+        })
       }
 
       // END OF ACTION CHECK
@@ -453,22 +616,24 @@ export const generateMatch = async ({
     // UPDATE COOLDOWN
     for (const action of futureActions) {
       if (action.time !== time) continue
-      if (action.type === 'itemTrigger') {
+      if (action.type !== 'baseTick') {
         const side = sides[action.sideIdx]
         const item = side.items[action.itemIdx]
         const trigger = item.triggers![action.triggerIdx]
         if (trigger.type === 'startOfBattle') {
-          action.time = MAX_MATCH_TIME
+          action.time = MAX_MATCH_TIME // TODO: find a more elegant solution
+        } else if (trigger.type === 'interval') {
+          const statsForItem = item.statsItem
+            ? sumStats2(side.stats, item.statsItem)
+            : side.stats
+          const cooldown = calcCooldown({
+            cooldown: trigger.cooldown,
+            stats: statsForItem,
+            tags: item.tags ?? [],
+          })
+          action.time += cooldown
+          action.currentCooldown = cooldown
         }
-        const statsForItem = item.statsItem
-          ? sumStats2(side.stats, item.statsItem)
-          : side.stats
-        const cooldown = calcCooldown({
-          cooldown: trigger.cooldown,
-          stats: statsForItem,
-          tags: item.tags ?? [],
-        })
-        action.time += cooldown
       }
     }
 

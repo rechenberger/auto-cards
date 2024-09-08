@@ -7,20 +7,23 @@ import { AlertCircle, Swords } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { MatchBackground } from './MatchBackground'
 import { MatchCards } from './MatchCards'
-import { getMatchParticipants } from './MatchParticipants'
-import { MatchReportDisplayToggle } from './MatchReportDisplayToggle'
+import { getMatchParticipants, MatchParticipant } from './MatchParticipants'
 import { MatchReportPlaybackControls } from './MatchReportPlaybackControls'
+import { MatchReportTabs } from './MatchReportTabs'
 import { MatchSide } from './MatchSide'
 import { NextRoundButton } from './NextRoundButton'
 
 export const MatchView = async ({
   game,
   match,
+  forceParticipants,
 }: {
   game?: Game
   match: Match
+  forceParticipants?: MatchParticipant[]
 }) => {
-  const participants = await getMatchParticipants({ matchId: match.id })
+  const participants =
+    forceParticipants ?? (await getMatchParticipants({ matchId: match.id }))
   if (participants.length !== 2 || !every(participants, (p) => p.loadout)) {
     return (
       <>
@@ -63,7 +66,11 @@ export const MatchView = async ({
           </div>
           <div className="flex-1 flex flex-col gap-2 items-center justify-center self-stretch">
             <MatchReportPlaybackControls matchReport={matchReport} />
-            <MatchReportDisplayToggle matchReport={matchReport} />
+            <MatchReportTabs
+              matchReport={matchReport}
+              loadouts={participants.map((p) => p.loadout.data)}
+              seed={match.data.seed}
+            />
             <div className="flex-1" />
             {!!game && <NextRoundButton game={game} />}
           </div>

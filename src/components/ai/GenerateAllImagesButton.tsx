@@ -1,9 +1,9 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
+import { ThemeId } from '@/game/themes'
 import { superAction } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { ChevronDown, RotateCcw } from 'lucide-react'
 import { Fragment } from 'react'
-import { getMyUserThemeIdWithFallback } from '../game/getMyUserThemeId'
 import { Button } from '../ui/button'
 import {
   DropdownMenu,
@@ -11,26 +11,34 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
-import { generateAllItemImages } from './generateAllItemImages.action'
+import { generateAllImages } from './generateAllImages.action'
 
-export const GenerateAllItemImagesButton = async () => {
+export const GenerateAllImagesButton = async ({
+  itemId,
+  themeId,
+}: {
+  itemId?: string
+  themeId?: ThemeId
+}) => {
   const isAdmin = await getIsAdmin({ allowDev: true })
   if (!isAdmin) return null
 
-  const themeId = await getMyUserThemeIdWithFallback()
   const options = [
     {
       label: 'Fill Missing',
+      itemId,
       themeId,
     },
     {
       label: 'Force Prompt',
       themeId,
+      itemId,
       forcePrompt: true,
     },
     {
       label: 'Force All',
       themeId,
+      itemId,
       forceAll: true,
     },
   ]
@@ -58,7 +66,7 @@ export const GenerateAllItemImagesButton = async () => {
                   action={async () => {
                     'use server'
                     return superAction(async () => {
-                      return generateAllItemImages(props)
+                      return generateAllImages(props)
                     })
                   }}
                 >

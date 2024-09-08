@@ -1,6 +1,6 @@
 import { getItemByName } from '@/game/allItems'
 import { Stat } from '@/game/stats'
-import { keys, uniq } from 'lodash-es'
+import { flatMap, keys, map, uniq } from 'lodash-es'
 import { StatDescriptions } from './StatDescriptions'
 
 export const StatDescriptionsItem = async ({ name }: { name: string }) => {
@@ -12,9 +12,12 @@ export const StatDescriptionsItem = async ({ name }: { name: string }) => {
     ...(item.triggers?.flatMap((t) => [
       t.statsSelf,
       t.statsEnemy,
-      t.statsEnemyOnHit,
       t.statsItem,
       t.attack,
+      ...map(t.modifiers, (m) => ({ [m.targetStat]: 1 })),
+      ...flatMap(t.modifiers, (m) =>
+        map(m.valueAddingStats, (s) => ({ [s]: 1 })),
+      ),
     ]) ?? []),
   ]
   const allStatKeys = uniq(allStats.map((s) => keys(s)).flat()) as Stat[]
