@@ -19,7 +19,7 @@ export default async function Page() {
         <CardTitle className="flex-1">Match Backgrounds</CardTitle>
       </div>
       <div
-        className="grid gap-2 items-center justify-center"
+        className="self-start grid gap-2 items-center justify-center"
         style={{ gridTemplateColumns: `repeat(${themes.length + 1}, 1fr)` }}
       >
         <div>Themes</div>
@@ -33,11 +33,13 @@ export default async function Page() {
             <div>{capitalCase(t0.name)}</div>
             {themes.map((t1) => (
               <Fragment key={t1.name}>
-                <MatchBackground
-                  themeIds={[t0.name, t1.name]}
-                  variant="inline"
-                  // autoGenerate
-                />
+                <div className="aspect-video w-60">
+                  <MatchBackground
+                    themeIds={[t0.name, t1.name]}
+                    variant="inline"
+                    // autoGenerate
+                  />
+                </div>
               </Fragment>
             ))}
           </Fragment>

@@ -6,6 +6,7 @@ import {
 } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { AiImage } from '../ai/AiImage'
+import { AiImageGallery } from '../ai/AiImageGallery'
 
 export const MatchBackground = async ({
   themeIds,
@@ -44,7 +45,9 @@ Use Flux Schnell and make it 16:9 aspect ratio.`
 
   return (
     <>
-      <div className={cn(variant === 'fixed' && 'fixed -z-10 inset-0')}>
+      <div
+        className={cn('relative', variant === 'fixed' && 'fixed -z-10 inset-0')}
+      >
         <AiImage
           prompt={prompt}
           className="w-full h-full object-cover brightness-90 bg-transparent"
@@ -55,6 +58,12 @@ Use Flux Schnell and make it 16:9 aspect ratio.`
         {variant === 'fixed' && (
           <div className="absolute inset-0 bg-black opacity-30"></div>
         )}
+        <AiImageGallery
+          prompt={prompt}
+          itemId={`match-bg`}
+          themeId={themeIds.join('~')}
+          tiny
+        />
       </div>
     </>
   )
