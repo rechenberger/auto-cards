@@ -30,7 +30,7 @@ export const PlaygroundSelector = ({ loadout }: { loadout: LoadoutData }) => {
         <button
           onClick={() => (isBlue ? setBlue('') : setBlue(key))}
           className={cn(
-            'w-6 flex flex-row justify-center items-center',
+            'p-1 flex-1 flex flex-row justify-center items-center',
             isBlue ? 'bg-blue-500' : 'bg-blue-500/20',
           )}
         >
@@ -46,14 +46,14 @@ export const PlaygroundSelector = ({ loadout }: { loadout: LoadoutData }) => {
             seed: createSeed(),
           })}
           target="_blank"
-          className="px-1 flex-1 text-center"
+          className="px-1 flex-1 flex flex-row justify-center items-center"
         >
           vs
         </Link>
         <button
           onClick={() => (isRed ? setRed('') : setRed(key))}
           className={cn(
-            'w-6 flex flex-row justify-center items-center',
+            'p-1 flex-1 flex flex-row justify-center items-center',
             isRed ? 'bg-red-500' : 'bg-red-500/20',
           )}
         >
