@@ -34,8 +34,10 @@ export type PlaygroundParams = {
   mode?: 'edit' | 'fight'
 }
 
-export type PlaygroundOptions = Omit<PlaygroundParams, 'loadouts'> & {
-  loadouts?: LoadoutData[]
+export type PlaygroundOptions = {
+  loadouts: LoadoutData[]
+  seed: string
+  mode: 'edit' | 'fight'
 }
 
 export const playgroundHref = (options: PlaygroundOptions) => {
@@ -52,10 +54,12 @@ export const playgroundHref = (options: PlaygroundOptions) => {
   return `/playground?${searchParams.toString()}`
 }
 
-export const decodePlaygroundParams = (params: PlaygroundParams) => {
+export const decodePlaygroundParams = (
+  params: PlaygroundParams,
+): PlaygroundOptions => {
   return {
     loadouts: decodeLoadouts(params.loadouts ?? '1:hero~1:hero'),
-    seed: params.seed,
+    seed: params.seed ?? 'playground',
     mode: params.mode ?? 'edit',
   }
 }
