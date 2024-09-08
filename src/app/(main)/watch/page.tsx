@@ -67,6 +67,9 @@ const MatchEntry = async ({ match }: { match: Match }) => {
       </div>
       <Link href={`/match/${match.id}`}>
         <div>
+          <div className="text-xs opacity-60">
+            Round {p1.loadout.roundNo + 1}
+          </div>
           <div>
             {p1.status === 'won' && '👑 '}
             {p1.user ? getUserName({ user: p1.user }) : 'Bot'}
@@ -74,7 +77,7 @@ const MatchEntry = async ({ match }: { match: Match }) => {
             {p2.user ? getUserName({ user: p2.user }) : 'Bot'}
             {p2.status === 'won' && ' 👑'}
           </div>
-          <div>
+          <div className="text-xs opacity-60">
             <TimeAgo date={new Date(match.createdAt ?? '')} />
           </div>
         </div>
