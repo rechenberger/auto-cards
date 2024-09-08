@@ -37,40 +37,6 @@ export default async function Page({
       {options.mode === 'edit' && (
         <>
           <div className="flex flex-col gap-4 self-center">
-            {/* <ActionButton
-              catchToast
-              className="mb-8"
-              action={async () => {
-                'use server'
-                return superAction(async () => {
-                  const sides = decode(q)
-                  if (sides.length !== 2) {
-                    throw new Error('Must have exactly 2 sides')
-                  }
-                  const matchReport = await generateMatch({
-                    seed: [seed],
-                    participants: sides.map((side) => ({
-                      loadout: {
-                        items: side,
-                      },
-                    })),
-                  })
-
-                  streamDialog({
-                    title: 'Match Report',
-                    content: (
-                      <>
-                        <div className="overflow-auto max-h-[calc(100vh-240px)] max-sm:-mx-6">
-                          <MatchReportDisplay matchReport={matchReport} />
-                        </div>
-                      </>
-                    ),
-                  })
-                })
-              }}
-            >
-              Fight
-            </ActionButton> */}
             <Button asChild>
               <Link href={playgroundHref({ ...options, mode: 'fight' })}>
                 Fight
