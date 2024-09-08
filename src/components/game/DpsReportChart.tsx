@@ -49,7 +49,7 @@ export function DpsReportChart({
   } satisfies ChartConfig
   return (
     <>
-      <ChartContainer config={chartConfig}>
+      <ChartContainer config={chartConfig} className="bg-border rounded-lg">
         <BarChart
           accessibilityLayer
           data={betterData}
