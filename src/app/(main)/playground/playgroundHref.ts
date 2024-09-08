@@ -54,11 +54,17 @@ export const playgroundHref = (options: PlaygroundOptions) => {
   return `/playground?${searchParams.toString()}`
 }
 
+export const defaultLoadoutString = '1:hero'
+export const defaultLoadoutsString = [
+  defaultLoadoutString,
+  defaultLoadoutString,
+].join('~')
+
 export const decodePlaygroundParams = (
   params: PlaygroundParams,
 ): PlaygroundOptions => {
   return {
-    loadouts: decodeLoadouts(params.loadouts ?? '1:hero~1:hero'),
+    loadouts: decodeLoadouts(params.loadouts ?? defaultLoadoutsString),
     seed: params.seed ?? 'playground',
     mode: params.mode ?? 'edit',
   }

@@ -1,3 +1,4 @@
+import { PlaygroundSelector } from '@/components/game/PlaygroundSelector'
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import { Progress } from '@/components/ui/progress'
 import {
@@ -107,6 +108,7 @@ export const SimulationDisplay = async ({
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>Playground</TableHead>
               <TableHead>Loadout</TableHead>
               <TableHead title="Selection rounds survived">Age</TableHead>
               <TableHead title="average match time">ØTime</TableHead>
@@ -118,6 +120,11 @@ export const SimulationDisplay = async ({
             {bots.map((bot, idx) => (
               <Fragment key={idx}>
                 <TableRow>
+                  <TableCell>
+                    <PlaygroundSelector
+                      loadout={bot.game.data.currentLoadout}
+                    />
+                  </TableCell>
                   <TableCell className="flex flex-row gap-1 overflow-hidden">
                     {countifyItems(
                       withoutStartingItems(bot.game.data.currentLoadout.items),
@@ -138,13 +145,6 @@ export const SimulationDisplay = async ({
                     </TableCell>
                   )}
                   <TableCell className="w-max">
-                    {/* <Link
-                      href={playgroundHref([
-                        bot.game.data.currentLoadout.items,
-                        bot.game.data.currentLoadout.items,
-                      ])}
-                      target="_blank"
-                    > */}
                     {bot.wins}&nbsp;(
                     {Math.round((bot.wins / bot.matches) * 100)}%)
                     {/* </Link> */}
