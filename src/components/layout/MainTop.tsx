@@ -41,23 +41,8 @@ export const MainTop = async () => {
       href: '/docs',
     },
     {
-      name: 'Playground',
-      href: '/admin/playground',
-      hidden: !isAdminOrDev,
-    },
-    {
-      name: 'Simulation',
-      href: '/admin/simulation',
-      hidden: !isAdminOrDev,
-    },
-    {
-      name: 'Bot',
-      href: '/admin/bot',
-      hidden: !isAdminOrDev,
-    },
-    {
-      name: 'Users',
-      href: '/admin/users',
+      name: 'Admin',
+      href: '/admin',
       hidden: !isAdminOrDev,
     },
   ].filter((entry) => !entry.hidden)
