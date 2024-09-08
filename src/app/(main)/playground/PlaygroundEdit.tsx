@@ -19,11 +19,6 @@ export const PlaygroundEdit = async ({
   return (
     <>
       <div className="flex flex-col gap-4 self-center">
-        <Button asChild>
-          <Link href={playgroundHref({ ...options, mode: 'fight' })}>
-            Fight
-          </Link>
-        </Button>
         <div className="grid grid-cols-2 gap-8">
           {loadouts.map((loadout, sideIdx) => {
             return (

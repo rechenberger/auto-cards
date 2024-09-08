@@ -1,8 +1,14 @@
 import { notFoundIfNotAdmin } from '@/auth/getIsAdmin'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Metadata } from 'next'
+import Link from 'next/link'
 import { PlaygroundEdit } from './PlaygroundEdit'
 import { PlaygroundMatchView } from './PlaygroundMatchView'
-import { decodePlaygroundParams, PlaygroundParams } from './playgroundHref'
+import {
+  decodePlaygroundParams,
+  playgroundHref,
+  PlaygroundParams,
+} from './playgroundHref'
 
 export const metadata: Metadata = {
   title: 'Playground',
@@ -19,6 +25,20 @@ export default async function Page({
 
   return (
     <>
+      <Tabs defaultValue={options.mode} className="self-center">
+        <TabsList>
+          <TabsTrigger value="edit">
+            <Link href={playgroundHref({ ...options, mode: 'edit' })}>
+              Edit
+            </Link>
+          </TabsTrigger>
+          <TabsTrigger value="fight" asChild>
+            <Link href={playgroundHref({ ...options, mode: 'fight' })}>
+              Fight
+            </Link>
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
       {options.mode === 'edit' && <PlaygroundEdit options={options} />}
       {options.mode === 'fight' && (
         <PlaygroundMatchView loadouts={options.loadouts} />
