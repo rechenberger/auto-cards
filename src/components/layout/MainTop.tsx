@@ -33,10 +33,6 @@ export const MainTop = async () => {
       href: '/watch',
     },
     {
-      name: 'Items',
-      href: '/items',
-    },
-    {
       name: 'Docs',
       href: '/docs',
     },

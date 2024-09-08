@@ -34,7 +34,7 @@ export default async function Page() {
         {items.map((item, idx) => (
           <Fragment key={idx}>
             <div className="relative">
-              <Link href={`/items/${item.name}`}>
+              <Link href={`/docs/items/${item.name}`}>
                 <ItemCard name={item.name} size="320" />
               </Link>
               {isAdmin && (
