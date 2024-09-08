@@ -23,7 +23,7 @@ export const DpsReportDisplay = ({
   return (
     <>
       <Tabs defaultValue={'damage'}>
-        <TabsList className="grid grid-cols-4 h-auto">
+        <TabsList className="grid grid-cols-3 md:grid-cols-4 h-auto">
           {stats.map((stat) => (
             <TabsTrigger
               key={stat}
