@@ -52,7 +52,7 @@ export const MatchView = async ({
 
   return (
     <>
-      <MatchBackground themeIds={themeIds} />
+      <MatchBackground themeIds={themeIds} autoGenerate={true} />
       <div className="flex flex-col gap-4 flex-1">
         <div className="flex flex-col xl:flex-row gap-2 flex-1 items-center">
           <div className="hidden xl:flex">

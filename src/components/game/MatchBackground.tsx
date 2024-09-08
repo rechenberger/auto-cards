@@ -10,9 +10,11 @@ import { AiImage } from '../ai/AiImage'
 export const MatchBackground = async ({
   themeIds,
   variant = 'fixed',
+  autoGenerate,
 }: {
   themeIds: ThemeId[]
   variant?: 'fixed' | 'inline'
+  autoGenerate?: boolean
 }) => {
   if (themeIds.length !== 2) return null
 
@@ -45,9 +47,10 @@ Use Flux Schnell and make it 16:9 aspect ratio.`
       <div className={cn(variant === 'fixed' && 'fixed -z-10 inset-0')}>
         <AiImage
           prompt={prompt}
-          className="w-full h-full object-cover brightness-90"
+          className="w-full h-full object-cover brightness-90 bg-transparent"
           itemId={`match-bg`}
           themeId={themeIds.join('~')}
+          autoGenerate={autoGenerate}
         />
         {variant === 'fixed' && (
           <div className="absolute inset-0 bg-black opacity-30"></div>
