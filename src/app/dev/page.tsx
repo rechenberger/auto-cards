@@ -19,7 +19,9 @@ export default async function Page() {
             // })
             // const result = await piscina.run({})
             // console.log('result', result)
-            const worker = new Worker(new URL('./worker.js', import.meta.url))
+            const worker = new Worker(
+              new URL('./matchWorker.ts', import.meta.url),
+            )
             worker.on('message', (message) => {
               console.log('message', message)
             })
