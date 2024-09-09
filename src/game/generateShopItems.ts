@@ -15,7 +15,7 @@ export const generateShopItems = async ({
   skipRarityWeights?: boolean
 }) => {
   const allItems = await getAllItems()
-  const itemsForSale = allItems.filter((item) => !!item.price)
+  const itemsForSale = allItems.filter((item) => !!item.shop)
 
   const shopSeed = [
     game.data.seed,

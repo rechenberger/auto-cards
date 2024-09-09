@@ -1,3 +1,5 @@
+import { constArrayMap } from '@/lib/constArrayMap'
+import { z } from 'zod'
 import { IGNORE_SPACE } from './config'
 import { ItemDefinition } from './ItemDefinition'
 
@@ -10,6 +12,7 @@ const allItemsConst = [
     name: 'hero',
     tags: ['hero'],
     price: 0,
+    shop: false,
     stats: {
       health: 50,
       healthMax: 50,
@@ -25,6 +28,7 @@ const allItemsConst = [
       'a campfire in the foreground at the edge of a cliff overlooking a sunset',
     tags: ['hero'],
     price: 0,
+    shop: false,
     stats: {
       health: 20,
       healthMax: 20,
@@ -35,6 +39,7 @@ const allItemsConst = [
     tags: ['food'],
     rarity: 'common',
     price: 3,
+    shop: true,
     stats: {
       space: space(-3),
     },
@@ -54,6 +59,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'common',
     price: 3,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -88,6 +94,7 @@ const allItemsConst = [
     tags: ['shield'],
     rarity: 'common',
     price: 4,
+    shop: true,
     stats: {
       space: space(-4),
       // block: 30,
@@ -123,6 +130,7 @@ const allItemsConst = [
     tags: ['food'],
     rarity: 'uncommon',
     price: 3,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -142,6 +150,7 @@ const allItemsConst = [
     tags: ['food'],
     rarity: 'common',
     price: 4,
+    shop: true,
     stats: {
       space: space(-1),
       regen: 2,
@@ -152,6 +161,7 @@ const allItemsConst = [
     tags: ['food'],
     rarity: 'uncommon',
     price: 7,
+    shop: true,
     stats: {
       space: space(-3),
     },
@@ -171,6 +181,7 @@ const allItemsConst = [
     tags: ['accessory'],
     rarity: 'uncommon',
     price: 4,
+    shop: true,
     stats: {
       space: space(-1),
       lifeSteal: 20,
@@ -182,6 +193,7 @@ const allItemsConst = [
     tags: ['accessory'],
     rarity: 'uncommon',
     price: 4,
+    shop: true,
     stats: {
       space: space(-2),
       flying: 5,
@@ -192,6 +204,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'uncommon',
     price: 3,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -215,6 +228,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'rare',
     price: 9,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -247,6 +261,7 @@ const allItemsConst = [
     tags: ['accessory'],
     rarity: 'rare',
     price: 3,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -265,6 +280,7 @@ const allItemsConst = [
     tags: ['food'],
     rarity: 'uncommon',
     price: 2,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -275,6 +291,27 @@ const allItemsConst = [
         statsSelf: {
           drunk: 1,
         },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueMax: 3,
+            valueAddingItems: ['beerFest'],
+            valueMultiplier: 3,
+            description:
+              'Also attack with **3** *damage* and **90** *accuracy* when you have *beerFest*',
+          },
+          {
+            arithmetic: 'add',
+            targetStat: 'accuracy',
+            targetStats: 'attack',
+            valueMax: 90,
+            valueAddingItems: ['beerFest'],
+            valueMultiplier: 90,
+            description: '',
+          },
+        ],
       },
     ],
   },
@@ -286,6 +323,7 @@ const allItemsConst = [
     tags: ['event'],
     rarity: 'rare',
     price: 8,
+    shop: true,
     stats: {
       space: space(-4),
     },
@@ -308,6 +346,7 @@ const allItemsConst = [
     tags: ['event'],
     rarity: 'rare',
     price: 8,
+    shop: true,
     stats: {
       space: space(-4),
     },
@@ -330,6 +369,7 @@ const allItemsConst = [
     tags: ['event'],
     rarity: 'rare',
     price: 8,
+    shop: true,
     stats: {
       space: space(-4),
     },
@@ -352,6 +392,7 @@ const allItemsConst = [
     tags: ['event'],
     rarity: 'rare',
     price: 8,
+    shop: true,
     stats: {
       space: space(-4),
     },
@@ -373,6 +414,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'rare',
     price: 9,
+    shop: true,
     stats: {
       space: space(-4),
     },
@@ -416,6 +458,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'uncommon',
     price: 3,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -445,6 +488,7 @@ const allItemsConst = [
     tags: ['accessory'],
     rarity: 'rare',
     price: 2,
+    shop: true,
     stats: {
       space: space(-2),
       critDamage: 30,
@@ -455,6 +499,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'common',
     price: 3,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -480,10 +525,11 @@ const allItemsConst = [
   },
   {
     name: 'horseShoe',
-    prompt: 'a horseshoe with a four leaf clover on it',
+    prompt: 'a horseshoe that is open at the top with a four leaf clover on it',
     tags: ['accessory'],
     rarity: 'common',
     price: 2,
+    shop: true,
     stats: {
       space: space(-2),
     },
@@ -493,7 +539,13 @@ const allItemsConst = [
         cooldown: 3_000,
         statsSelf: {
           luck: 2,
+          // randomBuff: 3,
+          // randomDebuff: -3,
         },
+        // statsEnemy: {
+        //   randomBuff: -3,
+        //   randomDebuff: 3,
+        // },
       },
     ],
   },
@@ -503,20 +555,298 @@ const allItemsConst = [
     tags: ['potion'],
     rarity: 'common',
     price: 2,
+    shop: true,
     stats: {
       space: space(-2),
       staminaMax: 20,
       stamina: 20,
     },
   },
+  {
+    name: 'thornsWhip',
+    prompt:
+      'a whip with thorns on the end, the handle is made of a thorny vine',
+    tags: ['weapon'],
+    rarity: 'rare',
+    price: 7,
+    shop: true,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_500,
+        statsRequired: {
+          stamina: 25,
+        },
+        statsSelf: {
+          stamina: -25,
+        },
+        attack: {
+          damage: 15,
+          accuracy: 80,
+        },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['thorns'],
+            description: '**+1** *damage* per *thorns*',
+          },
+        ],
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsSelf: {
+          thorns: 1,
+        },
+      },
+    ],
+  },
+  {
+    name: 'torch',
+    prompt: 'an unlit torch with a wooden handle and a cloth on top',
+    tags: ['weapon'],
+    rarity: 'common',
+    price: 5,
+    shop: true,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        statsRequired: {
+          stamina: 10,
+        },
+        statsSelf: {
+          stamina: -10,
+        },
+        attack: {
+          damage: 6,
+          accuracy: 90,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        chancePercent: 30,
+        statsItem: {
+          empower: 1,
+        },
+      },
+    ],
+  },
+  {
+    name: 'spear',
+    prompt: 'a long spear with pointy tip',
+    tags: ['weapon'],
+    rarity: 'uncommon',
+    price: 6,
+    shop: true,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        statsRequired: {
+          stamina: 10,
+        },
+        statsSelf: {
+          stamina: -10,
+        },
+        attack: {
+          damage: 12,
+          accuracy: 80,
+        },
+      },
+      {
+        type: 'onAttackBeforeHit',
+        statsEnemy: {
+          block: -8,
+        },
+      },
+    ],
+  },
+  {
+    name: 'garlic',
+    prompt: 'a garlic bulb with a strong smell',
+    tags: ['food'],
+    rarity: 'common',
+    price: 2,
+    shop: true,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 4_000,
+        statsSelf: {
+          block: 3,
+        },
+      },
+      {
+        type: 'interval',
+        cooldown: 4_000,
+        statsEnemy: {
+          lifeSteal: -1,
+        },
+        chancePercent: 30,
+      },
+    ],
+  },
+  {
+    name: 'chiliPepper',
+    prompt: 'a red chili pepper',
+    tags: ['food'],
+    rarity: 'common',
+    price: 5,
+    shop: true,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 4_000,
+        statsSelf: {
+          haste: 2,
+          health: 5,
+        },
+      },
+    ],
+  },
+  {
+    name: 'tuskPoker',
+    prompt: 'a bow and arrow made out of thorny wood',
+    tags: ['weapon'],
+    rarity: 'rare',
+    price: 8,
+    shop: true,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        statsRequired: {
+          stamina: 7,
+        },
+        statsItem: {
+          ranged: 1,
+        },
+        statsSelf: {
+          stamina: -7,
+        },
+        attack: {
+          damage: 5,
+          accuracy: 85,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsEnemy: {
+          thorns: 1,
+        },
+        chancePercent: 50,
+      },
+    ],
+  },
+  {
+    name: 'leatherArmor',
+    prompt: 'a leather armor on an armor stand',
+    tags: ['accessory'],
+    rarity: 'uncommon',
+    price: 7,
+    shop: true,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          block: 45,
+        },
+      },
+    ],
+  },
+  {
+    name: 'carrot',
+    tags: ['food'],
+    rarity: 'common',
+    price: 3,
+    shop: true,
+    stats: {
+      space: space(-3),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        statsRequired: {
+          luck: 4,
+        },
+        statsSelf: {
+          empower: 1,
+        },
+        chancePercent: 50,
+      },
+    ],
+  },
+  {
+    name: 'forgingHammer',
+    prompt: 'a small forging hammer',
+    tags: ['weapon'],
+    rarity: 'common',
+    price: 3,
+    shop: true,
+    stats: {
+      space: space(-3),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_500,
+        attack: {
+          damage: 7,
+          accuracy: 95,
+        },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['empower'],
+            description: 'Additional **+1** *damage* per *empower*',
+          },
+        ],
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
-export type ItemName = (typeof allItemsConst)[number]['name']
+export const allItemNames = constArrayMap(allItemsConst, 'name')
+export const ItemName = z.enum(allItemNames)
+export type ItemName = z.infer<typeof ItemName>
+
 const allItems: ItemDefinition[] = allItemsConst
 
 export const getAllItems = async () => allItems
-export const getItemByName = async (name: string) => {
+
+export const tryGetItemByName = async (name: string) => {
   const item = allItems.find((item) => item.name === name)
+  return item
+}
+
+export const getItemByName = async (name: string) => {
+  const item = await tryGetItemByName(name)
   if (!item) {
     // throw new Error(`Item not found: ${name}`)
     console.warn(`Item not found: ${name}`)
@@ -524,6 +854,7 @@ export const getItemByName = async (name: string) => {
       name,
       tags: [],
       price: 0,
+      shop: false,
     }
   }
   return item

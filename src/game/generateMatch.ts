@@ -18,7 +18,9 @@ import {
   MAX_THORNS_MULTIPLIER,
 } from './config'
 import { TriggerEventType } from './ItemDefinition'
+import { getAllModifiedStats } from './modifiers'
 import { orderItems } from './orderItems'
+import { randomStatsResolve } from './randomStatsResolve'
 import { Stats } from './stats'
 
 export type MatchLog = {
@@ -45,7 +47,7 @@ type GenerateMatchInput = {
   skipLogs?: boolean
 }
 
-export const generateMatchState = async (input: GenerateMatchInput) => {
+const generateMatchStateSides = async (input: GenerateMatchInput) => {
   const sides = await Promise.all(
     input.participants.map(async (p, idx) => {
       let items = await Promise.all(
@@ -68,9 +70,13 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
       }
     }),
   )
+  return sides
+}
 
-  const futureActionsBase = [{ type: 'baseTick' as const, time: 0 }]
-
+const generateMatchStateFutureActionsItems = async (
+  input: GenerateMatchInput,
+) => {
+  const sides = await generateMatchStateSides(input)
   const futureActionsItems = rngOrder({
     items: sides,
     seed: [...input.seed, 'futureActions'],
@@ -94,6 +100,7 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
             time,
             lastUsed: 0,
             usedCount: 0,
+            currentCooldown: trigger.type === 'interval' ? time : undefined,
             sideIdx: side.sideIdx,
             itemIdx,
             triggerIdx,
@@ -103,16 +110,26 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
       )
     })
   })
-
-  const futureActions = [...futureActionsBase, ...futureActionsItems]
-  return { sides, futureActions, futureActionsItems }
+  return { sides, futureActionsItems }
 }
 
 type FutureActionItem = Awaited<
-  ReturnType<typeof generateMatchState>
+  ReturnType<typeof generateMatchStateFutureActionsItems>
 >['futureActionsItems'][number]
 
+export const generateMatchState = async (input: GenerateMatchInput) => {
+  const { sides, futureActionsItems } =
+    await generateMatchStateFutureActionsItems(input)
+
+  const futureActionsBase = [{ type: 'baseTick' as const, time: 0 }]
+
+  const futureActions = [...futureActionsBase, ...futureActionsItems]
+  return { sides, futureActions }
+}
+
 export type MatchState = Awaited<ReturnType<typeof generateMatchState>>
+
+export const NOT_ENOUGH_MSG = 'Not enough'
 
 export const generateMatch = async ({
   skipLogs,
@@ -237,11 +254,19 @@ export const generateMatch = async ({
       msg: input.baseLogMsg,
     }
 
-    const statsForItem = item.statsItem
+    let statsForItem = item.statsItem
       ? sumStats2(mySide.stats, item.statsItem)
       : mySide.stats
 
-    const { statsRequired, statsSelf, statsEnemy, attack } = trigger
+    const allStats = getAllModifiedStats({
+      state,
+      itemIdx,
+      sideIdx,
+      triggerIdx,
+      statsForItem,
+    })
+    const { statsRequired, statsSelf, statsEnemy, attack } = allStats
+    statsForItem = allStats.statsForItem ?? statsForItem
 
     if (trigger.maxCount && action.usedCount >= trigger.maxCount) {
       return
@@ -271,7 +296,7 @@ export const generateMatch = async ({
       if (!enough) {
         log({
           ...baseLog,
-          msg: `Not enough`,
+          msg: NOT_ENOUGH_MSG,
           targetSideIdx: mySide.sideIdx,
           stats: statsRequired,
         })
@@ -289,6 +314,18 @@ export const generateMatch = async ({
           stats: statsSelf,
           targetSideIdx: mySide.sideIdx,
         })
+        randomStatsResolve({
+          stats: mySide.stats,
+          seed: [seedAction, 'randomStatsResolve', 'statsSelf'],
+          onRandomStat: ({ stats, randomStat }) => {
+            log({
+              ...baseLog,
+              stats,
+              msg: randomStat,
+              targetSideIdx: mySide.sideIdx,
+            })
+          },
+        })
       }
       if (trigger.statsItem) {
         if (!item.statsItem) {
@@ -301,6 +338,19 @@ export const generateMatch = async ({
           stats: trigger.statsItem,
           targetSideIdx: mySide.sideIdx,
           targetItemIdx: itemIdx,
+        })
+        randomStatsResolve({
+          stats: item.statsItem,
+          seed: [seedAction, 'randomStatsResolve', 'statsItem'],
+          onRandomStat: ({ stats, randomStat }) => {
+            log({
+              ...baseLog,
+              stats,
+              msg: randomStat,
+              targetSideIdx: mySide.sideIdx,
+              targetItemIdx: itemIdx,
+            })
+          },
         })
       }
       const tryingToReach = !!statsEnemy || !!attack
@@ -321,6 +371,18 @@ export const generateMatch = async ({
               ...baseLog,
               stats: statsEnemy,
               targetSideIdx: otherSide.sideIdx,
+            })
+            randomStatsResolve({
+              stats: otherSide.stats,
+              seed: [seedAction, 'randomStatsResolve', 'statsEnemy'],
+              onRandomStat: ({ stats, randomStat }) => {
+                log({
+                  ...baseLog,
+                  stats,
+                  msg: randomStat,
+                  targetSideIdx: otherSide.sideIdx,
+                })
+              },
             })
           }
           if (attack) {
@@ -353,6 +415,10 @@ export const generateMatch = async ({
               })
 
               let damage = attack.damage ?? 0
+
+              if (statsForItem.empower) {
+                damage += statsForItem.empower
+              }
 
               if (statsForItem.drunk) {
                 damage *= 1 + statsForItem.drunk / 100
@@ -578,6 +644,7 @@ export const generateMatch = async ({
             tags: item.tags ?? [],
           })
           action.time += cooldown
+          action.currentCooldown = cooldown
         }
       }
     }

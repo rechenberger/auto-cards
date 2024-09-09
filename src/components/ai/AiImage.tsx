@@ -1,4 +1,3 @@
-import { ThemeId } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { Suspense } from 'react'
@@ -9,7 +8,8 @@ export type AiImageProps = {
   prompt: string
   className?: string
   itemId?: string
-  themeId?: ThemeId
+  themeId?: string
+  autoGenerate?: boolean
 }
 
 export const AiImage = ({
@@ -18,7 +18,7 @@ export const AiImage = ({
 }: AiImageProps) => {
   return (
     <>
-      <Suspense fallback={<div className={cn(className, 'bg-slate-600')} />}>
+      <Suspense fallback={<div className={cn('bg-slate-600', className)} />}>
         <AiImageRaw className={className} {...props} />
       </Suspense>
     </>
@@ -27,7 +27,11 @@ export const AiImage = ({
 
 export const AiImageRaw = async (props: AiImageProps) => {
   const { prompt, className, itemId } = props
-  const aiImage = await getAiImage(props)
+  let aiImage = await getAiImage(props)
+  if (!aiImage && props.autoGenerate) {
+    await generateAiImage({ ...props, skipRevalidate: true })
+    aiImage = await getAiImage(props)
+  }
   if (!aiImage) {
     return (
       <div
@@ -37,6 +41,9 @@ export const AiImageRaw = async (props: AiImageProps) => {
           catchToast
           stopPropagation
           variant={'outline'}
+          command={{
+            label: `Generate Image for ${itemId || prompt}`,
+          }}
           action={async () => {
             'use server'
             return generateAiImage({ ...props, force: false })
@@ -59,7 +66,7 @@ export const AiImageRaw = async (props: AiImageProps) => {
         }}
         title={prompt}
         command={{
-          label: `Generate Image for ${itemId || prompt}`,
+          label: `Re-Generate Image for ${itemId || prompt}`,
         }}
         hideButton
       >

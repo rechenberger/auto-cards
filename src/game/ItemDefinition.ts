@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { Modifier } from './modifiers'
 import { Rarity } from './rarities'
 import { Stats } from './stats'
 import { Tag } from './tags'
@@ -33,6 +34,7 @@ export const Trigger = z
     attack: Stats.optional(),
     statsItem: Stats.optional(),
     maxCount: z.number().optional(),
+    modifiers: z.array(Modifier).optional(),
   })
   .and(TriggerWithCooldown.or(TriggerWithoutCooldown))
 export type Trigger = z.infer<typeof Trigger>
@@ -43,6 +45,7 @@ export const ItemDefinition = z.object({
   tags: z.array(Tag).optional(),
   triggers: z.array(Trigger).optional(),
   price: z.number(),
+  shop: z.boolean(),
   stats: Stats.optional(),
   statsItem: Stats.optional(),
   rarity: Rarity.optional(),

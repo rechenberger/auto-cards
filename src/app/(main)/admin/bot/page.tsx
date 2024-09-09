@@ -1,4 +1,5 @@
 import { throwIfNotAdmin } from '@/auth/getIsAdmin'
+import { TinyItem } from '@/components/game/TinyItem'
 import {
   Table,
   TableBody,
@@ -24,7 +25,6 @@ import { Fragment } from 'react'
 import { simulate, SimulationInput } from '../simulation/simulate'
 import { SimulationDisplay } from '../simulation/SimulationDisplay'
 import { startingByRound } from '../simulation/startingByRound'
-import { TinyItem } from '../simulation/TinyItem'
 
 export const metadata: Metadata = {
   title: 'Bot',

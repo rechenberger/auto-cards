@@ -2,7 +2,9 @@
 
 import { hasAnyStats, sumStats } from '@/game/calcStats'
 import { MATCH_CARD_ANIMATION_DURATION } from '@/game/config'
-import { MatchLog, MatchReport } from '@/game/generateMatch'
+import { MatchLog, MatchReport, NOT_ENOUGH_MSG } from '@/game/generateMatch'
+import { ThemeDefinition } from '@/game/themes'
+import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
 import { useAtomValue } from 'jotai'
 import { countBy, range, uniqueId } from 'lodash-es'
@@ -63,10 +65,12 @@ export const MatchCardOverlay = ({
   sideIdx,
   itemIdx,
   matchReport,
+  theme,
 }: {
   sideIdx: number
   itemIdx: number
   matchReport: MatchReport
+  theme?: ThemeDefinition
 }) => {
   const [animations, setAnimations] = useState<AnimationData[]>([])
 
@@ -98,12 +102,18 @@ export const MatchCardOverlay = ({
       )
       const statsMySide = sumStats(
         ...logs
-          .filter((log) => log.targetSideIdx === sideIdx)
+          .filter(
+            (log) =>
+              log.targetSideIdx === sideIdx && log.msg !== NOT_ENOUGH_MSG,
+          )
           .map((log) => log.stats || {}),
       )
       const statsOtherSide = sumStats(
         ...logs
-          .filter((log) => log.targetSideIdx !== sideIdx)
+          .filter(
+            (log) =>
+              log.targetSideIdx !== sideIdx && log.msg !== NOT_ENOUGH_MSG,
+          )
           .map((log) => log.stats || {}),
       )
 
@@ -154,7 +164,12 @@ export const MatchCardOverlay = ({
   return (
     <>
       {stats && (
-        <div className="absolute top-4 inset-x-2 flex items-center justify-center">
+        <div
+          className={cn(
+            'absolute top-4 inset-x-2 flex items-center justify-center ',
+            theme?.classBottom,
+          )}
+        >
           <StatsDisplay stats={stats} size="sm" canWrap />
         </div>
       )}
