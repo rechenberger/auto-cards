@@ -103,3 +103,24 @@ export const hasStats = (a: Stats, b: Stats) => {
 export const hasAnyStats = ({ stats }: { stats: Stats }) => {
   return !!keys(omitBy(stats, (v) => v === undefined || v === 0)).length
 }
+
+export const multiplyStats = ({
+  stats,
+  multiplier,
+}: {
+  stats: Stats
+  multiplier: number
+}) => {
+  const result = { ...stats }
+  for (const key in result) {
+    const k = key as keyof Stats
+    if (result[k]) {
+      result[k] = result[k] * multiplier
+    }
+  }
+  return result
+}
+
+export const negativeStats = (stats: Stats) => {
+  return multiplyStats({ stats, multiplier: -1 })
+}
