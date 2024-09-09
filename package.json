@@ -12,7 +12,6 @@
     "db:studio": "drizzle-kit studio",
     "db:copy": "turso db shell auto-cards .dump | sqlite3 db.sqlite"
   },
-  "type": "module",
   "dependencies": {
     "@auth/core": "^0.29.0",
     "@auth/drizzle-adapter": "^0.9.0",
