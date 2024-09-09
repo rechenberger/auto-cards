@@ -39,7 +39,7 @@ export type MatchLog = {
 
 export type MatchReport = Awaited<ReturnType<typeof generateMatch>>
 
-type GenerateMatchInput = {
+export type GenerateMatchInput = {
   participants: {
     loadout: LoadoutData
   }[]
