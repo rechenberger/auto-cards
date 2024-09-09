@@ -2,7 +2,7 @@ import { MatchParticipant } from '@/components/game/MatchParticipants'
 import { Match } from '@/db/schema-zod'
 import { orderBy } from 'lodash-es'
 import { getItemByName } from './allItems'
-import { generateMatch } from './generateMatch'
+import { generateMatchByWorker } from './matchWorkerManager'
 
 export const generateChangemakers = async ({
   match,
@@ -34,56 +34,60 @@ export const generateChangemakers = async ({
 
   itemsBySide = itemsBySide.map((s) => s.filter((i) => i.def.price > 0))
 
-  for (const item0 of itemsBySide[0]) {
-    for (const item1 of itemsBySide[1]) {
-      const matchReport = await generateMatch({
-        skipLogs: true,
-        participants: [
-          {
-            loadout: {
-              items: participants[0].loadout.data.items.flatMap((i) => {
-                const without = i.name === item0.name
-                if (!without) return [i]
-                if (withoutWholeItemStack) return []
-                if (i.count && i.count > 1) {
-                  return [{ ...i, count: i.count - 1 }]
-                }
-                return []
-              }),
-            },
-          },
-          {
-            loadout: {
-              items: participants[1].loadout.data.items.flatMap((i) => {
-                const without = i.name === item1.name
-                if (!without) return [i]
-                if (withoutWholeItemStack) return []
-                if (i.count && i.count > 1) {
-                  return [{ ...i, count: i.count - 1 }]
-                }
-                return []
-              }),
-            },
-          },
-        ],
-        seed: [match.data.seed, 'remix', item0.name, item1.name],
-      })
+  await Promise.all(
+    itemsBySide[0].map(async (item0) => {
+      await Promise.all(
+        itemsBySide[1].map(async (item1) => {
+          const matchReport = await generateMatchByWorker({
+            skipLogs: true,
+            participants: [
+              {
+                loadout: {
+                  items: participants[0].loadout.data.items.flatMap((i) => {
+                    const without = i.name === item0.name
+                    if (!without) return [i]
+                    if (withoutWholeItemStack) return []
+                    if (i.count && i.count > 1) {
+                      return [{ ...i, count: i.count - 1 }]
+                    }
+                    return []
+                  }),
+                },
+              },
+              {
+                loadout: {
+                  items: participants[1].loadout.data.items.flatMap((i) => {
+                    const without = i.name === item1.name
+                    if (!without) return [i]
+                    if (withoutWholeItemStack) return []
+                    if (i.count && i.count > 1) {
+                      return [{ ...i, count: i.count - 1 }]
+                    }
+                    return []
+                  }),
+                },
+              },
+            ],
+            seed: [match.data.seed, 'remix', item0.name, item1.name],
+          })
 
-      const winnerIdx = matchReport.winner.sideIdx
+          const winnerIdx = matchReport.winner.sideIdx
 
-      item0.matchesWithout++
-      if (winnerIdx === item0.sideIdx) {
-        item0.winsWithout++
-      }
-      item0.necessity = 1 - item0.winsWithout / item0.matchesWithout
+          item0.matchesWithout++
+          if (winnerIdx === item0.sideIdx) {
+            item0.winsWithout++
+          }
+          item0.necessity = 1 - item0.winsWithout / item0.matchesWithout
 
-      item1.matchesWithout++
-      if (winnerIdx === item1.sideIdx) {
-        item1.winsWithout++
-      }
-      item1.necessity = 1 - item1.winsWithout / item1.matchesWithout
-    }
-  }
+          item1.matchesWithout++
+          if (winnerIdx === item1.sideIdx) {
+            item1.winsWithout++
+          }
+          item1.necessity = 1 - item1.winsWithout / item1.matchesWithout
+        }),
+      )
+    }),
+  )
 
   itemsBySide = itemsBySide.map((s) => orderBy(s, (i) => i.necessity, 'desc'))
 

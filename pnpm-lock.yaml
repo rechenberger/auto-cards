@@ -57,6 +57,7 @@ specifiers:
   next-auth: 5.0.0-beta.16
   next-themes: ^0.2.1
   object-hash: ^3.0.0
+  piscina: ^4.6.1
   postcss: 8.4.30
   prettier: ^3.1.1
   react: 18.3.1
@@ -119,6 +120,7 @@ dependencies:
   next-auth: 5.0.0-beta.16_next@14.2.7+react@18.3.1
   next-themes: 0.2.1_tdgkkgvgxzemkstnv7ehbpvg4e
   object-hash: 3.0.0
+  piscina: 4.6.1
   postcss: 8.4.30
   react: 18.3.1
   react-dom: 18.3.1_react@18.3.1
@@ -5697,6 +5699,21 @@ packages:
       - babel-plugin-macros
     dev: false
 
+  /nice-napi/1.0.2:
+    resolution: {integrity: sha512-px/KnJAJZf5RuBGcfD+Sp2pAKq0ytz8j+1NehvgIGFkvtvFrDM3T8E4x/JJODXK9WZow8RRGrbA9QQ3hs+pDhA==}
+    os: ['!win32']
+    requiresBuild: true
+    dependencies:
+      node-addon-api: 3.2.1
+      node-gyp-build: 4.8.2
+    dev: false
+    optional: true
+
+  /node-addon-api/3.2.1:
+    resolution: {integrity: sha512-mmcei9JghVNDYydghQmeDX8KoAm0FAiYyIcUt/N4nhyAipB17pllZQDOJD2fotxABnt4Mdz+dKTO7eftLg4d0A==}
+    dev: false
+    optional: true
+
   /node-addon-api/5.1.0:
     resolution: {integrity: sha512-eh0GgfEkpnoWDq+VY8OyvYhFEzBk6jIYbRKdIlyTiAXIVJ8PyBaKb0rp7oDtoddbdoHWhq8wwr+XZ81F1rpNdA==}
     dev: false
@@ -5726,6 +5743,12 @@ packages:
       fetch-blob: 3.2.0
       formdata-polyfill: 4.0.10
     dev: false
+
+  /node-gyp-build/4.8.2:
+    resolution: {integrity: sha512-IRUxE4BVsHWXkV/SFOut4qTlagw2aM8T5/vnTsmrHJvVoKueJHRc/JaFND7QDDc61kLYUJ6qlZM3sqTSyx2dTw==}
+    hasBin: true
+    dev: false
+    optional: true
 
   /node-releases/2.0.18:
     resolution: {integrity: sha512-d9VeXT4SJ7ZeOqGX6R5EM022wpL+eWPooLI+5UpWn2jCT1aosUQEhQP214x33Wkwx3JQMvIm+tIoVOdodFS40g==}
@@ -5952,6 +5975,12 @@ packages:
   /pirates/4.0.6:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==}
     engines: {node: '>= 6'}
+
+  /piscina/4.6.1:
+    resolution: {integrity: sha512-z30AwWGtQE+Apr+2WBZensP2lIvwoaMcOPkQlIEmSGMJNUvaYACylPYrQM6wSdUNJlnDVMSpLv7xTMJqlVshOA==}
+    optionalDependencies:
+      nice-napi: 1.0.2
+    dev: false
 
   /possible-typed-array-names/1.0.0:
     resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==}

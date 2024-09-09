@@ -1,7 +1,8 @@
 import { Game, Match } from '@/db/schema-zod'
 import { generateChangemakers } from '@/game/generateChangemakers'
-import { generateMatch } from '@/game/generateMatch'
+import { generateMatchByWorker } from '@/game/matchWorkerManager'
 import { fallbackThemeId } from '@/game/themes'
+import { createId } from '@paralleldrive/cuid2'
 import { every } from 'lodash-es'
 import { AlertCircle, Swords } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
@@ -39,12 +40,16 @@ export const MatchView = async ({
     )
   }
 
-  const matchReport = await generateMatch({
-    participants: participants.map((p) => ({ loadout: p.loadout.data })),
-    seed: [match.data.seed],
-  })
-
-  const changemakers = await generateChangemakers({ match, participants })
+  const logId = createId().substring(0, 4)
+  console.time(`generateMatchByWorker ${match.id} ${logId}`)
+  const [matchReport, changemakers] = await Promise.all([
+    generateMatchByWorker({
+      participants: participants.map((p) => ({ loadout: p.loadout.data })),
+      seed: [match.data.seed],
+    }),
+    generateChangemakers({ match, participants }),
+  ])
+  console.timeEnd(`generateMatchByWorker ${match.id} ${logId}`)
 
   const themeIds = await Promise.all(
     participants.map((p) => fallbackThemeId(p.user?.themeId)),
