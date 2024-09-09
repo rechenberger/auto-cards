@@ -751,7 +751,7 @@ const allItemsConst = [
       },
       {
         type: 'onAttackAfterHit',
-        statsEnemy: {
+        statsSelf: {
           thorns: 1,
         },
         chancePercent: 50,
