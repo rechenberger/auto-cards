@@ -1,8 +1,6 @@
-import { createMatchWorkerManager } from '@/game/matchWorkerManager'
+import { generateMatchByWorker } from '@/game/matchWorkerManager'
 import { range } from 'lodash-es'
 import { BotGame } from './generateBotsWithItems'
-
-const matchWorkerManager = createMatchWorkerManager()
 
 export const simulateBotMatches = async ({
   bots,
@@ -18,15 +16,13 @@ export const simulateBotMatches = async ({
       const matchResults = await Promise.all(
         others.flatMap((other) =>
           range(noOfRepeats).map(async (matchIdx) => {
-            const matchReport = await matchWorkerManager.run({
-              input: {
-                participants: [
-                  { loadout: bot.game.data.currentLoadout },
-                  { loadout: other.game.data.currentLoadout },
-                ],
-                seed: [...bot.seed, 'match', matchIdx, other.name],
-                skipLogs: true,
-              },
+            const matchReport = await generateMatchByWorker({
+              participants: [
+                { loadout: bot.game.data.currentLoadout },
+                { loadout: other.game.data.currentLoadout },
+              ],
+              seed: [...bot.seed, 'match', matchIdx, other.name],
+              skipLogs: true,
             })
 
             bot.matches += 1

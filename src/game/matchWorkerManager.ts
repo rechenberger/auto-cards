@@ -47,7 +47,20 @@ export const createMatchWorkerManager = ({
     })
   }
 
+  const terminate = async () => {
+    await Promise.all(workers.map((worker) => worker.terminate()))
+  }
+
   return {
     run,
+    terminate,
   }
+}
+
+export type MatchWorkerManager = ReturnType<typeof createMatchWorkerManager>
+
+const manager = createMatchWorkerManager()
+
+export const generateMatchByWorker = async (input: GenerateMatchInput) => {
+  return manager.run({ input })
 }
