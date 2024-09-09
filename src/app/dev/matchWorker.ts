@@ -2,6 +2,10 @@ import { generateMatch } from '@/game/generateMatch'
 import { parentPort } from 'worker_threads'
 
 const main = async () => {
+  parentPort?.on('message', (message) => {
+    console.log('message', message)
+    parentPort?.postMessage(`got your msg: ${JSON.stringify(message)}`)
+  })
   const matchReport = await generateMatch({
     skipLogs: true,
     participants: [

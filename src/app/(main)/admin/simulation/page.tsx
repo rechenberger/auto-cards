@@ -22,7 +22,7 @@ const baseInput: SimulationInput = {
   simulationSeed: ['lol'],
   ...startingByRound(NO_OF_ROUNDS - 1),
   noOfBotsSelected: 10,
-  noOfSelectionRounds: 30,
+  noOfSelectionRounds: 1,
 }
 
 const variants = [
