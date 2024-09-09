@@ -1,4 +1,5 @@
 import { createId } from '@paralleldrive/cuid2'
+import { range } from 'lodash-es'
 import { Worker } from 'worker_threads'
 import { GenerateMatchInput, MatchReport } from './generateMatch'
 
@@ -12,19 +13,22 @@ export type MatchWorkerOutput = {
   output: MatchReport
 }
 
-export const createMatchWorkerManager = () => {
+export const createMatchWorkerManager = ({
+  noOfWorkers = 8,
+}: {
+  noOfWorkers?: number
+} = {}) => {
   const newWorker = () => {
     return new Worker(new URL('./matchWorker.ts', import.meta.url))
   }
 
-  let worker: Worker | undefined
+  const workers = range(noOfWorkers).map(newWorker)
   const getWorker = () => {
-    // TODO: implement worker pool
-    worker = worker ?? newWorker()
-    return worker
+    const idx = Math.floor(Math.random() * workers.length)
+    return workers[idx]
   }
 
-  const doJob = async ({ input }: { input: GenerateMatchInput }) => {
+  const run = async ({ input }: { input: GenerateMatchInput }) => {
     const worker = getWorker()
     const workerInput: MatchWorkerInput = {
       jobId: createId(),
@@ -44,6 +48,6 @@ export const createMatchWorkerManager = () => {
   }
 
   return {
-    doJob,
+    run,
   }
 }

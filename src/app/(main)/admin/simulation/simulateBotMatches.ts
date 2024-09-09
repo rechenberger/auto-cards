@@ -18,7 +18,7 @@ export const simulateBotMatches = async ({
       const matchResults = await Promise.all(
         others.flatMap((other) =>
           range(noOfRepeats).map(async (matchIdx) => {
-            const matchReport = await matchWorkerManager.doJob({
+            const matchReport = await matchWorkerManager.run({
               input: {
                 participants: [
                   { loadout: bot.game.data.currentLoadout },

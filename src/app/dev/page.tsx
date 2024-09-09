@@ -29,7 +29,7 @@ export default async function Page() {
             }
 
             const manager = createMatchWorkerManager()
-            const report = await manager.doJob({ input: matchInput })
+            const report = await manager.run({ input: matchInput })
             console.log('report', report)
             // console.log('worker', worker)
           }}
