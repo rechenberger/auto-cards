@@ -1,18 +1,8 @@
+import { createMatchWorkerManager } from '@/game/matchWorkerManager'
 import { range } from 'lodash-es'
-import Piscina from 'piscina'
 import { BotGame } from './generateBotsWithItems'
 
-let piscina: Piscina | null = null
-
-function getPiscina() {
-  if (!piscina) {
-    piscina = new Piscina({
-      filename: new URL('./matchWorker.ts', import.meta.url).href,
-      maxThreads: 4, // Adjust based on your needs
-    })
-  }
-  return piscina
-}
+const matchWorkerManager = createMatchWorkerManager()
 
 export const simulateBotMatches = async ({
   bots,
@@ -28,13 +18,15 @@ export const simulateBotMatches = async ({
       const matchResults = await Promise.all(
         others.flatMap((other) =>
           range(noOfRepeats).map(async (matchIdx) => {
-            const matchReport: any = await getPiscina().run({
-              participants: [
-                { loadout: bot.game.data.currentLoadout },
-                { loadout: other.game.data.currentLoadout },
-              ],
-              seed: [...bot.seed, 'match', matchIdx, other.name],
-              skipLogs: true,
+            const matchReport = await matchWorkerManager.doJob({
+              input: {
+                participants: [
+                  { loadout: bot.game.data.currentLoadout },
+                  { loadout: other.game.data.currentLoadout },
+                ],
+                seed: [...bot.seed, 'match', matchIdx, other.name],
+                skipLogs: true,
+              },
             })
 
             bot.matches += 1

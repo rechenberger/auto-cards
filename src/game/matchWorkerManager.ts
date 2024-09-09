@@ -17,9 +17,11 @@ export const createMatchWorkerManager = () => {
     return new Worker(new URL('./matchWorker.ts', import.meta.url))
   }
 
+  let worker: Worker | undefined
   const getWorker = () => {
     // TODO: implement worker pool
-    return newWorker()
+    worker = worker ?? newWorker()
+    return worker
   }
 
   const doJob = async ({ input }: { input: GenerateMatchInput }) => {
@@ -29,7 +31,7 @@ export const createMatchWorkerManager = () => {
       input,
     }
     worker.postMessage(workerInput)
-    return new Promise((resolve, reject) => {
+    return new Promise<MatchReport>((resolve, reject) => {
       worker.on('message', (message) => {
         if (message.jobId === workerInput.jobId) {
           resolve(message.output)
