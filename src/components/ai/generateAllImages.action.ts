@@ -41,7 +41,7 @@ export const generateAllImages = async ({
 
       const aiImage = await getAiImage({
         itemId: item.name,
-        themeId,
+        themeId: theme.name,
         prompt,
       })
 
@@ -64,7 +64,7 @@ export const generateAllImages = async ({
       await generateAiImage({
         prompt,
         itemId: item.name,
-        themeId,
+        themeId: theme.name,
         force: hasAiImage || forceAll,
       })
     }),

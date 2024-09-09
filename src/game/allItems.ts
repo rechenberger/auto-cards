@@ -722,12 +722,61 @@ const allItemsConst = [
     ],
   },
   {
+    name: 'shortBow',
+    prompt: 'a short bow and an arrow in a quiver standing next to each other',
+    tags: ['weapon'],
+    rarity: 'common',
+    price: 4,
+    shop: true,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        statsRequired: {
+          stamina: 7,
+        },
+        statsItem: {
+          ranged: 1,
+        },
+        statsSelf: {
+          stamina: -7,
+        },
+        attack: {
+          damage: 5,
+          accuracy: 85,
+        },
+      },
+    ],
+  },
+  {
+    name: 'roseBush',
+    prompt: 'a very thorny rose bush. thorns are sharp and pointy',
+    tags: ['accessory'],
+    rarity: 'common',
+    price: 4,
+    shop: true,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          thorns: 1,
+        },
+      },
+    ],
+  },
+  {
     name: 'tuskPoker',
     prompt: 'a bow and arrow made out of thorny wood',
     tags: ['weapon'],
     rarity: 'rare',
     price: 8,
-    shop: true,
+    shop: false,
     stats: {
       space: space(-2),
     },
@@ -755,6 +804,100 @@ const allItemsConst = [
           thorns: 1,
         },
         chancePercent: 50,
+      },
+    ],
+  },
+  {
+    name: 'luckyClover',
+    prompt: 'a single lucky clover',
+    tags: ['accessory'],
+    rarity: 'common',
+    price: 2,
+    shop: true,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          luck: 5,
+        },
+      },
+    ],
+  },
+  {
+    name: 'fortunasHope',
+    prompt: 'a bow and arrow made out of lucky clovers',
+    tags: ['weapon'],
+    rarity: 'rare',
+    price: 8,
+    shop: false,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        statsRequired: {
+          stamina: 7,
+        },
+        statsItem: {
+          ranged: 1,
+        },
+        statsSelf: {
+          stamina: -7,
+        },
+        attack: {
+          damage: 5,
+          accuracy: 100,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsSelf: {
+          luck: 5,
+        },
+        chancePercent: 70,
+      },
+    ],
+  },
+  {
+    name: 'belladonnasShade',
+    prompt: 'a bow and arrow made out of fly agaric mushrooms',
+    tags: ['weapon'],
+    rarity: 'rare',
+    price: 8,
+    shop: false,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        statsRequired: {
+          stamina: 7,
+        },
+        statsItem: {
+          ranged: 1,
+        },
+        statsSelf: {
+          stamina: -7,
+        },
+        attack: {
+          damage: 5,
+          accuracy: 85,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsEnemy: {
+          poison: 2,
+          randomDebuff: 1,
+        },
+        chancePercent: 70,
       },
     ],
   },
@@ -797,6 +940,13 @@ const allItemsConst = [
           empower: 1,
         },
         chancePercent: 50,
+      },
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        statsSelf: {
+          randomDebuff: -1,
+        },
       },
     ],
   },
