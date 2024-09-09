@@ -12,10 +12,12 @@ export const MatchBackground = async ({
   themeIds,
   variant = 'fixed',
   autoGenerate,
+  showGallery,
 }: {
   themeIds: ThemeId[]
   variant?: 'fixed' | 'inline'
   autoGenerate?: boolean
+  showGallery?: boolean
 }) => {
   if (themeIds.length !== 2) return null
 
@@ -58,12 +60,16 @@ Use Flux Schnell and make it 16:9 aspect ratio.`
         {variant === 'fixed' && (
           <div className="absolute inset-0 bg-black opacity-30"></div>
         )}
-        <AiImageGallery
-          prompt={prompt}
-          itemId={`match-bg`}
-          themeId={themeIds.join('~')}
-          tiny
-        />
+        {showGallery && (
+          <AiImageGallery
+            prompt={prompt}
+            itemId={`match-bg`}
+            themeId={themeIds.join('~')}
+            tiny
+            cols={4}
+            limit={8}
+          />
+        )}
       </div>
     </>
   )

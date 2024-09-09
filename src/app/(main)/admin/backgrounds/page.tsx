@@ -25,18 +25,23 @@ export default async function Page() {
         <div>Themes</div>
         {themes.map((t1) => (
           <Fragment key={t1.name}>
-            <div className="text-center">{capitalCase(t1.name)}</div>
+            <div className="text-center sticky top-0 bg-background z-10">
+              {capitalCase(t1.name)}
+            </div>
           </Fragment>
         ))}
         {themes.map((t0) => (
           <Fragment key={t0.name}>
-            <div>{capitalCase(t0.name)}</div>
+            <div className="sticky left-0 bg-background z-10">
+              {capitalCase(t0.name)}
+            </div>
             {themes.map((t1) => (
               <Fragment key={t1.name}>
-                <div className="aspect-video w-60">
+                <div className="aspect-video h-96">
                   <MatchBackground
                     themeIds={[t0.name, t1.name]}
                     variant="inline"
+                    showGallery
                     // autoGenerate
                   />
                 </div>

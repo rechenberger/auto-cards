@@ -28,10 +28,12 @@ export const getAiImage = async (props: GetAiImageProps) => {
   })
 }
 
-export const getAiImages = async (props: GetAiImageProps) => {
+export const getAiImages = async (
+  props: GetAiImageProps & { limit?: number },
+) => {
   return await db.query.aiImage.findMany({
     where: where(props),
     orderBy,
-    limit: 12,
+    limit: props.limit ?? 12,
   })
 }

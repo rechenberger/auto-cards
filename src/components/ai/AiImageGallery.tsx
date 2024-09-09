@@ -14,11 +14,15 @@ import { AiImageProps } from './AiImage'
 import { getAiImages } from './getAiImage'
 import { NewImageButton } from './NewImageButton'
 
-export type AiImageGalleryProps = AiImageProps & { tiny?: boolean }
+export type AiImageGalleryProps = AiImageProps & {
+  tiny?: boolean
+  cols?: 3 | 4
+  limit?: number
+}
 
 export const AiImageGallery = async (props: AiImageGalleryProps) => {
-  const { itemId, prompt, className, themeId, tiny } = props
-  const aiImages = await getAiImages(props)
+  const { itemId, prompt, className, themeId, tiny, cols = 3 } = props
+  const aiImages = await getAiImages({ ...props, limit: props.limit })
 
   const item = itemId ? await tryGetItemByName(itemId) : undefined
   const subTitle = item ? item.prompt || capitalCase(item.name) : prompt
@@ -54,7 +58,13 @@ export const AiImageGallery = async (props: AiImageGalleryProps) => {
             force={!!aiImages.length}
           />
         </div>
-        <div className="grid grid-cols-3 gap-2 items-start">
+        <div
+          className={cn(
+            'grid gap-2 items-start',
+            cols === 3 && 'grid-cols-3',
+            cols === 4 && 'grid-cols-4',
+          )}
+        >
           {aiImages.map((aiImage) => (
             <Fragment key={aiImage.id}>
               <ActionButton
