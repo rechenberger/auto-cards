@@ -43,5 +43,11 @@ export const PlaygroundMatchView = async ({
     }),
   )
 
-  return <MatchView match={match} forceParticipants={participants} />
+  return (
+    <MatchView
+      match={match}
+      forceParticipants={participants}
+      calculateChangemakers
+    />
+  )
 }

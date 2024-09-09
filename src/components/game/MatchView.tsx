@@ -1,6 +1,6 @@
 import { Game, Match } from '@/db/schema-zod'
 import { generateChangemakers } from '@/game/generateChangemakers'
-import { generateMatchByWorker } from '@/game/matchWorkerManager'
+import { generateMatch } from '@/game/generateMatch'
 import { fallbackThemeId } from '@/game/themes'
 import { createId } from '@paralleldrive/cuid2'
 import { every } from 'lodash-es'
@@ -18,10 +18,12 @@ export const MatchView = async ({
   game,
   match,
   forceParticipants,
+  calculateChangemakers = false,
 }: {
   game?: Game
   match: Match
   forceParticipants?: MatchParticipant[]
+  calculateChangemakers?: boolean
 }) => {
   const participants =
     forceParticipants ?? (await getMatchParticipants({ matchId: match.id }))
@@ -43,11 +45,13 @@ export const MatchView = async ({
   const logId = createId().substring(0, 4)
   console.time(`generateMatchByWorker ${match.id} ${logId}`)
   const [matchReport, changemakers] = await Promise.all([
-    generateMatchByWorker({
+    generateMatch({
       participants: participants.map((p) => ({ loadout: p.loadout.data })),
       seed: [match.data.seed],
     }),
-    generateChangemakers({ match, participants }),
+    calculateChangemakers
+      ? generateChangemakers({ match, participants })
+      : undefined,
   ])
   console.timeEnd(`generateMatchByWorker ${match.id} ${logId}`)
 
