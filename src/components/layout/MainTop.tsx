@@ -29,27 +29,16 @@ export const MainTop = async () => {
       hidden: !isLoggedIn,
     },
     {
-      name: 'Items',
-      href: '/items',
+      name: 'Watch',
+      href: '/watch',
     },
     {
-      name: 'Playground',
-      href: '/playground',
-      hidden: !isAdminOrDev,
+      name: 'Docs',
+      href: '/docs',
     },
     {
-      name: 'Simulation',
-      href: '/simulation',
-      hidden: !isAdminOrDev,
-    },
-    {
-      name: 'Bot',
-      href: '/bot',
-      hidden: !isAdminOrDev,
-    },
-    {
-      name: 'Users',
-      href: '/users',
+      name: 'Admin',
+      href: '/admin',
       hidden: !isAdminOrDev,
     },
   ].filter((entry) => !entry.hidden)

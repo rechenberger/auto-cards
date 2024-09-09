@@ -1,36 +1,74 @@
-import { AiImage } from '@/components/ai/AiImage'
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
+import { Changemaker } from '@/game/generateChangemakers'
+import { getRarityDefinition } from '@/game/rarities'
 import { getTagDefinition } from '@/game/tags'
+import {
+  defaultThemeId,
+  fallbackThemeId,
+  getThemeDefinition,
+  ThemeId,
+} from '@/game/themes'
 import { fontHeading } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
+import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
 import { first } from 'lodash-es'
 import { Fragment } from 'react'
+import { AiItemImage } from '../ai/AiItemImage'
+import { ItemSellButton } from './ItemSellButton'
 import { StatsDisplay } from './StatsDisplay'
 import { TriggerDisplay } from './TriggerDisplay'
-import { getItemAiImagePrompt } from './getItemAiImagePrompt'
+import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
+import { streamItemCard } from './streamItemCard'
 
-export const ItemCard = async ({
-  game,
-  name,
-  shopItem,
-  size = '200',
-  className,
-  count = 1,
-}: {
+export type ItemCardProps = {
   game?: Game
   name: string
   shopItem?: Game['data']['shopItems'][number] & { idx: number }
   size?: '480' | '320' | '240' | '200' | '160' | '80'
   className?: string
   count?: number
-}) => {
+  tooltipOnClick?: boolean
+  changemaker?: Changemaker
+  themeId?: ThemeId
+  sideIdx?: number
+  itemIdx?: number
+  canSell?: boolean
+}
+
+export const ItemCard = async (props: ItemCardProps) => {
+  let {
+    game,
+    name,
+    shopItem,
+    size = '200',
+    className,
+    count = 1,
+    tooltipOnClick,
+    changemaker,
+    themeId,
+    sideIdx,
+    itemIdx,
+    canSell,
+  } = props
+
   const item = await getItemByName(name)
   const title = capitalCase(name)
   const tag = getTagDefinition(first(item.tags) ?? 'default')
 
-  return (
+  if (!themeId) {
+    themeId = await getMyUserThemeIdWithFallback()
+  } else {
+    themeId = await fallbackThemeId(themeId)
+  }
+
+  const theme = await getThemeDefinition(themeId)
+
+  const rarity = item.rarity ? getRarityDefinition(item.rarity) : undefined
+  const gameId = game?.id
+
+  const inner = (
     <>
       {/* <HoverCard>
         <HoverCardTrigger> */}
@@ -56,6 +94,7 @@ export const ItemCard = async ({
           className,
         )}
       >
+        {canSell && <ItemSellButton gameId={gameId} item={item} />}
         <div
           className={cn(
             'aspect-square relative rounded-tr-lg rounded-b-lg overflow-hidden bg-black',
@@ -64,6 +103,7 @@ export const ItemCard = async ({
             'font-bold',
             '[text-shadow:_1px_1px_4px_rgb(0_0_0_/_80%)]',
             fontHeading.className,
+            theme.classTop,
           )}
         >
           <div className="relative rounded-tr-lg rounded-b-lg overflow-hidden">
@@ -78,7 +118,7 @@ export const ItemCard = async ({
                 {title}
               </div>
             </div>
-            <div className="absolute top-3 inset-x-0 flex flex-col items-end">
+            <div className="absolute top-6 inset-x-0 flex flex-col items-end gap-1">
               {!!item.tags?.length && (
                 <div
                   className={cn(
@@ -92,9 +132,25 @@ export const ItemCard = async ({
                   </div>
                 </div>
               )}
+              {!!rarity && (
+                <div
+                  className={cn(
+                    'bg-[#313130] pl-4 pr-3 py-1',
+                    'rounded-l-full',
+                    'border-l-2 border-y-2 border-black',
+                    rarity.textClass,
+                  )}
+                >
+                  <div className="text-xs">{capitalCase(rarity.name)}</div>
+                </div>
+              )}
             </div>
             <div className="border-black border-2 rounded-lg overflow-hidden">
-              <AiImage prompt={getItemAiImagePrompt(item)} itemId={item.name} />
+              <AiItemImage
+                className="aspect-square"
+                itemName={item.name}
+                themeId={themeId ?? defaultThemeId}
+              />
             </div>
           </div>
           {count >= 2 && (
@@ -130,13 +186,25 @@ export const ItemCard = async ({
             'flex-1 flex flex-col justify-center rounded-lg p-2',
             tag.bgClass,
             tag.bgClass && 'border-2 border-black',
+            theme.classBottom,
           )}
         >
           <div className="flex flex-col items-center gap-2">
             {item.stats && <StatsDisplay relative stats={item.stats} />}
+            {item.statsItem && (
+              <div className="flex flex-row gap-2 items-center">
+                <div>Item:</div>
+                <StatsDisplay relative stats={item.statsItem} />
+              </div>
+            )}
             {item.triggers?.map((trigger, idx) => (
               <Fragment key={idx}>
-                <TriggerDisplay trigger={trigger} />
+                <TriggerDisplay
+                  trigger={trigger}
+                  itemIdx={itemIdx}
+                  sideIdx={sideIdx}
+                  triggerIdx={idx}
+                />
               </Fragment>
             ))}
           </div>
@@ -156,4 +224,24 @@ export const ItemCard = async ({
       </HoverCard> */}
     </>
   )
+
+  if (tooltipOnClick) {
+    return (
+      <>
+        <ActionButton
+          component={'div' as any} // no button, so no invalid html, so no hydration errors
+          className="cursor-pointer flex"
+          hideIcon
+          action={async () => {
+            'use server'
+            return streamItemCard({ ...props, count: 1 })
+          }}
+        >
+          {inner}
+        </ActionButton>
+      </>
+    )
+  }
+
+  return inner
 }

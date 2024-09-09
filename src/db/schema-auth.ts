@@ -1,3 +1,4 @@
+import { ThemeId } from '@/game/themes'
 import type { AdapterAccount } from '@auth/core/adapters'
 import { relations } from 'drizzle-orm'
 import { integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core'
@@ -10,6 +11,7 @@ export const users = sqliteTable('user', {
   image: text('image'),
   isAdmin: integer('isAdmin', { mode: 'boolean' }),
   passwordHash: text('passwordHash'),
+  themeId: text('themeId').$type<ThemeId>(),
 })
 
 export const usersRelations = relations(users, ({ many }) => ({

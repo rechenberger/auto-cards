@@ -5,6 +5,9 @@ import { schema } from './schema-export'
 
 const seed = z.string().default(() => createSeed())
 
+export const User = createSelectSchema(schema.users)
+export type User = z.infer<typeof User>
+
 export const LoadoutData = z.object({
   items: z.array(
     z.object({
@@ -63,3 +66,33 @@ export const MatchParticipation = createSelectSchema(
   },
 )
 export type MatchParticipation = z.infer<typeof MatchParticipation>
+
+export const LiveMatchStatus = z.enum(['open', 'locked'])
+export type LiveMatchStatus = z.infer<typeof LiveMatchStatus>
+
+export const LiveMatchData = z.object({
+  seed,
+})
+export type LiveMatchData = z.infer<typeof LiveMatchData>
+
+export const LiveMatch = createSelectSchema(schema.liveMatch, {
+  data: LiveMatchData,
+  status: LiveMatchStatus,
+})
+export type LiveMatch = z.infer<typeof LiveMatch>
+
+export const LiveMatchParticipationData = z.object({
+  ready: z.boolean().default(false),
+  isHost: z.boolean().default(false),
+})
+export type LiveMatchParticipationData = z.infer<
+  typeof LiveMatchParticipationData
+>
+
+export const LiveMatchParticipation = createSelectSchema(
+  schema.liveMatchParticipation,
+  {
+    data: LiveMatchParticipationData,
+  },
+)
+export type LiveMatchParticipation = z.infer<typeof LiveMatchParticipation>

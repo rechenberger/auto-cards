@@ -2,7 +2,9 @@
 
 import { hasAnyStats, sumStats } from '@/game/calcStats'
 import { MATCH_CARD_ANIMATION_DURATION } from '@/game/config'
-import { MatchLog, MatchReport } from '@/game/generateMatch'
+import { MatchLog, MatchReport, NOT_ENOUGH_MSG } from '@/game/generateMatch'
+import { ThemeDefinition } from '@/game/themes'
+import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
 import { useAtomValue } from 'jotai'
 import { countBy, range, uniqueId } from 'lodash-es'
@@ -42,7 +44,9 @@ const useOnLogEvent = ({
 
     const logIndexesToAnimate = range(lastLogIdx + 1, newLogIdx + 1)
 
-    const logs = logIndexesToAnimate.map((idx) => matchReport.logs[idx])
+    const logs = logIndexesToAnimate
+      .map((idx) => matchReport.logs[idx])
+      .filter(Boolean)
     onLogs?.(logs)
     for (const log of logs) {
       onLog?.(log)
@@ -61,14 +65,19 @@ export const MatchCardOverlay = ({
   sideIdx,
   itemIdx,
   matchReport,
+  theme,
 }: {
   sideIdx: number
   itemIdx: number
   matchReport: MatchReport
+  theme?: ThemeDefinition
 }) => {
   const [animations, setAnimations] = useState<AnimationData[]>([])
 
   const speed = useAtomValue(matchPlaybackSpeedAtom)
+  const activeMatchLog = useAtomValue(activeMatchLogAtom)
+  const stats =
+    activeMatchLog?.log.stateSnapshot.sides[sideIdx]?.items[itemIdx]?.statsItem
 
   const addAnimation = useCallback(
     (animation: Omit<AnimationData, 'startedAt' | 'duration' | 'id'>) => {
@@ -93,19 +102,25 @@ export const MatchCardOverlay = ({
       )
       const statsMySide = sumStats(
         ...logs
-          .filter((log) => log.targetSideIdx === sideIdx)
+          .filter(
+            (log) =>
+              log.targetSideIdx === sideIdx && log.msg !== NOT_ENOUGH_MSG,
+          )
           .map((log) => log.stats || {}),
       )
       const statsOtherSide = sumStats(
         ...logs
-          .filter((log) => log.targetSideIdx !== sideIdx)
+          .filter(
+            (log) =>
+              log.targetSideIdx !== sideIdx && log.msg !== NOT_ENOUGH_MSG,
+          )
           .map((log) => log.stats || {}),
       )
 
       for (const stats of [statsMySide, statsOtherSide]) {
         if (hasAnyStats({ stats })) {
           addAnimation({
-            content: <StatsDisplay stats={stats} size="sm" />,
+            content: <StatsDisplay stats={stats} size="sm" disableTooltip />,
           })
         }
       }
@@ -148,6 +163,16 @@ export const MatchCardOverlay = ({
 
   return (
     <>
+      {stats && (
+        <div
+          className={cn(
+            'absolute top-4 inset-x-2 flex items-center justify-center ',
+            theme?.classBottom,
+          )}
+        >
+          <StatsDisplay stats={stats} size="sm" canWrap />
+        </div>
+      )}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none flex-col gap-2">
         {animations.map((animation) => {
           return (

@@ -12,9 +12,11 @@ import { StatsDisplay } from './StatsDisplay'
 export const LoadoutDisplay = async ({
   game,
   loadout,
+  canSell,
 }: {
   game?: Game
   loadout: LoadoutData
+  canSell?: boolean
 }) => {
   const stats = await calcStats({ loadout })
 
@@ -27,7 +29,13 @@ export const LoadoutDisplay = async ({
         <CardRow>
           {map(items, (item) => (
             <Fragment key={item.name}>
-              <ItemCard game={game} name={item.name} count={item.count} />
+              <ItemCard
+                game={game}
+                name={item.name}
+                count={item.count}
+                tooltipOnClick
+                canSell={canSell}
+              />
             </Fragment>
           ))}
         </CardRow>
@@ -41,6 +49,8 @@ export const LoadoutDisplay = async ({
                 name={item.name}
                 count={item.count}
                 size="240"
+                tooltipOnClick
+                canSell={canSell}
               />
             </Fragment>
           ))}

@@ -1,34 +1,24 @@
-'use client'
+// 'use client'
 
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { allStatsDefinition, Stats } from '@/game/stats'
+import { allStatsDefinition, StatDefinition, Stats } from '@/game/stats'
 import { cn } from '@/lib/utils'
 import { Fragment } from 'react'
 import { CardTooltip } from './CardTooltip'
 
-export const StatsDisplay = ({
-  stats,
-  relative,
-  showZero,
-  size = 'default',
-  canWrap,
-  disableTooltip,
-  statClassName,
-  hideBars,
-}: {
+export type StatsDisplayProps = Omit<StatDisplayProps, 'value' | 'stat'> & {
   stats: Stats
-  relative?: boolean
-  showZero?: boolean
-  size?: 'sm' | 'default'
   canWrap?: boolean
-  disableTooltip?: boolean
-  statClassName?: string
+  showZero?: boolean
   hideBars?: boolean
-}) => {
+}
+
+export const StatsDisplay = (props: StatsDisplayProps) => {
+  const { stats, canWrap, showZero, hideBars } = props
   return (
     <>
       <div
@@ -38,51 +28,75 @@ export const StatsDisplay = ({
         )}
       >
         {allStatsDefinition
-          .filter((stat) => !('hidden' in stat && stat.hidden))
-          .filter((stat) => !hideBars || !('bar' in stat && stat.bar))
+          .filter((stat) => !stat.hidden)
+          .filter((stat) => !hideBars || !stat.bar)
           .map((stat) => {
             const value = stats[stat.name]
             if (showZero ? value === undefined : !value) return null
-
-            const inner = (
-              <div
-                className={cn(
-                  'rounded-full border px-1 py-0.5 flex flex-row items-center',
-                  stat.bgClass,
-                  '[text-shadow:_0px_0px_2px_rgb(0_0_0_/_80%)]',
-                  statClassName,
-                )}
-              >
-                <stat.icon
-                  className={cn('size-4', size === 'sm' && 'size-3')}
-                />
-                <div
-                  className={cn(
-                    'text-sm px-1 font-bold',
-                    size === 'sm' && 'text-xs',
-                  )}
-                >
-                  {value}
-                </div>
-              </div>
-            )
-
-            if (disableTooltip) {
-              return inner
-            }
-
             return (
               <Fragment key={stat.name}>
-                <Tooltip>
-                  <TooltipTrigger tabIndex={-1}>{inner}</TooltipTrigger>
-                  <TooltipContent className="bg-none border-none shadow-none p-0">
-                    <CardTooltip name={stat.name} text={stat.tooltip} />
-                  </TooltipContent>
-                </Tooltip>
+                <StatDisplay {...props} stat={stat} value={stats[stat.name]} />
               </Fragment>
             )
           })}
       </div>
+    </>
+  )
+}
+
+export type StatDisplayProps = {
+  relative?: boolean
+  size?: 'sm' | 'default'
+  disableTooltip?: boolean
+  statClassName?: string
+  hideCount?: boolean
+
+  value?: number
+  stat: StatDefinition
+}
+
+export const StatDisplay = ({
+  relative,
+  size = 'default',
+  disableTooltip,
+  statClassName,
+  hideCount,
+  value,
+  stat,
+}: StatDisplayProps) => {
+  const inner = (
+    <div
+      className={cn(
+        'rounded-full border px-1 py-0.5 flex flex-row items-center',
+        stat.bgClass,
+        '[text-shadow:_0px_0px_2px_rgb(0_0_0_/_80%)]',
+        'text-white',
+        statClassName,
+      )}
+    >
+      <stat.icon className={cn('size-4', size === 'sm' && 'size-3')} />
+      {!hideCount && !stat.hideCount && (
+        <div
+          className={cn('text-sm px-1 font-bold', size === 'sm' && 'text-xs')}
+        >
+          {value}
+        </div>
+      )}
+    </div>
+  )
+
+  if (disableTooltip) {
+    return inner
+  }
+
+  return (
+    <>
+      <Tooltip>
+        <TooltipTrigger tabIndex={-1}>{inner}</TooltipTrigger>
+        <TooltipContent className="bg-none border-none shadow-none p-0">
+          <CardTooltip name={stat.name} text={stat.tooltip} />
+        </TooltipContent>
+      </Tooltip>
     </>
   )
 }
