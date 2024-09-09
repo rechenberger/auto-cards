@@ -1,6 +1,7 @@
 import { createId } from '@paralleldrive/cuid2'
 import { range } from 'lodash-es'
 import { Worker } from 'worker_threads'
+import { WORKER_COUNT, WORKER_MAX_LISTENERS } from './config'
 import { GenerateMatchInput, MatchReport } from './generateMatch'
 
 export type MatchWorkerInput = {
@@ -14,12 +15,16 @@ export type MatchWorkerOutput = {
 }
 
 export const createMatchWorkerManager = ({
-  noOfWorkers = 8,
+  noOfWorkers = WORKER_COUNT,
+  maxListeners = WORKER_MAX_LISTENERS,
 }: {
   noOfWorkers?: number
+  maxListeners?: number
 } = {}) => {
   const newWorker = () => {
-    return new Worker(new URL('./matchWorker.ts', import.meta.url))
+    const worker = new Worker(new URL('./matchWorker.ts', import.meta.url))
+    worker.setMaxListeners(maxListeners)
+    return worker
   }
 
   const workers = range(noOfWorkers).map(newWorker)
@@ -36,11 +41,13 @@ export const createMatchWorkerManager = ({
     }
     worker.postMessage(workerInput)
     return new Promise<MatchReport>((resolve, reject) => {
-      worker.on('message', (message) => {
+      const listener = (message: MatchWorkerOutput) => {
         if (message.jobId === workerInput.jobId) {
           resolve(message.output)
+          worker.off('message', listener)
         }
-      })
+      }
+      worker.on('message', listener)
       // worker.on('error', (error) => {
       //   reject(error)
       // })
