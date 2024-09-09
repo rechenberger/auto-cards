@@ -894,7 +894,7 @@ const allItemsConst = [
       {
         type: 'onAttackAfterHit',
         statsEnemy: {
-          poison: 2,
+          poison: 1,
           randomDebuff: 1,
         },
         chancePercent: 70,
