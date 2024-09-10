@@ -116,3 +116,11 @@ export const streamAction = (action: SuperAction) => {
   const ctx = serverContext.getOrThrow()
   ctx.chain({ action })
 }
+
+export const superActionFast = <T>(action: () => T) => {
+  return superAction(async () => {
+    const ctx = serverContext.getOrThrow()
+    ctx.chain({})
+    return action()
+  })
+}
