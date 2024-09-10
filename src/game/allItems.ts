@@ -731,15 +731,15 @@ const allItemsConst = [
     stats: {
       space: space(-2),
     },
+    statsItem: {
+      ranged: 1,
+    },
     triggers: [
       {
         type: 'interval',
         cooldown: 1_500,
         statsRequired: {
           stamina: 7,
-        },
-        statsItem: {
-          ranged: 1,
         },
         statsSelf: {
           stamina: -7,
@@ -780,15 +780,15 @@ const allItemsConst = [
     stats: {
       space: space(-2),
     },
+    statsItem: {
+      ranged: 1,
+    },
     triggers: [
       {
         type: 'interval',
         cooldown: 1_500,
         statsRequired: {
           stamina: 7,
-        },
-        statsItem: {
-          ranged: 1,
         },
         statsSelf: {
           stamina: -7,
@@ -836,15 +836,15 @@ const allItemsConst = [
     stats: {
       space: space(-2),
     },
+    statsItem: {
+      ranged: 1,
+    },
     triggers: [
       {
         type: 'interval',
         cooldown: 1_500,
         statsRequired: {
           stamina: 7,
-        },
-        statsItem: {
-          ranged: 1,
         },
         statsSelf: {
           stamina: -7,
@@ -873,15 +873,15 @@ const allItemsConst = [
     stats: {
       space: space(-2),
     },
+    statsItem: {
+      ranged: 1,
+    },
     triggers: [
       {
         type: 'interval',
         cooldown: 1_500,
         statsRequired: {
           stamina: 7,
-        },
-        statsItem: {
-          ranged: 1,
         },
         statsSelf: {
           stamina: -7,
