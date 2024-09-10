@@ -20,21 +20,21 @@ export const craftingRecipes: CraftingRecipe[] = [
       { name: 'shortBow', count: 1 },
       { name: 'roseBush', count: 1 },
     ],
-    output: [{ name: 'tuskPoker' }],
+    output: [{ name: 'thornBow' }],
   },
   {
     input: [
       { name: 'shortBow', count: 1 },
       { name: 'luckyClover', count: 2 },
     ],
-    output: [{ name: 'fortunasHope' }],
+    output: [{ name: 'luckyBow' }],
   },
   {
     input: [
       { name: 'shortBow', count: 1 },
       { name: 'flyAgaric', count: 1 },
     ],
-    output: [{ name: 'belladonnasShade' }],
+    output: [{ name: 'poisonBow' }],
   },
 ]
 
