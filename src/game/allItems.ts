@@ -771,7 +771,7 @@ const allItemsConst = [
     ],
   },
   {
-    name: 'tuskPoker',
+    name: 'thornBow',
     prompt: 'a bow and arrow made out of thorny wood',
     tags: ['weapon'],
     rarity: 'rare',
@@ -827,7 +827,7 @@ const allItemsConst = [
     ],
   },
   {
-    name: 'fortunasHope',
+    name: 'luckyBow',
     prompt: 'a bow and arrow made out of lucky clovers',
     tags: ['weapon'],
     rarity: 'rare',
@@ -864,7 +864,7 @@ const allItemsConst = [
     ],
   },
   {
-    name: 'belladonnasShade',
+    name: 'poisonBow',
     prompt: 'a bow and arrow made out of fly agaric mushrooms',
     tags: ['weapon'],
     rarity: 'rare',
