@@ -1,6 +1,6 @@
 import { createId } from '@paralleldrive/cuid2'
 import { relations } from 'drizzle-orm'
-import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core'
+import { index, int, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 import { users } from './schema-auth'
 import {
   GameData,
@@ -113,13 +113,21 @@ export const matchParticipationRelations = relations(
   }),
 )
 
-export const aiImage = sqliteTable('aiImage', {
-  ...baseStats(),
-  prompt: text('prompt').notNull(),
-  url: text('url').notNull(),
-  itemId: text('itemId'),
-  themeId: text('themeId'),
-})
+export const aiImage = sqliteTable(
+  'aiImage',
+  {
+    ...baseStats(),
+    prompt: text('prompt').notNull(),
+    url: text('url').notNull(),
+    itemId: text('itemId'),
+    themeId: text('themeId'),
+  },
+  (table) => ({
+    aiImageItemIdThemeIdUpdatedAtIdx: index(
+      'aiImage_itemId_themeId_updatedAt_idx',
+    ).on(table.itemId, table.themeId, table.updatedAt),
+  }),
+)
 
 export const liveMatch = sqliteTable('liveMatch', {
   ...baseStats(),
