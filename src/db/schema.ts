@@ -42,14 +42,22 @@ export const gameRelations = relations(game, ({ one, many }) => ({
   }),
 }))
 
-export const loadout = sqliteTable('loadout', {
-  ...baseStats(),
-  userId: text('userId'),
-  data: text('data', { mode: 'json' }).$type<LoadoutData>().notNull(),
-  gameId: text('gameId'),
-  roundNo: int('roundNo').notNull(),
-  primaryMatchParticipationId: text('primaryMatchParticipationId'),
-})
+export const loadout = sqliteTable(
+  'loadout',
+  {
+    ...baseStats(),
+    userId: text('userId'),
+    data: text('data', { mode: 'json' }).$type<LoadoutData>().notNull(),
+    gameId: text('gameId'),
+    roundNo: int('roundNo').notNull(),
+    primaryMatchParticipationId: text('primaryMatchParticipationId'),
+  },
+  (table) => ({
+    loadoutPrimaryMatchParticipationIdIdx: index(
+      'loadoutPrimaryMatchParticipationIdIdx',
+    ).on(table.primaryMatchParticipationId),
+  }),
+)
 
 export const loadoutRelations = relations(loadout, ({ one, many }) => ({
   user: one(users, {
@@ -85,15 +93,23 @@ export const matchRelations = relations(match, ({ one, many }) => ({
   matchParticipations: many(matchParticipation),
 }))
 
-export const matchParticipation = sqliteTable('matchParticipation', {
-  ...baseStats(),
-  data: text('data', { mode: 'json' }).$type<object>().notNull(),
-  matchId: text('matchId').notNull(),
-  userId: text('userId'),
-  loadoutId: text('loadoutId').notNull(),
-  sideIdx: int('sideIdx').notNull(),
-  status: text('stats').$type<'won' | 'lost'>().notNull(),
-})
+export const matchParticipation = sqliteTable(
+  'matchParticipation',
+  {
+    ...baseStats(),
+    data: text('data', { mode: 'json' }).$type<object>().notNull(),
+    matchId: text('matchId').notNull(),
+    userId: text('userId'),
+    loadoutId: text('loadoutId').notNull(),
+    sideIdx: int('sideIdx').notNull(),
+    status: text('stats').$type<'won' | 'lost'>().notNull(),
+  },
+  (table) => ({
+    matchParticipationLoadoutIdIdx: index('matchParticipationLoadoutIdIdx').on(
+      table.loadoutId,
+    ),
+  }),
+)
 
 export const matchParticipationRelations = relations(
   matchParticipation,
@@ -124,7 +140,7 @@ export const aiImage = sqliteTable(
   },
   (table) => ({
     aiImageItemIdThemeIdUpdatedAtIdx: index(
-      'aiImage_itemId_themeId_updatedAt_idx',
+      'aiImageItemIdThemeIdUpdatedAtIdx',
     ).on(table.itemId, table.themeId, table.updatedAt),
   }),
 )
@@ -141,14 +157,22 @@ export const liveMatchRelations = relations(liveMatch, ({ one, many }) => ({
   games: many(game),
 }))
 
-export const liveMatchParticipation = sqliteTable('liveMatchParticipation', {
-  ...baseStats(),
-  liveMatchId: text('liveMatchId').notNull(),
-  userId: text('userId').notNull(),
-  data: text('data', { mode: 'json' })
-    .$type<LiveMatchParticipationData>()
-    .notNull(),
-})
+export const liveMatchParticipation = sqliteTable(
+  'liveMatchParticipation',
+  {
+    ...baseStats(),
+    liveMatchId: text('liveMatchId').notNull(),
+    userId: text('userId').notNull(),
+    data: text('data', { mode: 'json' })
+      .$type<LiveMatchParticipationData>()
+      .notNull(),
+  },
+  (table) => ({
+    liveMatchParticipationUserIdIdx: index(
+      'liveMatchParticipationUserIdIdx',
+    ).on(table.userId),
+  }),
+)
 
 export const liveMatchParticipationRelations = relations(
   liveMatchParticipation,
