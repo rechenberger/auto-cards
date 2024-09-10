@@ -8,6 +8,7 @@ export const FightButton = ({ game }: { game: Game }) => {
     <>
       <ActionButton
         catchToast
+        forceNeverStopLoading
         action={async () => {
           'use server'
           return gameAction({

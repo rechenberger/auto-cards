@@ -13,13 +13,20 @@ export type UseSuperActionOptions = {
   catchToast?: boolean
   askForConfirmation?: boolean | SuperActionDialog
   stopPropagation?: boolean
+  forceNeverStopLoading?: boolean
 }
 
 export const useSuperAction = (options: UseSuperActionOptions) => {
   const [isLoading, setIsLoading] = useState(false)
 
-  const { action, disabled, catchToast, askForConfirmation, stopPropagation } =
-    options
+  const {
+    action,
+    disabled,
+    catchToast,
+    askForConfirmation,
+    stopPropagation,
+    forceNeverStopLoading,
+  } = options
 
   const router = useRouterTryCatch()
   const showDialog = useShowDialog()
@@ -77,7 +84,9 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
         })
       }
 
-      setIsLoading(false)
+      if (!forceNeverStopLoading) {
+        setIsLoading(false)
+      }
     },
     [
       isLoading,
@@ -85,6 +94,7 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
       stopPropagation,
       askForConfirmation,
       action,
+      forceNeverStopLoading,
       showDialog,
       catchToast,
       router,

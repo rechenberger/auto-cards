@@ -36,6 +36,7 @@ export const ActionButton = <Comp extends typeof Button = typeof Button>(
     askForConfirmation,
     stopPropagation,
     command,
+    forceNeverStopLoading,
     ...buttonProps
   } = props
   const { isLoading, trigger } = useSuperAction({
@@ -44,6 +45,7 @@ export const ActionButton = <Comp extends typeof Button = typeof Button>(
     catchToast,
     askForConfirmation,
     stopPropagation,
+    forceNeverStopLoading,
   })
   const Icon = isLoading ? Loader2 : ArrowRight
 
