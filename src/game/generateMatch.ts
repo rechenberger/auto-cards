@@ -575,8 +575,6 @@ export const generateMatch = async ({
   }
 
   while (true) {
-    const seedTick = seed
-
     const nextTime = minBy(futureActions, (a) => a.time ?? Infinity)?.time
     if (nextTime === undefined) {
       throw new Error('no next time')
