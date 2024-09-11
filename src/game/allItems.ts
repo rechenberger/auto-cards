@@ -1,4 +1,5 @@
 import { constArrayMap } from '@/lib/constArrayMap'
+import { keyBy } from 'lodash-es'
 import { z } from 'zod'
 import { IGNORE_SPACE } from './config'
 import { ItemDefinition } from './ItemDefinition'
@@ -110,15 +111,9 @@ const allItemsConst = [
       {
         type: 'onDefendBeforeHit',
         chancePercent: 30,
-        chanceGroup: 'block',
         statsSelf: {
           block: 5,
         },
-      },
-      {
-        type: 'onDefendAfterHit',
-        chancePercent: 30,
-        chanceGroup: 'block',
         statsEnemy: {
           stamina: -3,
         },
@@ -990,8 +985,10 @@ const allItems: ItemDefinition[] = allItemsConst
 
 export const getAllItems = async () => allItems
 
+const itemByName = keyBy(allItems, (i) => i.name)
+
 export const tryGetItemByName = async (name: string) => {
-  const item = allItems.find((item) => item.name === name)
+  const item = itemByName[name]
   return item
 }
 
