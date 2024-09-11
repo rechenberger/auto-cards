@@ -1,9 +1,9 @@
 'use client'
 
 import { MatchReport } from '@/game/generateMatch'
+import { motion } from 'framer-motion'
 import { useAtomValue } from 'jotai'
 import { minBy } from 'lodash-es'
-import { useRef } from 'react'
 import { activeMatchLogAtom } from './matchPlaybackState'
 
 export const MatchCardTimer = ({
@@ -15,53 +15,100 @@ export const MatchCardTimer = ({
   itemIdx: number
   matchReport: MatchReport
 }) => {
-  const currentPercent = useRef(0)
+  // const [currentPercent, setCurrentPercent] = useState(0)
   const activeMatchLog = useAtomValue(activeMatchLogAtom)
-  const nextItemActivation =
-    activeMatchLog?.log.stateSnapshot.futureActions.find(
-      (fa) =>
-        fa.type === 'itemTrigger' &&
-        fa.itemIdx === itemIdx &&
-        fa.sideIdx === sideIdx,
-    )
+
+  const futureActions = activeMatchLog?.log.stateSnapshot.futureActions
+  if (!futureActions) return <></>
+
+  const nextItemActivation = futureActions.find(
+    (fai) =>
+      fai.type === 'interval' &&
+      fai.itemIdx === itemIdx &&
+      fai.sideIdx === sideIdx,
+    // &&
+    // !!fai.currentCooldown,
+  )
   const currentTime = activeMatchLog?.log.time
 
+  const relevantLogsForNextUpdate = futureActions.filter((fa) => {
+    return (
+      (fa.type === 'interval' || fa.type === 'baseTick') &&
+      fa.time &&
+      fa.time > currentTime
+    )
+  })
   const timeTillNextUpdate = minBy(
-    activeMatchLog?.log.stateSnapshot.futureActions,
-    (fa) => fa.time,
+    relevantLogsForNextUpdate,
+    (fa) => fa.time!,
   )?.time
 
+  if (sideIdx === 0 && itemIdx === 1) {
+    console.log({
+      nextItemActivation,
+      currentTime,
+      timeTillNextUpdate,
+      futureActions,
+    })
+  }
   if (
     !nextItemActivation ||
-    !currentTime ||
-    nextItemActivation.type !== 'itemTrigger'
-  )
+    typeof currentTime === 'undefined' ||
+    nextItemActivation.type !== 'interval' ||
+    !timeTillNextUpdate
+  ) {
+    // console.log({ nextItemActivation, currentTime, timeTillNextUpdate })
+
     return <></>
+  }
 
-  const { time: timeToUseItemAgain, lastUsed } = nextItemActivation
+  const {
+    time: timeToUseItemAgain,
+    lastUsed,
+    currentCooldown,
+  } = nextItemActivation
 
-  const cooldown = timeToUseItemAgain - lastUsed
-
-  const cooldownProgressPercent =
-    cooldown > 0
-      ? Math.floor(Math.min(100, ((currentTime - lastUsed) / cooldown) * 100))
+  const cooldownProgressPercentOnNextUpdate =
+    (currentCooldown ?? 0 > 0)
+      ? Math.floor(
+          Math.min(
+            100,
+            ((timeTillNextUpdate - lastUsed) / currentCooldown!) * 100,
+          ),
+        )
       : 0
 
-  currentPercent.current = cooldownProgressPercent
+  // if (cooldownProgressPercentOnNextUpdate !== currentPercent) {
+  //   setCurrentPercent(cooldownProgressPercentOnNextUpdate)
+  // }
 
-  const animationDuration = timeTillNextUpdate
+  let animationDuration = timeTillNextUpdate
     ? timeTillNextUpdate - currentTime
     : 0
 
-  console.log({ timeTillNextUpdate, currentTime, animationDuration })
+  // if (cooldownProgressPercentOnNextUpdate === 100) {
+  //   setTimeout(() => {
+  //     animationDuration = 0
+  //     setCurrentPercent(0)
+  //   }, animationDuration)
+  // }
+
+  if (sideIdx === 0 && itemIdx === 1) {
+    console.log({
+      timeTillNextUpdate,
+      currentTime,
+      cooldownProgressPercent: cooldownProgressPercentOnNextUpdate,
+      animationDuration,
+      nextItemActivation,
+      futueActions: activeMatchLog?.log.stateSnapshot.futureActions,
+    })
+  }
 
   return (
-    <div
-      className="absolute scale-105 bottom-1 left-0 right-0 bg-gray-500 bg-opacity-50 transition-all"
-      style={{
-        height: `${cooldownProgressPercent}%`,
-        transitionDuration: `${animationDuration}ms`,
-      }}
-    ></div>
+    <motion.div
+      className="absolute bottom-0 bg-gray-500 bg-opacity-50 left-0 right-0 "
+      animate={{ height: `${cooldownProgressPercentOnNextUpdate}%` }}
+      transition={{ duration: animationDuration / 1000 }}
+    ></motion.div>
   )
 }

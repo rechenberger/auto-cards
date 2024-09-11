@@ -8,10 +8,10 @@ import { cn } from '@/lib/utils'
 import { find, map, take } from 'lodash-es'
 import { Fragment } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
+import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 import { ItemCard } from './ItemCard'
 import { MatchCardOverlay } from './MatchCardOverlay'
-import { MatchCardTimer } from './MatchCardTimer'
-import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
+import { MatchCardTimer2 } from './MatchCardTimer2'
 
 export const MatchCards = async ({
   items,
@@ -71,7 +71,12 @@ export const MatchCards = async ({
                     itemIdx={itemIdx}
                     sideIdx={sideIdx}
                   />
-                  <MatchCardTimer
+                  {/* <MatchCardTimer
+                    sideIdx={sideIdx}
+                    itemIdx={itemIdx}
+                    matchReport={matchReport}
+                  /> */}
+                  <MatchCardTimer2
                     sideIdx={sideIdx}
                     itemIdx={itemIdx}
                     matchReport={matchReport}

@@ -573,7 +573,7 @@ export const generateMatch = async ({
       })
     }
   }
-
+  log({ msg: 'Start of Battle', sideIdx: -1 })
   while (true) {
     const seedTick = [...seed, time]
 
