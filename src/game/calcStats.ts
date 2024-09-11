@@ -2,7 +2,8 @@ import { LoadoutData } from '@/db/schema-zod'
 import { capitalCase } from 'change-case'
 import { keys, map, omitBy, range, sumBy, uniq } from 'lodash-es'
 import { getItemByName } from './allItems'
-import { Stats } from './stats'
+import { randomStats } from './randomStats'
+import { Stat, Stats } from './stats'
 
 export const calcStats = async ({ loadout }: { loadout: LoadoutData }) => {
   const items = await Promise.all(
@@ -41,11 +42,15 @@ export const addStats = (a: Stats, b: Stats) => {
   return a
 }
 
+const statsThatCanBeNegative: string[] = [
+  'health',
+  ...randomStats,
+] satisfies Stat[]
 export const tryAddStats = (a: Stats, b: Stats) => {
   for (const key in b) {
     const k = key as keyof Stats
     a[k] = (a[k] || 0) + (b[k] || 0)
-    if (key !== 'health' && (a[k] || 0) < 0) {
+    if (!statsThatCanBeNegative.includes(key) && (a[k] || 0) < 0) {
       a[k] = 0
     }
   }
@@ -98,3 +103,24 @@ export const hasStats = (a: Stats, b: Stats) => {
 export const hasAnyStats = ({ stats }: { stats: Stats }) => {
   return !!keys(omitBy(stats, (v) => v === undefined || v === 0)).length
 }
+
+// export const multiplyStats = ({
+//   stats,
+//   multiplier,
+// }: {
+//   stats: Stats
+//   multiplier: number
+// }) => {
+//   const result = { ...stats }
+//   for (const key in result) {
+//     const k = key as keyof Stats
+//     if (result[k]) {
+//       result[k] = result[k] * multiplier
+//     }
+//   }
+//   return result
+// }
+
+// export const negativeStats = (stats: Stats) => {
+//   return multiplyStats({ stats, multiplier: -1 })
+// }

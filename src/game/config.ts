@@ -16,3 +16,6 @@ export const MATCH_CARD_ANIMATION_DURATION = 1_000
 
 export const MAX_THORNS_MULTIPLIER = 1.5
 export const CRIT_MULTIPLIER = 2
+
+export const WORKER_COUNT = 8
+export const WORKER_MAX_LISTENERS = 100

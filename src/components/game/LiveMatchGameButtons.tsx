@@ -35,6 +35,7 @@ export const LiveMatchGameButtons = async ({
         <>
           <ActionButton
             catchToast
+            forceNeverStopLoading
             action={async () => {
               'use server'
               return superAction(async () => {

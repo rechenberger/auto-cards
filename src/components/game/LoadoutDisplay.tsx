@@ -12,9 +12,11 @@ import { StatsDisplay } from './StatsDisplay'
 export const LoadoutDisplay = async ({
   game,
   loadout,
+  canSell,
 }: {
   game?: Game
   loadout: LoadoutData
+  canSell?: boolean
 }) => {
   const stats = await calcStats({ loadout })
 
@@ -32,6 +34,7 @@ export const LoadoutDisplay = async ({
                 name={item.name}
                 count={item.count}
                 tooltipOnClick
+                canSell={canSell}
               />
             </Fragment>
           ))}
@@ -47,6 +50,7 @@ export const LoadoutDisplay = async ({
                 count={item.count}
                 size="240"
                 tooltipOnClick
+                canSell={canSell}
               />
             </Fragment>
           ))}

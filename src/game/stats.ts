@@ -1,11 +1,14 @@
 import { constArrayMap } from '@/lib/constArrayMap'
 import {
+  ArrowBigUp,
   Axe,
   Backpack,
   Banana,
   Beer,
+  BicepsFlexed,
   Bird,
   Carrot,
+  Clover,
   Coins,
   Crosshair,
   Eye,
@@ -24,8 +27,9 @@ import {
 } from 'lucide-react'
 import { z } from 'zod'
 import { IGNORE_SPACE, MAX_THORNS_MULTIPLIER } from './config'
+import { randomStatDefinitionsRaw } from './randomStats'
 
-type StatDefinitionPre = {
+export type StatDefinitionPre = {
   name: string
   icon: LucideIcon
   bgClass: string
@@ -33,11 +37,14 @@ type StatDefinitionPre = {
   bar?: boolean
   hidden?: boolean
   hideCount?: boolean
+  subset?: StatDefinitionPost[]
 }
 
 type StatDefinitionPost = StatDefinitionPre & {
   name: Stat
 }
+
+export type StatDefinition = StatDefinitionPre
 
 const heroStats = [
   {
@@ -70,10 +77,10 @@ const heroStats = [
   },
   {
     name: 'staminaMax',
-    icon: Banana,
+    icon: BicepsFlexed,
     bgClass: 'bg-yellow-500',
     tooltip: 'Max Stamina points.',
-    hidden: true,
+    // hidden: true,
   },
   {
     name: 'staminaRegen',
@@ -142,6 +149,12 @@ const heroStats = [
     tooltip: 'X% chance to crit. Removed on crit.',
   },
   {
+    name: 'empower',
+    icon: ArrowBigUp,
+    bgClass: 'bg-orange-500',
+    tooltip: 'X more damage',
+  },
+  {
     name: 'drunk',
     icon: Beer,
     bgClass: 'bg-yellow-500',
@@ -166,7 +179,16 @@ const heroStats = [
     bgClass: 'bg-amber-500',
     tooltip: 'Reduces accuracy by X%.',
   },
+  {
+    name: 'luck',
+    icon: Clover,
+    bgClass: 'bg-emerald-500',
+    tooltip: 'Increases accuracy by X%.',
+  },
 ] as const satisfies StatDefinitionPre[]
+export const allHeroStats = constArrayMap(heroStats, 'name')
+export const HeroStat = z.enum(allHeroStats)
+export type HeroStat = z.infer<typeof HeroStat>
 
 const attackStats = [
   {
@@ -196,6 +218,7 @@ export const allStatsDefinitionConst = [
   ...otherStats,
   ...heroStats,
   ...attackStats,
+  ...randomStatDefinitionsRaw,
 ] as const satisfies StatDefinitionPre[]
 
 export const allStatsDefinition: StatDefinitionPost[] = allStatsDefinitionConst
@@ -210,6 +233,7 @@ export const getStatDefinition = (stat: Stat) => {
 
 export const allStats = constArrayMap(allStatsDefinitionConst, 'name')
 
+export const Stat = z.enum(allStats)
 export type Stat = (typeof allStats)[number]
 
 // Construct an object schema with all keys required

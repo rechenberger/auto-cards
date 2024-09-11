@@ -16,8 +16,8 @@ export type SuperActionToast = {
 export type SuperActionDialog = {
   title?: string
   content?: ReactNode
-  confirm?: string
-  cancel?: string
+  confirm?: ReactNode
+  cancel?: ReactNode
   className?: string
 } | null
 
@@ -115,4 +115,12 @@ export const streamDialog = (dialog: SuperActionDialog) => {
 export const streamAction = (action: SuperAction) => {
   const ctx = serverContext.getOrThrow()
   ctx.chain({ action })
+}
+
+export const superActionFast = <T>(action: () => T) => {
+  return superAction(async () => {
+    const ctx = serverContext.getOrThrow()
+    ctx.chain({})
+    return action()
+  })
 }

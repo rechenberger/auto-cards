@@ -1,46 +1,37 @@
-import { db } from '@/db/db'
-import { schema } from '@/db/schema-export'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { desc, eq } from 'drizzle-orm'
 import { Suspense } from 'react'
 import { generateAiImage } from './generateAiImage.action'
+import { getAiImage } from './getAiImage'
 
 export type AiImageProps = {
   prompt: string
   className?: string
   itemId?: string
+  themeId?: string
+  autoGenerate?: boolean
 }
 
 export const AiImage = ({
-  prompt,
   className = 'aspect-square',
-  itemId,
+  ...props
 }: AiImageProps) => {
   return (
     <>
-      <Suspense fallback={<div className={cn(className, 'bg-slate-600')} />}>
-        <AiImageRaw prompt={prompt} className={className} itemId={itemId} />
+      <Suspense fallback={<div className={cn('bg-slate-600', className)} />}>
+        <AiImageRaw className={className} {...props} />
       </Suspense>
     </>
   )
 }
 
-export const AiImageRaw = async ({
-  prompt,
-  className,
-  itemId,
-}: {
-  prompt: string
-  className?: string
-  itemId?: string
-}) => {
-  const aiImage = await db.query.aiImage.findFirst({
-    where: itemId
-      ? eq(schema.aiImage.itemId, itemId)
-      : eq(schema.aiImage.prompt, prompt),
-    orderBy: desc(schema.aiImage.updatedAt),
-  })
+export const AiImageRaw = async (props: AiImageProps) => {
+  const { prompt, className, itemId } = props
+  let aiImage = await getAiImage(props)
+  if (!aiImage && props.autoGenerate) {
+    await generateAiImage({ ...props, skipRevalidate: true })
+    aiImage = await getAiImage(props)
+  }
   if (!aiImage) {
     return (
       <div
@@ -48,10 +39,14 @@ export const AiImageRaw = async ({
       >
         <ActionButton
           catchToast
+          stopPropagation
           variant={'outline'}
+          command={{
+            label: `Generate Image for ${itemId || prompt}`,
+          }}
           action={async () => {
             'use server'
-            return generateAiImage({ prompt, itemId, force: false })
+            return generateAiImage({ ...props, force: false })
           }}
           title={prompt}
         >
@@ -67,11 +62,11 @@ export const AiImageRaw = async ({
         variant={'outline'}
         action={async () => {
           'use server'
-          return generateAiImage({ prompt, itemId })
+          return generateAiImage(props)
         }}
         title={prompt}
         command={{
-          label: `Generate Image for ${itemId || prompt}`,
+          label: `Re-Generate Image for ${itemId || prompt}`,
         }}
         hideButton
       >
