@@ -53,6 +53,9 @@ export const MatchCardTimer2 = ({
         (activeMatchLog?.log.time ?? 0) - (nextItemActivation?.lastUsed ?? 0),
       )
     }
+    if (isPlaying && activeMatchLog?.log.time === 0) {
+      setProgress(0)
+    }
   }, [activeMatchLog?.log.time, isPlaying, nextItemActivation?.lastUsed])
 
   const tick = 100 / speed
