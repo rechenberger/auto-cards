@@ -110,15 +110,9 @@ const allItemsConst = [
       {
         type: 'onDefendBeforeHit',
         chancePercent: 30,
-        chanceGroup: 'block',
         statsSelf: {
           block: 5,
         },
-      },
-      {
-        type: 'onDefendAfterHit',
-        chancePercent: 30,
-        chanceGroup: 'block',
         statsEnemy: {
           stamina: -3,
         },

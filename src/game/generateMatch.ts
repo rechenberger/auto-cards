@@ -1,5 +1,11 @@
 import { LoadoutData } from '@/db/schema-zod'
-import { rngFloat, rngOrder, Seed, SeedArray } from '@/game/seed'
+import {
+  rngFloat,
+  rngGenerator,
+  rngOrder,
+  SeedArray,
+  SeedRng,
+} from '@/game/seed'
 import { cloneDeep, minBy, orderBy, range } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { calcCooldown } from './calcCooldown'
@@ -134,12 +140,14 @@ export const NOT_ENOUGH_MSG = 'Not enough'
 export const generateMatch = async ({
   skipLogs,
   participants,
-  seed,
+  seed: _seed,
 }: GenerateMatchInput) => {
   let time = 0
 
-  const state = await generateMatchState({ participants, seed })
+  const state = await generateMatchState({ participants, seed: _seed })
   const { sides, futureActions } = state
+
+  const seed = rngGenerator({ seed: _seed })
 
   const logs: MatchLog[] = []
   const log = (
@@ -155,7 +163,7 @@ export const generateMatch = async ({
   }
 
   const endOfMatch = () => {
-    const sidesRandom = rngOrder({ items: sides, seed: [...seed, 'end'] })
+    const sidesRandom = rngOrder({ items: sides, seed })
     const sidesByHealth = orderBy(
       sidesRandom,
       (s) => s.stats.health ?? 0,
@@ -232,7 +240,7 @@ export const generateMatch = async ({
   }
 
   type TriggerHandlerInput = {
-    seed: Seed
+    seed: SeedRng
     action: FutureActionItem
     baseLogMsg?: string
   }
@@ -241,7 +249,6 @@ export const generateMatch = async ({
     const { seed, action } = input
 
     const { sideIdx, itemIdx, triggerIdx } = action
-    const seedAction = [seed, action]
     const mySide = sides[sideIdx]
     const otherSide = sides[1 - sideIdx] // lol
     const item = mySide.items[itemIdx]
@@ -274,16 +281,7 @@ export const generateMatch = async ({
 
     if (trigger.chancePercent) {
       const chancePercent = trigger.chancePercent
-      const chanceSeed = trigger.chanceGroup
-        ? [
-            input.seed,
-            'triggerChanceGroup',
-            action.itemIdx, // different item has different chance
-            action.itemCounter, // different item in stack has different chance
-            trigger.chanceGroup, // group multiple triggers together
-          ]
-        : seedAction
-      const chanceRng = rngFloat({ seed: chanceSeed, max: 100 })
+      const chanceRng = rngFloat({ seed, max: 100 })
       const doesTrigger = chanceRng <= chancePercent
       if (!doesTrigger) {
         return
@@ -316,7 +314,7 @@ export const generateMatch = async ({
         })
         randomStatsResolve({
           stats: mySide.stats,
-          seed: [seedAction, 'randomStatsResolve', 'statsSelf'],
+          seed,
           onRandomStat: ({ stats, randomStat }) => {
             log({
               ...baseLog,
@@ -341,7 +339,7 @@ export const generateMatch = async ({
         })
         randomStatsResolve({
           stats: item.statsItem,
-          seed: [seedAction, 'randomStatsResolve', 'statsItem'],
+          seed,
           onRandomStat: ({ stats, randomStat }) => {
             log({
               ...baseLog,
@@ -374,7 +372,7 @@ export const generateMatch = async ({
             })
             randomStatsResolve({
               stats: otherSide.stats,
-              seed: [seedAction, 'randomStatsResolve', 'statsEnemy'],
+              seed,
               onRandomStat: ({ stats, randomStat }) => {
                 log({
                   ...baseLog,
@@ -387,7 +385,7 @@ export const generateMatch = async ({
           }
           if (attack) {
             const accuracyRng = rngFloat({
-              seed: [...seedAction, 'hit'],
+              seed,
               max: 100,
             })
             let accuracy = attack.accuracy ?? 0
@@ -425,9 +423,7 @@ export const generateMatch = async ({
               }
 
               const critChance = statsForItem.aim ?? 0
-              const doesCrit =
-                rngFloat({ seed: [...seedAction, 'crit'], max: 100 }) <=
-                critChance
+              const doesCrit = rngFloat({ seed, max: 100 }) <= critChance
               if (doesCrit) {
                 damage *= CRIT_MULTIPLIER
                 if (statsEnemy?.critDamage) {
@@ -575,7 +571,7 @@ export const generateMatch = async ({
   }
 
   while (true) {
-    const seedTick = [...seed, time]
+    const seedTick = seed
 
     const nextTime = minBy(futureActions, (a) => a.time ?? Infinity)?.time
     if (nextTime === undefined) {
@@ -592,7 +588,7 @@ export const generateMatch = async ({
         action.time += BASE_TICK_TIME
         for (const side of rngOrder({
           items: sides,
-          seed: [...seedTick, 'actions'],
+          seed,
         })) {
           baseTick({
             side,
@@ -601,7 +597,7 @@ export const generateMatch = async ({
       } else {
         // TRIGGER ITEM
         triggerHandler({
-          seed: [...seedTick, action],
+          seed,
           action,
         })
       }

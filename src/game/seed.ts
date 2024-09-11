@@ -9,7 +9,8 @@ export const createSeed = () => {
 
 export type SeedArray = (string | number | object)[]
 export type SeedStringable = string | SeedArray
-export type Seed = SeedStringable | seedrandom.PRNG
+export type SeedRng = seedrandom.PRNG
+export type Seed = SeedStringable | SeedRng
 
 export const rngGenerator = ({ seed }: { seed: Seed }) => {
   if (typeof seed === 'function') {
