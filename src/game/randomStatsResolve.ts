@@ -37,7 +37,10 @@ export const randomStatsResolve = ({
         return
       }
       let pickedStats = rngItem({
-        seed: [...seed, randomStatDefinition.name, idx],
+        seed:
+          typeof seed === 'function'
+            ? seed
+            : [...seed, randomStatDefinition.name, idx],
         items: candidates,
       })
       if (isNegative) {
