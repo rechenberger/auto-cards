@@ -1,30 +1,33 @@
-import { type EmailConfig } from '@auth/core/providers/email'
-import { Resend } from 'resend'
+import type { EmailConfig } from '@auth/core/providers/email'
 import {
   getDefaultSignInEmailHtml,
   getDefaultSignInEmailText,
 } from './defaultLoginEmail'
 
+import nodemailer from 'nodemailer'
+
 export const sendVerificationRequestEmail = async (
   params: Parameters<EmailConfig['sendVerificationRequest']>[0],
 ) => {
-  let {
+  const {
     identifier: email,
     url,
     theme,
-    provider: { from, apiKey },
+    provider: { from },
   } = params
   try {
-    const resend = new Resend(apiKey)
+    const transporter = nodemailer.createTransport(process.env.SMTP_URL)
     const host = new URL(url).host
 
-    await resend.emails.send({
+    const mailOptions = {
       from: from,
       to: email,
       subject: `Login to ${host}`,
       html: getDefaultSignInEmailHtml({ theme, url }),
       text: getDefaultSignInEmailText({ url }),
-    })
+    }
+
+    await transporter.sendMail(mailOptions)
   } catch (error) {
     console.log({ error })
   }
