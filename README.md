@@ -1,17 +1,26 @@
-# Party Starter
+# Auto Cards
 
-## Features
+Auto-Battler with Cards
 
-- The basics you love with [Next.js](https://nextjs.org/), [Tailwind CSS](https://tailwindcss.com/) and [shadcn/ui](https://ui.shadcn.com/)
-- Quick Setup with [Auth.js](https://authjs.dev/), [drizzle](https://orm.drizzle.team/) and [Turso](https://turso.tech/)
-- Powerful Server-Actions with
-  - ActionButton
-  - CMD-K Menu
-  - Keyboard-Shortcuts
-  - streamToast()
-  - streamDialog()
+Play Online: [Sack of Secrets: Battlegrounds](https://battlegrounds.sackofsecrets.com)
 
-## Setup
+## Local development
+
+```bash
+pnpm install
+pnpm db:push
+pnpm dev
+```
+
+Setup your Admin User WITHOUT discord or email:
+
+- Goto http://localhost:3000/admin/users
+- Click "Create User"-Button
+- Fill out form and submit
+- Toggle "Admin"-Switch
+- Click "Login as"-Button
+
+## Setup for production
 
 - Create [.env.local](.env.local)
 - Generate Auth Secret
@@ -29,14 +38,13 @@
   - Add Redirects:
   - `http://localhost:3000/api/auth/callback/discord`
   - `https://your-app.com/api/auth/callback/discord`
+- Setup Email
+  - [Resend](https://resend.com/)
+  - `EMAIL_FROM`: your-email@example.com
+  - `AUTH_RESEND_KEY`: your resend api key
+- Setup AI
+  - `LAUNCHPAD_IMAGES`: [Teampilot Public Launchpad Id](https://docs.teampilot.ai/getting-started/provide-a-public-launchpad)
 - `pnpm db:push` to push schema to DB
-
-## Run
-
-```bash
-pnpm install
-pnpm dev
-```
 
 ## Libraries
 
@@ -50,7 +58,9 @@ pnpm dev
 - [@sodefa/next-server-context](https://github.com/rechenberger/next-server-context)
 - [Vercel AI SDK](https://sdk.vercel.ai/docs)
 
-## Update
+## Update Party Starter
+
+This project was bootstrapped with [party-starter](https://github.com/rechenberger/party-starter).
 
 You can get the latest changes from the template by running:
 
