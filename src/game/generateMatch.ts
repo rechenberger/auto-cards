@@ -409,6 +409,7 @@ export const generateMatch = async ({
                 parentTrigger: input,
                 itemIdx,
                 sideIdx,
+                itemCounter: action.itemCounter,
               })
               triggerEvents({
                 eventType: 'onDefendBeforeHit',
@@ -516,6 +517,7 @@ export const generateMatch = async ({
                 parentTrigger: input,
                 itemIdx,
                 sideIdx,
+                itemCounter: action.itemCounter,
               })
               triggerEvents({
                 eventType: 'onDefendAfterHit',
@@ -548,18 +550,21 @@ export const generateMatch = async ({
     parentTrigger,
     itemIdx,
     sideIdx,
+    itemCounter,
   }: {
     eventType: TriggerEventType
     parentTrigger: TriggerHandlerInput
     itemIdx?: number
     sideIdx: number
+    itemCounter?: number
   }) => {
     // Find Actions
     const actions = futureActions.filter(
       (a) =>
         a.type === eventType &&
         a.sideIdx === sideIdx &&
-        (!itemIdx || a.itemIdx === itemIdx),
+        (itemIdx === undefined || a.itemIdx === itemIdx) &&
+        (itemCounter === undefined || a.itemCounter === itemCounter),
     )
 
     // Trigger Actions
