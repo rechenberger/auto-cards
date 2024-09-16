@@ -563,8 +563,8 @@ export const generateMatch = async ({
       (a) =>
         a.type === eventType &&
         a.sideIdx === sideIdx &&
-        (itemIdx !== undefined || a.itemIdx === itemIdx) &&
-        (itemCounter !== undefined || a.itemCounter === itemCounter),
+        (itemIdx === undefined || a.itemIdx === itemIdx) &&
+        (itemCounter === undefined || a.itemCounter === itemCounter),
     )
 
     // Trigger Actions
