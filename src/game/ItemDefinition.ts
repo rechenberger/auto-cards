@@ -9,7 +9,7 @@ const triggerEvents = [
   'onAttackAfterHit',
   'onDefendBeforeHit',
   'onDefendAfterHit',
-  // 'useStats',
+  'use', // meant to be used with required stats
   // 'gainedStats',
   // 'onSelfStun', 'onEnemyStun'
 ] as const

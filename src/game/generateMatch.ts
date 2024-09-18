@@ -406,14 +406,14 @@ export const generateMatch = async ({
             if (doesHit) {
               triggerEvents({
                 eventType: 'onAttackBeforeHit',
-                parentTrigger: input,
+                seed: seedAction,
                 itemIdx,
                 sideIdx,
                 itemCounter: action.itemCounter,
               })
               triggerEvents({
                 eventType: 'onDefendBeforeHit',
-                parentTrigger: input,
+                seed: seedAction,
                 sideIdx: otherSide.sideIdx,
               })
 
@@ -514,14 +514,14 @@ export const generateMatch = async ({
 
               triggerEvents({
                 eventType: 'onAttackAfterHit',
-                parentTrigger: input,
+                seed: seedAction,
                 itemIdx,
                 sideIdx,
                 itemCounter: action.itemCounter,
               })
               triggerEvents({
                 eventType: 'onDefendAfterHit',
-                parentTrigger: input,
+                seed: seedAction,
                 sideIdx: otherSide.sideIdx,
               })
             } else {
@@ -547,13 +547,13 @@ export const generateMatch = async ({
 
   const triggerEvents = ({
     eventType,
-    parentTrigger,
+    seed,
     itemIdx,
     sideIdx,
     itemCounter,
   }: {
     eventType: TriggerEventType
-    parentTrigger: TriggerHandlerInput
+    seed: Seed
     itemIdx?: number
     sideIdx: number
     itemCounter?: number
@@ -572,7 +572,7 @@ export const generateMatch = async ({
       if (action.type !== eventType) continue // type guard
       // check uses etc
       triggerHandler({
-        seed: parentTrigger.seed,
+        seed,
         action,
         baseLogMsg: eventType,
       })
@@ -606,6 +606,18 @@ export const generateMatch = async ({
         triggerHandler({
           seed,
           action,
+        })
+      }
+
+      // END OF TICK EVENTS
+      for (const side of rngOrder({
+        items: sides,
+        seed: [seedTick, 'endOfTickEvents'],
+      })) {
+        triggerEvents({
+          eventType: 'use',
+          seed: [seedTick, 'use', side.sideIdx],
+          sideIdx: side.sideIdx,
         })
       }
 
