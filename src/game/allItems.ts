@@ -213,17 +213,54 @@ const allItemsConst = [
     },
     statsItem: {
       unblockable: 1,
+      critChance: 30,
     },
     triggers: [
       {
         type: 'interval',
         cooldown: 2_000,
-        statsItem: {
-          haste: 5,
-        },
         attack: {
-          damage: 4,
+          damage: 6,
           accuracy: 85,
+        },
+      },
+      {
+        type: 'onAttackCrit',
+        statsItem: {
+          critChance: 10,
+        },
+      },
+    ],
+  },
+  {
+    name: 'fireDagger',
+    prompt: 'a dagger with a fiery chili blade',
+    tags: ['weapon'],
+    rarity: 'rare',
+    price: 8,
+    shop: false,
+    stats: {
+      space: space(-2),
+    },
+    statsItem: {
+      unblockable: 1,
+      critChance: 30,
+      haste: 30,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        attack: {
+          damage: 6,
+          accuracy: 85,
+        },
+      },
+      {
+        type: 'onAttackCrit',
+        statsItem: {
+          critChance: 10,
+          haste: 10,
         },
       },
     ],
