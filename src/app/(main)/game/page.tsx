@@ -12,6 +12,7 @@ import { Game } from '@/db/schema-zod'
 import { LIMIT_GAME_OVERVIEW } from '@/game/config'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { desc, eq } from 'drizzle-orm'
+import { Zap } from 'lucide-react'
 import { Metadata } from 'next'
 import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
@@ -72,6 +73,12 @@ export default async function Page() {
             <Card className="flex flex-col gap-4 p-4 items-center">
               <GameMatchBoard game={game} />
               <ItemCardGrid items={game.data.currentLoadout.items} />
+              {game.liveMatchId && (
+                <div className="text-sm opacity-60 flex flex-row items-center gap-1">
+                  <Zap className="size-3" />
+                  <span>Live Match</span>
+                </div>
+              )}
               {game.updatedAt && (
                 <div className="text-sm opacity-60">
                   <TimeAgo date={new Date(game.updatedAt)} />
