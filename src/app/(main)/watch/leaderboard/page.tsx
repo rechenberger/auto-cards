@@ -3,6 +3,7 @@ import { TimeAgo } from '@/components/simple/TimeAgo'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { addAllToLeaderboard } from '@/game/addAllToLeaderboard'
+import { addToLeaderboard } from '@/game/addToLeaderboard'
 import { getBotName } from '@/game/botName'
 import { NO_OF_ROUNDS } from '@/game/config'
 import { getLeaderboard } from '@/game/getLeaderboard'
@@ -10,6 +11,7 @@ import { getUserName } from '@/game/getUserName'
 import { superAction } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { desc, eq } from 'drizzle-orm'
+import { RotateCw } from 'lucide-react'
 import { Metadata } from 'next'
 import { revalidatePath } from 'next/cache'
 import { Fragment } from 'react'
@@ -55,7 +57,7 @@ export default async function Page() {
           Add All to Leaderboard
         </ActionButton>
       </div>
-      <div className="grid grid-cols-[auto_auto_1fr_auto] gap-4 items-center">
+      <div className="grid grid-cols-[auto_auto_1fr_auto_auto] gap-4 items-center">
         {entries.map((entry, idx) => {
           const loadout = entry.loadout
           const name = entry.user
@@ -81,6 +83,23 @@ export default async function Page() {
                 />
               </div>
               <div className="text-xl text-right">{entry.score.toFixed(2)}</div>
+              <div>
+                <ActionButton
+                  catchToast
+                  variant="ghost"
+                  size="icon"
+                  hideIcon
+                  action={async () => {
+                    'use server'
+                    return superAction(async () => {
+                      await addToLeaderboard({ loadout })
+                      revalidatePath('/watch/leaderboard')
+                    })
+                  }}
+                >
+                  <RotateCw className="size-4" />
+                </ActionButton>
+              </div>
             </Fragment>
           )
         })}
