@@ -91,7 +91,7 @@ export const LiveMatchResults = async ({
                 <div className="flex-1">{getUserName({ user: p.user })}</div>
                 <div className="">
                   <div className="max-md:hidden">
-                    <GameMatchBoard game={p.game} />
+                    <GameMatchBoard game={p.game} showScore />
                   </div>
                 </div>
                 <div className="text-right font-bold">{p.score} Pt.</div>
