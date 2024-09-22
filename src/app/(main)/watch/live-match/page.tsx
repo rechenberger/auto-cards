@@ -17,10 +17,10 @@ export default async function Page() {
   })
   return (
     <>
-      <div className="grid md:grid-cols-[auto_1fr] gap-4">
+      <div className="grid md:grid-cols-[auto_1fr] gap-4 self-center">
         {matches.map((match) => (
           <Fragment key={match.id}>
-            <div className="py-2">
+            <div className="py-4 opacity-60">
               <TimeAgo date={new Date(match.createdAt ?? '')} />
             </div>
             <div>
