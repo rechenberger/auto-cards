@@ -59,8 +59,28 @@ export default async function Page() {
               action={async () => {
                 'use server'
                 return superAction(async () => {
-                  await addAllToLeaderboard({})
-                  revalidatePath('/watch/leaderboard')
+                  const ui = createStreamableUI()
+                  streamDialog({
+                    title: 'Adding All to Leaderboard...',
+                    content: <>{ui.value}</>,
+                  })
+                  addAllToLeaderboard({
+                    onUpdate: (info) => {
+                      ui.update(
+                        <>
+                          <Progress value={(100 * info.current) / info.total} />
+                        </>,
+                      )
+                      if (info.done) {
+                        ui.done(
+                          <>
+                            <Progress value={100} />
+                          </>,
+                        )
+                        revalidatePath('/watch/leaderboard')
+                      }
+                    },
+                  })
                 })
               }}
             >
