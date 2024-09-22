@@ -1,5 +1,7 @@
+import { getIsAdmin } from '@/auth/getIsAdmin'
 import { ItemCardGrid } from '@/components/game/ItemCardGrid'
 import { TimeAgo } from '@/components/simple/TimeAgo'
+import { Progress } from '@/components/ui/progress'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { addAllToLeaderboard } from '@/game/addAllToLeaderboard'
@@ -8,8 +10,13 @@ import { getBotName } from '@/game/botName'
 import { NO_OF_ROUNDS } from '@/game/config'
 import { getLeaderboard } from '@/game/getLeaderboard'
 import { getUserName } from '@/game/getUserName'
-import { superAction } from '@/super-action/action/createSuperAction'
+import {
+  streamDialog,
+  superAction,
+} from '@/super-action/action/createSuperAction'
+import { streamRevalidatePath } from '@/super-action/action/streamRevalidatePath'
 import { ActionButton } from '@/super-action/button/ActionButton'
+import { createStreamableUI } from 'ai/rsc'
 import { desc, eq } from 'drizzle-orm'
 import { RotateCw } from 'lucide-react'
 import { Metadata } from 'next'
@@ -33,29 +40,73 @@ const getLoadouts = async () => {
 
 export default async function Page() {
   const entries = await getLeaderboard({})
+  const isAdmin = await getIsAdmin({ allowDev: true })
   return (
     <>
       <div className="flex flex-row items-center gap-2">
         <div className="flex flex-col flex-1">
           <h2 className="font-bold text-xl">Leaderboard</h2>
         </div>
-        <ActionButton
-          catchToast
-          variant="outline"
-          askForConfirmation={{
-            title: 'Add All to Leaderboard?',
-            content: 'This will take a while',
-          }}
-          action={async () => {
-            'use server'
-            return superAction(async () => {
-              await addAllToLeaderboard({})
-              revalidatePath('/watch/leaderboard')
-            })
-          }}
-        >
-          Add All to Leaderboard
-        </ActionButton>
+        {isAdmin && (
+          <>
+            <ActionButton
+              catchToast
+              variant="outline"
+              askForConfirmation={{
+                title: 'Add All to Leaderboard?',
+                content: 'This will take a while',
+              }}
+              action={async () => {
+                'use server'
+                return superAction(async () => {
+                  await addAllToLeaderboard({})
+                  revalidatePath('/watch/leaderboard')
+                })
+              }}
+            >
+              Add All to Leaderboard
+            </ActionButton>
+            <ActionButton
+              catchToast
+              variant="outline"
+              askForConfirmation={{
+                title: 'Update Leaderboard?',
+                content: 'This will take a while',
+              }}
+              action={async () => {
+                'use server'
+                return superAction(async () => {
+                  const ui = createStreamableUI()
+                  let done = 0
+                  const exec = async () => {
+                    for (const entry of entries) {
+                      ui.update(
+                        <>
+                          <Progress value={(100 * done) / entries.length} />
+                        </>,
+                      )
+                      await addToLeaderboard({ loadout: entry.loadout })
+                      done++
+                    }
+                    ui.done(
+                      <>
+                        <Progress value={100} />
+                      </>,
+                    )
+                    streamRevalidatePath('/watch/leaderboard')
+                  }
+                  streamDialog({
+                    title: 'Leaderboard Updated',
+                    content: <>{ui.value}</>,
+                  })
+                  exec()
+                })
+              }}
+            >
+              Update Leaderboard
+            </ActionButton>
+          </>
+        )}
       </div>
       <div className="grid grid-cols-[auto_auto_1fr_auto_auto] gap-4 items-center">
         {entries.map((entry, idx) => {
@@ -84,21 +135,23 @@ export default async function Page() {
               </div>
               <div className="text-xl text-right">{entry.score.toFixed(2)}</div>
               <div>
-                <ActionButton
-                  catchToast
-                  variant="ghost"
-                  size="icon"
-                  hideIcon
-                  action={async () => {
-                    'use server'
-                    return superAction(async () => {
-                      await addToLeaderboard({ loadout })
-                      revalidatePath('/watch/leaderboard')
-                    })
-                  }}
-                >
-                  <RotateCw className="size-4" />
-                </ActionButton>
+                {isAdmin && (
+                  <ActionButton
+                    catchToast
+                    variant="ghost"
+                    size="icon"
+                    hideIcon
+                    action={async () => {
+                      'use server'
+                      return superAction(async () => {
+                        await addToLeaderboard({ loadout })
+                        revalidatePath('/watch/leaderboard')
+                      })
+                    }}
+                  >
+                    <RotateCw className="size-4" />
+                  </ActionButton>
+                )}
               </div>
             </Fragment>
           )
