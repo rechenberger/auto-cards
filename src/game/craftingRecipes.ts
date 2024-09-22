@@ -36,6 +36,13 @@ export const craftingRecipes: CraftingRecipe[] = [
     ],
     output: [{ name: 'poisonBow' }],
   },
+  {
+    input: [
+      { name: 'dagger', count: 1 },
+      { name: 'chiliPepper', count: 1 },
+    ],
+    output: [{ name: 'fireDagger' }],
+  },
 ]
 
 export const getCraftingRecipes = async () => {

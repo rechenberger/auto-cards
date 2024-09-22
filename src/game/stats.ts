@@ -193,6 +193,12 @@ const heroStats = [
     tooltip: 'Cannot be blocked.',
     hideCount: true,
   },
+  {
+    name: 'critChance',
+    icon: Crosshair,
+    bgClass: 'bg-red-500',
+    tooltip: '+X% chance to crit.',
+  },
 ] as const satisfies StatDefinitionPre[]
 export const allHeroStats = constArrayMap(heroStats, 'name')
 export const HeroStat = z.enum(allHeroStats)

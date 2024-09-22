@@ -432,7 +432,13 @@ export const generateMatch = async ({
                 damage *= 1 + statsForItem.drunk / 100
               }
 
-              const critChance = statsForItem.aim ?? 0
+              let critChance = 0
+              if (statsForItem.critChance) {
+                critChance += statsForItem.critChance
+              }
+              if (statsForItem.aim) {
+                critChance += statsForItem.aim
+              }
               const doesCrit = rngFloat({ seed, max: 100 }) <= critChance
               if (doesCrit) {
                 damage *= CRIT_MULTIPLIER
