@@ -24,11 +24,12 @@ import { ActionButton } from '@/super-action/button/ActionButton'
 import { createStreamableUI } from 'ai/rsc'
 import { eq } from 'drizzle-orm'
 import { countBy, omitBy, orderBy, uniqBy } from 'lodash-es'
-import { Delete, Plus, RotateCw } from 'lucide-react'
+import { Delete, ExternalLink, Plus, RotateCw } from 'lucide-react'
 import { Metadata } from 'next'
 import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
 import { Fragment } from 'react'
+import { playgroundHref } from '../../admin/playground/playgroundHref'
 
 export const metadata: Metadata = {
   title: 'Leaderboard',
@@ -237,21 +238,86 @@ export default async function Page({
                   {entry.score.toFixed(2)}
                 </div>
                 {isAdmin && (
-                  <ActionButton
-                    catchToast
-                    variant="ghost"
-                    size="icon"
-                    hideIcon
-                    action={async () => {
-                      'use server'
-                      return superAction(async () => {
-                        await addToLeaderboard({ loadout })
-                        revalidatePath('/watch/leaderboard')
-                      })
-                    }}
-                  >
-                    <RotateCw className="size-4" />
-                  </ActionButton>
+                  <>
+                    <ActionButton
+                      catchToast
+                      variant="ghost"
+                      size="icon"
+                      hideIcon
+                      action={async () => {
+                        'use server'
+                        return superAction(async () => {
+                          await addToLeaderboard({ loadout })
+                          revalidatePath('/watch/leaderboard')
+                        })
+                      }}
+                    >
+                      <RotateCw className="size-4" />
+                    </ActionButton>
+                    <ActionButton
+                      catchToast
+                      variant="ghost"
+                      size="icon"
+                      hideIcon
+                      action={async () => {
+                        'use server'
+                        return superAction(async () => {
+                          const result = await addToLeaderboard({
+                            loadout,
+                            dryRun: true,
+                          })
+                          if (!result) {
+                            throw new Error('Failed to add to leaderboard')
+                          }
+
+                          const entries = orderBy(
+                            result.results,
+                            (r) => r.win,
+                            'asc',
+                          )
+
+                          streamDialog({
+                            title: 'Simulation Results',
+                            content: (
+                              <>
+                                <div>Score: {result.score}</div>
+                                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-2">
+                                  {entries.map((e) => (
+                                    <Fragment key={e.entry.id}>
+                                      <div>
+                                        <ItemCardGrid
+                                          items={e.entry.loadout.data.items}
+                                          size="tiny"
+                                          className="justify-start"
+                                        />
+                                      </div>
+                                      <div>{e.win ? '👑' : '💀'}</div>
+                                      <div>{e.entry.score.toFixed(2)}</div>
+                                      <Link
+                                        href={playgroundHref({
+                                          loadouts: [
+                                            entry.loadout.data,
+                                            e.entry.loadout.data,
+                                          ],
+                                          mode: 'fight',
+                                          seed: 'fight',
+                                        })}
+                                        target="_blank"
+                                      >
+                                        <ExternalLink className="size-4" />
+                                      </Link>
+                                    </Fragment>
+                                  ))}
+                                </div>
+                              </>
+                            ),
+                          })
+                        })
+                      }}
+                    >
+                      <ExternalLink className="size-4" />
+                    </ActionButton>
+                  </>
                 )}
               </div>
               <div className="flex justify-self-start col-span-4 xl:hidden">

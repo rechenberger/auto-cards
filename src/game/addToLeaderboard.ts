@@ -10,10 +10,12 @@ export const addToLeaderboard = async ({
   loadout,
   type = LEADERBOARD_TYPE,
   roundNo = loadout.roundNo,
+  dryRun,
 }: {
   loadout: Loadout
   type?: string
   roundNo?: number
+  dryRun?: boolean
 }) => {
   let leaderboard = await getLeaderboard({})
   if (!loadout.userId) {
@@ -52,6 +54,7 @@ export const addToLeaderboard = async ({
 
       return {
         win,
+        entry,
       }
     }),
   )
@@ -63,20 +66,27 @@ export const addToLeaderboard = async ({
 
   score = Math.round(score * 100) / 100
 
-  if (selfLeaderboardEntry) {
-    await db
-      .update(schema.leaderboardEntry)
-      .set({
+  if (!dryRun) {
+    if (selfLeaderboardEntry) {
+      await db
+        .update(schema.leaderboardEntry)
+        .set({
+          score,
+        })
+        .where(eq(schema.leaderboardEntry.id, selfLeaderboardEntry.id))
+    } else {
+      await db.insert(schema.leaderboardEntry).values({
+        loadoutId: loadout.id,
+        type,
+        roundNo,
         score,
+        userId: loadout.userId,
       })
-      .where(eq(schema.leaderboardEntry.id, selfLeaderboardEntry.id))
-  } else {
-    await db.insert(schema.leaderboardEntry).values({
-      loadoutId: loadout.id,
-      type,
-      roundNo,
-      score,
-      userId: loadout.userId,
-    })
+    }
+  }
+
+  return {
+    results,
+    score,
   }
 }
