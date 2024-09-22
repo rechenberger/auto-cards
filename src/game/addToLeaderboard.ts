@@ -56,11 +56,20 @@ export const addToLeaderboard = async ({
 
       const win = result.winner.sideIdx === 0
 
+      let rank = idx + 1
+
+      if (
+        selfLeaderboardEntry?.score &&
+        selfLeaderboardEntry.score > entry.score
+      ) {
+        rank += 1
+      }
+
       return {
         win,
         entry,
         seed,
-        rank: idx + 1,
+        rank,
       }
     }),
   )
