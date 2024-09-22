@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <NavTabs
         className="self-center"
         tabs={[
-          { name: 'Recent Matches', href: '/watch/recent' },
+          { name: 'Recent', href: '/watch/recent' },
           { name: 'Live Matches', href: '/watch/live-match' },
           { name: 'Leaderboard', href: '/watch/leaderboard' },
         ]}

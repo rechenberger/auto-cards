@@ -57,130 +57,135 @@ export default async function Page({
         </div>
         {isAdmin && (
           <>
-            <ActionButton
-              catchToast
-              variant="ghost"
-              size="icon"
-              hideIcon
-              askForConfirmation={{
-                title: 'Remove Duplicate Entries?',
-                content: 'This will remove duplicate entries for loadouts',
-              }}
-              action={async () => {
-                'use server'
-                return superAction(async () => {
-                  const leaderboard = await db.query.leaderboardEntry.findMany({
-                    // orderBy: asc(schema.leaderboardEntry.score),
-                  })
-                  let counts = countBy(leaderboard, (e) => e.loadoutId)
-                  counts = omitBy(counts, (count) => count <= 1)
-                  for (const loadoutId in counts) {
-                    let entries = leaderboard.filter(
-                      (e) => e.loadoutId === loadoutId,
-                    )
-                    const [winner, ...rest] = orderBy(
-                      entries,
-                      (e) => e.score,
-                      'desc',
-                    )
-                    console.log(winner, rest)
-                    for (const entry of rest) {
-                      await db
-                        .delete(schema.leaderboardEntry)
-                        .where(eq(schema.leaderboardEntry.id, entry.id))
-                    }
-                  }
-                  streamToast({
-                    title: 'Leaderboard Cleaned',
-                    description: `Removed duplicate entries for ${
-                      Object.keys(counts).length
-                    } loadouts`,
-                  })
-                })
-              }}
-            >
-              <Delete className="size-4" />
-            </ActionButton>
-            <ActionButton
-              catchToast
-              variant="ghost"
-              size="icon"
-              hideIcon
-              askForConfirmation={{
-                title: 'Add All to Leaderboard?',
-                content: 'This will take a while',
-              }}
-              action={async () => {
-                'use server'
-                return superAction(async () => {
-                  const ui = createStreamableUI()
-                  streamDialog({
-                    title: 'Adding All to Leaderboard...',
-                    content: <>{ui.value}</>,
-                  })
-                  addAllToLeaderboard({
-                    onUpdate: (info) => {
-                      ui.update(
-                        <>
-                          <Progress value={(100 * info.current) / info.total} />
-                        </>,
+            <div className="flex flex-row gap-2">
+              <ActionButton
+                catchToast
+                variant="ghost"
+                size="icon"
+                hideIcon
+                askForConfirmation={{
+                  title: 'Remove Duplicate Entries?',
+                  content: 'This will remove duplicate entries for loadouts',
+                }}
+                action={async () => {
+                  'use server'
+                  return superAction(async () => {
+                    const leaderboard =
+                      await db.query.leaderboardEntry.findMany({
+                        // orderBy: asc(schema.leaderboardEntry.score),
+                      })
+                    let counts = countBy(leaderboard, (e) => e.loadoutId)
+                    counts = omitBy(counts, (count) => count <= 1)
+                    for (const loadoutId in counts) {
+                      let entries = leaderboard.filter(
+                        (e) => e.loadoutId === loadoutId,
                       )
-                      if (info.done) {
-                        ui.done(
+                      const [winner, ...rest] = orderBy(
+                        entries,
+                        (e) => e.score,
+                        'desc',
+                      )
+                      console.log(winner, rest)
+                      for (const entry of rest) {
+                        await db
+                          .delete(schema.leaderboardEntry)
+                          .where(eq(schema.leaderboardEntry.id, entry.id))
+                      }
+                    }
+                    streamToast({
+                      title: 'Leaderboard Cleaned',
+                      description: `Removed duplicate entries for ${
+                        Object.keys(counts).length
+                      } loadouts`,
+                    })
+                  })
+                }}
+              >
+                <Delete className="size-4" />
+              </ActionButton>
+              <ActionButton
+                catchToast
+                variant="ghost"
+                size="icon"
+                hideIcon
+                askForConfirmation={{
+                  title: 'Add All to Leaderboard?',
+                  content: 'This will take a while',
+                }}
+                action={async () => {
+                  'use server'
+                  return superAction(async () => {
+                    const ui = createStreamableUI()
+                    streamDialog({
+                      title: 'Adding All to Leaderboard...',
+                      content: <>{ui.value}</>,
+                    })
+                    addAllToLeaderboard({
+                      onUpdate: (info) => {
+                        ui.update(
                           <>
-                            <Progress value={100} />
+                            <Progress
+                              value={(100 * info.current) / info.total}
+                            />
                           </>,
                         )
-                        revalidatePath('/watch/leaderboard')
-                      }
-                    },
+                        if (info.done) {
+                          ui.done(
+                            <>
+                              <Progress value={100} />
+                            </>,
+                          )
+                          revalidatePath('/watch/leaderboard')
+                        }
+                      },
+                    })
                   })
-                })
-              }}
-            >
-              <Plus className="size-4" />
-            </ActionButton>
-            <ActionButton
-              catchToast
-              variant="ghost"
-              size="icon"
-              hideIcon
-              askForConfirmation={{
-                title: 'Update Leaderboard?',
-                content: 'This will take a while',
-              }}
-              action={async () => {
-                'use server'
-                return superAction(async () => {
-                  const ui = createStreamableUI()
-                  let done = 0
-                  const exec = async () => {
-                    for (const entry of entries) {
-                      ui.update(
+                }}
+              >
+                <Plus className="size-4" />
+              </ActionButton>
+              <ActionButton
+                catchToast
+                variant="ghost"
+                size="icon"
+                hideIcon
+                askForConfirmation={{
+                  title: 'Update Leaderboard?',
+                  content: 'This will take a while',
+                }}
+                action={async () => {
+                  'use server'
+                  return superAction(async () => {
+                    const ui = createStreamableUI()
+                    let done = 0
+                    const exec = async () => {
+                      for (const entry of entries) {
+                        ui.update(
+                          <>
+                            <Progress value={(100 * done) / entries.length} />
+                          </>,
+                        )
+                        await addToLeaderboard({ loadout: entry.loadout })
+                        done++
+                      }
+                      ui.done(
                         <>
-                          <Progress value={(100 * done) / entries.length} />
+                          <Progress value={100} />
                         </>,
                       )
-                      await addToLeaderboard({ loadout: entry.loadout })
-                      done++
+                      streamRevalidatePath('/watch/leaderboard')
                     }
-                    ui.done(
-                      <>
-                        <Progress value={100} />
-                      </>,
-                    )
-                    streamRevalidatePath('/watch/leaderboard')
-                  }
-                  streamDialog({
-                    title: 'Leaderboard Updated',
-                    content: <>{ui.value}</>,
+                    streamDialog({
+                      title: 'Leaderboard Updated',
+                      content: <>{ui.value}</>,
+                    })
+                    exec()
                   })
-                  exec()
-                })
-              }}
-            >
-              <RotateCw className="size-4" />
-            </ActionButton>
+                }}
+              >
+                <RotateCw className="size-4" />
+              </ActionButton>
+            </div>
           </>
         )}
         <Tabs value={view}>
@@ -234,7 +239,11 @@ export default async function Page({
                 />
               </div>
               <div className="flex flex-row gap-2 items-center">
-                {isAdmin && <PlaygroundSelector loadout={loadout.data} />}
+                {isAdmin && (
+                  <div className="max-md:hidden">
+                    <PlaygroundSelector loadout={loadout.data} />
+                  </div>
+                )}
                 <div className="text-xl text-right flex-1">
                   {entry.score.toFixed(2)}
                 </div>
@@ -336,7 +345,7 @@ export default async function Page({
                   <ExternalLink className="size-4" />
                 </ActionButton>
               </div>
-              <div className="flex justify-self-start col-span-4 xl:hidden">
+              <div className="flex justify-self-start col-span-3 xl:hidden">
                 <ItemCardGrid
                   items={loadout.data.items}
                   className="justify-start"
