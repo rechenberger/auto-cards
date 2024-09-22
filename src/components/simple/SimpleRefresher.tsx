@@ -33,6 +33,7 @@ export const SimpleRefresher = ({
       <Button
         variant={forced ? 'vanilla' : 'ghost'}
         size={forced ? 'vanilla' : 'icon'}
+        className={forced ? 'p-1' : ''}
         onClick={() => !forced && setActive(!active)}
         title="auto-refresh"
         disabled={forced}
