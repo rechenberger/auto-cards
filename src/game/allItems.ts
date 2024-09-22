@@ -273,7 +273,7 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 1_000,
         statsSelf: {
-          aim: 5,
+          aim: 10,
         },
       },
     ],

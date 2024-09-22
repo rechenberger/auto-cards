@@ -436,8 +436,8 @@ export const generateMatch = async ({
               const doesCrit = rngFloat({ seed, max: 100 }) <= critChance
               if (doesCrit) {
                 damage *= CRIT_MULTIPLIER
-                if (statsEnemy?.critDamage) {
-                  damage *= 1 + statsEnemy.critDamage / 100
+                if (statsForItem?.critDamage) {
+                  damage *= 1 + statsForItem.critDamage / 100
                 }
               }
               damage = Math.round(damage)
