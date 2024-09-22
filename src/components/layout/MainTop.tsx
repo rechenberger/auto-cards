@@ -48,7 +48,7 @@ export const MainTop = async () => {
 
   return (
     <>
-      <div className="container flex flex-row items-center justify-between gap-6 py-6">
+      <div className="container max-md:px-4 flex flex-row items-center justify-between gap-6 py-6">
         <MainLogo />
         <div className="hidden flex-1 xl:flex">
           <MainTopNav entries={entries} />
@@ -67,7 +67,7 @@ export const MainTop = async () => {
           <DarkModeToggle />
         </div>
       </div>
-      <div className="container flex pb-6 xl:hidden">
+      <div className="container max-md:px-4 flex pb-6 xl:hidden">
         <MainTopNav entries={entries} />
         <UserButton />
       </div>
