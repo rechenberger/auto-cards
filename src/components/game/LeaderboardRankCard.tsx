@@ -4,6 +4,7 @@ import { Loadout } from '@/db/schema-zod'
 import { addToLeaderboard } from '@/game/addToLeaderboard'
 import { GREAT_WIN_RATE } from '@/game/config'
 import { getLeaderboard } from '@/game/getLeaderboard'
+import { getOrdinalSuffix } from '@/lib/getOrdinalSuffix'
 import { cn } from '@/lib/utils'
 import { eq } from 'drizzle-orm'
 import { ExternalLink } from 'lucide-react'
@@ -91,7 +92,9 @@ export const LeaderboardRankCard = async ({
               className={cn('text-4xl font-bold font-sans', 'text-amber-300')}
             >
               {leaderboardIdx + 1}
-              <span className="ordinal">th</span>
+              <span className="ordinal">
+                {getOrdinalSuffix(leaderboardIdx + 1)}
+              </span>
             </div>
             <div className="text-xs font-bold">Best Build in the World.</div>
           </div>

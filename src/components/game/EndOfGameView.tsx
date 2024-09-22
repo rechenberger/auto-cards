@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { desc, eq } from 'drizzle-orm'
 import { GameMatchBoard } from './GameMatchBoard'
 import { LeaderboardRankCard } from './LeaderboardRankCard'
+import { LiveMatchResults } from './LiveMatchResults'
 import { LoadoutDisplay } from './LoadoutDisplay'
 import { TitleScreen } from './TitleScreen'
 
@@ -31,6 +32,9 @@ export const EndOfGameView = async ({ game }: { game: Game }) => {
           </div>
           <GameMatchBoard game={game} />
         </div>
+        {game.liveMatchId && (
+          <LiveMatchResults liveMatchId={game.liveMatchId} />
+        )}
         {loadout && <LeaderboardRankCard loadout={loadout} />}
 
         <div className="self-stretch flex flex-col gap-4">
