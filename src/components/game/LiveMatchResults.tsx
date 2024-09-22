@@ -3,16 +3,24 @@ import { schema } from '@/db/schema-export'
 import { getLiveMatchStuff } from '@/game/getLiveMatchStuff'
 import { getUserName } from '@/game/getUserName'
 import { getOrdinalSuffix } from '@/lib/getOrdinalSuffix'
+import {
+  streamDialog,
+  superAction,
+} from '@/super-action/action/createSuperAction'
+import { ActionButton } from '@/super-action/button/ActionButton'
 import { eq } from 'drizzle-orm'
-import { first, orderBy, sum } from 'lodash-es'
+import { first, maxBy, orderBy, sum } from 'lodash-es'
 import { Fragment } from 'react'
 import { Card } from '../ui/card'
 import { GameMatchBoard } from './GameMatchBoard'
+import { ItemCardGrid } from './ItemCardGrid'
 
 export const LiveMatchResults = async ({
   liveMatchId,
+  showCards,
 }: {
   liveMatchId: string
+  showCards?: boolean
 }) => {
   const liveMatch = await getLiveMatchStuff({ liveMatchId })
   if (!liveMatch) return null
@@ -36,6 +44,9 @@ export const LiveMatchResults = async ({
         },
       })
 
+      const loadout = maxBy(loadouts, (l) => l.roundNo)
+      if (!loadout) return null
+
       const scores = loadouts.map((loadout) => {
         const isWin = loadout.primaryMatchParticipation?.status === 'won'
         if (!isWin) return 0
@@ -50,6 +61,7 @@ export const LiveMatchResults = async ({
         game,
         score,
         rank: 0,
+        loadout,
       }
     }),
   )
@@ -74,11 +86,32 @@ export const LiveMatchResults = async ({
 
   return (
     <>
-      <Card className="flex flex-col gap-2 p-2 text-left">
+      <Card className="flex flex-col gap-2 p-2 text-left max-w-xl">
         <div className="flex flex-row gap-2 items-baseline">
           <div className="flex-1">⚡ Live Match Results</div>
+          {!showCards && (
+            <ActionButton
+              hideIcon
+              variant="outline"
+              size="sm"
+              action={async () => {
+                'use server'
+                return superAction(async () => {
+                  streamDialog({
+                    content: (
+                      <>
+                        <LiveMatchResults liveMatchId={liveMatchId} showCards />
+                      </>
+                    ),
+                  })
+                })
+              }}
+            >
+              Show Cards
+            </ActionButton>
+          )}
         </div>
-        <div className="grid grid-cols-[auto_1fr_auto_auto] gap-2 items-center">
+        <div className="grid grid-cols-[auto_auto] md:grid-cols-[auto_1fr_auto_auto] gap-2 items-center justify-center">
           {participations.map((p) => {
             return (
               <Fragment key={p.id}>
@@ -88,13 +121,22 @@ export const LiveMatchResults = async ({
                     <span className="ordinal">{getOrdinalSuffix(p.rank)}</span>
                   </div>
                 </div>
-                <div className="flex-1">{getUserName({ user: p.user })}</div>
-                <div className="">
-                  <div className="max-md:hidden">
-                    <GameMatchBoard game={p.game} showScore />
-                  </div>
+                <div className="max-md:text-right">
+                  {getUserName({ user: p.user })}
                 </div>
-                <div className="text-right font-bold">{p.score} Pt.</div>
+                <div className="flex flex-row">
+                  <GameMatchBoard game={p.game} showScore />
+                </div>
+                <div className="text-right font-bold">{p.score}&nbsp;Pt.</div>
+                {showCards && (
+                  <div className="col-span-2 md:col-span-4 pb-2 mb-2 border-b">
+                    <ItemCardGrid
+                      items={p.loadout.data.items}
+                      size="80"
+                      className="justify-start"
+                    />
+                  </div>
+                )}
               </Fragment>
             )
           })}
