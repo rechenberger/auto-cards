@@ -1,8 +1,10 @@
+import { LeaderboardBenchmarkButton } from '@/components/game/LeaderboardBenchmarkButton'
 import { StatsDisplay } from '@/components/game/StatsDisplay'
 import { TinyItem } from '@/components/game/TinyItem'
 import { Button } from '@/components/ui/button'
 import { getAllItems } from '@/game/allItems'
 import { calcLoadoutPrice } from '@/game/calcLoadoutPrice'
+import { NO_OF_ROUNDS } from '@/game/config'
 import { orderItems } from '@/game/orderItems'
 import { negativeItems, sumItems } from '@/game/sumItems'
 import { cn } from '@/lib/utils'
@@ -26,10 +28,22 @@ export const PlaygroundEdit = async ({
             return (
               <Fragment key={sideIdx}>
                 <div className="flex flex-col gap-4">
-                  <div>
+                  <div className="flex flex-row justify-between">
                     {calcLoadoutPrice(loadout).then((gold) => (
                       <StatsDisplay stats={{ gold }} showZero />
                     ))}
+                    <LeaderboardBenchmarkButton
+                      loadout={{
+                        id: 'fake',
+                        data: loadout,
+                        createdAt: new Date().toISOString(),
+                        userId: 'fake',
+                        updatedAt: new Date().toISOString(),
+                        gameId: null,
+                        roundNo: NO_OF_ROUNDS - 1,
+                        primaryMatchParticipationId: null,
+                      }}
+                    />
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
                     {allItems.map((item) => {

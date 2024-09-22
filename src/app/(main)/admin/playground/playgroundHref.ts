@@ -54,7 +54,7 @@ export const playgroundHref = (options: PlaygroundOptions) => {
   return `/admin/playground?${searchParams.toString()}`
 }
 
-export const defaultLoadoutString = '1:hero'
+export const defaultLoadoutString = '1:hero,4:experience'
 export const defaultLoadoutsString = [
   defaultLoadoutString,
   defaultLoadoutString,
