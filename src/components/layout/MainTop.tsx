@@ -2,7 +2,10 @@ import { UserButton } from '@/auth/UserButton'
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { getIsLoggedIn } from '@/auth/getMyUser'
 import { DarkModeToggle } from '@/components/layout/DarkModeToggle'
+import { Github } from 'lucide-react'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
+import { Button } from '../ui/button'
 import { MainLogo } from './MainLogo'
 import { MainTopNav } from './MainTopNav'
 
@@ -52,15 +55,15 @@ export const MainTop = async () => {
           <UserButton />
         </div>
         <div className="flex flex-row">
-          {/* <Button variant={'ghost'} size="icon" asChild>
+          <MusicButton />
+          <Button variant={'ghost'} size="icon" asChild>
             <Link
-              href="https://github.com/rechenberger/party-starter"
+              href="https://github.com/rechenberger/auto-cards"
               target="_blank"
             >
               <Github />
             </Link>
-          </Button> */}
-          <MusicButton />
+          </Button>
           <DarkModeToggle />
         </div>
       </div>
