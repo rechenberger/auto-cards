@@ -8,6 +8,7 @@ import { addAllToLeaderboard } from '@/game/addAllToLeaderboard'
 import { addToLeaderboard } from '@/game/addToLeaderboard'
 import { getBotName } from '@/game/botName'
 import { calcLoadoutPrice } from '@/game/calcLoadoutPrice'
+import { LEADERBOARD_LIMIT } from '@/game/config'
 import { getLeaderboard } from '@/game/getLeaderboard'
 import { getUserName } from '@/game/getUserName'
 import {
@@ -149,7 +150,15 @@ export default async function Page({
             <Fragment key={entry.id}>
               <div className="text-xl">#{idx + 1}</div>
               <div>
-                <div>{name}</div>
+                <div className="flex flex-row gap-1">
+                  <div>{name}</div>
+                </div>
+                {view === 'user' && (
+                  <div className="text-sm">
+                    {entries.filter((e) => e.userId === entry.userId).length}x
+                    in Top {LEADERBOARD_LIMIT}
+                  </div>
+                )}
                 {loadout.createdAt && (
                   <div className="text-sm opacity-60">
                     <TimeAgo date={new Date(loadout.createdAt)} />
