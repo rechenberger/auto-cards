@@ -1,5 +1,6 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { ItemCardGrid } from '@/components/game/ItemCardGrid'
+import { PlaygroundSelector } from '@/components/game/PlaygroundSelector'
 import { StatsDisplay } from '@/components/game/StatsDisplay'
 import { TimeAgo } from '@/components/simple/TimeAgo'
 import { Progress } from '@/components/ui/progress'
@@ -179,7 +180,8 @@ export default async function Page({
                 />
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-xl text-right">
+                {isAdmin && <PlaygroundSelector loadout={loadout.data} />}
+                <div className="text-xl text-right flex-1">
                   {entry.score.toFixed(2)}
                 </div>
                 {isAdmin && (
