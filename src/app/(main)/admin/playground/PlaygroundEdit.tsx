@@ -1,25 +1,14 @@
 import { StatsDisplay } from '@/components/game/StatsDisplay'
 import { TinyItem } from '@/components/game/TinyItem'
 import { Button } from '@/components/ui/button'
-import { LoadoutData } from '@/db/schema-zod'
-import { getAllItems, getItemByName } from '@/game/allItems'
+import { getAllItems } from '@/game/allItems'
+import { calcLoadoutPrice } from '@/game/calcLoadoutPrice'
 import { orderItems } from '@/game/orderItems'
 import { negativeItems, sumItems } from '@/game/sumItems'
 import { cn } from '@/lib/utils'
-import { sum } from 'lodash-es'
 import Link from 'next/link'
 import { Fragment } from 'react'
 import { playgroundHref, PlaygroundOptions } from './playgroundHref'
-
-const loadoutPrice = async (loadout: LoadoutData) => {
-  const prices = await Promise.all(
-    loadout.items.map(async (item) => {
-      const def = await getItemByName(item.name)
-      return def.price * (item.count ?? 1)
-    }),
-  )
-  return sum(prices)
-}
 
 export const PlaygroundEdit = async ({
   options,
@@ -38,7 +27,7 @@ export const PlaygroundEdit = async ({
               <Fragment key={sideIdx}>
                 <div className="flex flex-col gap-4">
                   <div>
-                    {loadoutPrice(loadout).then((gold) => (
+                    {calcLoadoutPrice(loadout).then((gold) => (
                       <StatsDisplay stats={{ gold }} />
                     ))}
                   </div>

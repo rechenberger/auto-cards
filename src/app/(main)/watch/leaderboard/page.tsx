@@ -1,11 +1,13 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { ItemCardGrid } from '@/components/game/ItemCardGrid'
+import { StatsDisplay } from '@/components/game/StatsDisplay'
 import { TimeAgo } from '@/components/simple/TimeAgo'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { addAllToLeaderboard } from '@/game/addAllToLeaderboard'
 import { addToLeaderboard } from '@/game/addToLeaderboard'
 import { getBotName } from '@/game/botName'
+import { calcLoadoutPrice } from '@/game/calcLoadoutPrice'
 import { getLeaderboard } from '@/game/getLeaderboard'
 import { getUserName } from '@/game/getUserName'
 import {
@@ -153,6 +155,11 @@ export default async function Page({
                     <TimeAgo date={new Date(loadout.createdAt)} />
                   </div>
                 )}
+                <div className="flex flex-row">
+                  {calcLoadoutPrice(loadout.data).then((gold) => (
+                    <StatsDisplay stats={{ gold }} size="sm" />
+                  ))}
+                </div>
               </div>
               <div className="justify-self-start hidden xl:flex">
                 <ItemCardGrid
