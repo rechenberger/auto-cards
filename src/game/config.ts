@@ -22,3 +22,5 @@ export const WORKER_MAX_LISTENERS = 100
 
 export const LEADERBOARD_LIMIT = 50
 export const LEADERBOARD_TYPE = 'rollingTop'
+
+export const ITEM_CARD_GRID_FORCE_SIZE = 'tiny'
