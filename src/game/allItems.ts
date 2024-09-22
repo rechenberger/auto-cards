@@ -191,8 +191,16 @@ const allItemsConst = [
     shop: true,
     stats: {
       space: space(-2),
-      flying: 5,
     },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        forceStartTime: 1, // force 1 tick later, else fest might not reach
+        statsSelf: {
+          flying: 5,
+        },
+      },
+    ],
   },
   {
     name: 'dagger',

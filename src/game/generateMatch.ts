@@ -91,16 +91,20 @@ const generateMatchStateFutureActionsItems = async (
     return side.items.flatMap((item, itemIdx) => {
       return (
         item.triggers?.flatMap((trigger, triggerIdx) => {
-          const time =
-            trigger.type === 'interval'
-              ? calcCooldown({
-                  cooldown: trigger.cooldown,
-                  stats: side.stats,
-                  tags: item.tags ?? [],
-                })
-              : trigger.type === 'startOfBattle'
-                ? 0
-                : undefined
+          let time: number | undefined = undefined
+          if (trigger.type === 'interval') {
+            time = calcCooldown({
+              cooldown: trigger.cooldown,
+              stats: side.stats,
+              tags: item.tags ?? [], // FIXME: add tags from other items
+            })
+          }
+          if (trigger.type === 'startOfBattle') {
+            time = 0
+          }
+          if (trigger.forceStartTime) {
+            time = trigger.forceStartTime
+          }
 
           return range(item.count ?? 1).map((itemCounter) => ({
             type: trigger.type,

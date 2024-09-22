@@ -34,6 +34,7 @@ export const Trigger = z
     statsItem: Stats.optional(),
     maxCount: z.number().optional(),
     modifiers: z.array(Modifier).optional(),
+    forceStartTime: z.number().optional(),
   })
   .and(TriggerWithCooldown.or(TriggerWithoutCooldown))
 export type Trigger = z.infer<typeof Trigger>
