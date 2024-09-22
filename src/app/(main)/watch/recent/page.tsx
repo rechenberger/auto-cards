@@ -60,7 +60,7 @@ const MatchEntry = async ({ match }: { match: Match }) => {
     <>
       <ItemCardGrid
         items={p1Items}
-        size="responsive"
+        size="tiny"
         className="items-start justify-end"
       />
       <Link href={`/match/${match.id}`}>
@@ -82,7 +82,7 @@ const MatchEntry = async ({ match }: { match: Match }) => {
       </Link>
       <ItemCardGrid
         items={p2Items}
-        size="responsive"
+        size="tiny"
         className="items-start justify-start"
       />
     </>

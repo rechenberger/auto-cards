@@ -1,4 +1,3 @@
-import { ITEM_CARD_GRID_FORCE_SIZE } from '@/game/config'
 import { countifyItems } from '@/game/countifyItems'
 import { orderItems } from '@/game/orderItems'
 import { ThemeId } from '@/game/themes'
@@ -19,10 +18,6 @@ export const ItemCardGrid = async ({
   size?: '80' | 'tiny' | 'responsive'
 }) => {
   const betterItems = countifyItems(await orderItems(items))
-
-  if (ITEM_CARD_GRID_FORCE_SIZE) {
-    size = ITEM_CARD_GRID_FORCE_SIZE
-  }
 
   const tiny = (
     <div
@@ -60,6 +55,7 @@ export const ItemCardGrid = async ({
                 size={'80'}
                 onlyTop
                 themeId={themeId}
+                tooltipOnClick
               />
             </div>
           </Fragment>
