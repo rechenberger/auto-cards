@@ -28,7 +28,7 @@ export const PlaygroundEdit = async ({
                 <div className="flex flex-col gap-4">
                   <div>
                     {calcLoadoutPrice(loadout).then((gold) => (
-                      <StatsDisplay stats={{ gold }} />
+                      <StatsDisplay stats={{ gold }} showZero />
                     ))}
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
