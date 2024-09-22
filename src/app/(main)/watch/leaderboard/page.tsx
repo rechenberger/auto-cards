@@ -2,6 +2,7 @@ import { getIsAdmin } from '@/auth/getIsAdmin'
 import { ItemCardGrid } from '@/components/game/ItemCardGrid'
 import { TimeAgo } from '@/components/simple/TimeAgo'
 import { Progress } from '@/components/ui/progress'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { addAllToLeaderboard } from '@/game/addAllToLeaderboard'
 import { addToLeaderboard } from '@/game/addToLeaderboard'
 import { getBotName } from '@/game/botName'
@@ -18,25 +19,42 @@ import { uniqBy } from 'lodash-es'
 import { RotateCw } from 'lucide-react'
 import { Metadata } from 'next'
 import { revalidatePath } from 'next/cache'
+import Link from 'next/link'
 import { Fragment } from 'react'
 
 export const metadata: Metadata = {
   title: 'Leaderboard',
 }
 
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: { view: string }
+}) {
   const entries = await getLeaderboard({})
   const isAdmin = await getIsAdmin({ allowDev: true })
 
-  const uniqByUser = false
-  const entriesShown = uniqByUser ? uniqBy(entries, (e) => e.userId) : entries
+  const view = searchParams.view ?? 'all'
+
+  const entriesShown =
+    view === 'user' ? uniqBy(entries, (e) => e.userId) : entries
 
   return (
     <>
       <div className="flex flex-row items-center gap-2">
-        <div className="flex flex-col flex-1">
+        <div className="flex flex-col flex-1 gap-2">
           <h2 className="font-bold text-xl">Leaderboard</h2>
         </div>
+        <Tabs value={view}>
+          <TabsList>
+            <TabsTrigger value="all">
+              <Link href="/watch/leaderboard">Top Builds</Link>
+            </TabsTrigger>
+            <TabsTrigger value="user" asChild>
+              <Link href="/watch/leaderboard?view=user">Top Players</Link>
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
         {isAdmin && (
           <>
             <ActionButton
