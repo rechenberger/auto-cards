@@ -219,11 +219,11 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 2_000,
         statsItem: {
-          haste: 2,
+          haste: 5,
         },
         attack: {
           damage: 4,
-          accuracy: 70,
+          accuracy: 85,
         },
       },
     ],
