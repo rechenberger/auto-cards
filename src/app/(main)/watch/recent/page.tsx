@@ -11,7 +11,7 @@ import Link from 'next/link'
 import { Fragment } from 'react'
 
 export const metadata: Metadata = {
-  title: 'Watch',
+  title: 'Recent Matches',
 }
 
 const getMatches = async () => {

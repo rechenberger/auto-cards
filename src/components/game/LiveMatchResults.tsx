@@ -4,7 +4,7 @@ import { getLiveMatchStuff } from '@/game/getLiveMatchStuff'
 import { getUserName } from '@/game/getUserName'
 import { getOrdinalSuffix } from '@/lib/getOrdinalSuffix'
 import { eq } from 'drizzle-orm'
-import { orderBy, sum } from 'lodash-es'
+import { first, orderBy, sum } from 'lodash-es'
 import { Fragment } from 'react'
 import { Card } from '../ui/card'
 import { GameMatchBoard } from './GameMatchBoard'
@@ -58,7 +58,7 @@ export const LiveMatchResults = async ({
 
   // Ranking FROM: https://teampilot.ai/team/tristan/chat/fc29064dc7e58d739e6c5421322c11e3
   let rank = 1
-  let prevScore = participations[0].score
+  let prevScore = first(participations)?.score ?? 0
   let nextRank = 1
   participations = participations.map((p, index) => {
     if (index > 0 && p.score === prevScore) {
@@ -90,7 +90,9 @@ export const LiveMatchResults = async ({
                 </div>
                 <div className="flex-1">{getUserName({ user: p.user })}</div>
                 <div className="">
-                  <GameMatchBoard game={p.game} />
+                  <div className="max-md:hidden">
+                    <GameMatchBoard game={p.game} />
+                  </div>
                 </div>
                 <div className="text-right font-bold">{p.score} Pt.</div>
               </Fragment>
