@@ -216,5 +216,9 @@ export const leaderboardEntryRelations = relations(
       fields: [leaderboardEntry.userId],
       references: [users.id],
     }),
+    loadout: one(loadout, {
+      fields: [leaderboardEntry.loadoutId],
+      references: [loadout.id],
+    }),
   }),
 )

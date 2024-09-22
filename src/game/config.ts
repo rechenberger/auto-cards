@@ -19,3 +19,6 @@ export const CRIT_MULTIPLIER = 2
 
 export const WORKER_COUNT = 8
 export const WORKER_MAX_LISTENERS = 100
+
+export const LEADERBOARD_LIMIT = 50
+export const LEADERBOARD_TYPE = 'rollingTop'
