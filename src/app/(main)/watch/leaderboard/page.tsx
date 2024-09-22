@@ -32,7 +32,7 @@ export default async function Page({
   searchParams: { view: string }
 }) {
   const entries = await getLeaderboard({})
-  const isAdmin = await getIsAdmin({ allowDev: true })
+  const isAdmin = await getIsAdmin({ allowDev: false })
 
   const view = searchParams.view ?? 'all'
 
@@ -41,20 +41,10 @@ export default async function Page({
 
   return (
     <>
-      <div className="flex flex-row items-center gap-2">
+      <div className="flex flex-col xl:flex-row items-center gap-2">
         <div className="flex flex-col flex-1 gap-2">
           <h2 className="font-bold text-xl">Leaderboard</h2>
         </div>
-        <Tabs value={view}>
-          <TabsList>
-            <TabsTrigger value="all">
-              <Link href="/watch/leaderboard">Top Builds</Link>
-            </TabsTrigger>
-            <TabsTrigger value="user" asChild>
-              <Link href="/watch/leaderboard?view=user">Top Players</Link>
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
         {isAdmin && (
           <>
             <ActionButton
@@ -135,8 +125,18 @@ export default async function Page({
             </ActionButton>
           </>
         )}
+        <Tabs value={view}>
+          <TabsList>
+            <TabsTrigger value="all">
+              <Link href="/watch/leaderboard">Top Builds</Link>
+            </TabsTrigger>
+            <TabsTrigger value="user" asChild>
+              <Link href="/watch/leaderboard?view=user">Top Players</Link>
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
-      <div className="grid grid-cols-[auto_auto_1fr_auto_auto] gap-4 items-center">
+      <div className="grid grid-cols-[auto_1fr_auto] xl:grid-cols-[auto_auto_1fr_auto] gap-4 items-center">
         {entriesShown.map((entry, idx) => {
           const loadout = entry.loadout
           const name = entry.user
@@ -154,15 +154,17 @@ export default async function Page({
                   </div>
                 )}
               </div>
-              <div className="flex justify-self-start">
+              <div className="justify-self-start hidden xl:flex">
                 <ItemCardGrid
                   items={loadout.data.items}
                   className="justify-start"
                   // themeId={loadout.user?.themeId ?? undefined}
                 />
               </div>
-              <div className="text-xl text-right">{entry.score.toFixed(2)}</div>
-              <div>
+              <div className="flex flex-row gap-2 items-center">
+                <div className="text-xl text-right">
+                  {entry.score.toFixed(2)}
+                </div>
                 {isAdmin && (
                   <ActionButton
                     catchToast
@@ -180,6 +182,13 @@ export default async function Page({
                     <RotateCw className="size-4" />
                   </ActionButton>
                 )}
+              </div>
+              <div className="flex justify-self-start col-span-4 xl:hidden">
+                <ItemCardGrid
+                  items={loadout.data.items}
+                  className="justify-start"
+                  // themeId={loadout.user?.themeId ?? undefined}
+                />
               </div>
             </Fragment>
           )
