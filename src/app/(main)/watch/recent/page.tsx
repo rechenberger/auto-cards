@@ -58,7 +58,11 @@ const MatchEntry = async ({ match }: { match: Match }) => {
 
   return (
     <>
-      <ItemCardGrid items={p1Items} tiny className="items-start justify-end" />
+      <ItemCardGrid
+        items={p1Items}
+        size="responsive"
+        className="items-start justify-end"
+      />
       <Link href={`/match/${match.id}`}>
         <div>
           <div className="text-xs opacity-60">
@@ -78,7 +82,7 @@ const MatchEntry = async ({ match }: { match: Match }) => {
       </Link>
       <ItemCardGrid
         items={p2Items}
-        tiny
+        size="responsive"
         className="items-start justify-start"
       />
     </>

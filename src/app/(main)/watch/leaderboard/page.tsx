@@ -158,6 +158,7 @@ export default async function Page({
                 <ItemCardGrid
                   items={loadout.data.items}
                   className="justify-start"
+                  size="80"
                   // themeId={loadout.user?.themeId ?? undefined}
                 />
               </div>
@@ -187,6 +188,7 @@ export default async function Page({
                 <ItemCardGrid
                   items={loadout.data.items}
                   className="justify-start"
+                  size="tiny"
                   // themeId={loadout.user?.themeId ?? undefined}
                 />
               </div>
