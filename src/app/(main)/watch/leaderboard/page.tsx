@@ -1,5 +1,6 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { ItemCardGrid } from '@/components/game/ItemCardGrid'
+import { LeaderboardBenchmarkButton } from '@/components/game/LeaderboardBenchmarkButton'
 import { PlaygroundSelector } from '@/components/game/PlaygroundSelector'
 import { StatsDisplay } from '@/components/game/StatsDisplay'
 import { TimeAgo } from '@/components/simple/TimeAgo'
@@ -14,7 +15,6 @@ import { calcLoadoutPrice } from '@/game/calcLoadoutPrice'
 import { LEADERBOARD_LIMIT } from '@/game/config'
 import { getLeaderboard } from '@/game/getLeaderboard'
 import { getUserName } from '@/game/getUserName'
-import { getOrdinalSuffix } from '@/lib/getOrdinalSuffix'
 import {
   streamDialog,
   streamToast,
@@ -25,12 +25,11 @@ import { ActionButton } from '@/super-action/button/ActionButton'
 import { createStreamableUI } from 'ai/rsc'
 import { eq } from 'drizzle-orm'
 import { countBy, omitBy, orderBy, uniqBy } from 'lodash-es'
-import { Delete, ExternalLink, Plus, RotateCw } from 'lucide-react'
+import { Delete, Plus, RotateCw } from 'lucide-react'
 import { Metadata } from 'next'
 import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
 import { Fragment } from 'react'
-import { playgroundHref } from '../../admin/playground/playgroundHref'
 
 export const metadata: Metadata = {
   title: 'Leaderboard',
@@ -266,84 +265,7 @@ export default async function Page({
                     </ActionButton>
                   </>
                 )}
-                <ActionButton
-                  catchToast
-                  variant="ghost"
-                  size="icon"
-                  hideIcon
-                  action={async () => {
-                    'use server'
-                    return superAction(async () => {
-                      const isAdmin = await getIsAdmin({ allowDev: true })
-
-                      const result = await addToLeaderboard({
-                        loadout,
-                        dryRun: true,
-                      })
-                      if (!result) {
-                        throw new Error('Failed to add to leaderboard')
-                      }
-
-                      let entries = result.results
-
-                      entries = orderBy(
-                        result.results,
-                        (r) => r.entry.score,
-                        'desc',
-                      )
-
-                      entries = orderBy(result.results, (r) => r.win, 'asc')
-
-                      streamDialog({
-                        title: `${result.score.toFixed(2)}% Win Rate`,
-                        content: (
-                          <>
-                            <div className="grid grid-cols-[auto_auto_1fr_auto_auto] gap-2 gap-y-4">
-                              {entries.map((e) => (
-                                <Fragment key={e.entry.id}>
-                                  <div>{e.win ? '👑' : '💀'}</div>
-                                  <div className="font-sans">
-                                    {e.rank}
-                                    <span className="ordinal">
-                                      {getOrdinalSuffix(e.rank)}
-                                    </span>
-                                  </div>
-                                  <div>
-                                    <ItemCardGrid
-                                      items={e.entry.loadout.data.items}
-                                      size="tiny"
-                                      className="justify-start"
-                                    />
-                                  </div>
-                                  <div>{e.entry.score.toFixed(2)}</div>
-                                  <div>
-                                    {isAdmin && (
-                                      <Link
-                                        href={playgroundHref({
-                                          loadouts: [
-                                            entry.loadout.data,
-                                            e.entry.loadout.data,
-                                          ],
-                                          mode: 'fight',
-                                          seed: e.seed,
-                                        })}
-                                        target="_blank"
-                                      >
-                                        <ExternalLink className="size-4" />
-                                      </Link>
-                                    )}
-                                  </div>
-                                </Fragment>
-                              ))}
-                            </div>
-                          </>
-                        ),
-                      })
-                    })
-                  }}
-                >
-                  <ExternalLink className="size-4" />
-                </ActionButton>
+                <LeaderboardBenchmarkButton loadout={loadout} />
               </div>
               <div className="flex justify-self-start col-span-3 xl:hidden">
                 <ItemCardGrid
