@@ -41,6 +41,7 @@ export type MatchLog = {
   targetSideIdx?: number
   targetItemIdx?: number
   stateSnapshot: MatchState
+  isDone?: boolean
 }
 
 export type MatchReport = Awaited<ReturnType<typeof generateMatch>>
@@ -172,7 +173,7 @@ export const generateMatch = async ({
     const [loser, winner] = sidesByHealth
     log({ msg: 'Game over', sideIdx: loser.sideIdx })
     log({ msg: 'Loses', sideIdx: loser.sideIdx })
-    log({ msg: 'Wins!', sideIdx: winner.sideIdx })
+    log({ msg: 'Wins!', sideIdx: winner.sideIdx, isDone: true })
     return { logs, winner, loser, time }
   }
 

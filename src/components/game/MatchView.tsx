@@ -76,6 +76,7 @@ export const MatchView = async ({
           <div className="flex-1 flex flex-col gap-2 items-center justify-center self-stretch">
             <MatchReportPlaybackControls matchReport={matchReport} />
             <MatchReportTabs
+              game={game}
               matchReport={matchReport}
               loadouts={participants.map((p) => p.loadout.data)}
               seed={match.data.seed}
