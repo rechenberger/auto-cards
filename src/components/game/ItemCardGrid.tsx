@@ -1,5 +1,6 @@
 import { countifyItems } from '@/game/countifyItems'
 import { orderItems } from '@/game/orderItems'
+import { ThemeId } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { Fragment } from 'react'
 import { ItemCard } from './ItemCard'
@@ -7,9 +8,11 @@ import { ItemCard } from './ItemCard'
 export const ItemCardGrid = async ({
   items,
   className,
+  themeId,
 }: {
   items: { name: string }[]
   className?: string
+  themeId?: ThemeId
 }) => {
   const betterItems = countifyItems(await orderItems(items))
   return (
@@ -28,6 +31,7 @@ export const ItemCardGrid = async ({
                 count={item.count}
                 size={'80'}
                 onlyTop
+                themeId={themeId}
               />
             </div>
           </Fragment>

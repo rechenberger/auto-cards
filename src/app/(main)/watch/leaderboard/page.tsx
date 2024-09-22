@@ -49,6 +49,7 @@ export default async function Page() {
                 <ItemCardGrid
                   items={loadout.data.items}
                   className="justify-start"
+                  // themeId={loadout.user?.themeId ?? undefined}
                 />
               </div>
             </Fragment>
