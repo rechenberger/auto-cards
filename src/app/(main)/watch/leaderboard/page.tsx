@@ -5,6 +5,8 @@ import { StatsDisplay } from '@/components/game/StatsDisplay'
 import { TimeAgo } from '@/components/simple/TimeAgo'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { db } from '@/db/db'
+import { schema } from '@/db/schema-export'
 import { addAllToLeaderboard } from '@/game/addAllToLeaderboard'
 import { addToLeaderboard } from '@/game/addToLeaderboard'
 import { getBotName } from '@/game/botName'
@@ -14,13 +16,15 @@ import { getLeaderboard } from '@/game/getLeaderboard'
 import { getUserName } from '@/game/getUserName'
 import {
   streamDialog,
+  streamToast,
   superAction,
 } from '@/super-action/action/createSuperAction'
 import { streamRevalidatePath } from '@/super-action/action/streamRevalidatePath'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { createStreamableUI } from 'ai/rsc'
-import { uniqBy } from 'lodash-es'
-import { RotateCw } from 'lucide-react'
+import { eq } from 'drizzle-orm'
+import { countBy, omitBy, orderBy, uniqBy } from 'lodash-es'
+import { Delete, Plus, RotateCw } from 'lucide-react'
 import { Metadata } from 'next'
 import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
@@ -53,7 +57,53 @@ export default async function Page({
           <>
             <ActionButton
               catchToast
-              variant="outline"
+              variant="ghost"
+              size="icon"
+              hideIcon
+              askForConfirmation={{
+                title: 'Remove Duplicate Entries?',
+                content: 'This will remove duplicate entries for loadouts',
+              }}
+              action={async () => {
+                'use server'
+                return superAction(async () => {
+                  const leaderboard = await db.query.leaderboardEntry.findMany({
+                    // orderBy: asc(schema.leaderboardEntry.score),
+                  })
+                  let counts = countBy(leaderboard, (e) => e.loadoutId)
+                  counts = omitBy(counts, (count) => count <= 1)
+                  for (const loadoutId in counts) {
+                    let entries = leaderboard.filter(
+                      (e) => e.loadoutId === loadoutId,
+                    )
+                    const [winner, ...rest] = orderBy(
+                      entries,
+                      (e) => e.score,
+                      'desc',
+                    )
+                    console.log(winner, rest)
+                    for (const entry of rest) {
+                      await db
+                        .delete(schema.leaderboardEntry)
+                        .where(eq(schema.leaderboardEntry.id, entry.id))
+                    }
+                  }
+                  streamToast({
+                    title: 'Leaderboard Cleaned',
+                    description: `Removed duplicate entries for ${
+                      Object.keys(counts).length
+                    } loadouts`,
+                  })
+                })
+              }}
+            >
+              <Delete className="size-4" />
+            </ActionButton>
+            <ActionButton
+              catchToast
+              variant="ghost"
+              size="icon"
+              hideIcon
               askForConfirmation={{
                 title: 'Add All to Leaderboard?',
                 content: 'This will take a while',
@@ -86,11 +136,13 @@ export default async function Page({
                 })
               }}
             >
-              Add All to Leaderboard
+              <Plus className="size-4" />
             </ActionButton>
             <ActionButton
               catchToast
-              variant="outline"
+              variant="ghost"
+              size="icon"
+              hideIcon
               askForConfirmation={{
                 title: 'Update Leaderboard?',
                 content: 'This will take a while',
@@ -125,7 +177,7 @@ export default async function Page({
                 })
               }}
             >
-              Update Leaderboard
+              <RotateCw className="size-4" />
             </ActionButton>
           </>
         )}
