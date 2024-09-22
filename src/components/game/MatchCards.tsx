@@ -69,6 +69,7 @@ export const MatchCards = async ({
                     themeId={themeId}
                     itemIdx={itemIdx}
                     sideIdx={sideIdx}
+                    onlyTop
                   />
                   <MatchCardOverlay
                     sideIdx={sideIdx}

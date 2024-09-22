@@ -117,7 +117,12 @@ const ItemGrid = async ({ items }: { items: { name: string }[] }) => {
         return (
           <Fragment key={idx}>
             <div className="relative">
-              <ItemCard name={item.name} count={item.count} size={'80'} />
+              <ItemCard
+                name={item.name}
+                count={item.count}
+                size={'80'}
+                onlyTop
+              />
             </div>
           </Fragment>
         )
