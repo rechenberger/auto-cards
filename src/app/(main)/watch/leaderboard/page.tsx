@@ -39,6 +39,10 @@ export default async function Page() {
         <ActionButton
           catchToast
           variant="outline"
+          askForConfirmation={{
+            title: 'Add All to Leaderboard?',
+            content: 'This will take a while',
+          }}
           action={async () => {
             'use server'
             return superAction(async () => {
