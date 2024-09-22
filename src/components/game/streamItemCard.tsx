@@ -14,7 +14,7 @@ export const streamItemCard = async (props: ItemCardProps) => {
       title: capitalCase(props.name),
       description: (
         <>
-          <div className="flex flex-col gap-4 max-h-[calc(100vh-80px)] overflow-x-hidden overflow-y-auto max-md:-mx-4 items-center">
+          <div className="flex flex-col gap-4 max-h-[calc(100vh-80px)] overflow-auto max-md:-mx-4 items-center">
             <div className="">
               <ItemCard {...props} size="320" tooltipOnClick={false} />
             </div>
