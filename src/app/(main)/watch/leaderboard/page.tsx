@@ -2,12 +2,9 @@ import { getIsAdmin } from '@/auth/getIsAdmin'
 import { ItemCardGrid } from '@/components/game/ItemCardGrid'
 import { TimeAgo } from '@/components/simple/TimeAgo'
 import { Progress } from '@/components/ui/progress'
-import { db } from '@/db/db'
-import { schema } from '@/db/schema-export'
 import { addAllToLeaderboard } from '@/game/addAllToLeaderboard'
 import { addToLeaderboard } from '@/game/addToLeaderboard'
 import { getBotName } from '@/game/botName'
-import { NO_OF_ROUNDS } from '@/game/config'
 import { getLeaderboard } from '@/game/getLeaderboard'
 import { getUserName } from '@/game/getUserName'
 import {
@@ -17,7 +14,7 @@ import {
 import { streamRevalidatePath } from '@/super-action/action/streamRevalidatePath'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { createStreamableUI } from 'ai/rsc'
-import { desc, eq } from 'drizzle-orm'
+import { uniqBy } from 'lodash-es'
 import { RotateCw } from 'lucide-react'
 import { Metadata } from 'next'
 import { revalidatePath } from 'next/cache'
@@ -27,20 +24,13 @@ export const metadata: Metadata = {
   title: 'Leaderboard',
 }
 
-const getLoadouts = async () => {
-  return await db.query.loadout.findMany({
-    orderBy: desc(schema.loadout.createdAt),
-    limit: 20,
-    with: {
-      user: true,
-    },
-    where: eq(schema.loadout.roundNo, NO_OF_ROUNDS - 1),
-  })
-}
-
 export default async function Page() {
   const entries = await getLeaderboard({})
   const isAdmin = await getIsAdmin({ allowDev: true })
+
+  const uniqByUser = false
+  const entriesShown = uniqByUser ? uniqBy(entries, (e) => e.userId) : entries
+
   return (
     <>
       <div className="flex flex-row items-center gap-2">
@@ -129,7 +119,7 @@ export default async function Page() {
         )}
       </div>
       <div className="grid grid-cols-[auto_auto_1fr_auto_auto] gap-4 items-center">
-        {entries.map((entry, idx) => {
+        {entriesShown.map((entry, idx) => {
           const loadout = entry.loadout
           const name = entry.user
             ? getUserName({ user: entry.user })
