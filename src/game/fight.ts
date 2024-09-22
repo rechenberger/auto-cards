@@ -3,6 +3,7 @@ import { schema } from '@/db/schema-export'
 import { Game } from '@/db/schema-zod'
 import { and, desc, eq, isNull, ne, or } from 'drizzle-orm'
 import { cloneDeep, first } from 'lodash-es'
+import { addToLeaderboard } from './addToLeaderboard'
 import { NO_OF_LATEST_LOADOUTS } from './config'
 import { generateMatch } from './generateMatch'
 import { rngItem, seedToString } from './seed'
@@ -104,6 +105,10 @@ export const fight = async ({ game }: { game: Game }) => {
       primaryMatchParticipationId: myParticipation.id,
     })
     .where(eq(schema.loadout.id, myLoadout.id))
+
+  // Add to Leaderboard in the Background
+  // Don't await
+  addToLeaderboard({ loadout: myLoadout })
 
   return {
     matchReport,

@@ -2,18 +2,18 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Loadout } from '@/db/schema-zod'
 import { and, eq } from 'drizzle-orm'
-import { LEADERBOARD_TYPE, NO_OF_ROUNDS } from './config'
+import { LEADERBOARD_TYPE } from './config'
 import { getLeaderboard } from './getLeaderboard'
 import { generateMatchByWorker } from './matchWorkerManager'
 
 export const addToLeaderboard = async ({
-  type = LEADERBOARD_TYPE,
-  roundNo = NO_OF_ROUNDS - 1,
   loadout,
+  type = LEADERBOARD_TYPE,
+  roundNo = loadout.roundNo,
 }: {
+  loadout: Loadout
   type?: string
   roundNo?: number
-  loadout: Loadout
 }) => {
   let leaderboard = await getLeaderboard({})
   if (!loadout.userId) {
