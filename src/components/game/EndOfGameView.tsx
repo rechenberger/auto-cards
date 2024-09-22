@@ -1,12 +1,20 @@
 import { NewGameButton } from '@/app/(main)/game/NewGameButton'
+import { db } from '@/db/db'
+import { schema } from '@/db/schema-export'
 import { Game } from '@/db/schema-zod'
 import { fontLore } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
+import { desc, eq } from 'drizzle-orm'
 import { GameMatchBoard } from './GameMatchBoard'
+import { LeaderboardRankCard } from './LeaderboardRankCard'
 import { LoadoutDisplay } from './LoadoutDisplay'
 import { TitleScreen } from './TitleScreen'
 
-export const EndOfGameView = ({ game }: { game: Game }) => {
+export const EndOfGameView = async ({ game }: { game: Game }) => {
+  const loadout = await db.query.loadout.findFirst({
+    where: eq(schema.loadout.gameId, game.id),
+    orderBy: desc(schema.loadout.roundNo),
+  })
   return (
     <>
       <div className="flex-1 flex flex-col gap-4 items-center justify-center text-center">
@@ -23,6 +31,7 @@ export const EndOfGameView = ({ game }: { game: Game }) => {
           </div>
           <GameMatchBoard game={game} />
         </div>
+        {loadout && <LeaderboardRankCard loadout={loadout} />}
 
         <div className="self-stretch flex flex-col gap-4">
           <LoadoutDisplay game={game} loadout={game.data.currentLoadout} />
