@@ -1,7 +1,7 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { getMyUserIdOrLogin } from '@/auth/getMyUser'
 import { GameMatchBoard } from '@/components/game/GameMatchBoard'
-import { ItemCard } from '@/components/game/ItemCard'
+import { ItemCardGrid } from '@/components/game/ItemCardGrid'
 import { TitleScreen } from '@/components/game/TitleScreen'
 import { TimeAgo } from '@/components/simple/TimeAgo'
 import { Button } from '@/components/ui/button'
@@ -10,8 +10,6 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Game } from '@/db/schema-zod'
 import { LIMIT_GAME_OVERVIEW } from '@/game/config'
-import { countifyItems } from '@/game/countifyItems'
-import { orderItems } from '@/game/orderItems'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { desc, eq } from 'drizzle-orm'
 import { Metadata } from 'next'
@@ -73,7 +71,7 @@ export default async function Page() {
           <Fragment key={game.id}>
             <Card className="flex flex-col gap-4 p-4 items-center">
               <GameMatchBoard game={game} />
-              <ItemGrid items={game.data.currentLoadout.items} />
+              <ItemCardGrid items={game.data.currentLoadout.items} />
               {game.updatedAt && (
                 <div className="text-sm opacity-60">
                   <TimeAgo date={new Date(game.updatedAt)} />
@@ -106,27 +104,5 @@ export default async function Page() {
         ))}
       </div>
     </>
-  )
-}
-
-const ItemGrid = async ({ items }: { items: { name: string }[] }) => {
-  const betterItems = countifyItems(await orderItems(items))
-  return (
-    <div className="flex-1 flex flex-row flex-wrap gap-1 justify-center items-start">
-      {betterItems.map((item, idx) => {
-        return (
-          <Fragment key={idx}>
-            <div className="relative">
-              <ItemCard
-                name={item.name}
-                count={item.count}
-                size={'80'}
-                onlyTop
-              />
-            </div>
-          </Fragment>
-        )
-      })}
-    </div>
   )
 }
