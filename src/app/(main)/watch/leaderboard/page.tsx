@@ -14,6 +14,7 @@ import { calcLoadoutPrice } from '@/game/calcLoadoutPrice'
 import { LEADERBOARD_LIMIT } from '@/game/config'
 import { getLeaderboard } from '@/game/getLeaderboard'
 import { getUserName } from '@/game/getUserName'
+import { getOrdinalSuffix } from '@/lib/getOrdinalSuffix'
 import {
   streamDialog,
   streamToast,
@@ -254,45 +255,60 @@ export default async function Page({
                     >
                       <RotateCw className="size-4" />
                     </ActionButton>
-                    <ActionButton
-                      catchToast
-                      variant="ghost"
-                      size="icon"
-                      hideIcon
-                      action={async () => {
-                        'use server'
-                        return superAction(async () => {
-                          const result = await addToLeaderboard({
-                            loadout,
-                            dryRun: true,
-                          })
-                          if (!result) {
-                            throw new Error('Failed to add to leaderboard')
-                          }
+                  </>
+                )}
+                <ActionButton
+                  catchToast
+                  variant="ghost"
+                  size="icon"
+                  hideIcon
+                  action={async () => {
+                    'use server'
+                    return superAction(async () => {
+                      const isAdmin = await getIsAdmin({ allowDev: true })
 
-                          const entries = orderBy(
-                            result.results,
-                            (r) => r.win,
-                            'asc',
-                          )
+                      const result = await addToLeaderboard({
+                        loadout,
+                        dryRun: true,
+                      })
+                      if (!result) {
+                        throw new Error('Failed to add to leaderboard')
+                      }
 
-                          streamDialog({
-                            title: 'Simulation Results',
-                            content: (
-                              <>
-                                <div>Score: {result.score}</div>
-                                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-2 gap-y-4">
-                                  {entries.map((e) => (
-                                    <Fragment key={e.entry.id}>
-                                      <div>
-                                        <ItemCardGrid
-                                          items={e.entry.loadout.data.items}
-                                          size="tiny"
-                                          className="justify-start"
-                                        />
-                                      </div>
-                                      <div>{e.win ? '👑' : '💀'}</div>
-                                      <div>{e.entry.score.toFixed(2)}</div>
+                      let entries = result.results
+
+                      entries = orderBy(
+                        result.results,
+                        (r) => r.entry.score,
+                        'desc',
+                      )
+
+                      entries = orderBy(result.results, (r) => r.win, 'asc')
+
+                      streamDialog({
+                        title: `${result.score.toFixed(2)}% Win Rate`,
+                        content: (
+                          <>
+                            <div className="grid grid-cols-[auto_auto_1fr_auto_auto] gap-2 gap-y-4">
+                              {entries.map((e) => (
+                                <Fragment key={e.entry.id}>
+                                  <div>{e.win ? '👑' : '💀'}</div>
+                                  <div className="font-sans">
+                                    {e.rank}
+                                    <span className="ordinal">
+                                      {getOrdinalSuffix(e.rank)}
+                                    </span>
+                                  </div>
+                                  <div>
+                                    <ItemCardGrid
+                                      items={e.entry.loadout.data.items}
+                                      size="tiny"
+                                      className="justify-start"
+                                    />
+                                  </div>
+                                  <div>{e.entry.score.toFixed(2)}</div>
+                                  <div>
+                                    {isAdmin && (
                                       <Link
                                         href={playgroundHref({
                                           loadouts: [
@@ -306,19 +322,19 @@ export default async function Page({
                                       >
                                         <ExternalLink className="size-4" />
                                       </Link>
-                                    </Fragment>
-                                  ))}
-                                </div>
-                              </>
-                            ),
-                          })
-                        })
-                      }}
-                    >
-                      <ExternalLink className="size-4" />
-                    </ActionButton>
-                  </>
-                )}
+                                    )}
+                                  </div>
+                                </Fragment>
+                              ))}
+                            </div>
+                          </>
+                        ),
+                      })
+                    })
+                  }}
+                >
+                  <ExternalLink className="size-4" />
+                </ActionButton>
               </div>
               <div className="flex justify-self-start col-span-4 xl:hidden">
                 <ItemCardGrid

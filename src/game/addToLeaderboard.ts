@@ -38,7 +38,7 @@ export const addToLeaderboard = async ({
   }
 
   const results = await Promise.all(
-    leaderboard.map(async (entry) => {
+    leaderboard.map(async (entry, idx) => {
       const seed = seedToString({
         seed: ['addToLeaderboard', type, roundNo, loadout.id, entry.id],
       })
@@ -60,6 +60,7 @@ export const addToLeaderboard = async ({
         win,
         entry,
         seed,
+        rank: idx + 1,
       }
     }),
   )
