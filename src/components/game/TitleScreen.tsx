@@ -1,7 +1,6 @@
 import { getAllItems } from '@/game/allItems'
 import dynamic from 'next/dynamic'
 import { Fragment } from 'react'
-import { TooltipProvider } from '../ui/tooltip'
 import { ItemCard } from './ItemCard'
 
 const TitleScreenClient = dynamic(
@@ -16,9 +15,7 @@ export const TitleScreen = async () => {
 
   const cards = allItems.map((item) => (
     <Fragment key={item.name}>
-      <TooltipProvider>
-        <ItemCard key={item.name} name={item.name} size="80" />
-      </TooltipProvider>
+      <ItemCard key={item.name} name={item.name} size="80" disableTooltip />
     </Fragment>
   ))
 

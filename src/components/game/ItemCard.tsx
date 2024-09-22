@@ -36,6 +36,7 @@ export type ItemCardProps = {
   itemIdx?: number
   canSell?: boolean
   onlyTop?: boolean
+  disableTooltip?: boolean
 }
 
 export const ItemCard = async (props: ItemCardProps) => {
@@ -53,6 +54,7 @@ export const ItemCard = async (props: ItemCardProps) => {
     itemIdx,
     canSell,
     onlyTop,
+    disableTooltip,
   } = props
 
   const item = await getItemByName(name)
@@ -209,11 +211,21 @@ export const ItemCard = async (props: ItemCardProps) => {
             )}
           >
             <div className="flex flex-col items-center gap-2">
-              {item.stats && <StatsDisplay relative stats={item.stats} />}
+              {item.stats && (
+                <StatsDisplay
+                  relative
+                  stats={item.stats}
+                  disableTooltip={disableTooltip}
+                />
+              )}
               {item.statsItem && (
                 <div className="flex flex-row gap-2 items-center">
                   <div>Item:</div>
-                  <StatsDisplay relative stats={item.statsItem} />
+                  <StatsDisplay
+                    relative
+                    stats={item.statsItem}
+                    disableTooltip={disableTooltip}
+                  />
                 </div>
               )}
               {item.triggers?.map((trigger, idx) => (
@@ -223,6 +235,7 @@ export const ItemCard = async (props: ItemCardProps) => {
                     itemIdx={itemIdx}
                     sideIdx={sideIdx}
                     triggerIdx={idx}
+                    disableTooltip={disableTooltip}
                   />
                 </Fragment>
               ))}
