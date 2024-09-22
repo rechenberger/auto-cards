@@ -224,6 +224,12 @@ const allItemsConst = [
           accuracy: 85,
         },
       },
+      {
+        type: 'onAttackCrit',
+        statsItem: {
+          critChance: 10,
+        },
+      },
     ],
   },
   {
@@ -238,17 +244,23 @@ const allItemsConst = [
     },
     statsItem: {
       unblockable: 1,
+      critChance: 30,
+      haste: 30,
     },
     triggers: [
       {
         type: 'interval',
         cooldown: 2_000,
-        statsItem: {
-          haste: 20,
-        },
         attack: {
           damage: 6,
           accuracy: 85,
+        },
+      },
+      {
+        type: 'onAttackCrit',
+        statsItem: {
+          critChance: 10,
+          haste: 10,
         },
       },
     ],

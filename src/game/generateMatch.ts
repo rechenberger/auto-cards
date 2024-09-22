@@ -480,6 +480,18 @@ export const generateMatch = async ({
                     stats: removeAimStats,
                   })
                 }
+                triggerEvents({
+                  eventType: 'onAttackCrit',
+                  parentTrigger: input,
+                  itemIdx,
+                  sideIdx,
+                  itemCounter: action.itemCounter,
+                })
+                triggerEvents({
+                  eventType: 'onDefendCrit',
+                  parentTrigger: input,
+                  sideIdx: otherSide.sideIdx,
+                })
               }
 
               // LIFESTEAL
