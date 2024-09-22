@@ -5,6 +5,7 @@ import { and, eq } from 'drizzle-orm'
 import { LEADERBOARD_TYPE } from './config'
 import { getLeaderboard } from './getLeaderboard'
 import { generateMatchByWorker } from './matchWorkerManager'
+import { seedToString } from './seed'
 
 export const addToLeaderboard = async ({
   loadout,
@@ -38,6 +39,9 @@ export const addToLeaderboard = async ({
 
   const results = await Promise.all(
     leaderboard.map(async (entry) => {
+      const seed = seedToString({
+        seed: ['addToLeaderboard', type, roundNo, loadout.id, entry.id],
+      })
       const result = await generateMatchByWorker({
         participants: [
           {
@@ -47,7 +51,7 @@ export const addToLeaderboard = async ({
             loadout: entry.loadout.data,
           },
         ],
-        seed: ['addToLeaderboard', type, roundNo, loadout.id, entry.id],
+        seed: [seed],
       })
 
       const win = result.winner.sideIdx === 0
@@ -55,6 +59,7 @@ export const addToLeaderboard = async ({
       return {
         win,
         entry,
+        seed,
       }
     }),
   )

@@ -281,7 +281,7 @@ export default async function Page({
                             content: (
                               <>
                                 <div>Score: {result.score}</div>
-                                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-2">
+                                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-2 gap-y-4">
                                   {entries.map((e) => (
                                     <Fragment key={e.entry.id}>
                                       <div>
@@ -300,7 +300,7 @@ export default async function Page({
                                             e.entry.loadout.data,
                                           ],
                                           mode: 'fight',
-                                          seed: 'fight',
+                                          seed: e.seed,
                                         })}
                                         target="_blank"
                                       >
