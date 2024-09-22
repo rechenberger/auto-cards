@@ -1,4 +1,4 @@
-import { TinyItem } from '@/components/game/TinyItem'
+import { ItemCardGrid } from '@/components/game/ItemCardGrid'
 import { TimeAgo } from '@/components/simple/TimeAgo'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
@@ -58,13 +58,7 @@ const MatchEntry = async ({ match }: { match: Match }) => {
 
   return (
     <>
-      <div className="flex flex-row gap-1 flex-wrap items-start justify-end">
-        {p1Items.map((item, idx) => (
-          <Fragment key={idx}>
-            <TinyItem name={item.name} count={item.count} />
-          </Fragment>
-        ))}
-      </div>
+      <ItemCardGrid items={p1Items} tiny className="items-start justify-end" />
       <Link href={`/match/${match.id}`}>
         <div>
           <div className="text-xs opacity-60">
@@ -82,13 +76,11 @@ const MatchEntry = async ({ match }: { match: Match }) => {
           </div>
         </div>
       </Link>
-      <div className="flex flex-row gap-1 flex-wrap items-start justify-start">
-        {p2Items.map((item, idx) => (
-          <Fragment key={idx}>
-            <TinyItem name={item.name} count={item.count} />
-          </Fragment>
-        ))}
-      </div>
+      <ItemCardGrid
+        items={p2Items}
+        tiny
+        className="items-start justify-start"
+      />
     </>
   )
 }
