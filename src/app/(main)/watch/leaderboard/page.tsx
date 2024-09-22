@@ -5,6 +5,7 @@ import { schema } from '@/db/schema-export'
 import { addAllToLeaderboard } from '@/game/addAllToLeaderboard'
 import { getBotName } from '@/game/botName'
 import { NO_OF_ROUNDS } from '@/game/config'
+import { getLeaderboard } from '@/game/getLeaderboard'
 import { getUserName } from '@/game/getUserName'
 import { superAction } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
@@ -29,7 +30,7 @@ const getLoadouts = async () => {
 }
 
 export default async function Page() {
-  const loadouts = await getLoadouts()
+  const entries = await getLeaderboard({})
   return (
     <>
       <div className="flex flex-row items-center gap-2">
@@ -54,14 +55,15 @@ export default async function Page() {
           Add All to Leaderboard
         </ActionButton>
       </div>
-      <div className="grid grid-cols-[auto_auto_1fr] gap-4 items-center">
-        {loadouts.map((loadout, idx) => {
-          const name = loadout.user
-            ? getUserName({ user: loadout.user })
+      <div className="grid grid-cols-[auto_auto_1fr_auto] gap-4 items-center">
+        {entries.map((entry, idx) => {
+          const loadout = entry.loadout
+          const name = entry.user
+            ? getUserName({ user: entry.user })
             : getBotName({ seed: loadout.id })
 
           return (
-            <Fragment key={loadout.id}>
+            <Fragment key={entry.id}>
               <div className="text-xl">#{idx + 1}</div>
               <div>
                 <div>{name}</div>
@@ -78,6 +80,7 @@ export default async function Page() {
                   // themeId={loadout.user?.themeId ?? undefined}
                 />
               </div>
+              <div className="text-xl text-right">{entry.score.toFixed(2)}</div>
             </Fragment>
           )
         })}
