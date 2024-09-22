@@ -211,6 +211,9 @@ const allItemsConst = [
     stats: {
       space: space(-2),
     },
+    statsItem: {
+      unblockable: 1,
+    },
     triggers: [
       {
         type: 'interval',

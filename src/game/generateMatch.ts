@@ -442,7 +442,10 @@ export const generateMatch = async ({
               }
               damage = Math.round(damage)
 
-              const blockedDamage = Math.min(damage, otherSide.stats.block ?? 0)
+              let blockedDamage = 0
+              if (!statsForItem?.unblockable) {
+                blockedDamage = Math.min(damage, otherSide.stats.block ?? 0)
+              }
               damage -= blockedDamage
               const targetStats: Stats = {
                 health: -1 * damage,
