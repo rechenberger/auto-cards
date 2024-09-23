@@ -1,7 +1,6 @@
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Loadout } from '@/db/schema-zod'
-import { addToLeaderboard } from '@/game/addToLeaderboard'
 import { GREAT_WIN_RATE } from '@/game/config'
 import { getLeaderboard } from '@/game/getLeaderboard'
 import { getOrdinalSuffix } from '@/lib/getOrdinalSuffix'
@@ -9,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { eq } from 'drizzle-orm'
 import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
+import { SimpleRefresher } from '../simple/SimpleRefresher'
 import { Button } from '../ui/button'
 
 export const LeaderboardRankCard = async ({
@@ -33,19 +33,27 @@ export const LeaderboardRankCard = async ({
     })
   }
 
-  if (!entry) {
-    await addToLeaderboard({ loadout })
-    entry = await db.query.leaderboardEntry.findFirst({
-      where: eq(schema.leaderboardEntry.loadoutId, loadout.id),
-      with: {
-        user: true,
-        loadout: true,
-      },
-    })
-  }
+  // if (!entry) {
+  //   await addToLeaderboard({ loadout })
+  //   entry = await db.query.leaderboardEntry.findFirst({
+  //     where: eq(schema.leaderboardEntry.loadoutId, loadout.id),
+  //     with: {
+  //       user: true,
+  //       loadout: true,
+  //     },
+  //   })
+  // }
+
   if (!entry) {
     // console.warn('Leaderboard entry not found')
-    return null
+    return (
+      <>
+        <div className="flex flex-row gap-4 items-center justify-center bg-background/80 p-4 rounded-lg">
+          <div className="flex-1">Calculating Score...</div>
+          <SimpleRefresher ms={2000} forceState={true} />
+        </div>
+      </>
+    )
   }
 
   return (
