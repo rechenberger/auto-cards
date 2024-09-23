@@ -50,8 +50,13 @@ export const MainTop = async () => {
     <>
       <div className="container max-md:px-4 flex flex-row items-center justify-between gap-6 py-6">
         <MainLogo />
-        <div className="hidden flex-1 xl:flex">
+        <div className="hidden flex-1 xl:flex items-center gap-2">
           <MainTopNav entries={entries} />
+          {process.env.DB_URL?.includes('file:') && (
+            <div className="text-sm bg-red-500/50 rounded-md px-2 py-1">
+              Local DB
+            </div>
+          )}
           <UserButton />
         </div>
         <div className="flex flex-row">
