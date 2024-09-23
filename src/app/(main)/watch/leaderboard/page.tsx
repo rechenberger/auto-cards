@@ -40,7 +40,8 @@ export default async function Page({
 }: {
   searchParams: { view: string }
 }) {
-  const entries = await getLeaderboard({})
+  const leaderboard = await getLeaderboard({})
+  const entries = leaderboard.map((e, idx) => ({ ...e, rank: idx + 1 }))
   const isAdmin = await getIsAdmin({ allowDev: false })
 
   const view = searchParams.view ?? 'all'
@@ -207,7 +208,7 @@ export default async function Page({
 
           return (
             <Fragment key={entry.id}>
-              <div className="text-xl">#{idx + 1}</div>
+              <div className="text-xl">#{entry.rank}</div>
               <div>
                 <div className="flex flex-row gap-1">
                   <div>{name}</div>
