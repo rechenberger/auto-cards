@@ -1,4 +1,5 @@
 import { Game, LoadoutData } from '@/db/schema-zod'
+import { getItemByName } from '@/game/allItems'
 import { countifyItems } from '@/game/countifyItems'
 import { Changemakers } from '@/game/generateChangemakers'
 import { MatchReport } from '@/game/generateMatch'
@@ -44,12 +45,18 @@ export const MatchCards = async ({
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-4 grid-flow-dense">
-        {map(items, (item, itemIdx) => {
+        {map(items, async (item, itemIdx) => {
           const isBig = topChangemakers.some((c) => c.name === item.name)
           const changemaker = find(
             changemakers?.[sideIdx],
             (c) => c.name === item.name,
           )
+
+          const itemByName = await getItemByName(item.name)
+          const hasInterval = itemByName?.triggers?.some(
+            (t) => t.type === 'interval',
+          )
+
           return (
             <Fragment key={item.name}>
               <Tooltip>
@@ -77,11 +84,13 @@ export const MatchCards = async ({
                     itemIdx={itemIdx}
                     matchReport={matchReport}
                   /> */}
-                  <MatchCardTimer2
-                    sideIdx={sideIdx}
-                    itemIdx={itemIdx}
-                    matchReport={matchReport}
-                  />
+                  {hasInterval && (
+                    <MatchCardTimer2
+                      sideIdx={sideIdx}
+                      itemIdx={itemIdx}
+                      matchReport={matchReport}
+                    />
+                  )}
                   <MatchCardOverlay
                     sideIdx={sideIdx}
                     itemIdx={itemIdx}

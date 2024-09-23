@@ -44,10 +44,10 @@ export const MatchCardTimer2 = ({
   useEffect(() => {
     // console.log({ time: activeMatchLog?.log.time })
     if (!isPlaying && nextItemActivation?.lastUsed) {
-      console.log({
-        time: activeMatchLog?.log.time,
-        lastUsed: nextItemActivation?.lastUsed,
-      })
+      // console.log({
+      //   time: activeMatchLog?.log.time,
+      //   lastUsed: nextItemActivation?.lastUsed,
+      // })
 
       setProgress(
         (activeMatchLog?.log.time ?? 0) - (nextItemActivation?.lastUsed ?? 0),
@@ -60,7 +60,7 @@ export const MatchCardTimer2 = ({
 
   const tick = 100 / speed
   useEffect(() => {
-    if (!isPlaying) return
+    if (!isPlaying || !cooldown) return
 
     const interval = setInterval(() => {
       setProgress((prev) => {
@@ -151,7 +151,6 @@ export const MatchCardTimer2 = ({
   // }
 
   const newHeight = (progress / cooldown) * 100
-  // console.log({ progress, cooldown, newHeight })
 
   return (
     <motion.div
@@ -161,10 +160,5 @@ export const MatchCardTimer2 = ({
       animate={{ height: `${newHeight}%` }}
       transition={{ duration: tick / 1000, ease: 'linear' }}
     />
-    // <motion.div
-    //   className="absolute bottom-0 bg-gray-500 bg-opacity-50 left-0 right-0 "
-    //   animate={{ height: `${cooldownProgressPercentOnNextUpdate}%` }}
-    //   transition={{ duration: animationDuration / 1000 }}
-    // ></motion.div>
   )
 }
