@@ -1023,6 +1023,25 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'piggyBank',
+    prompt: 'a bright pink piggy bank',
+    tags: ['accessory'],
+    rarity: 'common',
+    price: 3,
+    shop: true,
+    stats: {
+      space: space(-3),
+    },
+    triggers: [
+      {
+        type: 'ohShopEntered',
+        statsSelf: {
+          gold: 1,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')
