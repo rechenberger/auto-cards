@@ -3,6 +3,7 @@ export const NO_OF_SHOP_ITEMS = 5
 export const SALE_CHANCE = 0.2
 export const BASE_TICK_TIME = 1000
 export const MAX_MATCH_TIME = 10 * 60 * 1000
+export const BATTLE_CLOCK_TICK_MS = 100
 
 export const FATIGUE_STARTS_AT = 15_000
 export const MIN_COOLDOWN = 100

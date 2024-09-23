@@ -12,7 +12,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 import { ItemCard } from './ItemCard'
 import { MatchCardOverlay } from './MatchCardOverlay'
-import { MatchCardTimer2 } from './MatchCardTimer2'
+import { MatchCardTimer } from './MatchCardTimer'
 
 export const MatchCards = async ({
   items,
@@ -85,11 +85,7 @@ export const MatchCards = async ({
                     matchReport={matchReport}
                   /> */}
                   {hasInterval && (
-                    <MatchCardTimer2
-                      sideIdx={sideIdx}
-                      itemIdx={itemIdx}
-                      matchReport={matchReport}
-                    />
+                    <MatchCardTimer sideIdx={sideIdx} itemIdx={itemIdx} />
                   )}
                   <MatchCardOverlay
                     sideIdx={sideIdx}
