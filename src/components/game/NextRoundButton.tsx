@@ -32,8 +32,6 @@ export const NextRoundButton = ({ game }: { game: Game }) => {
                 return i?.triggers?.some((t) => t.type === 'ohShopEntered')
               })
 
-              console.log({ onShopEnteredItems })
-
               for (const item of onShopEnteredItems) {
                 const resolvedItem = await getItemByName(item.name)
                 const trigger = resolvedItem.triggers?.filter(
