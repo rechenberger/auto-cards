@@ -1,3 +1,4 @@
+import { isDev } from '@/auth/getIsAdmin'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
 import { Toaster } from '@/components/ui/toaster'
 import { TooltipProvider } from '@/components/ui/tooltip'
@@ -11,7 +12,7 @@ import './globals.css'
 export const metadata: Metadata = {
   title: {
     default: 'Sack of Secrets: Battlegrounds',
-    template: '%s | Sack of Secrets',
+    template: isDev() ? '%s | DEV' : '%s | Sack of Secrets',
   },
   description: 'by Tristan Rechenberger',
 }

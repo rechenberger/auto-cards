@@ -4,7 +4,7 @@ import { rngFloat, SeedArray } from '@/game/seed'
 import { Html } from '@react-three/drei'
 import { Canvas, Euler, useFrame, Vector3 } from '@react-three/fiber'
 import { range } from 'lodash-es'
-import { ReactNode, useRef } from 'react'
+import { ReactNode, useMemo, useRef } from 'react'
 import { Mesh } from 'three/src/Three.js'
 
 // FROM: https://teampilot.ai/team/tristan/chat/eacdf40de2b8991cac2577c4b3d7a8d4
@@ -27,14 +27,21 @@ const Card = ({ seed, children }: { seed: SeedArray; children: ReactNode }) => {
     }
   })
 
-  const position: Vector3 = [
-    rngFloat({ seed: [...seed, 'position', 'x'], min: -10, max: 10 }),
-    rngFloat({ seed: [...seed, 'position', 'y'], min: minY, max: maxY }),
-    rngFloat({ seed: [...seed, 'position', 'z'], min: -5, max: 2 }),
-  ]
+  const position: Vector3 = useMemo(
+    () => [
+      rngFloat({ seed: [...seed, 'position', 'x'], min: -10, max: 10 }),
+      rngFloat({ seed: [...seed, 'position', 'y'], min: minY, max: maxY }),
+      rngFloat({ seed: [...seed, 'position', 'z'], min: -5, max: 2 }),
+    ],
+    [maxY, minY, seed],
+  ) as Vector3
 
-  const rotation = range(3).map(
-    (idx) => rngFloat({ seed: [...seed, 'rotation', idx] }) * Math.PI,
+  const rotation = useMemo(
+    () =>
+      range(3).map(
+        (idx) => rngFloat({ seed: [...seed, 'rotation', idx] }) * Math.PI,
+      ),
+    [seed],
   ) as Euler
 
   return (
@@ -47,6 +54,8 @@ const Card = ({ seed, children }: { seed: SeedArray; children: ReactNode }) => {
 }
 
 export const TitleScreenClient = ({ children }: { children: ReactNode[] }) => {
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+  if (isSafari) return null
   return (
     <Canvas style={{ position: 'fixed', inset: 0 }} className="-z-10">
       {/* <Stars /> */}

@@ -19,6 +19,7 @@ import {
   LucideIcon,
   Pyramid,
   Shield,
+  ShieldOff,
   Skull,
   Snowflake,
   Sword,
@@ -184,6 +185,19 @@ const heroStats = [
     icon: Clover,
     bgClass: 'bg-emerald-500',
     tooltip: 'Increases accuracy by X%.',
+  },
+  {
+    name: 'unblockable',
+    icon: ShieldOff,
+    bgClass: 'bg-cyan-500',
+    tooltip: 'Cannot be blocked.',
+    hideCount: true,
+  },
+  {
+    name: 'critChance',
+    icon: Crosshair,
+    bgClass: 'bg-red-500',
+    tooltip: '+X% chance to crit.',
   },
 ] as const satisfies StatDefinitionPre[]
 export const allHeroStats = constArrayMap(heroStats, 'name')

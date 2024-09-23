@@ -72,7 +72,7 @@ export const BuyButton = async ({
                 })
                 throwIfNegativeStats({ stats })
                 streamToast({
-                  title: 'Item sold',
+                  title: 'Item bought from shop',
                   description: `You bought ${capitalCase(
                     shopItem.name,
                   )} for ${price} gold`,
@@ -107,8 +107,9 @@ export const BuyButton = async ({
               stats={{ gold: price }}
               showZero
               disableTooltip
-              statClassName={cn()
-              // shopItem.isOnSale && 'bg-green-500'
+              statClassName={
+                cn()
+                // shopItem.isOnSale && 'bg-green-500'
               }
             />
           </div>

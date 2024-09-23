@@ -1,25 +1,16 @@
+import { LeaderboardBenchmarkButton } from '@/components/game/LeaderboardBenchmarkButton'
 import { StatsDisplay } from '@/components/game/StatsDisplay'
 import { TinyItem } from '@/components/game/TinyItem'
 import { Button } from '@/components/ui/button'
-import { LoadoutData } from '@/db/schema-zod'
-import { getAllItems, getItemByName } from '@/game/allItems'
+import { getAllItems } from '@/game/allItems'
+import { calcLoadoutPrice } from '@/game/calcLoadoutPrice'
+import { NO_OF_ROUNDS } from '@/game/config'
 import { orderItems } from '@/game/orderItems'
 import { negativeItems, sumItems } from '@/game/sumItems'
 import { cn } from '@/lib/utils'
-import { sum } from 'lodash-es'
 import Link from 'next/link'
 import { Fragment } from 'react'
 import { playgroundHref, PlaygroundOptions } from './playgroundHref'
-
-const loadoutPrice = async (loadout: LoadoutData) => {
-  const prices = await Promise.all(
-    loadout.items.map(async (item) => {
-      const def = await getItemByName(item.name)
-      return def.price * (item.count ?? 1)
-    }),
-  )
-  return sum(prices)
-}
 
 export const PlaygroundEdit = async ({
   options,
@@ -37,10 +28,22 @@ export const PlaygroundEdit = async ({
             return (
               <Fragment key={sideIdx}>
                 <div className="flex flex-col gap-4">
-                  <div>
-                    {loadoutPrice(loadout).then((gold) => (
-                      <StatsDisplay stats={{ gold }} />
+                  <div className="flex flex-row justify-between">
+                    {calcLoadoutPrice(loadout).then((gold) => (
+                      <StatsDisplay stats={{ gold }} showZero />
                     ))}
+                    <LeaderboardBenchmarkButton
+                      loadout={{
+                        id: 'fake',
+                        data: loadout,
+                        createdAt: new Date().toISOString(),
+                        userId: 'fake',
+                        updatedAt: new Date().toISOString(),
+                        gameId: null,
+                        roundNo: NO_OF_ROUNDS - 1,
+                        primaryMatchParticipationId: null,
+                      }}
+                    />
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
                     {allItems.map((item) => {

@@ -1,22 +1,26 @@
 import { playgroundHref } from '@/app/(main)/admin/playground/playgroundHref'
 import { getIsAdmin } from '@/auth/getIsAdmin'
-import { LoadoutData } from '@/db/schema-zod'
+import { Game, LoadoutData } from '@/db/schema-zod'
 import { MatchReport } from '@/game/generateMatch'
 import { Palette } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '../ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import { DpsReportDisplay } from './DpsReportDisplay'
+import { LiveMatchResults } from './LiveMatchResults'
 import { MatchReportDisplay } from './MatchReportDisplay'
+import { MatchReportShowWhenDone } from './MatchReportShowWhenDone'
 
 export const MatchReportTabs = async ({
   matchReport,
   loadouts,
   seed,
+  game,
 }: {
   matchReport: MatchReport
   loadouts: LoadoutData[]
   seed: string
+  game?: Game
 }) => {
   const isAdmin = await getIsAdmin({ allowDev: true })
   return (
@@ -49,6 +53,11 @@ export const MatchReportTabs = async ({
                   Edit in Playground
                 </Link>
               </Button>
+            )}
+            {game?.liveMatchId && (
+              <MatchReportShowWhenDone>
+                <LiveMatchResults liveMatchId={game.liveMatchId} />
+              </MatchReportShowWhenDone>
             )}
           </div>
         </TabsContent>

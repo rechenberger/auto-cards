@@ -5,6 +5,7 @@ import { typedParse } from '@/lib/typedParse'
 import assert from 'assert'
 import { eq } from 'drizzle-orm'
 import { cloneDeep, first, range } from 'lodash-es'
+import { addToLeaderboard } from './addToLeaderboard'
 import { generateMatch } from './generateMatch'
 import { rngItem, rngOrder, seedToString } from './seed'
 
@@ -159,6 +160,14 @@ export const fightLiveMatch = async ({
           }),
         })
         .where(eq(schema.liveMatchParticipation.id, p.id))
+    }),
+  )
+
+  // Add to Leaderboard in the Background
+  // Don't await
+  Promise.all(
+    gamesAndLoadouts.map(async ({ loadout, game }) => {
+      addToLeaderboard({ loadout })
     }),
   )
 }

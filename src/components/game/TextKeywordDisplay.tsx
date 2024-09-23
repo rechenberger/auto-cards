@@ -7,7 +7,13 @@ import { capitalCase } from 'change-case'
 import ReactMarkdown from 'react-markdown'
 import { StatDisplay } from './StatsDisplay'
 
-export const TextKeywordDisplay = async ({ text }: { text: string }) => {
+export const TextKeywordDisplay = async ({
+  text,
+  disableTooltip,
+}: {
+  text: string
+  disableTooltip?: boolean
+}) => {
   const items = await getAllItems()
   return (
     <ReactMarkdown
@@ -43,6 +49,7 @@ export const TextKeywordDisplay = async ({ text }: { text: string }) => {
                     hideCount
                     size="sm"
                     statClassName="translate-y-0.5"
+                    disableTooltip={disableTooltip}
                   />
                 </span>
               )

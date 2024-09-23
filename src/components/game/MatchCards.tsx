@@ -70,6 +70,7 @@ export const MatchCards = async ({
                     themeId={themeId}
                     itemIdx={itemIdx}
                     sideIdx={sideIdx}
+                    onlyTop
                   />
                   {/* <MatchCardTimer
                     sideIdx={sideIdx}

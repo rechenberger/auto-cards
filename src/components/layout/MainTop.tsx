@@ -2,7 +2,10 @@ import { UserButton } from '@/auth/UserButton'
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { getIsLoggedIn } from '@/auth/getMyUser'
 import { DarkModeToggle } from '@/components/layout/DarkModeToggle'
+import { Github } from 'lucide-react'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
+import { Button } from '../ui/button'
 import { MainLogo } from './MainLogo'
 import { MainTopNav } from './MainTopNav'
 
@@ -45,26 +48,26 @@ export const MainTop = async () => {
 
   return (
     <>
-      <div className="container flex flex-row items-center justify-between gap-6 py-6">
+      <div className="container max-md:px-4 flex flex-row items-center justify-between gap-6 py-6">
         <MainLogo />
         <div className="hidden flex-1 xl:flex">
           <MainTopNav entries={entries} />
           <UserButton />
         </div>
         <div className="flex flex-row">
-          {/* <Button variant={'ghost'} size="icon" asChild>
+          <MusicButton />
+          <Button variant={'ghost'} size="icon" asChild>
             <Link
-              href="https://github.com/rechenberger/party-starter"
+              href="https://github.com/rechenberger/auto-cards"
               target="_blank"
             >
               <Github />
             </Link>
-          </Button> */}
-          <MusicButton />
+          </Button>
           <DarkModeToggle />
         </div>
       </div>
-      <div className="container flex pb-6 xl:hidden">
+      <div className="container max-md:px-4 flex pb-6 xl:hidden">
         <MainTopNav entries={entries} />
         <UserButton />
       </div>

@@ -9,6 +9,8 @@ const triggerEvents = [
   'onAttackAfterHit',
   'onDefendBeforeHit',
   'onDefendAfterHit',
+  'onAttackCrit',
+  'onDefendCrit',
   // 'useStats',
   // 'gainedStats',
   // 'onSelfStun', 'onEnemyStun'
@@ -27,7 +29,6 @@ const TriggerWithCooldown = z.object({
 export const Trigger = z
   .object({
     chancePercent: z.number().optional(),
-    chanceGroup: z.string().optional(),
     statsRequired: Stats.optional(),
     statsSelf: Stats.optional(),
     statsEnemy: Stats.optional(),
@@ -35,6 +36,7 @@ export const Trigger = z
     statsItem: Stats.optional(),
     maxCount: z.number().optional(),
     modifiers: z.array(Modifier).optional(),
+    forceStartTime: z.number().optional(),
   })
   .and(TriggerWithCooldown.or(TriggerWithoutCooldown))
 export type Trigger = z.infer<typeof Trigger>

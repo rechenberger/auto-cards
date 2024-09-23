@@ -11,11 +11,13 @@ export const TriggerDisplay = ({
   sideIdx,
   itemIdx,
   triggerIdx,
+  disableTooltip,
 }: {
   trigger: Trigger
   sideIdx?: number
   itemIdx?: number
   triggerIdx?: number
+  disableTooltip?: boolean
 }) => {
   const hideRequiredStats = every(trigger.statsRequired ?? {}, (value, key) => {
     if (!value) return true
@@ -53,31 +55,50 @@ export const TriggerDisplay = ({
         {trigger.statsRequired && !hideRequiredStats && (
           <div className="flex flex-row gap-2 items-center">
             <div>Required:</div>
-            <StatsDisplay relative stats={trigger.statsRequired} />
+            <StatsDisplay
+              relative
+              stats={trigger.statsRequired}
+              disableTooltip={disableTooltip}
+            />
           </div>
         )}
         {trigger.statsSelf && (
           <div className="flex flex-row gap-2 items-center">
             {/* <div>Self:</div> */}
-            <StatsDisplay relative stats={trigger.statsSelf} />
+            <StatsDisplay
+              relative
+              stats={trigger.statsSelf}
+              disableTooltip={disableTooltip}
+            />
           </div>
         )}
         {trigger.statsItem && (
           <div className="flex flex-row gap-2 items-center">
             <div>Item:</div>
-            <StatsDisplay relative stats={trigger.statsItem} />
+            <StatsDisplay
+              relative
+              stats={trigger.statsItem}
+              disableTooltip={disableTooltip}
+            />
           </div>
         )}
         {trigger.statsEnemy && (
           <div className="flex flex-row gap-2 items-center">
             <div>Enemy:</div>
-            <StatsDisplay relative stats={trigger.statsEnemy} />
+            <StatsDisplay
+              relative
+              stats={trigger.statsEnemy}
+              disableTooltip={disableTooltip}
+            />
           </div>
         )}
         {trigger.attack && (
           <div className="flex flex-row gap-2 items-center">
             {/* <div>Attack:</div> */}
-            <StatsDisplay stats={trigger.attack as any} />
+            <StatsDisplay
+              stats={trigger.attack as any}
+              disableTooltip={disableTooltip}
+            />
           </div>
         )}
         {trigger.modifiers && (
@@ -86,6 +107,7 @@ export const TriggerDisplay = ({
               <TextKeywordDisplay
                 key={modifier.description}
                 text={modifier.description}
+                disableTooltip={disableTooltip}
               />
             ))}
           </div>

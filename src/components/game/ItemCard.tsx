@@ -35,6 +35,8 @@ export type ItemCardProps = {
   sideIdx?: number
   itemIdx?: number
   canSell?: boolean
+  onlyTop?: boolean
+  disableTooltip?: boolean
 }
 
 export const ItemCard = async (props: ItemCardProps) => {
@@ -51,6 +53,8 @@ export const ItemCard = async (props: ItemCardProps) => {
     sideIdx,
     itemIdx,
     canSell,
+    onlyTop,
+    disableTooltip,
   } = props
 
   const item = await getItemByName(name)
@@ -78,6 +82,7 @@ export const ItemCard = async (props: ItemCardProps) => {
           'shrink-0',
           'rounded-xl',
           'w-[320px] h-[500px]',
+          onlyTop && 'h-[320px]',
           'p-2',
           'bg-[#313130] text-white',
           'shadow-lg',
@@ -85,11 +90,26 @@ export const ItemCard = async (props: ItemCardProps) => {
           'flex flex-col gap-1',
           // 'overflow-hidden',
           'group',
-          size === '80' && 'scale-[25%] -mx-[120px] -my-[187.5px]',
-          size === '160' && 'scale-[50%] -mx-[80px] -my-[125px]',
-          size === '200' && 'scale-[62.5%] -mx-[60px] -my-[93.75px]', // (500-500/1.6)/2 = 93.75
-          size === '240' && 'scale-[75%] -mx-[40px] -my-[62.5px]', // (500-500*0,75)/2 = 62.5
-          size === '480' && 'lg:scale-[150%] lg:mx-[80px] lg:my-[125px]', // (500-500*1,5)/2 = 15
+          size === '80' && [
+            'scale-[25%] -mx-[120px] -my-[187.5px]',
+            onlyTop && '-my-[120px]',
+          ],
+          size === '160' && [
+            'scale-[50%] -mx-[80px] -my-[125px]',
+            onlyTop && '-my-[80px]',
+          ],
+          size === '200' && [
+            'scale-[62.5%] -mx-[60px] -my-[93.75px]',
+            onlyTop && '-my-[60px]',
+          ], // (500-500/1.6)/2 = 93.75
+          size === '240' && [
+            'scale-[75%] -mx-[40px] -my-[62.5px]',
+            onlyTop && '-my-[40px]',
+          ], // (500-500*0,75)/2 = 62.5
+          size === '480' && [
+            'lg:scale-[150%] lg:mx-[80px] lg:my-[125px]',
+            onlyTop && 'lg:my-[80px]',
+          ], // (500-500*1,5)/2 = 15
           'select-none',
           className,
         )}
@@ -181,34 +201,47 @@ export const ItemCard = async (props: ItemCardProps) => {
             </>
           )}
         </div>
-        <div
-          className={cn(
-            'flex-1 flex flex-col justify-center rounded-lg p-2',
-            tag.bgClass,
-            tag.bgClass && 'border-2 border-black',
-            theme.classBottom,
-          )}
-        >
-          <div className="flex flex-col items-center gap-2">
-            {item.stats && <StatsDisplay relative stats={item.stats} />}
-            {item.statsItem && (
-              <div className="flex flex-row gap-2 items-center">
-                <div>Item:</div>
-                <StatsDisplay relative stats={item.statsItem} />
-              </div>
+        {!onlyTop && (
+          <div
+            className={cn(
+              'flex-1 flex flex-col justify-center rounded-lg p-2',
+              tag.bgClass,
+              tag.bgClass && 'border-2 border-black',
+              theme.classBottom,
             )}
-            {item.triggers?.map((trigger, idx) => (
-              <Fragment key={idx}>
-                <TriggerDisplay
-                  trigger={trigger}
-                  itemIdx={itemIdx}
-                  sideIdx={sideIdx}
-                  triggerIdx={idx}
+          >
+            <div className="flex flex-col items-center gap-2">
+              {item.stats && (
+                <StatsDisplay
+                  relative
+                  stats={item.stats}
+                  disableTooltip={disableTooltip}
                 />
-              </Fragment>
-            ))}
+              )}
+              {item.statsItem && (
+                <div className="flex flex-row gap-2 items-center">
+                  <div>Item:</div>
+                  <StatsDisplay
+                    relative
+                    stats={item.statsItem}
+                    disableTooltip={disableTooltip}
+                  />
+                </div>
+              )}
+              {item.triggers?.map((trigger, idx) => (
+                <Fragment key={idx}>
+                  <TriggerDisplay
+                    trigger={trigger}
+                    itemIdx={itemIdx}
+                    sideIdx={sideIdx}
+                    triggerIdx={idx}
+                    disableTooltip={disableTooltip}
+                  />
+                </Fragment>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
       {/* </HoverCardTrigger>
         <HoverCardContent>
@@ -234,7 +267,7 @@ export const ItemCard = async (props: ItemCardProps) => {
           hideIcon
           action={async () => {
             'use server'
-            return streamItemCard({ ...props, count: 1 })
+            return streamItemCard({ ...props, count: 1, onlyTop: false })
           }}
         >
           {inner}

@@ -34,6 +34,7 @@ export const CraftingList = async ({ game }: { game?: Game }) => {
                           count={item.count}
                           tooltipOnClick
                           size="160"
+                          onlyTop
                         />
                         {game && (
                           <div className="flex flex-row gap-1 items-center">
@@ -92,6 +93,7 @@ export const CraftingList = async ({ game }: { game?: Game }) => {
                           count={item.count}
                           tooltipOnClick
                           size="160"
+                          onlyTop
                         />
                         <div></div>
                       </div>

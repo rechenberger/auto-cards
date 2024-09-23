@@ -9,7 +9,13 @@ import { Crown, Skull } from 'lucide-react'
 import Link from 'next/link'
 import { Fragment } from 'react'
 
-export const GameMatchBoard = async ({ game }: { game: Game }) => {
+export const GameMatchBoard = async ({
+  game,
+  showScore,
+}: {
+  game: Game
+  showScore?: boolean
+}) => {
   const loadouts = await db.query.loadout.findMany({
     where: eq(schema.loadout.gameId, game.id),
     with: {
@@ -41,16 +47,28 @@ export const GameMatchBoard = async ({ game }: { game: Game }) => {
                 'flex items-center justify-center',
                 'font-bold leading-none text-center text-lg',
                 'text-white',
-                isActive && 'ring-2 ring-primary',
+                isActive && !showScore && 'ring-2 ring-primary',
               )}
             >
-              {status === 'won' ? (
-                <Crown className="size-6" />
-              ) : status === 'lost' ? (
-                <Skull className="size-6" />
-              ) : isActive ? (
-                roundNo + 1
-              ) : null}
+              {showScore ? (
+                <div className="mt-0.5">
+                  {status === 'won'
+                    ? roundNo + 1
+                    : status === 'lost'
+                      ? 0
+                      : null}
+                </div>
+              ) : (
+                <>
+                  {status === 'won' ? (
+                    <Crown className="size-6" />
+                  ) : status === 'lost' ? (
+                    <Skull className="size-6" />
+                  ) : isActive ? (
+                    <div className="mt-0.5">{roundNo + 1}</div>
+                  ) : null}
+                </>
+              )}
             </div>
           )
           return (

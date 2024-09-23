@@ -16,7 +16,7 @@ export const NavTabs = ({
   return (
     <>
       <Tabs value={pathname} className={className}>
-        <TabsList>
+        <TabsList className="flex-wrap h-auto">
           {tabs.map((tab) => (
             <Fragment key={tab.href}>
               <TabsTrigger value={tab.href} asChild>

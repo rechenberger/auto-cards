@@ -187,3 +187,38 @@ export const liveMatchParticipationRelations = relations(
     }),
   }),
 )
+
+export const leaderboardEntry = sqliteTable(
+  'leaderboardEntry',
+  {
+    ...baseStats(),
+    userId: text('userId').notNull(),
+    roundNo: int('roundNo').notNull(),
+    loadoutId: text('loadoutId').notNull(),
+
+    type: text('type').notNull(),
+    score: int('score').notNull(),
+  },
+  (table) => ({
+    leaderboardUserIdIdx: index('leaderboardUserIdIdx').on(table.userId),
+    leaderboardTypeRoundNoScoreIdx: index('leaderboardTypeRoundNoScoreIdx').on(
+      table.type,
+      table.roundNo,
+      table.score,
+    ),
+  }),
+)
+
+export const leaderboardEntryRelations = relations(
+  leaderboardEntry,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [leaderboardEntry.userId],
+      references: [users.id],
+    }),
+    loadout: one(loadout, {
+      fields: [leaderboardEntry.loadoutId],
+      references: [loadout.id],
+    }),
+  }),
+)

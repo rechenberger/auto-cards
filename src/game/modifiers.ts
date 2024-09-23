@@ -35,21 +35,22 @@ export const Modifier = z.object({
 })
 export type Modifier = z.infer<typeof Modifier>
 
-export const getModifiedStats = ({
-  state,
-  sideIdx,
-  itemIdx,
-  triggerIdx,
-  stats,
-  statsForItem,
-}: {
-  state: MatchState
-  sideIdx: number
-  itemIdx: number
-  triggerIdx: number
-  stats: ModifierTargetStats
-  statsForItem: Stats
-}) => {
+const getModifiedStats = (
+  {
+    state,
+    sideIdx,
+    itemIdx,
+    triggerIdx,
+    statsForItem,
+  }: {
+    state: MatchState
+    sideIdx: number
+    itemIdx: number
+    triggerIdx: number
+    statsForItem: Stats
+  },
+  stats: ModifierTargetStats,
+) => {
   const side = state.sides[sideIdx]
   const item = side.items[itemIdx]
   const trigger = item.triggers![triggerIdx]
@@ -118,29 +119,11 @@ export const getAllModifiedStats = (props: {
   statsForItem: Stats
 }) => {
   return {
-    statsSelf: getModifiedStats({
-      ...props,
-      stats: 'statsSelf',
-    }),
-    statsEnemy: getModifiedStats({
-      ...props,
-      stats: 'statsEnemy',
-    }),
-    statsItem: getModifiedStats({
-      ...props,
-      stats: 'statsItem',
-    }),
-    statsRequired: getModifiedStats({
-      ...props,
-      stats: 'statsRequired',
-    }),
-    attack: getModifiedStats({
-      ...props,
-      stats: 'attack',
-    }),
-    statsForItem: getModifiedStats({
-      ...props,
-      stats: 'statsForItem',
-    }),
+    statsSelf: getModifiedStats(props, 'statsSelf'),
+    statsEnemy: getModifiedStats(props, 'statsEnemy'),
+    statsItem: getModifiedStats(props, 'statsItem'),
+    statsRequired: getModifiedStats(props, 'statsRequired'),
+    attack: getModifiedStats(props, 'attack'),
+    statsForItem: getModifiedStats(props, 'statsForItem'),
   }
 }

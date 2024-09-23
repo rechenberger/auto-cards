@@ -51,6 +51,7 @@ export const RoundInfo = async ({ roundNo }: { roundNo: number }) => {
                 count={nextRoundStat.experience}
                 size="160"
                 tooltipOnClick
+                onlyTop
               />
             </div>
           </>

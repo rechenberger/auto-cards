@@ -1,4 +1,5 @@
 import { constArrayMap } from '@/lib/constArrayMap'
+import { keyBy } from 'lodash-es'
 import { z } from 'zod'
 import { IGNORE_SPACE } from './config'
 import { ItemDefinition } from './ItemDefinition'
@@ -110,15 +111,9 @@ const allItemsConst = [
       {
         type: 'onDefendBeforeHit',
         chancePercent: 30,
-        chanceGroup: 'block',
         statsSelf: {
           block: 5,
         },
-      },
-      {
-        type: 'onDefendAfterHit',
-        chancePercent: 30,
-        chanceGroup: 'block',
         statsEnemy: {
           stamina: -3,
         },
@@ -196,8 +191,16 @@ const allItemsConst = [
     shop: true,
     stats: {
       space: space(-2),
-      flying: 5,
     },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        forceStartTime: 1, // force 1 tick later, else fest might not reach
+        statsSelf: {
+          flying: 5,
+        },
+      },
+    ],
   },
   {
     name: 'dagger',
@@ -208,16 +211,56 @@ const allItemsConst = [
     stats: {
       space: space(-2),
     },
+    statsItem: {
+      unblockable: 1,
+      critChance: 30,
+    },
     triggers: [
       {
         type: 'interval',
         cooldown: 2_000,
-        statsItem: {
-          haste: 2,
-        },
         attack: {
-          damage: 4,
-          accuracy: 70,
+          damage: 6,
+          accuracy: 85,
+        },
+      },
+      {
+        type: 'onAttackCrit',
+        statsItem: {
+          critChance: 10,
+        },
+      },
+    ],
+  },
+  {
+    name: 'fireDagger',
+    prompt: 'a dagger with a fiery chili blade',
+    tags: ['weapon'],
+    rarity: 'rare',
+    price: 8,
+    shop: false,
+    stats: {
+      space: space(-2),
+    },
+    statsItem: {
+      unblockable: 1,
+      critChance: 30,
+      haste: 30,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        attack: {
+          damage: 6,
+          accuracy: 85,
+        },
+      },
+      {
+        type: 'onAttackCrit',
+        statsItem: {
+          critChance: 10,
+          haste: 10,
         },
       },
     ],
@@ -270,7 +313,7 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 1_000,
         statsSelf: {
-          aim: 5,
+          aim: 10,
         },
       },
     ],
@@ -990,8 +1033,10 @@ const allItems: ItemDefinition[] = allItemsConst
 
 export const getAllItems = async () => allItems
 
+const itemByName = keyBy(allItems, (i) => i.name)
+
 export const tryGetItemByName = async (name: string) => {
-  const item = allItems.find((item) => item.name === name)
+  const item = itemByName[name]
   return item
 }
 
