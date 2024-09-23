@@ -1,11 +1,10 @@
+import { BATTLE_CLOCK_TICK_MS } from '@/game/config'
 import { useAtomValue } from 'jotai'
 import { useEffect, useState } from 'react'
 import {
   activeMatchLogAtom,
   matchPlaybackPlayingAtom,
 } from './matchPlaybackState'
-
-const tick = 100
 
 export const useMatchTime = () => {
   const [time, setTime] = useState(0)
@@ -19,9 +18,9 @@ export const useMatchTime = () => {
     if (!isPlaying) return
 
     const interval = setInterval(() => {
-      t += tick
+      t += BATTLE_CLOCK_TICK_MS
       setTime(t)
-    }, tick)
+    }, BATTLE_CLOCK_TICK_MS)
 
     return () => clearInterval(interval)
   }, [isPlaying, activeLog])

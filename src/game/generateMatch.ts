@@ -259,6 +259,8 @@ export const generateMatch = async ({
     const item = mySide.items[itemIdx]
     const trigger = item.triggers![triggerIdx]
 
+    action.lastUsed = time
+
     const baseLog = {
       sideIdx,
       itemIdx,
@@ -562,8 +564,6 @@ export const generateMatch = async ({
       }
     }
 
-    action.lastUsed = time
-
     // We do that after all actions, so that haste is applied to the cooldown
     // action.time += calcCooldown({
     //   cooldown: trigger.cooldown,
@@ -604,7 +604,7 @@ export const generateMatch = async ({
       })
     }
   }
-
+  log({ msg: 'Start of Battle', sideIdx: -1 })
   while (true) {
     const nextTime = minBy(futureActions, (a) => a.time ?? Infinity)?.time
     if (nextTime === undefined) {

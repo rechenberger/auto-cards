@@ -1,4 +1,5 @@
 import { Game, LoadoutData } from '@/db/schema-zod'
+import { getItemByName } from '@/game/allItems'
 import { countifyItems } from '@/game/countifyItems'
 import { Changemakers } from '@/game/generateChangemakers'
 import { MatchReport } from '@/game/generateMatch'
@@ -8,9 +9,10 @@ import { cn } from '@/lib/utils'
 import { find, map, take } from 'lodash-es'
 import { Fragment } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
+import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 import { ItemCard } from './ItemCard'
 import { MatchCardOverlay } from './MatchCardOverlay'
-import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
+import { MatchCardTimer } from './MatchCardTimer'
 
 export const MatchCards = async ({
   items,
@@ -43,12 +45,18 @@ export const MatchCards = async ({
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-4 grid-flow-dense">
-        {map(items, (item, itemIdx) => {
+        {map(items, async (item, itemIdx) => {
           const isBig = topChangemakers.some((c) => c.name === item.name)
           const changemaker = find(
             changemakers?.[sideIdx],
             (c) => c.name === item.name,
           )
+
+          const itemByName = await getItemByName(item.name)
+          const hasInterval = itemByName?.triggers?.some(
+            (t) => t.type === 'interval',
+          )
+
           return (
             <Fragment key={item.name}>
               <Tooltip>
@@ -71,6 +79,14 @@ export const MatchCards = async ({
                     sideIdx={sideIdx}
                     onlyTop
                   />
+                  {/* <MatchCardTimer
+                    sideIdx={sideIdx}
+                    itemIdx={itemIdx}
+                    matchReport={matchReport}
+                  /> */}
+                  {hasInterval && (
+                    <MatchCardTimer sideIdx={sideIdx} itemIdx={itemIdx} />
+                  )}
                   <MatchCardOverlay
                     sideIdx={sideIdx}
                     itemIdx={itemIdx}
