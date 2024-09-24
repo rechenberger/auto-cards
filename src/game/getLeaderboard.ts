@@ -6,6 +6,7 @@ import {
   NO_OF_ROUNDS,
 } from '@/game/config'
 import { and, desc, eq } from 'drizzle-orm'
+import { rankByScore } from './rankByScore'
 
 export const getLeaderboard = async ({
   type = LEADERBOARD_TYPE,
@@ -28,4 +29,16 @@ export const getLeaderboard = async ({
   })
 
   return leaderboard
+}
+
+export const getLeaderboardRanked = async (options: {
+  type?: string
+  roundNo?: number
+}) => {
+  const leaderboard = await getLeaderboard(options)
+  const entries = leaderboard.map((e) => ({
+    ...e,
+    rank: 0,
+  }))
+  return rankByScore({ entries })
 }

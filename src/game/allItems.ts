@@ -767,14 +767,14 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 4_000,
         statsSelf: {
-          block: 3,
+          block: 6,
         },
       },
       {
         type: 'interval',
         cooldown: 4_000,
         statsEnemy: {
-          lifeSteal: -5,
+          lifeSteal: -10,
         },
         chancePercent: 30,
       },
@@ -877,6 +877,16 @@ const allItemsConst = [
           damage: 5,
           accuracy: 85,
         },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['thorns'],
+            description: '**+0.2** *damage* per *thorns*',
+            valueMultiplier: 0.2,
+          },
+        ],
       },
       {
         type: 'onAttackAfterHit',
@@ -1094,7 +1104,7 @@ const allItemsConst = [
     },
     triggers: [
       {
-        type: 'ohShopEntered',
+        type: 'onShopEntered',
         statsSelf: {
           gold: 1,
         },
@@ -1312,6 +1322,30 @@ const allItemsConst = [
       },
     ],
   },
+
+  {
+    name: 'mixer',
+    prompt: 'a food mixer',
+    tags: ['accessory'],
+    rarity: 'rare',
+    price: 5,
+    shop: true,
+    triggers: [
+      {
+        type: 'startOfBattle',
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStats: 'statsSelf',
+            targetStat: 'hungry',
+            description: 'Get **+10** *hungry* for every *food*',
+            valueAddingTags: ['food'],
+            valueMultiplier: 10,
+          },
+        ],
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')
@@ -1335,7 +1369,7 @@ export const getItemByName = async (name: string) => {
   const item = await tryGetItemByName(name)
   if (!item) {
     // throw new Error(`Item not found: ${name}`)
-    console.warn(`Item not found: ${name}`)
+    // console.warn(`Item not found: ${name}`)
     return {
       name,
       tags: [],

@@ -30,7 +30,10 @@ export const CraftingButton = async ({ game }: { game: Game }) => {
               className: 'max-w-3xl',
               content: (
                 <>
-                  <CraftingList game={game} />
+                  <CraftingList
+                    game={game}
+                    className="w-min max-h-[calc(100vh-10rem)] overflow-auto"
+                  />
                   <Button asChild variant="outline" className="mx-auto">
                     <Link href="/docs/crafting" target="_blank">
                       View All Recipes
