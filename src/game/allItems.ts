@@ -767,7 +767,7 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 4_000,
         statsSelf: {
-          block: 3,
+          block: 6,
         },
       },
       {
