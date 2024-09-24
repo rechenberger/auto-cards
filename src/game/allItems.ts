@@ -649,6 +649,43 @@ const allItemsConst = [
     ],
   },
   {
+    name: 'pan',
+    prompt:
+      'a pan with a long handle, the pan is black and the handle is wooden',
+    tags: ['weapon'],
+    rarity: 'common',
+    price: 4,
+    shop: true,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_200,
+        statsRequired: {
+          stamina: 20,
+        },
+        statsSelf: {
+          stamina: -20,
+        },
+        attack: {
+          damage: 4,
+          accuracy: 85,
+        },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingTags: ['food'],
+            description: '**+1** *damage* per *food*',
+          },
+        ],
+      },
+    ],
+  },
+  {
     name: 'torch',
     prompt: 'an unlit torch with a wooden handle and a cloth on top',
     tags: ['weapon'],
