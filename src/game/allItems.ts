@@ -1031,6 +1031,27 @@ const allItemsConst = [
     ],
   },
   {
+    name: 'heartyDurian',
+    prompt: 'a big ripe hearty durian fruit',
+    tags: ['food'],
+    rarity: 'rare',
+    price: 8,
+    shop: true,
+    stats: {
+      space: space(-3),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 4_000,
+        statsSelf: {
+          healthMax: 10,
+          health: 10,
+        },
+      },
+    ],
+  },
+  {
     name: 'forgingHammer',
     prompt: 'a small forging hammer',
     tags: ['weapon'],
