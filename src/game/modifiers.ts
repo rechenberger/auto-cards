@@ -70,7 +70,7 @@ const getModifiedStats = (
     }
     if (modifier.valueAddingTags) {
       const itemsWithTags = filter(side.items, (i) =>
-        some(item.tags, (tag) => !!modifier.valueAddingTags?.includes(tag)),
+        some(i.tags, (tag) => modifier.valueAddingTags?.includes(tag)),
       )
       sourceCount += sumBy(itemsWithTags, (i) => i.count ?? 1)
     }
