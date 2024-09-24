@@ -670,7 +670,7 @@ const allItemsConst = [
           stamina: -20,
         },
         attack: {
-          damage: 4,
+          damage: 8,
           accuracy: 85,
         },
         modifiers: [
