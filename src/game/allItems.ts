@@ -1094,10 +1094,33 @@ const allItemsConst = [
     },
     triggers: [
       {
-        type: 'ohShopEntered',
+        type: 'onShopEntered',
         statsSelf: {
           gold: 1,
         },
+      },
+    ],
+  },
+  {
+    name: 'mixer',
+    prompt: 'a food mixer',
+    tags: ['accessory'],
+    rarity: 'rare',
+    price: 5,
+    shop: true,
+    triggers: [
+      {
+        type: 'startOfBattle',
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStats: 'statsSelf',
+            targetStat: 'hungry',
+            description: 'Get **+10** *hungry* for every *food*',
+            valueAddingTags: ['food'],
+            valueMultiplier: 10,
+          },
+        ],
       },
     ],
   },
@@ -1335,7 +1358,7 @@ export const getItemByName = async (name: string) => {
   const item = await tryGetItemByName(name)
   if (!item) {
     // throw new Error(`Item not found: ${name}`)
-    console.warn(`Item not found: ${name}`)
+    // console.warn(`Item not found: ${name}`)
     return {
       name,
       tags: [],

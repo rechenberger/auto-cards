@@ -1,12 +1,17 @@
+import { getIsAdmin } from '@/auth/getIsAdmin'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Loadout } from '@/db/schema-zod'
+import { addToLeaderboard } from '@/game/addToLeaderboard'
 import { GREAT_WIN_RATE } from '@/game/config'
 import { getLeaderboard } from '@/game/getLeaderboard'
 import { getOrdinalSuffix } from '@/lib/getOrdinalSuffix'
 import { cn } from '@/lib/utils'
+import { superAction } from '@/super-action/action/createSuperAction'
+import { ActionButton } from '@/super-action/button/ActionButton'
 import { eq } from 'drizzle-orm'
 import { ExternalLink } from 'lucide-react'
+import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
 import { SimpleRefresher } from '../simple/SimpleRefresher'
 import { Button } from '../ui/button'
@@ -22,6 +27,8 @@ export const LeaderboardRankCard = async ({
   )
   const top = leaderboardIdx !== -1
   let entry = top ? leaderboard[leaderboardIdx] : undefined
+
+  const isAdmin = await getIsAdmin({ allowDev: true })
 
   if (!entry) {
     entry = await db.query.leaderboardEntry.findFirst({
@@ -48,9 +55,24 @@ export const LeaderboardRankCard = async ({
     // console.warn('Leaderboard entry not found')
     return (
       <>
-        <div className="flex flex-row gap-4 items-center justify-center bg-background/80 p-4 rounded-lg">
-          <div className="flex-1">Calculating Score...</div>
-          <SimpleRefresher ms={2000} forceState={true} />
+        <div className="flex flex-col gap-4 bg-background/80 p-4 rounded-lg">
+          <div className="flex flex-row gap-4 items-center justify-center">
+            <div className="flex-1">Calculating Score...</div>
+            <SimpleRefresher ms={2000} forceState={true} />
+          </div>
+          {isAdmin && (
+            <ActionButton
+              action={async () => {
+                'use server'
+                return superAction(async () => {
+                  await addToLeaderboard({ loadout })
+                  revalidatePath('/', 'layout')
+                })
+              }}
+            >
+              Add to Leaderboard
+            </ActionButton>
+          )}
         </div>
       </>
     )

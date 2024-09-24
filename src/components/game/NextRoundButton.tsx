@@ -29,13 +29,13 @@ export const NextRoundButton = ({ game }: { game: Game }) => {
               )
 
               const onShopEnteredItems = resolvedItems.filter((i) => {
-                return i?.triggers?.some((t) => t.type === 'ohShopEntered')
+                return i?.triggers?.some((t) => t.type === 'onShopEntered')
               })
 
               for (const item of onShopEnteredItems) {
                 const resolvedItem = await getItemByName(item.name)
                 const trigger = resolvedItem.triggers?.filter(
-                  (t) => t.type === 'ohShopEntered',
+                  (t) => t.type === 'onShopEntered',
                 )
                 if (trigger) {
                   for (const t of trigger) {

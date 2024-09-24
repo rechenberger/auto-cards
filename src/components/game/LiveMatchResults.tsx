@@ -2,6 +2,7 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { getLiveMatchStuff } from '@/game/getLiveMatchStuff'
 import { getUserName } from '@/game/getUserName'
+import { rankByScore } from '@/game/rankByScore'
 import { getOrdinalSuffix } from '@/lib/getOrdinalSuffix'
 import {
   streamDialog,
@@ -9,7 +10,7 @@ import {
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { eq } from 'drizzle-orm'
-import { first, maxBy, orderBy, sum } from 'lodash-es'
+import { maxBy, orderBy, sum } from 'lodash-es'
 import { Fragment } from 'react'
 import { Card } from '../ui/card'
 import { GameMatchBoard } from './GameMatchBoard'
@@ -67,22 +68,7 @@ export const LiveMatchResults = async ({
   )
   let participations = allParticipations.flatMap((p) => (p ? p : []))
   participations = orderBy(participations, (p) => p.score, 'desc')
-
-  // Ranking FROM: https://teampilot.ai/team/tristan/chat/fc29064dc7e58d739e6c5421322c11e3
-  let rank = 1
-  let prevScore = first(participations)?.score ?? 0
-  let nextRank = 1
-  participations = participations.map((p, index) => {
-    if (index > 0 && p.score === prevScore) {
-      p.rank = rank
-    } else {
-      rank = nextRank
-      p.rank = rank
-    }
-    prevScore = p.score
-    nextRank++
-    return p
-  })
+  participations = rankByScore({ entries: participations })
 
   return (
     <>
