@@ -14,6 +14,7 @@ import {
   Eye,
   EyeOff,
   Flame,
+  Ham,
   Heart,
   HeartPulse,
   LucideIcon,
@@ -160,6 +161,12 @@ const heroStats = [
     icon: Beer,
     bgClass: 'bg-yellow-500',
     tooltip: '-X% accuracy. +X% damage. +X% faster food.',
+  },
+  {
+    name: 'hungry',
+    icon: Ham,
+    bgClass: 'bg-amber-800',
+    tooltip: '+X% faster food.',
   },
   {
     name: 'critDamage',

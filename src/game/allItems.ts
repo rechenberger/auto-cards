@@ -1080,6 +1080,29 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'mixer',
+    prompt: 'a food mixer',
+    tags: ['accessory'],
+    rarity: 'rare',
+    price: 5,
+    shop: true,
+    triggers: [
+      {
+        type: 'startOfBattle',
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStats: 'statsSelf',
+            targetStat: 'hungry',
+            description: 'Get **+10** *hungry* for every *food*',
+            valueAddingTags: ['food'],
+            valueMultiplier: 10,
+          },
+        ],
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')
