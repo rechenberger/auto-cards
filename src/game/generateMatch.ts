@@ -448,10 +448,10 @@ export const generateMatch = async ({
                 })
                 let critChanceAfterCrit = 0
                 if (statsForItem.critChance) {
-                  critChance += statsForItem.critChance
+                  critChanceAfterCrit += statsForItem.critChance
                 }
                 if (statsForItem.aim) {
-                  critChance += statsForItem.aim
+                  critChanceAfterCrit += statsForItem.aim
                 }
 
                 doesCrit = rngFloat({ seed, max: 100 }) <= critChanceAfterCrit

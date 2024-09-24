@@ -1370,15 +1370,9 @@ const allItemsConst = [
             targetStat: 'aim',
             targetStats: 'statsForItem',
             valueBase: 0,
-            description: '25% chance to resist Crit',
+            description: '',
           },
         ],
-      },
-      {
-        type: 'onAttackCritAfterHit',
-        statsSelf: {
-          randomBuff: 1,
-        },
       },
     ],
   },
