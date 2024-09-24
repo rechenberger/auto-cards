@@ -774,7 +774,7 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 4_000,
         statsEnemy: {
-          lifeSteal: -1,
+          lifeSteal: -5,
         },
         chancePercent: 30,
       },
@@ -1105,7 +1105,7 @@ const allItemsConst = [
     name: 'longSword',
     prompt: 'a long sword with a shiny metal blade',
     tags: ['weapon'],
-    rarity: 'rare',
+    rarity: 'epic',
     price: 3 + 4 + 4,
     shop: false,
     disabled: !NEXT_PHASE,
@@ -1133,6 +1133,62 @@ const allItemsConst = [
         statsSelf: {
           empower: 2,
           haste: 25,
+        },
+      },
+    ],
+  },
+  {
+    name: 'bloodSword',
+    prompt: 'a long sword with a drippy bloody blade',
+    tags: ['weapon'],
+    rarity: 'epic',
+    price: 7,
+    shop: true,
+    disabled: !NEXT_PHASE,
+    stats: {
+      space: space(-3),
+    },
+
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_600,
+        statsRequired: {
+          stamina: 10,
+        },
+        statsSelf: {
+          stamina: -10,
+        },
+        attack: {
+          damage: 9,
+          accuracy: 90,
+        },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['lifeSteal'],
+            valueMultiplier: 0.1,
+            description: 'Additional **+1** *damage* per 10 *lifeSteal*',
+          },
+        ],
+      },
+      {
+        type: 'onAttackBeforeHit',
+        statsRequired: {
+          regen: 1,
+        },
+        statsSelf: {
+          lifeSteal: 10,
+          regen: -1,
+        },
+      },
+
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          lifeSteal: 10,
         },
       },
     ],

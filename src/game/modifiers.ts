@@ -1,4 +1,4 @@
-import { filter, some, sumBy } from 'lodash-es'
+import { filter, floor, some, sumBy } from 'lodash-es'
 import { z } from 'zod'
 import { hasAnyStats } from './calcStats'
 import { MatchState } from './generateMatch'
@@ -104,6 +104,7 @@ const getModifiedStats = (
     } else {
       const exhaustiveCheck: never = modifier.arithmetic
     }
+    result[modifier.targetStat] = floor(result[modifier.targetStat] ?? 0, 0)
   }
 
   if (!hasAnyStats({ stats: result })) return undefined
