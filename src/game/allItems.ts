@@ -1259,18 +1259,15 @@ const allItemsConst = [
     prompt: 'a grappling hook ',
     tags: ['weapon'],
     rarity: 'epic',
-    // bow + spear
     price: 5,
     shop: true,
     disabled: !NEXT_PHASE,
     stats: {
       space: space(-3),
     },
-
     statsItem: {
       ranged: 1,
     },
-
     triggers: [
       {
         type: 'interval',
@@ -1303,6 +1300,46 @@ const allItemsConst = [
         statsEnemy: {
           randomBuff: -1,
         },
+      },
+      {
+        type: 'onAttackCritAfterHit',
+        statsSelf: {
+          randomBuff: 1,
+        },
+      },
+    ],
+  },
+  {
+    name: 'cappy',
+    prompt: 'a baseball cappy',
+    tags: ['accessory'],
+    rarity: 'epic',
+    price: 5,
+    shop: true,
+    disabled: !NEXT_PHASE,
+    stats: {
+      space: space(-3),
+    },
+    triggers: [
+      {
+        type: 'onDefendCritBeforeHit',
+        chancePercent: 25,
+        modifiers: [
+          {
+            arithmetic: 'multiply',
+            targetStat: 'critChance',
+            targetStats: 'statsForItem',
+            valueBase: 0,
+            description: '25% chance to resist Crit',
+          },
+          {
+            arithmetic: 'multiply',
+            targetStat: 'aim',
+            targetStats: 'statsForItem',
+            valueBase: 0,
+            description: '25% chance to resist Crit',
+          },
+        ],
       },
       {
         type: 'onAttackCritAfterHit',

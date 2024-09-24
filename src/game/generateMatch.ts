@@ -431,7 +431,7 @@ export const generateMatch = async ({
               if (statsForItem.aim) {
                 critChance += statsForItem.aim
               }
-              const doesCrit = rngFloat({ seed, max: 100 }) <= critChance
+              let doesCrit = rngFloat({ seed, max: 100 }) <= critChance
 
               if (doesCrit) {
                 triggerEvents({
@@ -446,6 +446,15 @@ export const generateMatch = async ({
                   parentTrigger: input,
                   sideIdx: otherSide.sideIdx,
                 })
+                let critChanceAfterCrit = 0
+                if (statsForItem.critChance) {
+                  critChance += statsForItem.critChance
+                }
+                if (statsForItem.aim) {
+                  critChance += statsForItem.aim
+                }
+
+                doesCrit = rngFloat({ seed, max: 100 }) <= critChanceAfterCrit
               }
 
               let damage = attack.damage ?? 0
