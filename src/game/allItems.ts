@@ -774,7 +774,7 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 4_000,
         statsEnemy: {
-          lifeSteal: -1,
+          lifeSteal: -10,
         },
         chancePercent: 30,
       },
