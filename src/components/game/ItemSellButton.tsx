@@ -19,7 +19,7 @@ export const ItemSellButton = ({
   const sellPrice = Math.ceil(item.price / 2)
   return (
     <>
-      <div className="absolute opacity-0 group-hover:opacity-100 transition-opacity inset-x-0 top-12 z-10 flex flex-col items-center">
+      <div className="absolute md:opacity-0 group-hover:opacity-100 transition-opacity inset-x-0 top-12 z-10 flex flex-col items-center">
         <ActionButton
           variant="outline"
           size="sm"

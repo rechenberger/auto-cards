@@ -10,6 +10,7 @@ import {
   Carrot,
   Clover,
   Coins,
+  Cross,
   Crosshair,
   Eye,
   EyeOff,
@@ -58,10 +59,10 @@ const heroStats = [
   },
   {
     name: 'healthMax',
-    icon: Heart,
+    icon: Cross,
     bgClass: 'bg-red-500',
     tooltip: 'Max Health points.',
-    hidden: true,
+    // hidden: true,
   },
   {
     name: 'space',
