@@ -225,7 +225,7 @@ const allItemsConst = [
         },
       },
       {
-        type: 'onAttackCrit',
+        type: 'onAttackCritAfterHit',
         statsItem: {
           critChance: 10,
         },
@@ -257,7 +257,7 @@ const allItemsConst = [
         },
       },
       {
-        type: 'onAttackCrit',
+        type: 'onAttackCritAfterHit',
         statsItem: {
           critChance: 10,
           haste: 10,
@@ -1250,6 +1250,64 @@ const allItemsConst = [
         type: 'onAttackBeforeHit',
         statsEnemy: {
           block: -28,
+        },
+      },
+    ],
+  },
+  {
+    name: 'grapplingHook',
+    prompt: 'a grappling hook ',
+    tags: ['weapon'],
+    rarity: 'epic',
+    // bow + spear
+    price: 5,
+    shop: true,
+    disabled: !NEXT_PHASE,
+    stats: {
+      space: space(-3),
+    },
+
+    statsItem: {
+      ranged: 1,
+    },
+
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsRequired: {
+          stamina: 5,
+        },
+        statsSelf: {
+          stamina: 5,
+        },
+        attack: {
+          damage: 1,
+          accuracy: 75,
+        },
+      },
+      {
+        type: 'onAttackBeforeHit',
+        statsEnemy: {
+          randomBuff: -1,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsSelf: {
+          randomBuff: 1,
+        },
+      },
+      {
+        type: 'onAttackCritBeforeHit',
+        statsEnemy: {
+          randomBuff: -1,
+        },
+      },
+      {
+        type: 'onAttackCritAfterHit',
+        statsSelf: {
+          randomBuff: 1,
         },
       },
     ],

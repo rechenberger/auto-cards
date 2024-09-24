@@ -424,6 +424,30 @@ export const generateMatch = async ({
                 sideIdx: otherSide.sideIdx,
               })
 
+              let critChance = 0
+              if (statsForItem.critChance) {
+                critChance += statsForItem.critChance
+              }
+              if (statsForItem.aim) {
+                critChance += statsForItem.aim
+              }
+              const doesCrit = rngFloat({ seed, max: 100 }) <= critChance
+
+              if (doesCrit) {
+                triggerEvents({
+                  eventType: 'onAttackCritBeforeHit',
+                  parentTrigger: input,
+                  itemIdx,
+                  sideIdx,
+                  itemCounter: action.itemCounter,
+                })
+                triggerEvents({
+                  eventType: 'onDefendCritBeforeHit',
+                  parentTrigger: input,
+                  sideIdx: otherSide.sideIdx,
+                })
+              }
+
               let damage = attack.damage ?? 0
 
               if (statsForItem.empower) {
@@ -434,14 +458,6 @@ export const generateMatch = async ({
                 damage *= 1 + statsForItem.drunk / 100
               }
 
-              let critChance = 0
-              if (statsForItem.critChance) {
-                critChance += statsForItem.critChance
-              }
-              if (statsForItem.aim) {
-                critChance += statsForItem.aim
-              }
-              const doesCrit = rngFloat({ seed, max: 100 }) <= critChance
               if (doesCrit) {
                 damage *= CRIT_MULTIPLIER
                 if (statsForItem?.critDamage) {
@@ -482,18 +498,6 @@ export const generateMatch = async ({
                     stats: removeAimStats,
                   })
                 }
-                triggerEvents({
-                  eventType: 'onAttackCrit',
-                  parentTrigger: input,
-                  itemIdx,
-                  sideIdx,
-                  itemCounter: action.itemCounter,
-                })
-                triggerEvents({
-                  eventType: 'onDefendCrit',
-                  parentTrigger: input,
-                  sideIdx: otherSide.sideIdx,
-                })
               }
 
               // LIFESTEAL
@@ -552,6 +556,20 @@ export const generateMatch = async ({
                 parentTrigger: input,
                 sideIdx: otherSide.sideIdx,
               })
+              if (doesCrit) {
+                triggerEvents({
+                  eventType: 'onAttackCritAfterHit',
+                  parentTrigger: input,
+                  itemIdx,
+                  sideIdx,
+                  itemCounter: action.itemCounter,
+                })
+                triggerEvents({
+                  eventType: 'onDefendCritAfterHit',
+                  parentTrigger: input,
+                  sideIdx: otherSide.sideIdx,
+                })
+              }
             } else {
               log({
                 ...baseLog,
