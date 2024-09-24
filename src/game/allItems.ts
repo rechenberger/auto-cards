@@ -877,6 +877,16 @@ const allItemsConst = [
           damage: 5,
           accuracy: 85,
         },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['thorns'],
+            description: '**+0.2** *damage* per *thorns*',
+            valueMultiplier: 0.2,
+          },
+        ],
       },
       {
         type: 'onAttackAfterHit',
