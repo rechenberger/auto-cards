@@ -86,7 +86,7 @@ export const LiveMatchResults = async ({
 
   return (
     <>
-      <Card className="flex flex-col gap-2 p-2 text-left max-w-xl">
+      <Card className="flex flex-col gap-2 p-2 text-left max-w-2xl">
         <div className="flex flex-row gap-2 items-baseline">
           <div className="flex-1">⚡ Live Match Results</div>
           {!showCards && (
@@ -121,7 +121,7 @@ export const LiveMatchResults = async ({
                     <span className="ordinal">{getOrdinalSuffix(p.rank)}</span>
                   </div>
                 </div>
-                <div className="max-md:text-right">
+                <div className="max-md:text-right truncate">
                   {getUserName({ user: p.user })}
                 </div>
                 <div className="flex flex-row">
