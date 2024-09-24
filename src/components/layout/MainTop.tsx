@@ -2,6 +2,7 @@ import { UserButton } from '@/auth/UserButton'
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { getIsLoggedIn } from '@/auth/getMyUser'
 import { DarkModeToggle } from '@/components/layout/DarkModeToggle'
+import { NEXT_PHASE } from '@/game/config'
 import { Github } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
@@ -52,6 +53,11 @@ export const MainTop = async () => {
         <MainLogo />
         <div className="hidden flex-1 xl:flex items-center gap-2">
           <MainTopNav entries={entries} />
+          {NEXT_PHASE && (
+            <div className="text-sm bg-red-500/50 rounded-md px-2 py-1">
+              Next Phase
+            </div>
+          )}
           {process.env.DB_URL?.includes('file:') && (
             <div className="text-sm bg-red-500/50 rounded-md px-2 py-1">
               Local DB

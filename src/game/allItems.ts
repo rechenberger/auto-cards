@@ -1,7 +1,7 @@
 import { constArrayMap } from '@/lib/constArrayMap'
 import { keyBy } from 'lodash-es'
 import { z } from 'zod'
-import { IGNORE_SPACE } from './config'
+import { IGNORE_SPACE, NEXT_PHASE } from './config'
 import { ItemDefinition } from './ItemDefinition'
 
 const space = (space: number) => {
@@ -1060,13 +1060,35 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'piggyBank',
+    prompt: 'a bright pink piggy bank',
+    tags: ['accessory'],
+    rarity: 'common',
+    price: 3,
+    shop: true,
+    disabled: !NEXT_PHASE,
+    stats: {
+      space: space(-3),
+    },
+    triggers: [
+      {
+        type: 'ohShopEntered',
+        statsSelf: {
+          gold: 1,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')
 export const ItemName = z.enum(allItemNames)
 export type ItemName = z.infer<typeof ItemName>
 
-const allItems: ItemDefinition[] = allItemsConst
+const allItems: ItemDefinition[] = allItemsConst.filter(
+  (i: ItemDefinition) => !i.disabled,
+)
 
 export const getAllItems = async () => allItems
 

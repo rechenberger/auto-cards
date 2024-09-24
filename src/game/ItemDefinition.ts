@@ -11,6 +11,7 @@ const triggerEvents = [
   'onDefendAfterHit',
   'onAttackCrit',
   'onDefendCrit',
+  'ohShopEntered',
   // 'useStats',
   // 'gainedStats',
   // 'onSelfStun', 'onEnemyStun'
@@ -51,5 +52,6 @@ export const ItemDefinition = z.object({
   stats: Stats.optional(),
   statsItem: Stats.optional(),
   rarity: Rarity.optional(),
+  disabled: z.boolean().optional(),
 })
 export type ItemDefinition = z.infer<typeof ItemDefinition>
