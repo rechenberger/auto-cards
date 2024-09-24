@@ -1103,7 +1103,7 @@ export const getItemByName = async (name: string) => {
   const item = await tryGetItemByName(name)
   if (!item) {
     // throw new Error(`Item not found: ${name}`)
-    console.warn(`Item not found: ${name}`)
+    // console.warn(`Item not found: ${name}`)
     return {
       name,
       tags: [],
