@@ -1214,6 +1214,46 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'crossBow',
+    prompt: 'a heavy crossbow',
+    tags: ['weapon'],
+    rarity: 'epic',
+    // bow + spear
+    price: 4 + 6,
+    shop: false,
+    disabled: !NEXT_PHASE,
+    stats: {
+      space: space(-3),
+    },
+
+    statsItem: {
+      ranged: 1,
+    },
+
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_500,
+        statsRequired: {
+          stamina: 30,
+        },
+        statsSelf: {
+          stamina: -30,
+        },
+        attack: {
+          damage: 18,
+          accuracy: 75,
+        },
+      },
+      {
+        type: 'onAttackBeforeHit',
+        statsEnemy: {
+          block: -28,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')
