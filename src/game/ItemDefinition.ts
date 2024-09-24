@@ -13,7 +13,7 @@ const triggerEvents = [
   'onAttackCritAfterHit',
   'onDefendCritBeforeHit',
   'onDefendCritAfterHit',
-  'ohShopEntered',
+  'onShopEntered',
   // 'useStats',
   // 'gainedStats',
   // 'onSelfStun', 'onEnemyStun'

@@ -13,7 +13,7 @@ import { addToLeaderboard } from '@/game/addToLeaderboard'
 import { getBotName } from '@/game/botName'
 import { calcLoadoutPrice } from '@/game/calcLoadoutPrice'
 import { LEADERBOARD_LIMIT } from '@/game/config'
-import { getLeaderboard } from '@/game/getLeaderboard'
+import { getLeaderboardRanked } from '@/game/getLeaderboard'
 import { getUserName } from '@/game/getUserName'
 import {
   streamDialog,
@@ -40,8 +40,7 @@ export default async function Page({
 }: {
   searchParams: { view: string }
 }) {
-  const leaderboard = await getLeaderboard({})
-  const entries = leaderboard.map((e, idx) => ({ ...e, rank: idx + 1 }))
+  const entries = await getLeaderboardRanked({})
   const isAdmin = await getIsAdmin({ allowDev: false })
 
   const view = searchParams.view ?? 'all'

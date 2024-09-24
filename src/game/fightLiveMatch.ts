@@ -123,7 +123,7 @@ export const fightLiveMatch = async ({
               data: {},
               matchId: match.id,
               loadoutId: side.loadout.id,
-              sideIdx: 0,
+              sideIdx: side.sideIdx,
               status: hasWon ? 'won' : 'lost',
               userId: side.game.userId,
             },

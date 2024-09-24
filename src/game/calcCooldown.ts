@@ -22,6 +22,9 @@ export const calcCooldown = ({
   if (stats.drunk && tags.includes('food')) {
     divisor += stats.drunk / 100
   }
+  if (stats.hungry && tags.includes('food')) {
+    divisor += stats.hungry / 100
+  }
 
   let result = (cooldown / divisor) * multiplier
   result = Math.ceil(result / COOLDOWN_PRECISION) * COOLDOWN_PRECISION
