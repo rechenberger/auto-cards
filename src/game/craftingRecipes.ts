@@ -40,6 +40,14 @@ export const craftingRecipes: CraftingRecipe[] = [
     output: [{ name: 'fireDagger' }],
   },
   {
+    input: [{ name: 'beer', count: 2 }],
+    output: [{ name: 'beer', count: 1 }, { name: 'beerFest' }],
+  },
+  {
+    input: [{ name: 'beerFest', count: 1 }],
+    output: [{ name: 'beer', count: 1 }],
+  },
+  {
     input: [
       { name: 'woodenSword', count: 1 },
       { name: 'metalGloves', count: 2 },
@@ -52,14 +60,6 @@ export const craftingRecipes: CraftingRecipe[] = [
       { name: 'spear', count: 1 },
     ],
     output: [{ name: 'crossBow' }],
-  },
-  {
-    input: [{ name: 'beer', count: 2 }],
-    output: [{ name: 'beer', count: 1 }, { name: 'beerFest' }],
-  },
-  {
-    input: [{ name: 'beerFest', count: 1 }],
-    output: [{ name: 'beer', count: 1 }],
   },
 ]
 
