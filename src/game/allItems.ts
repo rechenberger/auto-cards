@@ -1073,7 +1073,7 @@ const allItemsConst = [
     },
     triggers: [
       {
-        type: 'ohShopEntered',
+        type: 'onShopEntered',
         statsSelf: {
           gold: 1,
         },

@@ -11,7 +11,7 @@ const triggerEvents = [
   'onDefendAfterHit',
   'onAttackCrit',
   'onDefendCrit',
-  'ohShopEntered',
+  'onShopEntered',
   // 'useStats',
   // 'gainedStats',
   // 'onSelfStun', 'onEnemyStun'
