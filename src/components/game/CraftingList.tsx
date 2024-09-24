@@ -2,15 +2,22 @@ import { Game } from '@/db/schema-zod'
 import { gameAction } from '@/game/gameAction'
 import { getCraftingRecipesGame } from '@/game/getCraftingRecipesGame'
 import { negativeItems, sumItems } from '@/game/sumItems'
+import { cn } from '@/lib/utils'
 import { streamDialog } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { map } from 'lodash-es'
-import { Check, Equal, Plus, X } from 'lucide-react'
+import { ArrowDown, Check, Plus, X } from 'lucide-react'
 import { Fragment } from 'react'
 import { Card } from '../ui/card'
 import { ItemCard } from './ItemCard'
 
-export const CraftingList = async ({ game }: { game?: Game }) => {
+export const CraftingList = async ({
+  game,
+  className,
+}: {
+  game?: Game
+  className?: string
+}) => {
   const recipes = await getCraftingRecipesGame({ game })
   const gameId = game?.id
 
@@ -19,7 +26,7 @@ export const CraftingList = async ({ game }: { game?: Game }) => {
       {!recipes.length && (
         <div>Buy more items to discover crafting recipes</div>
       )}
-      <div className="flex flex-col gap-4 mx-auto w-min max-h-[calc(100vh-10rem)] overflow-auto">
+      <div className={cn('flex flex-col gap-4 mx-auto', className)}>
         {map(recipes, (recipe, idx) => (
           <Fragment key={idx}>
             <Card className="p-4 bg-border/50">
@@ -27,7 +34,7 @@ export const CraftingList = async ({ game }: { game?: Game }) => {
                 {recipe.input.map((item, idx) => {
                   return (
                     <Fragment key={idx}>
-                      {idx > 0 && <Plus className="size-8 md:mb-12" />}
+                      {idx > 0 && <Plus className="size-8" />}
                       <div className="flex flex-col gap-2 items-center self-start">
                         <ItemCard
                           name={item.name}
@@ -79,14 +86,14 @@ export const CraftingList = async ({ game }: { game?: Game }) => {
                   </ActionButton>
                 ) : (
                   <>
-                    <Equal className="size-8 md:mb-12" />
+                    <ArrowDown className="size-8 md:-rotate-90" />
                   </>
                 )}
                 <div />
                 {recipe.output.map((item, idx) => {
                   return (
                     <Fragment key={idx}>
-                      {idx > 0 && <Plus className="size-8 md:mb-12" />}
+                      {idx > 0 && <Plus className="size-8" />}
                       <div className="flex flex-col gap-2 items-center self-start">
                         <ItemCard
                           name={item.name}
