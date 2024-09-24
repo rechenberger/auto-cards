@@ -1080,6 +1080,63 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'metalGloves',
+    prompt: 'a pair of metal gloves',
+    tags: ['accessory'],
+    rarity: 'rare',
+    price: 4,
+    shop: true,
+    disabled: !NEXT_PHASE,
+    stats: {
+      space: space(-3),
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          empower: 1,
+          haste: 15,
+        },
+      },
+    ],
+  },
+  {
+    name: 'longSword',
+    prompt: 'a long sword with a shiny metal blade',
+    tags: ['weapon'],
+    rarity: 'rare',
+    price: 3 + 4 + 4,
+    shop: false,
+    disabled: !NEXT_PHASE,
+    stats: {
+      space: space(-3),
+    },
+
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_400,
+        statsRequired: {
+          stamina: 7,
+        },
+        statsSelf: {
+          stamina: -7,
+        },
+        attack: {
+          damage: 8,
+          accuracy: 85,
+        },
+      },
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          empower: 2,
+          haste: 25,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')
