@@ -29,7 +29,12 @@ export const GameMatchBoard = async ({
 
   return (
     <>
-      <div className="flex flex-row gap-2 p-2 rounded-full bg-gray-500/20 self-center">
+      <div
+        className={cn(
+          'grid grid-cols-5 gap-2 p-2 rounded-3xl bg-gray-500/20 self-center',
+          // 'md:flex md:flex-row',
+        )}
+      >
         {range(NO_OF_ROUNDS).map((roundNo) => {
           const loadout = loadouts.find((l) => l.roundNo === roundNo)
           const status = loadout?.primaryMatchParticipation?.status
