@@ -664,7 +664,7 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 2_200,
         statsRequired: {
-          stamina: 25,
+          stamina: 20,
         },
         statsSelf: {
           stamina: -20,
