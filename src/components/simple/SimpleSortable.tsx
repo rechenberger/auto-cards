@@ -11,10 +11,11 @@ import {
 } from '@dnd-kit/core'
 import {
   arrayMove,
+  // verticalListSortingStrategy,
+  rectSortingStrategy,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
-  verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { omit } from 'lodash-es'
@@ -65,10 +66,7 @@ export const SimpleSortable = ({
         onOrderChange?.(newOrder.map((item) => omit(item, ['node'])))
       }}
     >
-      <SortableContext
-        items={itemsOptimistic}
-        strategy={verticalListSortingStrategy}
-      >
+      <SortableContext items={itemsOptimistic} strategy={rectSortingStrategy}>
         {itemsOptimistic.map((item) => (
           <SortableItem key={item.id} item={item} />
         ))}
