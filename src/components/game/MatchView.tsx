@@ -65,7 +65,7 @@ export const MatchView = async ({
       <MatchBackground themeIds={themeIds} autoGenerate={true} />
       <div
         className={cn(
-          'flex-1 grid',
+          'flex-1 grid gap-4',
           'grid-cols-[1fr_1fr_!important]',
           'grid-rows-[auto_auto_1fr_!important]',
           "[grid-template:'middle_middle'_'stats_stats'_'left_right']",
@@ -103,21 +103,20 @@ export const MatchView = async ({
           />
         </div>
         <div
+          className="flex-1 flex flex-col gap-2 items-center justify-center self-stretch"
           style={{
             gridArea: 'middle',
           }}
         >
-          <div className="flex-1 flex flex-col gap-2 items-center justify-center self-stretch">
-            <MatchReportPlaybackControls matchReport={matchReport} />
-            <MatchReportTabs
-              game={game}
-              matchReport={matchReport}
-              loadouts={participants.map((p) => p.loadout.data)}
-              seed={match.data.seed}
-            />
-            <div className="flex-1" />
-            {!!game && <NextRoundButton game={game} />}
-          </div>
+          <MatchReportPlaybackControls matchReport={matchReport} />
+          <MatchReportTabs
+            game={game}
+            matchReport={matchReport}
+            loadouts={participants.map((p) => p.loadout.data)}
+            seed={match.data.seed}
+          />
+          <div className="flex-1" />
+          {!!game && <NextRoundButton game={game} />}
         </div>
         <div
           style={{
