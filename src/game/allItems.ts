@@ -225,7 +225,7 @@ const allItemsConst = [
         },
       },
       {
-        type: 'onAttackCrit',
+        type: 'onAttackCritAfterHit',
         statsItem: {
           critChance: 10,
         },
@@ -257,7 +257,7 @@ const allItemsConst = [
         },
       },
       {
-        type: 'onAttackCrit',
+        type: 'onAttackCritAfterHit',
         statsItem: {
           critChance: 10,
           haste: 10,
@@ -670,7 +670,7 @@ const allItemsConst = [
           stamina: -20,
         },
         attack: {
-          damage: 4,
+          damage: 8,
           accuracy: 85,
         },
         modifiers: [
@@ -1041,6 +1041,27 @@ const allItemsConst = [
     ],
   },
   {
+    name: 'heartyDurian',
+    prompt: 'a big ripe hearty durian fruit',
+    tags: ['food'],
+    rarity: 'rare',
+    price: 8,
+    shop: true,
+    stats: {
+      space: space(-3),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 4_000,
+        statsSelf: {
+          healthMax: 10,
+          health: 10,
+        },
+      },
+    ],
+  },
+  {
     name: 'forgingHammer',
     prompt: 'a small forging hammer',
     tags: ['weapon'],
@@ -1110,6 +1131,213 @@ const allItemsConst = [
             valueMultiplier: 10,
           },
         ],
+      },
+    ],
+  },
+  {
+    name: 'metalGloves',
+    prompt: 'a pair of metal gloves',
+    tags: ['accessory'],
+    rarity: 'rare',
+    price: 4,
+    shop: true,
+    disabled: !NEXT_PHASE,
+    stats: {
+      space: space(-3),
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          empower: 1,
+          haste: 15,
+        },
+      },
+    ],
+  },
+  {
+    name: 'longSword',
+    prompt: 'a long sword with a shiny metal blade',
+    tags: ['weapon'],
+    rarity: 'epic',
+    price: 3 + 4 + 4,
+    shop: false,
+    disabled: !NEXT_PHASE,
+    stats: {
+      space: space(-3),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_400,
+        statsRequired: {
+          stamina: 7,
+        },
+        statsSelf: {
+          stamina: -7,
+        },
+        attack: {
+          damage: 8,
+          accuracy: 85,
+        },
+      },
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          empower: 2,
+          haste: 25,
+        },
+      },
+    ],
+  },
+  {
+    name: 'bloodSword',
+    prompt: 'a long sword with a drippy bloody blade',
+    tags: ['weapon'],
+    rarity: 'epic',
+    price: 7,
+    shop: true,
+    disabled: !NEXT_PHASE,
+    stats: {
+      space: space(-3),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_600,
+        statsRequired: {
+          stamina: 10,
+        },
+        statsSelf: {
+          stamina: -10,
+        },
+        attack: {
+          damage: 9,
+          accuracy: 90,
+        },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['lifeSteal'],
+            valueMultiplier: 0.1,
+            description: 'Additional **+1** *damage* per 10 *lifeSteal*',
+          },
+        ],
+      },
+      {
+        type: 'onAttackBeforeHit',
+        statsRequired: {
+          regen: 1,
+        },
+        statsSelf: {
+          lifeSteal: 10,
+          regen: -1,
+        },
+      },
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          lifeSteal: 10,
+        },
+      },
+    ],
+  },
+  {
+    name: 'crossBow',
+    prompt: 'a heavy crossbow',
+    tags: ['weapon'],
+    rarity: 'epic',
+    price: 4 + 6, // bow + spear
+    shop: false,
+    disabled: !NEXT_PHASE,
+    stats: {
+      space: space(-3),
+    },
+    statsItem: {
+      ranged: 1,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_500,
+        statsRequired: {
+          stamina: 30,
+        },
+        statsSelf: {
+          stamina: -30,
+        },
+        attack: {
+          damage: 18,
+          accuracy: 75,
+        },
+      },
+      {
+        type: 'onAttackBeforeHit',
+        statsEnemy: {
+          block: -28,
+        },
+      },
+    ],
+  },
+  {
+    name: 'grapplingHook',
+    prompt: 'a grappling hook ',
+    tags: ['weapon'],
+    rarity: 'epic',
+    price: 5,
+    shop: true,
+    disabled: !NEXT_PHASE,
+    stats: {
+      space: space(-3),
+    },
+    statsItem: {
+      ranged: 1,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsRequired: {
+          stamina: 5,
+        },
+        statsSelf: {
+          stamina: 5,
+        },
+        attack: {
+          damage: 1,
+          accuracy: 75,
+        },
+      },
+      {
+        type: 'onAttackBeforeHit',
+        statsEnemy: {
+          randomBuff: -1,
+        },
+        description:
+          'Steal **1** *randomBuff* on Hit.\n\nSteal another **1** *randomBuff* on Crit.',
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsSelf: {
+          randomBuff: 1,
+        },
+        hidden: true,
+      },
+      {
+        type: 'onAttackCritBeforeHit',
+        statsEnemy: {
+          randomBuff: -1,
+        },
+        hidden: true,
+      },
+      {
+        type: 'onAttackCritAfterHit',
+        statsSelf: {
+          randomBuff: 1,
+        },
+        hidden: true,
       },
     ],
   },

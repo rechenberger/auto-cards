@@ -1,4 +1,5 @@
 import { ItemName } from './allItems'
+import { NEXT_PHASE } from './config'
 
 type CraftingItem = {
   name: ItemName
@@ -8,6 +9,7 @@ type CraftingItem = {
 export type CraftingRecipe = {
   input: CraftingItem[]
   output: CraftingItem[]
+  disabled?: boolean
 }
 
 export const craftingRecipes: CraftingRecipe[] = [
@@ -47,8 +49,30 @@ export const craftingRecipes: CraftingRecipe[] = [
     input: [{ name: 'beerFest', count: 1 }],
     output: [{ name: 'beer', count: 1 }],
   },
+  {
+    input: [
+      { name: 'woodenSword', count: 1 },
+      { name: 'metalGloves', count: 2 },
+    ],
+    output: [{ name: 'longSword' }],
+    disabled: !NEXT_PHASE,
+  },
+  {
+    input: [
+      { name: 'shortBow', count: 1 },
+      { name: 'spear', count: 1 },
+    ],
+    output: [{ name: 'crossBow' }],
+    disabled: !NEXT_PHASE,
+  },
 ]
 
 export const getCraftingRecipes = async () => {
-  return craftingRecipes
+  let recipes = craftingRecipes
+
+  recipes = recipes.filter((recipe) => {
+    return !recipe.disabled
+  })
+
+  return recipes
 }
