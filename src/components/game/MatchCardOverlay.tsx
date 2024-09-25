@@ -131,7 +131,7 @@ export const MatchCardOverlay = ({
       const msgCounts = countBy(messagesWithoutStats, (msg) => msg)
 
       for (const [msg, count] of Object.entries(msgCounts)) {
-        if (count > 1) {
+        if (count >= 1) {
           addAnimation({
             content: (
               <div className="text-xs">
