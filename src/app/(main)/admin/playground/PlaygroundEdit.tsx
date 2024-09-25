@@ -11,6 +11,7 @@ import { negativeItems, sumItems } from '@/game/sumItems'
 import { cn } from '@/lib/utils'
 import { orderBy } from 'lodash-es'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { Fragment } from 'react'
 import { playgroundHref, PlaygroundOptions } from './playgroundHref'
 
@@ -137,6 +138,21 @@ export const PlaygroundEdit = async ({
                       onOrderChange={async (newOrder) => {
                         'use server'
                         console.log('newOrder', newOrder)
+                        const oldItems = loadout.items
+                        const newItems = orderBy(oldItems, (i) =>
+                          newOrder.findIndex((n) => n.id === i.name),
+                        )
+                        console.log('newItems', newItems)
+
+                        const newLoadouts = [...loadouts]
+                        newLoadouts[sideIdx] = { items: newItems }
+
+                        const href = playgroundHref({
+                          ...options,
+                          loadouts: newLoadouts,
+                        })
+                        console.log('href', href)
+                        redirect(href)
                       }}
                     />
                   </div>
