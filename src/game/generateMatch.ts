@@ -59,12 +59,13 @@ const generateMatchStateSides = async (input: GenerateMatchInput) => {
   const sides = await Promise.all(
     input.participants.map(async (p, idx) => {
       let items = await Promise.all(
-        p.loadout.items.map(async (i) => {
+        p.loadout.items.map(async (i, itemIdx) => {
           const def = await getItemByName(i.name)
           return {
             ...def,
             statsItem: def.statsItem ? { ...def.statsItem } : undefined,
             count: i.count ?? 1,
+            revealsAt: itemIdx * REVEAL_TIME_MS,
           }
         }),
       )
