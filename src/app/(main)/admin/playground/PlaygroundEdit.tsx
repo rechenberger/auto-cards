@@ -9,7 +9,7 @@ import { NO_OF_ROUNDS } from '@/game/config'
 import { orderItems } from '@/game/orderItems'
 import { negativeItems, sumItems } from '@/game/sumItems'
 import { cn } from '@/lib/utils'
-import { orderBy } from 'lodash-es'
+import { cloneDeep, orderBy } from 'lodash-es'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { Fragment } from 'react'
@@ -23,8 +23,6 @@ export const PlaygroundEdit = async ({
   let allItems = await getAllItems()
   allItems = await orderItems(allItems)
   const loadouts = options.loadouts
-
-  const items = allItems.map((item) => {})
 
   return (
     <>
@@ -137,21 +135,19 @@ export const PlaygroundEdit = async ({
                       items={items}
                       onOrderChange={async (newOrder) => {
                         'use server'
-                        // console.log('newOrder', newOrder)
+
                         const oldItems = loadout.items
                         const newItems = orderBy(oldItems, (i) =>
                           newOrder.findIndex((n) => n.id === i.name),
                         )
-                        // console.log('newItems', newItems)
 
-                        const newLoadouts = [...loadouts]
+                        const newLoadouts = cloneDeep(loadouts)
                         newLoadouts[sideIdx] = { items: newItems }
 
                         const href = playgroundHref({
                           ...options,
                           loadouts: newLoadouts,
                         })
-                        // console.log('href', href)
                         redirect(href)
                       }}
                     />
