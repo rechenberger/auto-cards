@@ -40,6 +40,8 @@ export const Trigger = z
     maxCount: z.number().optional(),
     modifiers: z.array(Modifier).optional(),
     forceStartTime: z.number().optional(),
+    hidden: z.boolean().optional(),
+    description: z.string().optional(),
   })
   .and(TriggerWithCooldown.or(TriggerWithoutCooldown))
 export type Trigger = z.infer<typeof Trigger>

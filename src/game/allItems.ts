@@ -1324,24 +1324,29 @@ const allItemsConst = [
         statsEnemy: {
           randomBuff: -1,
         },
+        description:
+          'Steal **1** *randomBuff* on Hit.\n\nSteal another **1** *randomBuff* on Crit.',
       },
       {
         type: 'onAttackAfterHit',
         statsSelf: {
           randomBuff: 1,
         },
+        hidden: true,
       },
       {
         type: 'onAttackCritBeforeHit',
         statsEnemy: {
           randomBuff: -1,
         },
+        hidden: true,
       },
       {
         type: 'onAttackCritAfterHit',
         statsSelf: {
           randomBuff: 1,
         },
+        hidden: true,
       },
     ],
   },
