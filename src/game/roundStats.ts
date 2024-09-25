@@ -18,7 +18,7 @@ const defaultRarityWeights: RarityWeights = {
   legendary: 1,
 }
 
-export const roundStats: RoundStats[] = [
+const allRoundStats: RoundStats[] = [
   {
     roundNo: 0,
     gold: 12,
@@ -206,10 +206,12 @@ export const roundStats: RoundStats[] = [
       ...defaultRarityWeights,
     },
   },
-].filter((r) => r.roundNo < NO_OF_ROUNDS)
+]
+
+export const roundStats = allRoundStats.filter((r) => r.roundNo <= NO_OF_ROUNDS)
 
 export const getRoundStatsCumulative = (roundNo: number) => {
-  const rounds = roundStats.filter((r) => r.roundNo <= roundNo)
+  const rounds = allRoundStats.filter((r) => r.roundNo <= roundNo)
   return {
     gold: sumBy(rounds, (r) => r.gold),
     // health: sumBy(rounds, (r) => r.health),
