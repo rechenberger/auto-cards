@@ -4,7 +4,6 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { countifyItems } from '@/game/countifyItems'
 import { getUserName } from '@/game/getUserName'
-import { orderItems } from '@/game/orderItems'
 import { desc } from 'drizzle-orm'
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -53,8 +52,8 @@ const MatchEntry = async ({ match }: { match: Match }) => {
     return null
   }
 
-  const p1Items = await orderItems(countifyItems(p1.loadout.data.items))
-  const p2Items = await orderItems(countifyItems(p2.loadout.data.items))
+  const p1Items = countifyItems(p1.loadout.data.items)
+  const p2Items = countifyItems(p2.loadout.data.items)
 
   return (
     <>

@@ -22,3 +22,17 @@ export const orderItems = async <T extends { name: string }>(items: T[]) => {
   )
   return map(withItems, (i) => i.item)
 }
+
+export const fixOrderItems = async <T extends { name: string }>(items: T[]) => {
+  let withItems = await Promise.all(
+    items.map(async (item) => ({
+      item,
+      def: await getItemByName(item.name),
+    })),
+  )
+
+  // Items without triggers first
+  withItems = orderBy(withItems, (i) => !!i.def.triggers?.length, 'asc')
+
+  return map(withItems, (i) => i.item)
+}

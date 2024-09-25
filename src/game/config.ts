@@ -27,3 +27,5 @@ export const LEADERBOARD_LIMIT = 50
 export const LEADERBOARD_TYPE = 'rollingTop'
 
 export const GREAT_WIN_RATE = 2
+
+export const REVEAL_TIME_MS = 1000

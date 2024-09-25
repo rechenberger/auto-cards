@@ -22,10 +22,11 @@ import {
   FATIGUE_STARTS_AT,
   MAX_MATCH_TIME,
   MAX_THORNS_MULTIPLIER,
+  REVEAL_TIME_MS,
 } from './config'
 import { TriggerEventType } from './ItemDefinition'
 import { getAllModifiedStats } from './modifiers'
-import { orderItems } from './orderItems'
+import { fixOrderItems } from './orderItems'
 import { randomStatsResolve } from './randomStatsResolve'
 import { Stats } from './stats'
 
@@ -58,16 +59,17 @@ const generateMatchStateSides = async (input: GenerateMatchInput) => {
   const sides = await Promise.all(
     input.participants.map(async (p, idx) => {
       let items = await Promise.all(
-        p.loadout.items.map(async (i) => {
+        p.loadout.items.map(async (i, itemIdx) => {
           const def = await getItemByName(i.name)
           return {
             ...def,
             statsItem: def.statsItem ? { ...def.statsItem } : undefined,
             count: i.count ?? 1,
+            revealsAt: itemIdx * REVEAL_TIME_MS,
           }
         }),
       )
-      items = await orderItems(items)
+      items = await fixOrderItems(items)
       const stats = await calcStats({ loadout: p.loadout })
 
       return {
@@ -104,6 +106,9 @@ const generateMatchStateFutureActionsItems = async (
           }
           if (trigger.forceStartTime) {
             time = trigger.forceStartTime
+          }
+          if (time !== undefined) {
+            time += itemIdx * REVEAL_TIME_MS
           }
 
           return range(item.count ?? 1).map((itemCounter) => ({

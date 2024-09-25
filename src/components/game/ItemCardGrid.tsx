@@ -1,5 +1,4 @@
 import { countifyItems } from '@/game/countifyItems'
-import { orderItems } from '@/game/orderItems'
 import { ThemeId } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { Fragment } from 'react'
@@ -17,7 +16,7 @@ export const ItemCardGrid = async ({
   themeId?: ThemeId
   size?: '80' | 'tiny' | 'responsive'
 }) => {
-  const betterItems = countifyItems(await orderItems(items))
+  const betterItems = countifyItems(items)
 
   const tiny = (
     <div
