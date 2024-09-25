@@ -1434,7 +1434,7 @@ const allItemsConst = [
     triggers: [
       {
         type: 'interval',
-        cooldown: 3_000,
+        cooldown: 1_000,
         modifiers: [
           {
             arithmetic: 'add',
@@ -1497,6 +1497,7 @@ const allItemsConst = [
           mana: 3,
         },
         statsSelf: {
+          mana: -3,
           flying: 3,
         },
       },
