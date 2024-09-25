@@ -19,7 +19,10 @@ export const addToLeaderboard = async ({
   roundNo?: number
   dryRun?: boolean
 }) => {
-  let leaderboard = await getLeaderboard({})
+  let leaderboard = await getLeaderboard({
+    roundNo,
+    type,
+  })
   if (!loadout.userId) {
     return
   }

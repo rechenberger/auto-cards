@@ -5,7 +5,7 @@ import { and, desc, eq, isNull, ne, or } from 'drizzle-orm'
 import { cloneDeep, first } from 'lodash-es'
 import { revalidatePath } from 'next/cache'
 import { addToLeaderboard } from './addToLeaderboard'
-import { NO_OF_LATEST_LOADOUTS } from './config'
+import { GAME_VERSION, NO_OF_LATEST_LOADOUTS } from './config'
 import { generateMatch } from './generateMatch'
 import { rngItem, seedToString } from './seed'
 
@@ -14,6 +14,7 @@ export const fight = async ({ game }: { game: Game }) => {
     where: and(
       eq(schema.loadout.roundNo, game.data.roundNo),
       or(ne(schema.loadout.userId, game.userId), isNull(schema.loadout.userId)),
+      eq(schema.loadout.version, GAME_VERSION),
     ),
     limit: NO_OF_LATEST_LOADOUTS,
     orderBy: desc(schema.loadout.createdAt),

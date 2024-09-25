@@ -1,6 +1,6 @@
 export const NEXT_PHASE = process.env.NEXT_PHASE === 'true'
 
-export const GAME_DATA_VERSION = 1
+export const GAME_VERSION = 1
 export const NO_OF_SHOP_ITEMS = 5
 export const SALE_CHANCE = 0.2
 export const BASE_TICK_TIME = 1000
