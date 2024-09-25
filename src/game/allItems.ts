@@ -1412,6 +1412,7 @@ const allItemsConst = [
     rarity: 'uncommon',
     price: 4,
     shop: true,
+    disabled: !NEXT_PHASE,
     triggers: [
       {
         type: 'interval',
@@ -1429,6 +1430,7 @@ const allItemsConst = [
     rarity: 'epic',
     price: 6,
     shop: true,
+    disabled: !NEXT_PHASE,
     triggers: [
       {
         type: 'interval',
@@ -1453,6 +1455,7 @@ const allItemsConst = [
     rarity: 'rare',
     price: 7, // woodenSword + unstableManaCrystal
     shop: false,
+    disabled: !NEXT_PHASE,
     triggers: [
       {
         type: 'interval',
@@ -1485,6 +1488,7 @@ const allItemsConst = [
     rarity: 'epic',
     price: 8,
     shop: true,
+    disabled: !NEXT_PHASE,
     triggers: [
       {
         type: 'interval',
@@ -1505,6 +1509,7 @@ const allItemsConst = [
     rarity: 'epic',
     price: 8,
     shop: true,
+    disabled: !NEXT_PHASE,
     triggers: [
       {
         type: 'interval',
