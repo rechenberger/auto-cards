@@ -64,7 +64,8 @@ const getModifiedStats = (
   result = { ...result }
 
   for (const modifier of modifiers) {
-    const sourceSideIdx = modifier.sourceSide === 'self' ? sideIdx : 1 - sideIdx
+    const sourceSideIdx =
+      modifier.sourceSide === 'enemy' ? 1 - sideIdx : sideIdx
     const sourceSide = state.sides[sourceSideIdx]
 
     let sourceCount = modifier.valueBase ?? 0
