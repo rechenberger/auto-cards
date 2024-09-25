@@ -3,6 +3,7 @@ import { schema } from '@/db/schema-export'
 import { Game } from '@/db/schema-zod'
 import { and, desc, eq, isNull, ne, or } from 'drizzle-orm'
 import { cloneDeep, first } from 'lodash-es'
+import { revalidatePath } from 'next/cache'
 import { addToLeaderboard } from './addToLeaderboard'
 import { NO_OF_LATEST_LOADOUTS } from './config'
 import { generateMatch } from './generateMatch'
@@ -109,6 +110,8 @@ export const fight = async ({ game }: { game: Game }) => {
   // Add to Leaderboard in the Background
   // Don't await
   addToLeaderboard({ loadout: myLoadout })
+
+  revalidatePath(`/watch/recent`)
 
   return {
     matchReport,
