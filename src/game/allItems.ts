@@ -1495,6 +1495,38 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'manaDagger',
+    prompt: 'a dagger made out of pure mana',
+    tags: ['weapon'],
+    rarity: 'epic',
+    price: 3 + 7, // dagger + unstableManaCrystal
+    shop: false,
+    disabled: !NEXT_PHASE,
+    statsItem: {
+      unblockable: 1,
+      critChance: 30,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        attack: {
+          damage: 6,
+          accuracy: 85,
+        },
+      },
+      {
+        type: 'onAttackCritAfterHit',
+        statsItem: {
+          critChance: 10,
+        },
+        statsSelf: {
+          mana: 2,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')
