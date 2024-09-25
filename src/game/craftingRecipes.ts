@@ -1,4 +1,4 @@
-import { ItemName } from './allItems'
+import { getAllItems, ItemName } from './allItems'
 
 type CraftingItem = {
   name: ItemName
@@ -64,5 +64,17 @@ export const craftingRecipes: CraftingRecipe[] = [
 ]
 
 export const getCraftingRecipes = async () => {
-  return craftingRecipes
+  // Filter disabled items:
+  const allItems = await getAllItems()
+  const recipes = craftingRecipes.filter((recipe) => {
+    const allInputsExist = recipe.input.every((item) => {
+      return !!allItems.find((i) => i.name === item.name)
+    })
+    const allOutputsExist = recipe.output.every((item) => {
+      return !!allItems.find((i) => i.name === item.name)
+    })
+    return allInputsExist && allOutputsExist
+  })
+
+  return recipes
 }
