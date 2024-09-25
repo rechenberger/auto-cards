@@ -24,6 +24,8 @@ export const Modifier = z.object({
   targetStat: Stat,
   targetStats: ModifierTargetStats,
 
+  sourceSide: z.enum(['self', 'enemy']).optional(),
+
   valueBase: z.number().optional(), // value = base
   valueAddingItems: z.array(z.string()).optional(), // value += count(item)
   valueAddingTags: z.array(Tag).optional(), // value += count(tag)
@@ -62,21 +64,28 @@ const getModifiedStats = (
   result = { ...result }
 
   for (const modifier of modifiers) {
+    const sourceSideIdx = modifier.sourceSide === 'self' ? sideIdx : 1 - sideIdx
+    const sourceSide = state.sides[sourceSideIdx]
+
     let sourceCount = modifier.valueBase ?? 0
     if (modifier.valueAddingStats) {
       for (const stat of modifier.valueAddingStats) {
-        sourceCount += statsForItem[stat] ?? 0
+        if (modifier.sourceSide === 'self') {
+          sourceCount += statsForItem[stat] ?? 0
+        } else {
+          sourceCount += sourceSide.stats[stat] ?? 0
+        }
       }
     }
     if (modifier.valueAddingTags) {
-      const itemsWithTags = filter(side.items, (i) =>
+      const itemsWithTags = filter(sourceSide.items, (i) =>
         some(i.tags, (tag) => modifier.valueAddingTags?.includes(tag)),
       )
       sourceCount += sumBy(itemsWithTags, (i) => i.count ?? 1)
     }
     if (modifier.valueAddingItems) {
       for (const itemName of modifier.valueAddingItems) {
-        const item = side.items.find((i) => i.name === itemName)
+        const item = sourceSide.items.find((i) => i.name === itemName)
         if (item) {
           sourceCount += item.count ?? 1
         }

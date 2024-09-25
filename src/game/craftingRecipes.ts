@@ -65,6 +65,10 @@ export const craftingRecipes: CraftingRecipe[] = [
     output: [{ name: 'crossBow' }],
     disabled: !NEXT_PHASE,
   },
+  {
+    input: [{ name: 'flyAgaric', count: 2 }],
+    output: [{ name: 'foodPoison', count: 1 }],
+  },
 ]
 
 export const getCraftingRecipes = async () => {

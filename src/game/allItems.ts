@@ -1341,6 +1341,30 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'foodPoison',
+    prompt: 'a jar of food poison spilled into a bowl of food',
+    tags: ['accessory'],
+    rarity: 'rare',
+    price: 6,
+    shop: false,
+    triggers: [
+      {
+        type: 'startOfBattle',
+        modifiers: [
+          {
+            arithmetic: 'add',
+            sourceSide: 'enemy',
+            targetStats: 'statsEnemy',
+            targetStat: 'poison',
+            description: 'Apply **1** *poison* for every *food* the enemy has',
+            valueAddingTags: ['food'],
+            valueMultiplier: 1,
+          },
+        ],
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')
