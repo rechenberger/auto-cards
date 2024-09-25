@@ -1,6 +1,7 @@
 'use client'
 
 import { MatchReport } from '@/game/generateMatch'
+import { cn } from '@/lib/utils'
 import { useAtomValue } from 'jotai'
 import { activeMatchLogAtom } from './matchPlaybackState'
 import { StatsBars } from './StatsBars'
@@ -26,7 +27,18 @@ export const MatchStatsDisplay = ({
   return (
     <>
       <StatsBars stats={stats} />
-      <StatsDisplay stats={stats} size="sm" hideBars canWrap />
+      <div className="min-h-28">
+        <StatsDisplay
+          stats={stats}
+          size="sm"
+          hideBars
+          canWrap
+          className={cn(
+            sideIdx === 0 ? 'justify-start' : 'justify-end',
+            'grid grid-cols-4 items-start',
+          )}
+        />
+      </div>
     </>
   )
 }
