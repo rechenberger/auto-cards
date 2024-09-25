@@ -19,7 +19,10 @@ export const addToLeaderboard = async ({
   roundNo?: number
   dryRun?: boolean
 }) => {
-  let leaderboard = await getLeaderboard({})
+  let leaderboard = await getLeaderboard({
+    roundNo,
+    type,
+  })
   if (!loadout.userId) {
     return
   }
@@ -76,9 +79,9 @@ export const addToLeaderboard = async ({
   )
 
   // Only use the results that were fulfilled
-  const results = resultsSettled
-    .filter((result) => result.status === 'fulfilled')
-    .map((result) => result.value)
+  const results = resultsSettled.flatMap((result) =>
+    result.status === 'fulfilled' ? result.value : [],
+  )
 
   if (results.length < leaderboard.length) {
     console.warn(

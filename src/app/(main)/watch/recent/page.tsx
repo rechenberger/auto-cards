@@ -53,6 +53,10 @@ const MatchEntry = async ({ match }: { match: Match }) => {
     return null
   }
 
+  if (!p1.loadout || !p2.loadout) {
+    return null
+  }
+
   const p1Items = await orderItems(countifyItems(p1.loadout.data.items))
   const p2Items = await orderItems(countifyItems(p2.loadout.data.items))
 

@@ -5,7 +5,7 @@ import { MatchView } from '@/components/game/MatchView'
 import { ShopView } from '@/components/game/ShopView'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
-import { NO_OF_ROUNDS } from '@/game/config'
+import { GAME_VERSION, NO_OF_ROUNDS } from '@/game/config'
 import { getGameFromDb } from '@/game/getGame'
 import { eq } from 'drizzle-orm'
 import { Metadata } from 'next'
@@ -28,6 +28,10 @@ export default async function Page({
     if (!isAdmin) {
       return notFound()
     }
+  }
+
+  if (game.version < GAME_VERSION) {
+    return <EndOfGameView game={game} oldVersion />
   }
 
   if (game.data.roundNo >= NO_OF_ROUNDS) {

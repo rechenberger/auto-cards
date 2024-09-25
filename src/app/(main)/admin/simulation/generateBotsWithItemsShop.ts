@@ -1,6 +1,7 @@
 import { Game } from '@/db/schema-zod'
 import { getItemByName, ItemName } from '@/game/allItems'
 import { calcStats, hasNegativeStats } from '@/game/calcStats'
+import { GAME_VERSION } from '@/game/config'
 import { generateShopItems } from '@/game/generateShopItems'
 import { SeedArray, seedToString } from '@/game/seed'
 import { fn } from '@/lib/fn'
@@ -55,6 +56,7 @@ export const generateBotsWithItemsShop = async ({
           version: 1,
         },
         liveMatchId: null,
+        version: GAME_VERSION,
       })
 
       game.data.shopItems = await generateShopItems({

@@ -6,10 +6,10 @@ import { sendDiscordMessage } from '@/lib/discord'
 import { typedParse } from '@/lib/typedParse'
 import { createId } from '@paralleldrive/cuid2'
 import { first } from 'lodash-es'
-import { GAME_DATA_VERSION } from './config'
+import { GAME_VERSION } from './config'
 import { generateShopItems } from './generateShopItems'
-import { roundStats } from './roundStats'
 import { getUserName } from './getUserName'
+import { roundStats } from './roundStats'
 
 export const createGame = async ({
   userId,
@@ -24,7 +24,7 @@ export const createGame = async ({
     id,
     userId,
     data: typedParse(GameData, {
-      version: GAME_DATA_VERSION,
+      version: GAME_VERSION,
       gold: first(roundStats)?.gold ?? 0,
       seed: liveMatch?.data.seed,
       shopItems: [],
@@ -39,6 +39,7 @@ export const createGame = async ({
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     liveMatchId: liveMatch?.id ?? null,
+    version: GAME_VERSION,
   }
 
   game.data.shopItems = await generateShopItems({ game })

@@ -1,5 +1,6 @@
 import { Game } from '@/db/schema-zod'
 import { getAllItems, ItemName } from '@/game/allItems'
+import { GAME_VERSION } from '@/game/config'
 import { countifyItems } from '@/game/countifyItems'
 import { orderItems } from '@/game/orderItems'
 import { rngItem, SeedArray, seedToString } from '@/game/seed'
@@ -52,6 +53,7 @@ export const generateBotsWithItems = async ({
           version: 1,
         },
         liveMatchId: null,
+        version: GAME_VERSION,
       })
 
       while (game.data.gold > 0) {
