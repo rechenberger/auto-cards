@@ -137,12 +137,12 @@ export const PlaygroundEdit = async ({
                       items={items}
                       onOrderChange={async (newOrder) => {
                         'use server'
-                        console.log('newOrder', newOrder)
+                        // console.log('newOrder', newOrder)
                         const oldItems = loadout.items
                         const newItems = orderBy(oldItems, (i) =>
                           newOrder.findIndex((n) => n.id === i.name),
                         )
-                        console.log('newItems', newItems)
+                        // console.log('newItems', newItems)
 
                         const newLoadouts = [...loadouts]
                         newLoadouts[sideIdx] = { items: newItems }
@@ -151,7 +151,7 @@ export const PlaygroundEdit = async ({
                           ...options,
                           loadouts: newLoadouts,
                         })
-                        console.log('href', href)
+                        // console.log('href', href)
                         redirect(href)
                       }}
                     />

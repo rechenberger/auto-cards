@@ -18,7 +18,7 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { omit } from 'lodash-es'
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 export type SimpleSortableItem = {
   id: UniqueIdentifier
@@ -32,6 +32,12 @@ export const SimpleSortable = ({
   items: SimpleSortableItem[]
   onOrderChange?: (items: Omit<SimpleSortableItem, 'node'>[]) => void
 }) => {
+  const [itemsOptimistic, setItemsOptimistic] = useState(items)
+
+  useEffect(() => {
+    setItemsOptimistic(items)
+  }, [items])
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -55,11 +61,15 @@ export const SimpleSortable = ({
 
         const newOrder = arrayMove(items, oldIndex, newIndex)
         // console.log('newOrder', newOrder)
+        setItemsOptimistic(newOrder)
         onOrderChange?.(newOrder.map((item) => omit(item, ['node'])))
       }}
     >
-      <SortableContext items={items} strategy={verticalListSortingStrategy}>
-        {items.map((item) => (
+      <SortableContext
+        items={itemsOptimistic}
+        strategy={verticalListSortingStrategy}
+      >
+        {itemsOptimistic.map((item) => (
           <SortableItem key={item.id} item={item} />
         ))}
       </SortableContext>
