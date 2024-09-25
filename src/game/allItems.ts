@@ -334,7 +334,7 @@ const allItemsConst = [
         statsSelf: {
           drunk: 1,
         },
-        modifiers: [
+        modifiersSelf: [
           {
             arithmetic: 'add',
             targetStat: 'damage',
@@ -630,7 +630,7 @@ const allItemsConst = [
           damage: 15,
           accuracy: 80,
         },
-        modifiers: [
+        modifiersSelf: [
           {
             arithmetic: 'add',
             targetStat: 'damage',
@@ -673,7 +673,7 @@ const allItemsConst = [
           damage: 8,
           accuracy: 85,
         },
-        modifiers: [
+        modifiersSelf: [
           {
             arithmetic: 'add',
             targetStat: 'damage',
@@ -877,7 +877,7 @@ const allItemsConst = [
           damage: 5,
           accuracy: 85,
         },
-        modifiers: [
+        modifiersSelf: [
           {
             arithmetic: 'add',
             targetStat: 'damage',
@@ -1079,7 +1079,7 @@ const allItemsConst = [
           damage: 7,
           accuracy: 95,
         },
-        modifiers: [
+        modifiersSelf: [
           {
             arithmetic: 'add',
             targetStat: 'damage',
@@ -1121,7 +1121,7 @@ const allItemsConst = [
     triggers: [
       {
         type: 'startOfBattle',
-        modifiers: [
+        modifiersSelf: [
           {
             arithmetic: 'add',
             targetStats: 'statsSelf',
@@ -1215,7 +1215,7 @@ const allItemsConst = [
           damage: 9,
           accuracy: 90,
         },
-        modifiers: [
+        modifiersSelf: [
           {
             arithmetic: 'add',
             targetStat: 'damage',
@@ -1351,7 +1351,7 @@ const allItemsConst = [
     triggers: [
       {
         type: 'startOfBattle',
-        modifiers: [
+        modifiersSelf: [
           {
             arithmetic: 'add',
             sourceSide: 'enemy',
@@ -1435,7 +1435,7 @@ const allItemsConst = [
       {
         type: 'interval',
         cooldown: 1_000,
-        modifiers: [
+        modifiersSelf: [
           {
             arithmetic: 'add',
             targetStats: 'statsSelf',
@@ -1572,7 +1572,7 @@ const allItemsConst = [
       {
         type: 'onDefendCritBeforeHit',
         chancePercent: 25,
-        modifiers: [
+        modifiersOther: [
           {
             arithmetic: 'multiply',
             targetStat: 'critChance',

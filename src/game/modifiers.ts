@@ -44,21 +44,26 @@ const getModifiedStats = (
     itemIdx,
     triggerIdx,
     statsForItem,
+    side,
   }: {
     state: MatchState
     sideIdx: number
     itemIdx: number
     triggerIdx: number
     statsForItem: Stats
+    side: 'self' | 'other'
   },
   stats: ModifierTargetStats,
 ) => {
-  const side = state.sides[sideIdx]
-  const item = side.items[itemIdx]
+  const stateSide = state.sides[sideIdx]
+  const item = stateSide.items[itemIdx]
   const trigger = item.triggers![triggerIdx]
 
   let result = stats === 'statsForItem' ? statsForItem : trigger[stats]
-  const modifiers = filter(trigger.modifiers, (m) => m.targetStats === stats)
+  const modifiers = filter(
+    side === 'self' ? trigger.modifiersSelf : trigger.modifiersOther,
+    (m) => m.targetStats === stats,
+  )
   if (!modifiers.length) return result
 
   result = { ...result }
@@ -127,6 +132,7 @@ export const getAllModifiedStats = (props: {
   itemIdx: number
   triggerIdx: number
   statsForItem: Stats
+  side: 'self' | 'other'
 }) => {
   return {
     statsSelf: getModifiedStats(props, 'statsSelf'),

@@ -118,9 +118,9 @@ export const TriggerDisplay = ({
             />
           </div>
         )}
-        {trigger.modifiers && (
+        {trigger.modifiersSelf && (
           <div className="flex flex-col gap-1 text-xs text-center">
-            {trigger.modifiers.map((modifier) => (
+            {trigger.modifiersSelf.map((modifier) => (
               <TextKeywordDisplay
                 key={modifier.description}
                 text={modifier.description}

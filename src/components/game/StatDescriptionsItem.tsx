@@ -14,8 +14,8 @@ export const StatDescriptionsItem = async ({ name }: { name: string }) => {
       t.statsEnemy,
       t.statsItem,
       t.attack,
-      ...map(t.modifiers, (m) => ({ [m.targetStat]: 1 })),
-      ...flatMap(t.modifiers, (m) =>
+      ...map(t.modifiersSelf, (m) => ({ [m.targetStat]: 1 })),
+      ...flatMap(t.modifiersSelf, (m) =>
         map(m.valueAddingStats, (s) => ({ [s]: 1 })),
       ),
     ]) ?? []),

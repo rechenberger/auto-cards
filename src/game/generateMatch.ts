@@ -262,10 +262,11 @@ export const generateMatch = async ({
     seed: SeedRng
     action: FutureActionItem
     baseLogMsg?: string
+    side?: 'self' | 'other'
   }
 
   const triggerHandler = (input: TriggerHandlerInput) => {
-    const { seed, action } = input
+    const { seed, action, side } = input
 
     const { sideIdx, itemIdx, triggerIdx } = action
     const mySide = sides[sideIdx]
@@ -286,15 +287,37 @@ export const generateMatch = async ({
       ? sumStats2(mySide.stats, item.statsItem)
       : mySide.stats
 
-    const allStats = trigger.modifiers?.length
-      ? getAllModifiedStats({
-          state,
-          itemIdx,
-          sideIdx,
-          triggerIdx,
-          statsForItem,
-        })
-      : trigger
+    let allStats: typeof trigger | ReturnType<typeof getAllModifiedStats> =
+      trigger
+
+    if (side === 'self' && trigger.modifiersSelf?.length) {
+      allStats = getAllModifiedStats({
+        state,
+        itemIdx,
+        sideIdx,
+        triggerIdx,
+        statsForItem,
+        side,
+      })
+    } else if (side === 'other' && trigger.modifiersOther?.length) {
+      allStats = getAllModifiedStats({
+        state,
+        itemIdx,
+        sideIdx,
+        triggerIdx,
+        statsForItem,
+        side,
+      })
+    }
+    // const allStats = trigger.modifiersSelf?.length
+    //   ? getAllModifiedStats({
+    //       state,
+    //       itemIdx,
+    //       sideIdx,
+    //       triggerIdx,
+    //       statsForItem,
+    //     })
+    //   : trigger
     const { statsRequired, statsSelf, statsEnemy, attack } = allStats
     if ('statsForItem' in allStats) {
       statsForItem = allStats.statsForItem ?? statsForItem
@@ -467,6 +490,14 @@ export const generateMatch = async ({
                   parentTrigger: input,
                   sideIdx: otherSide.sideIdx,
                 })
+                triggerEvents({
+                  eventType: 'onDefendCritBeforeHit',
+                  parentTrigger: input,
+                  itemIdx,
+                  sideIdx,
+                  itemCounter: action.itemCounter,
+                  side: 'other',
+                })
                 let critChanceAfterCrit = 0
                 if (statsForItem.critChance) {
                   critChanceAfterCrit += statsForItem.critChance
@@ -625,12 +656,14 @@ export const generateMatch = async ({
     itemIdx,
     sideIdx,
     itemCounter,
+    side = 'self',
   }: {
     eventType: TriggerEventType
     parentTrigger: TriggerHandlerInput
     itemIdx?: number
     sideIdx: number
     itemCounter?: number
+    side?: 'self' | 'other'
   }) => {
     // Find Actions
     const actions = futureActions.filter(
