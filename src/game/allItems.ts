@@ -1119,7 +1119,7 @@ const allItemsConst = [
     tags: ['accessory'],
     rarity: 'rare',
     price: 6,
-    shop: true,
+    shop: false,
     triggers: [
       {
         type: 'startOfBattle',

@@ -47,6 +47,10 @@ export const craftingRecipes: CraftingRecipe[] = [
     input: [{ name: 'beerFest', count: 1 }],
     output: [{ name: 'beer', count: 1 }],
   },
+  {
+    input: [{ name: 'flyAgaric', count: 2 }],
+    output: [{ name: 'foodPoison', count: 1 }],
+  },
 ]
 
 export const getCraftingRecipes = async () => {
