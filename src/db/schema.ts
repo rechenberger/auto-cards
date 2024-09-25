@@ -1,3 +1,4 @@
+import { GAME_VERSION } from '@/game/config'
 import { createId } from '@paralleldrive/cuid2'
 import { relations } from 'drizzle-orm'
 import { index, int, sqliteTable, text } from 'drizzle-orm/sqlite-core'
@@ -22,11 +23,14 @@ const baseStats = () => ({
   updatedAt: text('updatedAt').$onUpdate(() => new Date().toISOString()),
 })
 
+const version = int('version').notNull().default(GAME_VERSION)
+
 export const game = sqliteTable('game', {
   ...baseStats(),
   userId: text('userId').notNull(),
   data: text('data', { mode: 'json' }).$type<GameData>().notNull(),
   liveMatchId: text('liveMatchId'),
+  version,
 })
 
 export const gameRelations = relations(game, ({ one, many }) => ({
@@ -51,6 +55,7 @@ export const loadout = sqliteTable(
     gameId: text('gameId'),
     roundNo: int('roundNo').notNull(),
     primaryMatchParticipationId: text('primaryMatchParticipationId'),
+    version,
   },
   (table) => ({
     loadoutPrimaryMatchParticipationIdIdx: index(
@@ -198,6 +203,7 @@ export const leaderboardEntry = sqliteTable(
 
     type: text('type').notNull(),
     score: int('score').notNull(),
+    version,
   },
   (table) => ({
     leaderboardUserIdIdx: index('leaderboardUserIdIdx').on(table.userId),

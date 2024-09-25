@@ -1,6 +1,7 @@
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import {
+  GAME_VERSION,
   LEADERBOARD_LIMIT,
   LEADERBOARD_TYPE,
   NO_OF_ROUNDS,
@@ -21,6 +22,7 @@ export const getLeaderboard = async ({
     where: and(
       eq(schema.leaderboardEntry.type, type),
       eq(schema.leaderboardEntry.roundNo, roundNo),
+      eq(schema.leaderboardEntry.version, GAME_VERSION),
     ),
     with: {
       user: true,

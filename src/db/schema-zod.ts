@@ -1,3 +1,4 @@
+import { GAME_VERSION } from '@/game/config'
 import { createSeed } from '@/game/seed'
 import { createSelectSchema } from 'drizzle-zod'
 import z from 'zod'
@@ -24,7 +25,7 @@ export const Loadout = createSelectSchema(schema.loadout, {
 export type Loadout = z.infer<typeof Loadout>
 
 export const GameData = z.object({
-  version: z.number().default(1),
+  version: z.number().default(GAME_VERSION),
   seed,
   roundNo: z.number().default(0),
   gold: z.number().default(0),

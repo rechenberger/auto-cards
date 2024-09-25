@@ -1,8 +1,8 @@
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
-import { asc, eq } from 'drizzle-orm'
+import { and, asc, eq } from 'drizzle-orm'
 import { addToLeaderboard } from './addToLeaderboard'
-import { LEADERBOARD_TYPE, NO_OF_ROUNDS } from './config'
+import { GAME_VERSION, LEADERBOARD_TYPE, NO_OF_ROUNDS } from './config'
 
 export const addAllToLeaderboard = async ({
   type = LEADERBOARD_TYPE,
@@ -14,7 +14,10 @@ export const addAllToLeaderboard = async ({
   onUpdate?: (info: { current: number; total: number; done: boolean }) => void
 }) => {
   const loadouts = await db.query.loadout.findMany({
-    where: eq(schema.loadout.roundNo, roundNo),
+    where: and(
+      eq(schema.loadout.roundNo, roundNo),
+      eq(schema.loadout.version, GAME_VERSION),
+    ),
     orderBy: asc(schema.loadout.createdAt),
   })
 

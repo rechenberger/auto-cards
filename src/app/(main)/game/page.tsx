@@ -9,9 +9,9 @@ import { Card } from '@/components/ui/card'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Game } from '@/db/schema-zod'
-import { LIMIT_GAME_OVERVIEW } from '@/game/config'
+import { GAME_VERSION, LIMIT_GAME_OVERVIEW } from '@/game/config'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { desc, eq } from 'drizzle-orm'
+import { and, desc, eq } from 'drizzle-orm'
 import { Zap } from 'lucide-react'
 import { Metadata } from 'next'
 import { revalidatePath } from 'next/cache'
@@ -29,7 +29,10 @@ export default async function Page() {
   const userId = await getMyUserIdOrLogin()
 
   const gamesRaw = await db.query.game.findMany({
-    where: (s, { eq }) => eq(s.userId, userId),
+    where: and(
+      eq(schema.game.userId, userId),
+      eq(schema.game.version, GAME_VERSION),
+    ),
     orderBy: desc(schema.game.updatedAt),
     limit: LIMIT_GAME_OVERVIEW,
   })

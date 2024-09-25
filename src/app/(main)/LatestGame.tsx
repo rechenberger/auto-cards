@@ -3,7 +3,8 @@ import { Button } from '@/components/ui/button'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Game } from '@/db/schema-zod'
-import { desc } from 'drizzle-orm'
+import { GAME_VERSION } from '@/game/config'
+import { and, desc, eq } from 'drizzle-orm'
 import Link from 'next/link'
 import { NewGameButton } from './game/NewGameButton'
 
@@ -11,7 +12,10 @@ export const LatestGame = async () => {
   const userId = await getMyUserIdOrLogin()
   const game = await db.query.game
     .findFirst({
-      where: (s, { eq }) => eq(s.userId, userId),
+      where: and(
+        eq(schema.game.userId, userId),
+        eq(schema.game.version, GAME_VERSION),
+      ),
       orderBy: desc(schema.game.updatedAt),
     })
     .then(Game.safeParse)
