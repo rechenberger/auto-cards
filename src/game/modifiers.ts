@@ -24,6 +24,8 @@ export const Modifier = z.object({
   targetStat: Stat,
   targetStats: ModifierTargetStats,
 
+  sourceSide: z.enum(['self', 'enemy']).optional(),
+
   valueBase: z.number().optional(), // value = base
   valueAddingItems: z.array(z.string()).optional(), // value += count(item)
   valueAddingTags: z.array(Tag).optional(), // value += count(tag)
