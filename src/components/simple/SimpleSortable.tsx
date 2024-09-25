@@ -10,12 +10,14 @@ import {
   useSensors,
 } from '@dnd-kit/core'
 import {
+  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { omit } from 'lodash-es'
 import { ReactNode } from 'react'
 
 export type SimpleSortableItem = {
@@ -23,7 +25,13 @@ export type SimpleSortableItem = {
   node: ReactNode
 }
 
-export const SimpleSortable = ({ items }: { items: SimpleSortableItem[] }) => {
+export const SimpleSortable = ({
+  items,
+  onOrderChange,
+}: {
+  items: SimpleSortableItem[]
+  onOrderChange?: (items: Omit<SimpleSortableItem, 'node'>[]) => void
+}) => {
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -35,7 +43,20 @@ export const SimpleSortable = ({ items }: { items: SimpleSortableItem[] }) => {
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
-      onDragEnd={(evt) => console.log('onDragEnd', evt)}
+      onDragEnd={(evt) => {
+        const ids = items.map((i) => i.id)
+        const { active, over } = evt
+        if (!active || !over) {
+          return
+        }
+        console.log('onDragEnd', evt)
+        const oldIndex = ids.indexOf(active.id)
+        const newIndex = ids.indexOf(over.id)
+
+        const newOrder = arrayMove(items, oldIndex, newIndex)
+        // console.log('newOrder', newOrder)
+        onOrderChange?.(newOrder.map((item) => omit(item, ['node'])))
+      }}
     >
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
         {items.map((item) => (

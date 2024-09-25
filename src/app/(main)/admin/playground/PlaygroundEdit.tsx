@@ -121,7 +121,13 @@ export const PlaygroundEdit = async ({
                     />
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
-                    <SimpleSortable items={items} />
+                    <SimpleSortable
+                      items={items}
+                      onOrderChange={async (newOrder) => {
+                        'use server'
+                        console.log('newOrder', newOrder)
+                      }}
+                    />
                   </div>
                 </div>
               </Fragment>
