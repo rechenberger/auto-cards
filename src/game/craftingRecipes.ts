@@ -68,6 +68,7 @@ export const craftingRecipes: CraftingRecipe[] = [
   {
     input: [{ name: 'flyAgaric', count: 2 }],
     output: [{ name: 'foodPoison', count: 1 }],
+    version: 2,
   },
   {
     input: [

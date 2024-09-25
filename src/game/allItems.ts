@@ -1348,6 +1348,7 @@ const allItemsConst = [
     rarity: 'rare',
     price: 6,
     shop: false,
+    version: 2,
     triggers: [
       {
         type: 'startOfBattle',
