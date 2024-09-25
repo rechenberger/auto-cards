@@ -23,6 +23,10 @@ export const allTagsDefinition = [
     bgClass: 'bg-sky-500/50',
   },
   {
+    name: 'crystal',
+    bgClass: 'bg-sky-500',
+  },
+  {
     name: 'event',
     bgClass: 'bg-purple-500/50',
   },

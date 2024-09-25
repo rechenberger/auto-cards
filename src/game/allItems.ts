@@ -1408,7 +1408,7 @@ const allItemsConst = [
   {
     name: 'unstableManaCrystal',
     prompt: 'an unstable mana crystal about to burst',
-    tags: ['event'],
+    tags: ['crystal'],
     rarity: 'uncommon',
     price: 4,
     shop: true,
@@ -1419,6 +1419,30 @@ const allItemsConst = [
         statsSelf: {
           health: -10,
         },
+      },
+    ],
+  },
+  {
+    name: 'tinyManaReactor',
+    prompt: 'a tiny mana reactor that consumes crystals to generate pure mana',
+    tags: ['accessory'],
+    rarity: 'epic',
+    price: 6,
+    shop: true,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStats: 'statsSelf',
+            targetStat: 'mana',
+            description: 'Generate **1** *mana* for every *crystal*',
+            valueAddingTags: ['crystal'],
+            valueMultiplier: 1,
+          },
+        ],
       },
     ],
   },
@@ -1476,7 +1500,7 @@ const allItemsConst = [
   },
   {
     name: 'manaBarrier',
-    prompt: 'a magical barrier to block projectiles',
+    prompt: 'a magical dome of mana blocking incoming projectiles',
     tags: ['accessory'],
     rarity: 'epic',
     price: 8,
