@@ -22,6 +22,7 @@ import {
   FATIGUE_STARTS_AT,
   MAX_MATCH_TIME,
   MAX_THORNS_MULTIPLIER,
+  REVEAL_TIME_MS,
 } from './config'
 import { TriggerEventType } from './ItemDefinition'
 import { getAllModifiedStats } from './modifiers'
@@ -104,6 +105,9 @@ const generateMatchStateFutureActionsItems = async (
           }
           if (trigger.forceStartTime) {
             time = trigger.forceStartTime
+          }
+          if (time !== undefined) {
+            time += itemIdx * REVEAL_TIME_MS
           }
 
           return range(item.count ?? 1).map((itemCounter) => ({
