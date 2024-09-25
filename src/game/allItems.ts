@@ -343,7 +343,7 @@ const allItemsConst = [
             valueAddingItems: ['beerFest'],
             valueMultiplier: 3,
             description:
-              'Also attack with **3** *damage* and **90** *accuracy* when you have *beerFest*',
+              'Also attack with **3** *damage* and **90** *accuracy*\n\nwhen you have *beerFest*',
           },
           {
             arithmetic: 'add',
@@ -1303,7 +1303,7 @@ const allItemsConst = [
           stamina: 5,
         },
         statsSelf: {
-          stamina: 5,
+          stamina: -5,
         },
         attack: {
           damage: 1,
