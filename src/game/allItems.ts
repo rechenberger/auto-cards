@@ -1365,6 +1365,115 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'manaSoup',
+    prompt: 'a bowl of glowing blue mana soup',
+    tags: ['food'],
+    rarity: 'uncommon',
+    price: 2,
+    shop: true,
+    disabled: !NEXT_PHASE,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsSelf: {
+          mana: 1,
+        },
+      },
+    ],
+  },
+  {
+    name: 'manaShield',
+    prompt: 'a magical shield made out of mana',
+    tags: ['shield'],
+    rarity: 'rare',
+    price: 4 + 4, // woodenBuckler + unstableManaCrystal
+    shop: false,
+    disabled: !NEXT_PHASE,
+    triggers: [
+      {
+        type: 'onDefendBeforeHit',
+        chancePercent: 30,
+        statsSelf: {
+          block: 5,
+          mana: 3,
+        },
+        statsEnemy: {
+          stamina: -3,
+        },
+      },
+    ],
+  },
+  {
+    name: 'unstableManaCrystal',
+    prompt: 'an unstable mana crystal about to burst',
+    tags: ['event'],
+    rarity: 'uncommon',
+    price: 4,
+    shop: true,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 10_000,
+        statsSelf: {
+          health: -10,
+        },
+      },
+    ],
+  },
+  {
+    name: 'manaSword',
+    prompt: 'a sword made out of pure mana',
+    tags: ['weapon'],
+    rarity: 'rare',
+    price: 7, // woodenSword + unstableManaCrystal
+    shop: false,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        statsRequired: {
+          stamina: 20,
+        },
+        statsSelf: {
+          stamina: -20,
+        },
+        attack: {
+          damage: 10,
+          accuracy: 80,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsRequired: { mana: 3 },
+        statsSelf: {
+          mana: -3,
+          empower: 1,
+        },
+      },
+    ],
+  },
+  {
+    name: 'manaWings',
+    prompt: 'a pair of wings made out of pure mana',
+    tags: ['accessory'],
+    rarity: 'epic',
+    price: 8,
+    shop: true,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        statsRequired: {
+          mana: 3,
+        },
+        statsSelf: {
+          flying: 3,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')
