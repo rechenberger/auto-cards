@@ -28,7 +28,9 @@ export const EndOfGameView = async ({
         {/* <div className="text-6xl">GG</div>
         <div className="text-2xl">Game Over</div> */}
         <div className="p-4 bg-background/80 rounded-lg flex flex-col gap-4">
-          <div className="text-sm text-muted-foreground">Old Game Version</div>
+          {oldVersion && (
+            <div className="text-sm text-amber-500">Old Game Version</div>
+          )}
           <div className={cn(fontLore.className, '')}>
             <div className="text-2xl font-bold">
               You will never be forgotten
