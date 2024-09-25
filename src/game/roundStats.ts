@@ -1,4 +1,5 @@
 import { sumBy } from 'lodash-es'
+import { NO_OF_ROUNDS } from './config'
 import { RarityWeights } from './rarities'
 
 type RoundStats = {
@@ -205,7 +206,7 @@ export const roundStats: RoundStats[] = [
       ...defaultRarityWeights,
     },
   },
-]
+].filter((r) => r.roundNo < NO_OF_ROUNDS)
 
 export const getRoundStatsCumulative = (roundNo: number) => {
   const rounds = roundStats.filter((r) => r.roundNo <= roundNo)

@@ -11,7 +11,7 @@ import {
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Loadout } from '@/db/schema-zod'
-import { GAME_VERSION, NO_OF_ROUNDS } from '@/game/config'
+import { GAME_VERSION } from '@/game/config'
 import { countifyItems } from '@/game/countifyItems'
 import { roundStats } from '@/game/roundStats'
 import {
@@ -38,7 +38,7 @@ const baseInput: SimulationInput = {
   startingGold: 0,
   startingItems: ['hero'],
   noOfBotsSelected: 5,
-  noOfSelectionRounds: 5,
+  noOfSelectionRounds: 20,
 }
 
 export default async function Page() {
@@ -53,16 +53,14 @@ export default async function Page() {
     })
     .then(Loadout.array().parse)
 
-  const rounds = roundStats
-    .filter((r) => r.roundNo < NO_OF_ROUNDS)
-    .map(({ roundNo }) => {
-      const loadouts = allLoadouts.filter((r) => r.roundNo === roundNo)
-      return {
-        roundNo,
-        loadouts,
-        gold: startingByRound(roundNo).startingGold,
-      }
-    })
+  const rounds = roundStats.map(({ roundNo }) => {
+    const loadouts = allLoadouts.filter((r) => r.roundNo === roundNo)
+    return {
+      roundNo,
+      loadouts,
+      gold: startingByRound(roundNo).startingGold,
+    }
+  })
 
   const generateRoundBots = async ({ roundNo }: { roundNo: number }) => {
     'use server'
