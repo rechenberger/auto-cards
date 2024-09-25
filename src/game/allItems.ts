@@ -1358,7 +1358,8 @@ const allItemsConst = [
             sourceSide: 'enemy',
             targetStats: 'statsEnemy',
             targetStat: 'poison',
-            description: 'Apply **1** *poison* for every *food* the enemy has',
+            description:
+              'Apply **1** *poison*\n\nfor every *food*\n\nthe enemy has',
             valueAddingTags: ['food'],
             valueMultiplier: 1,
           },
