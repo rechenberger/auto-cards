@@ -69,6 +69,27 @@ export const craftingRecipes: CraftingRecipe[] = [
     input: [{ name: 'flyAgaric', count: 2 }],
     output: [{ name: 'foodPoison', count: 1 }],
   },
+  {
+    input: [
+      { name: 'woodenBuckler', count: 1 },
+      { name: 'unstableManaCrystal', count: 1 },
+    ],
+    output: [{ name: 'manaShield', count: 1 }],
+  },
+  {
+    input: [
+      { name: 'woodenSword', count: 1 },
+      { name: 'unstableManaCrystal', count: 1 },
+    ],
+    output: [{ name: 'manaSword', count: 1 }],
+  },
+  {
+    input: [
+      { name: 'dagger', count: 1 },
+      { name: 'unstableManaCrystal', count: 1 },
+    ],
+    output: [{ name: 'manaDagger', count: 1 }],
+  },
 ]
 
 export const getCraftingRecipes = async () => {

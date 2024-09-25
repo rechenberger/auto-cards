@@ -1365,6 +1365,198 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'manaSoup',
+    prompt: 'a bowl of glowing blue mana soup',
+    tags: ['food'],
+    rarity: 'uncommon',
+    price: 2,
+    shop: true,
+    disabled: !NEXT_PHASE,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsSelf: {
+          mana: 1,
+        },
+      },
+    ],
+  },
+  {
+    name: 'manaShield',
+    prompt: 'a magical shield made out of mana',
+    tags: ['shield'],
+    rarity: 'rare',
+    price: 4 + 4, // woodenBuckler + unstableManaCrystal
+    shop: false,
+    disabled: !NEXT_PHASE,
+    triggers: [
+      {
+        type: 'onDefendBeforeHit',
+        chancePercent: 30,
+        statsSelf: {
+          block: 5,
+          mana: 3,
+        },
+        statsEnemy: {
+          stamina: -3,
+        },
+      },
+    ],
+  },
+  {
+    name: 'unstableManaCrystal',
+    prompt: 'an unstable mana crystal about to burst',
+    tags: ['crystal'],
+    rarity: 'uncommon',
+    price: 4,
+    shop: true,
+    disabled: !NEXT_PHASE,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 10_000,
+        statsSelf: {
+          health: -10,
+        },
+      },
+    ],
+  },
+  {
+    name: 'tinyManaReactor',
+    prompt: 'a tiny mana reactor that consumes crystals to generate pure mana',
+    tags: ['accessory'],
+    rarity: 'epic',
+    price: 6,
+    shop: true,
+    disabled: !NEXT_PHASE,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_000,
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStats: 'statsSelf',
+            targetStat: 'mana',
+            description: 'Generate **1** *mana* for every *crystal*',
+            valueAddingTags: ['crystal'],
+            valueMultiplier: 1,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: 'manaSword',
+    prompt: 'a sword made out of pure mana',
+    tags: ['weapon'],
+    rarity: 'rare',
+    price: 7, // woodenSword + unstableManaCrystal
+    shop: false,
+    disabled: !NEXT_PHASE,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        statsRequired: {
+          stamina: 20,
+        },
+        statsSelf: {
+          stamina: -20,
+        },
+        attack: {
+          damage: 10,
+          accuracy: 80,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsRequired: { mana: 3 },
+        statsSelf: {
+          mana: -3,
+          empower: 1,
+        },
+      },
+    ],
+  },
+  {
+    name: 'manaWings',
+    prompt: 'a pair of wings made out of pure mana',
+    tags: ['accessory'],
+    rarity: 'epic',
+    price: 8,
+    shop: true,
+    disabled: !NEXT_PHASE,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        statsRequired: {
+          mana: 3,
+        },
+        statsSelf: {
+          mana: -3,
+          flying: 3,
+        },
+      },
+    ],
+  },
+  {
+    name: 'manaBarrier',
+    prompt: 'a magical dome of mana blocking incoming projectiles',
+    tags: ['accessory'],
+    rarity: 'epic',
+    price: 8,
+    shop: true,
+    disabled: !NEXT_PHASE,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        statsRequired: {
+          mana: 3,
+        },
+        statsSelf: {
+          mana: -3,
+          barrier: 3,
+        },
+      },
+    ],
+  },
+  {
+    name: 'manaDagger',
+    prompt: 'a dagger made out of pure mana',
+    tags: ['weapon'],
+    rarity: 'epic',
+    price: 3 + 7, // dagger + unstableManaCrystal
+    shop: false,
+    disabled: !NEXT_PHASE,
+    statsItem: {
+      unblockable: 1,
+      critChance: 30,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        attack: {
+          damage: 6,
+          accuracy: 85,
+        },
+      },
+      {
+        type: 'onAttackCritAfterHit',
+        statsItem: {
+          critChance: 10,
+        },
+        statsSelf: {
+          mana: 2,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')
