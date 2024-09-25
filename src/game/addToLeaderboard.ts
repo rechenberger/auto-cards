@@ -2,6 +2,7 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Loadout } from '@/db/schema-zod'
 import { and, eq } from 'drizzle-orm'
+import { revalidatePath } from 'next/cache'
 import { LEADERBOARD_TYPE } from './config'
 import { getLeaderboard } from './getLeaderboard'
 import { generateMatchByWorker } from './matchWorkerManager'
@@ -37,7 +38,7 @@ export const addToLeaderboard = async ({
     )
   }
 
-  const results = await Promise.all(
+  const resultsSettled = await Promise.allSettled(
     leaderboard.map(async (entry, idx) => {
       const seed = seedToString({
         seed: ['addToLeaderboard', type, roundNo, loadout.id, entry.id],
@@ -74,6 +75,18 @@ export const addToLeaderboard = async ({
     }),
   )
 
+  // Only use the results that were fulfilled
+  const results = resultsSettled
+    .filter((result) => result.status === 'fulfilled')
+    .map((result) => result.value)
+
+  if (results.length < leaderboard.length) {
+    console.warn(
+      'Some matches failed while adding to leaderboard',
+      resultsSettled.filter((result) => result.status === 'rejected'),
+    )
+  }
+
   const matchCount = results.length || 1
   const winCount = results.filter((result) => result.win).length
   const winRate = winCount / matchCount
@@ -99,6 +112,8 @@ export const addToLeaderboard = async ({
       })
     }
   }
+
+  revalidatePath('docs/leaderboard')
 
   return {
     results,

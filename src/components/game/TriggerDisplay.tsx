@@ -19,6 +19,10 @@ export const TriggerDisplay = ({
   triggerIdx?: number
   disableTooltip?: boolean
 }) => {
+  if (trigger.hidden) {
+    return null
+  }
+
   const hideRequiredStats = every(trigger.statsRequired ?? {}, (value, key) => {
     if (!value) return true
     const k = key as Stat
@@ -26,6 +30,19 @@ export const TriggerDisplay = ({
     if (!statSelf) return false
     return statSelf === -1 * value
   })
+
+  if (trigger.description) {
+    return (
+      <div className="px-2 py-2 bg-border/40 rounded-md flex flex-col gap-1 items-center min-w-40">
+        <div className="text-center text-xs">
+          <TextKeywordDisplay
+            text={trigger.description}
+            disableTooltip={disableTooltip}
+          />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>

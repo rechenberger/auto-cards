@@ -228,6 +228,20 @@ export const generateMatch = async ({
       })
     }
 
+    // BARRIER
+    if (side.stats.barrier) {
+      const barrierStats = {
+        barrier: -1,
+      }
+      addStats(side.stats, barrierStats)
+      log({
+        msg: 'Barrier',
+        sideIdx: side.sideIdx,
+        stats: barrierStats,
+        targetSideIdx: side.sideIdx,
+      })
+    }
+
     // FATIGUE
     const fatigue = Math.max(1 + (time - FATIGUE_STARTS_AT) / BASE_TICK_TIME, 0)
     if (fatigue > 0) {
@@ -364,9 +378,16 @@ export const generateMatch = async ({
       }
       const tryingToReach = !!statsEnemy || !!attack
       if (tryingToReach) {
-        const canReachEnemy = otherSide.stats.flying
-          ? !!statsForItem.flying || !!statsForItem.ranged
-          : true
+        let canReachEnemy = true
+        if (
+          !!otherSide.stats.flying &&
+          (!statsForItem.flying || !statsForItem.ranged)
+        ) {
+          canReachEnemy = false
+        }
+        if (!!statsForItem.ranged && !!otherSide.stats.barrier) {
+          canReachEnemy = false
+        }
         if (!canReachEnemy) {
           log({
             ...baseLog,
