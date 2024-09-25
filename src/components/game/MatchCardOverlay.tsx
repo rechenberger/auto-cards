@@ -131,7 +131,7 @@ export const MatchCardOverlay = ({
       const msgCounts = countBy(messagesWithoutStats, (msg) => msg)
 
       for (const [msg, count] of Object.entries(msgCounts)) {
-        if (count > 1) {
+        if (count >= 1) {
           addAnimation({
             content: (
               <div className="text-xs">
@@ -166,14 +166,14 @@ export const MatchCardOverlay = ({
       {stats && (
         <div
           className={cn(
-            'absolute top-4 inset-x-2 flex items-center justify-center ',
+            'absolute inset-2 flex items-center justify-center scale-75 pointer-events-none',
             theme?.classBottom,
           )}
         >
-          <StatsDisplay stats={stats} size="sm" canWrap />
+          <StatsDisplay stats={stats} size="sm" canWrap className="gap-1" />
         </div>
       )}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none flex-col gap-2">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none flex-col gap-1 scale-75">
         {animations.map((animation) => {
           return (
             <Fragment key={animation.id}>

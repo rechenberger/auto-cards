@@ -15,16 +15,18 @@ export type StatsDisplayProps = Omit<StatDisplayProps, 'value' | 'stat'> & {
   canWrap?: boolean
   showZero?: boolean
   hideBars?: boolean
+  className?: string
 }
 
 export const StatsDisplay = (props: StatsDisplayProps) => {
-  const { stats, canWrap, showZero, hideBars } = props
+  const { stats, canWrap, showZero, hideBars, className } = props
   return (
     <>
       <div
         className={cn(
           'flex flex-row gap-2 justify-center dark text-white',
           canWrap && 'flex-wrap',
+          className,
         )}
       >
         {allStatsDefinition
@@ -83,7 +85,11 @@ export const StatDisplay = ({
       />
       {!hideCount && !stat.hideCount && (
         <div
-          className={cn('text-sm px-1 font-bold', size === 'sm' && 'text-xs')}
+          className={cn(
+            'text-sm px-1 font-bold',
+            size === 'sm' && 'text-xs',
+            'flex-1 text-right',
+          )}
         >
           {value}
         </div>

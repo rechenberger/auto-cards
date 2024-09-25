@@ -21,7 +21,7 @@ export const HandDisplaySingle = ({
     positionMax > 5 ? 1200 : Math.min(600, 200 * (positionMax + 1))
   const actualWidth = 240 * (positionMax + 1) + 8 * positionMax
   const translateX = (1 / 2) * (midDiff / mid) * (maxWidth - actualWidth)
-  const translateY = 40 + midDiffAbs * 20
+  const translateY = 40 + midDiffAbs * (positionMax >= 10 ? 10 : 20)
 
   return (
     <>

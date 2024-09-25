@@ -26,7 +26,7 @@ export const RoundInfo = async ({ roundNo }: { roundNo: number }) => {
 
   return (
     <>
-      <div className="flex flex-col gap-2 self-center">
+      <div className="flex flex-col gap-2">
         <div className="text-center">Round {roundNo + 1}</div>
         <div className="flex flex-col gap-0 bg-border rounded-md px-4 py-2 ">
           <div className="font-bold mb-1 self-center">Shop Chances</div>
