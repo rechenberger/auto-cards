@@ -15,10 +15,12 @@ export const TinyItemClient = ({
   item,
   count,
   action,
+  disableHover,
 }: {
   item: ItemDefinition
   count: number
   action?: SuperAction
+  disableHover?: boolean
 }) => {
   const [hoveredItem, setHoveredItem] = useAtom(itemHoverAtom)
 
@@ -41,9 +43,11 @@ export const TinyItemClient = ({
           hoveredItem && hoveredItem !== item.name && 'opacity-50 grayscale',
         )}
         onMouseEnter={() => {
+          if (disableHover) return
           setHoveredItem(item.name)
         }}
         onMouseLeave={() => {
+          if (disableHover) return
           setHoveredItem(null)
         }}
       >

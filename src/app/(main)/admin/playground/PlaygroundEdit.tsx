@@ -85,7 +85,7 @@ export const PlaygroundEdit = async ({
                         'flex-1',
                       )}
                     >
-                      <TinyItem name={item.name} count={count} />
+                      <TinyItem name={item.name} count={count} disableHover />
                     </div>
                     <Button size="sm" variant="ghost" asChild>
                       <Link

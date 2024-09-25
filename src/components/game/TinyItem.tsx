@@ -5,9 +5,11 @@ import { TinyItemClient } from './TinyItemClient'
 export const TinyItem = async ({
   name,
   count = 1,
+  disableHover,
 }: {
   name: string
   count?: number
+  disableHover?: boolean
 }) => {
   const item = await getItemByName(name)
   const action = async () => {
@@ -16,7 +18,12 @@ export const TinyItem = async ({
   }
   return (
     <>
-      <TinyItemClient item={item} count={count} action={action} />
+      <TinyItemClient
+        item={item}
+        count={count}
+        action={action}
+        disableHover={disableHover}
+      />
     </>
   )
 }
