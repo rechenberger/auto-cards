@@ -11,6 +11,7 @@ import {
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Loadout } from '@/db/schema-zod'
+import { GAME_VERSION, NO_OF_ROUNDS } from '@/game/config'
 import { countifyItems } from '@/game/countifyItems'
 import { roundStats } from '@/game/roundStats'
 import {
@@ -45,18 +46,23 @@ export default async function Page() {
 
   const allLoadouts = await db.query.loadout
     .findMany({
-      where: isNull(schema.loadout.userId),
+      where: and(
+        isNull(schema.loadout.userId),
+        eq(schema.loadout.version, GAME_VERSION),
+      ),
     })
     .then(Loadout.array().parse)
 
-  const rounds = roundStats.map(({ roundNo }) => {
-    const loadouts = allLoadouts.filter((r) => r.roundNo === roundNo)
-    return {
-      roundNo,
-      loadouts,
-      gold: startingByRound(roundNo).startingGold,
-    }
-  })
+  const rounds = roundStats
+    .filter((r) => r.roundNo < NO_OF_ROUNDS)
+    .map(({ roundNo }) => {
+      const loadouts = allLoadouts.filter((r) => r.roundNo === roundNo)
+      return {
+        roundNo,
+        loadouts,
+        gold: startingByRound(roundNo).startingGold,
+      }
+    })
 
   const generateRoundBots = async ({ roundNo }: { roundNo: number }) => {
     'use server'
@@ -83,7 +89,11 @@ export default async function Page() {
     await db
       .delete(schema.loadout)
       .where(
-        and(isNull(schema.loadout.userId), eq(schema.loadout.roundNo, roundNo)),
+        and(
+          isNull(schema.loadout.userId),
+          eq(schema.loadout.roundNo, roundNo),
+          eq(schema.loadout.version, GAME_VERSION),
+        ),
       )
       .execute()
     await db.insert(schema.loadout).values(
@@ -117,8 +127,8 @@ export default async function Page() {
         <TableHeader>
           <TableHead>Round</TableHead>
           <TableHead>Gold</TableHead>
-          <TableHead>Loadouts</TableHead>
           <TableHead>Actions</TableHead>
+          <TableHead>Loadouts</TableHead>
         </TableHeader>
         <TableBody>
           {rounds.map((round) => (
@@ -126,6 +136,18 @@ export default async function Page() {
               <TableRow>
                 <TableCell>{round.roundNo}</TableCell>
                 <TableCell>{round.gold}</TableCell>
+                <TableCell>
+                  <ActionButton
+                    action={async () => {
+                      'use server'
+                      return superAction(async () => {
+                        return generateRoundBots({ roundNo: round.roundNo })
+                      })
+                    }}
+                  >
+                    Generate
+                  </ActionButton>
+                </TableCell>
                 <TableCell className="flex flex-col gap-1">
                   {round.loadouts.map((loadout) => (
                     <Fragment key={loadout.id}>
@@ -138,18 +160,6 @@ export default async function Page() {
                       </div>
                     </Fragment>
                   ))}
-                </TableCell>
-                <TableCell>
-                  <ActionButton
-                    action={async () => {
-                      'use server'
-                      return superAction(async () => {
-                        return generateRoundBots({ roundNo: round.roundNo })
-                      })
-                    }}
-                  >
-                    Generate
-                  </ActionButton>
                 </TableCell>
               </TableRow>
             </Fragment>
