@@ -1,7 +1,6 @@
 import { Game, LoadoutData } from '@/db/schema-zod'
 import { calcStats } from '@/game/calcStats'
 import { countifyItems } from '@/game/countifyItems'
-import { orderItems } from '@/game/orderItems'
 import { map } from 'lodash-es'
 import { Fragment } from 'react'
 import { CardRow } from './CardRow'
@@ -21,7 +20,6 @@ export const LoadoutDisplay = async ({
   const stats = await calcStats({ loadout })
 
   let items = countifyItems(loadout.items)
-  items = await orderItems(items)
 
   return (
     <>

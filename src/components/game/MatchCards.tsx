@@ -3,7 +3,6 @@ import { getItemByName } from '@/game/allItems'
 import { countifyItems } from '@/game/countifyItems'
 import { Changemakers } from '@/game/generateChangemakers'
 import { MatchReport } from '@/game/generateMatch'
-import { orderItems } from '@/game/orderItems'
 import { fallbackThemeId, getThemeDefinition, ThemeId } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { find, map, take } from 'lodash-es'
@@ -30,7 +29,6 @@ export const MatchCards = async ({
   themeId?: ThemeId
 }) => {
   items = countifyItems(items)
-  items = await orderItems(items)
 
   const noOfChangemakers = items.length >= 7 ? 2 : 1
   const topChangemakers = take(changemakers?.[sideIdx], noOfChangemakers)

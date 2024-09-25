@@ -26,7 +26,6 @@ import {
 } from './config'
 import { TriggerEventType } from './ItemDefinition'
 import { getAllModifiedStats } from './modifiers'
-import { orderItems } from './orderItems'
 import { randomStatsResolve } from './randomStatsResolve'
 import { Stats } from './stats'
 
@@ -68,7 +67,6 @@ const generateMatchStateSides = async (input: GenerateMatchInput) => {
           }
         }),
       )
-      items = await orderItems(items)
       const stats = await calcStats({ loadout: p.loadout })
 
       return {
