@@ -1166,7 +1166,6 @@ const allItemsConst = [
     stats: {
       space: space(-3),
     },
-
     triggers: [
       {
         type: 'interval',
@@ -1202,7 +1201,6 @@ const allItemsConst = [
     stats: {
       space: space(-3),
     },
-
     triggers: [
       {
         type: 'interval',
@@ -1238,7 +1236,6 @@ const allItemsConst = [
           regen: -1,
         },
       },
-
       {
         type: 'startOfBattle',
         statsSelf: {
@@ -1252,18 +1249,15 @@ const allItemsConst = [
     prompt: 'a heavy crossbow',
     tags: ['weapon'],
     rarity: 'epic',
-    // bow + spear
-    price: 4 + 6,
+    price: 4 + 6, // bow + spear
     shop: false,
     disabled: !NEXT_PHASE,
     stats: {
       space: space(-3),
     },
-
     statsItem: {
       ranged: 1,
     },
-
     triggers: [
       {
         type: 'interval',
@@ -1292,18 +1286,15 @@ const allItemsConst = [
     prompt: 'a grappling hook ',
     tags: ['weapon'],
     rarity: 'epic',
-    // bow + spear
     price: 5,
     shop: true,
     disabled: !NEXT_PHASE,
     stats: {
       space: space(-3),
     },
-
     statsItem: {
       ranged: 1,
     },
-
     triggers: [
       {
         type: 'interval',
