@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { getAllItems } from '@/game/allItems'
 import { calcLoadoutPrice } from '@/game/calcLoadoutPrice'
 import { NO_OF_ROUNDS } from '@/game/config'
+import { countifyItems } from '@/game/countifyItems'
 import { fixOrderItems, orderItems } from '@/game/orderItems'
 import { negativeItems, sumItems } from '@/game/sumItems'
 import { cn } from '@/lib/utils'
@@ -22,7 +23,14 @@ export const PlaygroundEdit = async ({
 }) => {
   let allItems = await getAllItems()
   allItems = await orderItems(allItems)
-  const loadouts = options.loadouts
+  const loadouts = await Promise.all(
+    options.loadouts.map(async (loadout) => {
+      return {
+        ...loadout,
+        items: await fixOrderItems(countifyItems(loadout.items)),
+      }
+    }),
+  )
 
   return (
     <>
