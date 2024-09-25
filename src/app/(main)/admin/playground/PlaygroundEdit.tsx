@@ -23,8 +23,9 @@ export const PlaygroundEdit = async ({
 }) => {
   let allItems = await getAllItems()
   allItems = await orderItems(allItems)
-  const loadouts = await Promise.all(
-    options.loadouts.map(async (loadout) => {
+  let loadouts = options.loadouts
+  loadouts = await Promise.all(
+    loadouts.map(async (loadout) => {
       return {
         ...loadout,
         items: await fixOrderItems(countifyItems(loadout.items)),
