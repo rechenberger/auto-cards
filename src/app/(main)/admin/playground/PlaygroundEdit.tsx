@@ -4,7 +4,7 @@ import { TinyItem } from '@/components/game/TinyItem'
 import { Button } from '@/components/ui/button'
 import { getAllItems } from '@/game/allItems'
 import { calcLoadoutPrice } from '@/game/calcLoadoutPrice'
-import { NO_OF_ROUNDS } from '@/game/config'
+import { GAME_VERSION, NO_OF_ROUNDS } from '@/game/config'
 import { orderItems } from '@/game/orderItems'
 import { negativeItems, sumItems } from '@/game/sumItems'
 import { cn } from '@/lib/utils'
@@ -42,6 +42,7 @@ export const PlaygroundEdit = async ({
                         gameId: null,
                         roundNo: NO_OF_ROUNDS - 1,
                         primaryMatchParticipationId: null,
+                        version: GAME_VERSION,
                       }}
                     />
                   </div>
