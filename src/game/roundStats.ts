@@ -79,7 +79,10 @@ export const roundStats: RoundStats[] = [
     // health: 170,
     experience: 2,
     rarityWeights: {
-      ...defaultRarityWeights,
+      common: 25,
+      uncommon: 39,
+      rare: 35,
+      epic: 1,
     },
   },
   {
@@ -88,7 +91,10 @@ export const roundStats: RoundStats[] = [
     // health: 200,
     experience: 2,
     rarityWeights: {
-      ...defaultRarityWeights,
+      common: 25,
+      uncommon: 35,
+      rare: 35,
+      epic: 5,
     },
   },
   {
@@ -97,7 +103,10 @@ export const roundStats: RoundStats[] = [
     // health: 230,
     experience: 2,
     rarityWeights: {
-      ...defaultRarityWeights,
+      common: 25,
+      uncommon: 30,
+      rare: 35,
+      epic: 10,
     },
   },
   {
@@ -106,7 +115,10 @@ export const roundStats: RoundStats[] = [
     // health: 260,
     experience: 2,
     rarityWeights: {
-      ...defaultRarityWeights,
+      common: 25,
+      uncommon: 25,
+      rare: 30,
+      epic: 20,
     },
   },
   {
@@ -115,7 +127,10 @@ export const roundStats: RoundStats[] = [
     // health: 300,
     experience: 2,
     rarityWeights: {
-      ...defaultRarityWeights,
+      common: 20,
+      uncommon: 25,
+      rare: 30,
+      epic: 25,
     },
   },
   {

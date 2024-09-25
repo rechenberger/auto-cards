@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default async function Page() {
   return (
     <>
-      <div className="flex flex-row gap-2 gap-y-8 flex-wrap justify-center">
+      <div className="flex flex-row xl:grid xl:grid-cols-5 xl:self-center gap-2 gap-y-8 flex-wrap justify-center">
         {roundStats.map((round) => {
           if (round.roundNo >= NO_OF_ROUNDS) return null
           return (
