@@ -73,6 +73,7 @@ export const TriggerDisplay = ({
           <div className="flex flex-row gap-2 items-center">
             <div>Required:</div>
             <StatsDisplay
+              size="sm"
               relative
               stats={trigger.statsRequired}
               disableTooltip={disableTooltip}
@@ -83,6 +84,7 @@ export const TriggerDisplay = ({
           <div className="flex flex-row gap-2 items-center">
             {/* <div>Self:</div> */}
             <StatsDisplay
+              size="sm"
               relative
               stats={trigger.statsSelf}
               disableTooltip={disableTooltip}
@@ -93,6 +95,7 @@ export const TriggerDisplay = ({
           <div className="flex flex-row gap-2 items-center">
             <div>Item:</div>
             <StatsDisplay
+              size="sm"
               relative
               stats={trigger.statsItem}
               disableTooltip={disableTooltip}
@@ -103,6 +106,7 @@ export const TriggerDisplay = ({
           <div className="flex flex-row gap-2 items-center">
             <div>Enemy:</div>
             <StatsDisplay
+              size="sm"
               relative
               stats={trigger.statsEnemy}
               disableTooltip={disableTooltip}
@@ -113,6 +117,7 @@ export const TriggerDisplay = ({
           <div className="flex flex-row gap-2 items-center">
             {/* <div>Attack:</div> */}
             <StatsDisplay
+              size="sm"
               stats={trigger.attack as any}
               disableTooltip={disableTooltip}
             />

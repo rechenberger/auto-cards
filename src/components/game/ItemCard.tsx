@@ -204,7 +204,7 @@ export const ItemCard = async (props: ItemCardProps) => {
         {!onlyTop && (
           <div
             className={cn(
-              'flex-1 flex flex-col justify-center rounded-lg p-2',
+              'flex-1 flex flex-col justify-center rounded-lg p-2 text-xs',
               tag.bgClass,
               tag.bgClass && 'border-2 border-black',
               theme.classBottom,
@@ -213,6 +213,7 @@ export const ItemCard = async (props: ItemCardProps) => {
             <div className="flex flex-col items-center gap-2">
               {item.stats && (
                 <StatsDisplay
+                  size="sm"
                   relative
                   stats={item.stats}
                   disableTooltip={disableTooltip}
@@ -222,6 +223,7 @@ export const ItemCard = async (props: ItemCardProps) => {
                 <div className="flex flex-row gap-2 items-center">
                   <div>Item:</div>
                   <StatsDisplay
+                    size="sm"
                     relative
                     stats={item.statsItem}
                     disableTooltip={disableTooltip}
@@ -246,7 +248,8 @@ export const ItemCard = async (props: ItemCardProps) => {
       {/* </HoverCardTrigger>
         <HoverCardContent>
           <div className="flex flex-col gap-4">
-            {item.stats && <StatsDisplay relative stats={item.stats} />}
+            {item.stats && <StatsDisplay
+            size="sm" relative stats={item.stats} />}
             {item.triggers?.map((trigger, idx) => (
               <Fragment key={idx}>
                 <TriggerDisplay trigger={trigger} />

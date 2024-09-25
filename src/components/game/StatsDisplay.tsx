@@ -87,7 +87,7 @@ export const StatDisplay = ({
         <div
           className={cn(
             'text-sm px-1 font-bold',
-            size === 'sm' && 'text-xs',
+            size === 'sm' && 'text-xs -mb-0.5',
             'flex-1 text-right',
           )}
         >
