@@ -27,6 +27,8 @@ export type SimpleSortableItem = {
   disabled?: boolean
 }
 
+// FROM: https://docs.dndkit.com/presets/sortable
+
 export const SimpleSortable = ({
   items,
   onOrderChange,
@@ -57,12 +59,10 @@ export const SimpleSortable = ({
         if (!active || !over) {
           return
         }
-        console.log('onDragEnd', evt)
         const oldIndex = ids.indexOf(active.id)
         const newIndex = ids.indexOf(over.id)
 
         const newOrder = arrayMove(items, oldIndex, newIndex)
-        // console.log('newOrder', newOrder)
         setItemsOptimistic(newOrder)
         onOrderChange?.(newOrder.map((item) => omit(item, ['node'])))
       }}
