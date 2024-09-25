@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { getAllItems } from '@/game/allItems'
 import { calcLoadoutPrice } from '@/game/calcLoadoutPrice'
 import { NO_OF_ROUNDS } from '@/game/config'
-import { orderItems } from '@/game/orderItems'
+import { fixOrderItems, orderItems } from '@/game/orderItems'
 import { negativeItems, sumItems } from '@/game/sumItems'
 import { cn } from '@/lib/utils'
 import { cloneDeep, orderBy } from 'lodash-es'
@@ -101,6 +101,7 @@ export const PlaygroundEdit = async ({
                 id: item.name,
                 node,
                 itemIdx,
+                disabled: itemIdx === -1 || !item.triggers?.length,
               }
             })
 
@@ -137,9 +138,10 @@ export const PlaygroundEdit = async ({
                         'use server'
 
                         const oldItems = loadout.items
-                        const newItems = orderBy(oldItems, (i) =>
+                        let newItems = orderBy(oldItems, (i) =>
                           newOrder.findIndex((n) => n.id === i.name),
                         )
+                        newItems = await fixOrderItems(newItems)
 
                         const newLoadouts = cloneDeep(loadouts)
                         newLoadouts[sideIdx] = { items: newItems }

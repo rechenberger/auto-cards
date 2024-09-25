@@ -24,6 +24,7 @@ import { ReactNode, useEffect, useState } from 'react'
 export type SimpleSortableItem = {
   id: UniqueIdentifier
   node: ReactNode
+  disabled?: boolean
 }
 
 export const SimpleSortable = ({
@@ -77,7 +78,7 @@ export const SimpleSortable = ({
 
 const SortableItem = ({ item }: { item: SimpleSortableItem }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: item.id })
+    useSortable({ id: item.id, disabled: item.disabled })
 
   const style = {
     transform: CSS.Transform.toString(transform),
