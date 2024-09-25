@@ -38,7 +38,7 @@ export const addToLeaderboard = async ({
     )
   }
 
-  const results = await Promise.all(
+  const resultsSettled = await Promise.allSettled(
     leaderboard.map(async (entry, idx) => {
       const seed = seedToString({
         seed: ['addToLeaderboard', type, roundNo, loadout.id, entry.id],
@@ -74,6 +74,18 @@ export const addToLeaderboard = async ({
       }
     }),
   )
+
+  // Only use the results that were fulfilled
+  const results = resultsSettled
+    .filter((result) => result.status === 'fulfilled')
+    .map((result) => result.value)
+
+  if (results.length < leaderboard.length) {
+    console.warn(
+      'Some matches failed while adding to leaderboard',
+      resultsSettled.filter((result) => result.status === 'rejected'),
+    )
+  }
 
   const matchCount = results.length || 1
   const winCount = results.filter((result) => result.win).length
