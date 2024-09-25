@@ -9,6 +9,7 @@ import { NO_OF_ROUNDS } from '@/game/config'
 import { orderItems } from '@/game/orderItems'
 import { negativeItems, sumItems } from '@/game/sumItems'
 import { cn } from '@/lib/utils'
+import { orderBy } from 'lodash-es'
 import Link from 'next/link'
 import { Fragment } from 'react'
 import { playgroundHref, PlaygroundOptions } from './playgroundHref'
@@ -29,9 +30,12 @@ export const PlaygroundEdit = async ({
       <div className="flex flex-col gap-4 self-center">
         <div className="grid grid-cols-2 gap-8">
           {loadouts.map((loadout, sideIdx) => {
-            const items = allItems.map((item) => {
+            let items = allItems.map((item) => {
+              const itemIdx = loadout.items.findIndex(
+                (i) => i.name === item.name,
+              )
               const count =
-                loadout.items.find((i) => i.name === item.name)?.count ?? 0
+                itemIdx === -1 ? 0 : (loadout.items[itemIdx].count ?? 1)
 
               const minusItems =
                 count > 0
@@ -97,8 +101,15 @@ export const PlaygroundEdit = async ({
               return {
                 id: item.name,
                 node,
+                itemIdx,
               }
             })
+
+            items = orderBy(
+              items,
+              (i) => (i.itemIdx === -1 ? Infinity : i.itemIdx),
+              'asc',
+            )
 
             return (
               <Fragment key={sideIdx}>
