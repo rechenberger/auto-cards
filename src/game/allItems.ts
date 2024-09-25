@@ -1474,6 +1474,27 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'manaBarrier',
+    prompt: 'a magical barrier to block projectiles',
+    tags: ['accessory'],
+    rarity: 'epic',
+    price: 8,
+    shop: true,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        statsRequired: {
+          mana: 3,
+        },
+        statsSelf: {
+          mana: -3,
+          barrier: 3,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')

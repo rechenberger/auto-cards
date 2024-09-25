@@ -214,6 +214,12 @@ const heroStats = [
     bgClass: 'bg-blue-500',
     tooltip: 'Mana is used for magic.',
   },
+  {
+    name: 'barrier',
+    icon: Shield,
+    bgClass: 'bg-blue-500',
+    tooltip: 'Immune to ranged attacks for X seconds.',
+  },
 ] as const satisfies StatDefinitionPre[]
 export const allHeroStats = constArrayMap(heroStats, 'name')
 export const HeroStat = z.enum(allHeroStats)
