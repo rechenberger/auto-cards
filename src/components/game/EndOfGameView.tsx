@@ -11,7 +11,13 @@ import { LiveMatchResults } from './LiveMatchResults'
 import { LoadoutDisplay } from './LoadoutDisplay'
 import { TitleScreen } from './TitleScreen'
 
-export const EndOfGameView = async ({ game }: { game: Game }) => {
+export const EndOfGameView = async ({
+  game,
+  oldVersion,
+}: {
+  game: Game
+  oldVersion?: boolean
+}) => {
   const loadout = await db.query.loadout.findFirst({
     where: eq(schema.loadout.gameId, game.id),
     orderBy: desc(schema.loadout.roundNo),
@@ -22,6 +28,7 @@ export const EndOfGameView = async ({ game }: { game: Game }) => {
         {/* <div className="text-6xl">GG</div>
         <div className="text-2xl">Game Over</div> */}
         <div className="p-4 bg-background/80 rounded-lg flex flex-col gap-4">
+          <div className="text-sm text-muted-foreground">Old Game Version</div>
           <div className={cn(fontLore.className, '')}>
             <div className="text-2xl font-bold">
               You will never be forgotten
@@ -32,10 +39,10 @@ export const EndOfGameView = async ({ game }: { game: Game }) => {
           </div>
           <GameMatchBoard game={game} />
         </div>
-        {game.liveMatchId && (
+        {!oldVersion && game.liveMatchId && (
           <LiveMatchResults liveMatchId={game.liveMatchId} />
         )}
-        {loadout && <LeaderboardRankCard loadout={loadout} />}
+        {!oldVersion && loadout && <LeaderboardRankCard loadout={loadout} />}
 
         <div className="self-stretch flex flex-col gap-4">
           <LoadoutDisplay game={game} loadout={game.data.currentLoadout} />
