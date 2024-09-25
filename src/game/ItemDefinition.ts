@@ -56,6 +56,6 @@ export const ItemDefinition = z.object({
   stats: Stats.optional(),
   statsItem: Stats.optional(),
   rarity: Rarity.optional(),
-  disabled: z.boolean().optional(),
+  version: z.number().optional(),
 })
 export type ItemDefinition = z.infer<typeof ItemDefinition>

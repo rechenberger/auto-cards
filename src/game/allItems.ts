@@ -1,7 +1,7 @@
 import { constArrayMap } from '@/lib/constArrayMap'
 import { keyBy } from 'lodash-es'
 import { z } from 'zod'
-import { IGNORE_SPACE, NEXT_PHASE } from './config'
+import { GAME_VERSION, IGNORE_SPACE } from './config'
 import { ItemDefinition } from './ItemDefinition'
 
 const space = (space: number) => {
@@ -1098,7 +1098,7 @@ const allItemsConst = [
     rarity: 'common',
     price: 3,
     shop: true,
-    disabled: !NEXT_PHASE,
+    version: 2,
     stats: {
       space: space(-3),
     },
@@ -1141,7 +1141,7 @@ const allItemsConst = [
     rarity: 'rare',
     price: 4,
     shop: true,
-    disabled: !NEXT_PHASE,
+    version: 2,
     stats: {
       space: space(-3),
     },
@@ -1162,7 +1162,7 @@ const allItemsConst = [
     rarity: 'epic',
     price: 3 + 4 + 4,
     shop: false,
-    disabled: !NEXT_PHASE,
+    version: 2,
     stats: {
       space: space(-3),
     },
@@ -1197,7 +1197,7 @@ const allItemsConst = [
     rarity: 'epic',
     price: 7,
     shop: true,
-    disabled: !NEXT_PHASE,
+    version: 2,
     stats: {
       space: space(-3),
     },
@@ -1251,7 +1251,7 @@ const allItemsConst = [
     rarity: 'epic',
     price: 4 + 6, // bow + spear
     shop: false,
-    disabled: !NEXT_PHASE,
+    version: 2,
     stats: {
       space: space(-3),
     },
@@ -1288,7 +1288,7 @@ const allItemsConst = [
     rarity: 'epic',
     price: 5,
     shop: true,
-    disabled: !NEXT_PHASE,
+    version: 2,
     stats: {
       space: space(-3),
     },
@@ -1372,7 +1372,7 @@ const allItemsConst = [
     rarity: 'uncommon',
     price: 2,
     shop: true,
-    disabled: !NEXT_PHASE,
+    version: 2,
     triggers: [
       {
         type: 'interval',
@@ -1390,7 +1390,7 @@ const allItemsConst = [
     rarity: 'rare',
     price: 4 + 4, // woodenBuckler + unstableManaCrystal
     shop: false,
-    disabled: !NEXT_PHASE,
+    version: 2,
     triggers: [
       {
         type: 'onDefendBeforeHit',
@@ -1412,7 +1412,7 @@ const allItemsConst = [
     rarity: 'uncommon',
     price: 4,
     shop: true,
-    disabled: !NEXT_PHASE,
+    version: 2,
     triggers: [
       {
         type: 'interval',
@@ -1430,7 +1430,7 @@ const allItemsConst = [
     rarity: 'epic',
     price: 6,
     shop: true,
-    disabled: !NEXT_PHASE,
+    version: 2,
     triggers: [
       {
         type: 'interval',
@@ -1455,7 +1455,7 @@ const allItemsConst = [
     rarity: 'rare',
     price: 7, // woodenSword + unstableManaCrystal
     shop: false,
-    disabled: !NEXT_PHASE,
+    version: 2,
     triggers: [
       {
         type: 'interval',
@@ -1488,7 +1488,7 @@ const allItemsConst = [
     rarity: 'epic',
     price: 8,
     shop: true,
-    disabled: !NEXT_PHASE,
+    version: 2,
     triggers: [
       {
         type: 'interval',
@@ -1510,7 +1510,7 @@ const allItemsConst = [
     rarity: 'epic',
     price: 8,
     shop: true,
-    disabled: !NEXT_PHASE,
+    version: 2,
     triggers: [
       {
         type: 'interval',
@@ -1532,7 +1532,7 @@ const allItemsConst = [
     rarity: 'epic',
     price: 3 + 7, // dagger + unstableManaCrystal
     shop: false,
-    disabled: !NEXT_PHASE,
+    version: 2,
     statsItem: {
       unblockable: 1,
       critChance: 30,
@@ -1564,7 +1564,7 @@ export const ItemName = z.enum(allItemNames)
 export type ItemName = z.infer<typeof ItemName>
 
 const allItems: ItemDefinition[] = allItemsConst.filter(
-  (i: ItemDefinition) => !i.disabled,
+  (i: ItemDefinition) => !i.version || i.version <= GAME_VERSION,
 )
 
 export const getAllItems = async () => allItems

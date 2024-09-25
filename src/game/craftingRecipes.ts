@@ -1,5 +1,5 @@
 import { ItemName } from './allItems'
-import { NEXT_PHASE } from './config'
+import { GAME_VERSION } from './config'
 
 type CraftingItem = {
   name: ItemName
@@ -9,7 +9,7 @@ type CraftingItem = {
 export type CraftingRecipe = {
   input: CraftingItem[]
   output: CraftingItem[]
-  disabled?: boolean
+  version?: number
 }
 
 export const craftingRecipes: CraftingRecipe[] = [
@@ -55,7 +55,7 @@ export const craftingRecipes: CraftingRecipe[] = [
       { name: 'metalGloves', count: 2 },
     ],
     output: [{ name: 'longSword' }],
-    disabled: !NEXT_PHASE,
+    version: 2,
   },
   {
     input: [
@@ -63,7 +63,7 @@ export const craftingRecipes: CraftingRecipe[] = [
       { name: 'spear', count: 1 },
     ],
     output: [{ name: 'crossBow' }],
-    disabled: !NEXT_PHASE,
+    version: 2,
   },
   {
     input: [{ name: 'flyAgaric', count: 2 }],
@@ -75,6 +75,7 @@ export const craftingRecipes: CraftingRecipe[] = [
       { name: 'unstableManaCrystal', count: 1 },
     ],
     output: [{ name: 'manaShield', count: 1 }],
+    version: 2,
   },
   {
     input: [
@@ -82,6 +83,7 @@ export const craftingRecipes: CraftingRecipe[] = [
       { name: 'unstableManaCrystal', count: 1 },
     ],
     output: [{ name: 'manaSword', count: 1 }],
+    version: 2,
   },
   {
     input: [
@@ -89,6 +91,7 @@ export const craftingRecipes: CraftingRecipe[] = [
       { name: 'unstableManaCrystal', count: 1 },
     ],
     output: [{ name: 'manaDagger', count: 1 }],
+    version: 2,
   },
 ]
 
@@ -96,7 +99,7 @@ export const getCraftingRecipes = async () => {
   let recipes = craftingRecipes
 
   recipes = recipes.filter((recipe) => {
-    return !recipe.disabled
+    return !recipe.version || recipe.version <= GAME_VERSION
   })
 
   return recipes
