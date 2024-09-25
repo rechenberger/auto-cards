@@ -62,7 +62,7 @@ const heroStats = [
     icon: Cross,
     bgClass: 'bg-red-500',
     tooltip: 'Max Health points.',
-    // hidden: true,
+    bar: true,
   },
   {
     name: 'space',
@@ -83,7 +83,7 @@ const heroStats = [
     icon: BicepsFlexed,
     bgClass: 'bg-yellow-500',
     tooltip: 'Max Stamina points.',
-    // hidden: true,
+    bar: true,
   },
   {
     name: 'staminaRegen',
