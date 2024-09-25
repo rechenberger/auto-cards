@@ -104,7 +104,7 @@ const getModifiedStats = (
     } else {
       const exhaustiveCheck: never = modifier.arithmetic
     }
-    result[modifier.targetStat] = floor(result[modifier.targetStat] ?? 0, 0)
+    result[modifier.targetStat] = floor(result[modifier.targetStat] ?? 0)
   }
 
   if (!hasAnyStats({ stats: result })) return undefined
