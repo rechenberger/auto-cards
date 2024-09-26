@@ -1,4 +1,4 @@
-export const DEFAULT_GAME_VERSION = 1
+export const DEFAULT_GAME_VERSION = 2
 export const GAME_VERSION = process.env.GAME_VERSION
   ? parseInt(process.env.GAME_VERSION)
   : DEFAULT_GAME_VERSION
