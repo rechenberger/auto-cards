@@ -9,6 +9,7 @@ import { MatchCards } from './MatchCards'
 import { getMatchParticipants, MatchParticipant } from './MatchParticipants'
 import { MatchReportPlaybackControls } from './MatchReportPlaybackControls'
 import { MatchSide } from './MatchSide'
+import { MatchReportTabs } from './MatchReportTabs'
 
 export const MatchView = async ({
   game,
@@ -102,12 +103,12 @@ export const MatchView = async ({
           }}
         >
           <MatchReportPlaybackControls matchReport={matchReport} />
-          {/* <MatchReportTabs
+          <MatchReportTabs
             game={game}
             matchReport={matchReport}
             loadouts={participants.map((p) => p.loadout.data)}
             seed={match.data.seed}
-          /> */}
+          />
           <div className="flex-1" />
           {/* {!!game && <NextRoundButton game={game} />} */}
         </div>
