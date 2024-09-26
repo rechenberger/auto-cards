@@ -56,6 +56,7 @@ export const addToLeaderboard = async ({
           },
         ],
         seed: [seed],
+        skipLogs: true,
       })
 
       const win = result.winner.sideIdx === 0
