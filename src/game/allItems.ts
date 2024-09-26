@@ -360,13 +360,12 @@ const allItemsConst = [
   },
   {
     name: 'beerFest',
-
     prompt:
       'people are celebrating beer fest, drinking and dancing. the word beer fest is written in letters of beer foam',
     tags: ['event'],
     rarity: 'rare',
-    price: 8,
-    shop: true,
+    price: 2, // = beer
+    shop: false,
     stats: {
       space: space(-4),
     },
