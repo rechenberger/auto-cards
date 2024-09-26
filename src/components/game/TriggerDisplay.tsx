@@ -48,7 +48,7 @@ export const TriggerDisplay = ({
     <>
       <div className="px-2 py-2 bg-border/40 rounded-md flex flex-col gap-1 items-center min-w-40">
         <div className="flex flex-row gap-1 justify-center">
-          <div className="">
+          <div className="font-bold">
             {trigger.type === 'interval' ? (
               sideIdx !== undefined &&
               itemIdx !== undefined &&
