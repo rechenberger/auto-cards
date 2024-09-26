@@ -116,7 +116,7 @@ export const addToLeaderboard = async ({
     }
   }
 
-  revalidatePath('docs/leaderboard')
+  revalidatePath('/watch/leaderboard')
 
   return {
     results,
