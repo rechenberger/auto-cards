@@ -5,6 +5,7 @@ import { createId } from '@paralleldrive/cuid2'
 import { every } from 'lodash-es'
 import { AlertCircle, Swords } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
+import { MatchCards } from './MatchCards'
 import { getMatchParticipants, MatchParticipant } from './MatchParticipants'
 import { MatchReportPlaybackControls } from './MatchReportPlaybackControls'
 import { MatchSide } from './MatchSide'
@@ -72,13 +73,13 @@ export const MatchView = async ({
           }}
           className="flex flex-row gap-4 items-start xl:items-center justify-start"
         >
-          {/* <MatchCards
+          <MatchCards
             items={participants[0].loadout.data.items}
             sideIdx={0}
             changemakers={changemakers}
             matchReport={matchReport}
-            themeId={themeIds[0]}
-          /> */}
+            // themeId={themeIds[0]}
+          />
         </div>
         <div
           style={{
@@ -86,13 +87,13 @@ export const MatchView = async ({
           }}
           className="flex flex-row gap-4 items-start xl:items-center justify-end"
         >
-          {/* <MatchCards
+          <MatchCards
             items={participants[1].loadout.data.items}
             sideIdx={1}
             changemakers={changemakers}
             matchReport={matchReport}
-            themeId={themeIds[1]}
-          /> */}
+            // themeId={themeIds[1]}
+          />
         </div>
         <div
           className="flex-1 flex flex-col gap-2 items-center justify-center self-stretch"

@@ -3,24 +3,15 @@ import { getItemByName } from '@/game/allItems'
 import { Changemaker } from '@/game/generateChangemakers'
 import { getRarityDefinition } from '@/game/rarities'
 import { getTagDefinition } from '@/game/tags'
-import {
-  defaultThemeId,
-  fallbackThemeId,
-  getThemeDefinition,
-  ThemeId,
-} from '@/game/themes'
+import { getThemeDefinition, ThemeId } from '@/game/themes'
 import { fontHeading } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
 import { first } from 'lodash-es'
 import { Fragment } from 'react'
-import { AiItemImage } from '../ai/AiItemImage'
-import { ItemSellButton } from './ItemSellButton'
 import { StatsDisplay } from './StatsDisplay'
 import { TriggerDisplay } from './TriggerDisplay'
-import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
-import { streamItemCard } from './streamItemCard'
 
 export type ItemCardProps = {
   game?: Game
@@ -61,11 +52,11 @@ export const ItemCard = async (props: ItemCardProps) => {
   const title = capitalCase(name)
   const tag = getTagDefinition(first(item.tags) ?? 'default')
 
-  if (!themeId) {
-    themeId = await getMyUserThemeIdWithFallback()
-  } else {
-    themeId = await fallbackThemeId(themeId)
-  }
+  // if (!themeId) {
+  //   themeId = await getMyUserThemeIdWithFallback()
+  // } else {
+  //   themeId = await fallbackThemeId(themeId)
+  // }
 
   const theme = await getThemeDefinition(themeId)
 
@@ -114,7 +105,7 @@ export const ItemCard = async (props: ItemCardProps) => {
           className,
         )}
       >
-        {canSell && <ItemSellButton gameId={gameId} item={item} />}
+        {/* {canSell && <ItemSellButton gameId={gameId} item={item} />} */}
         <div
           className={cn(
             'aspect-square relative rounded-tr-lg rounded-b-lg overflow-hidden bg-black',
@@ -166,11 +157,11 @@ export const ItemCard = async (props: ItemCardProps) => {
               )}
             </div>
             <div className="border-black border-2 rounded-lg overflow-hidden">
-              <AiItemImage
+              {/* <AiItemImage
                 className="aspect-square"
                 itemName={item.name}
                 themeId={themeId ?? defaultThemeId}
-              />
+              /> */}
             </div>
           </div>
           {count >= 2 && (
@@ -269,8 +260,8 @@ export const ItemCard = async (props: ItemCardProps) => {
           className="cursor-pointer flex"
           hideIcon
           action={async () => {
-            'use server'
-            return streamItemCard({ ...props, count: 1, onlyTop: false })
+            // 'use server'
+            // return streamItemCard({ ...props, count: 1, onlyTop: false })
           }}
         >
           {inner}

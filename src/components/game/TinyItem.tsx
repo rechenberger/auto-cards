@@ -1,4 +1,3 @@
-import { streamItemCard } from '@/components/game/streamItemCard'
 import { getItemByName } from '@/game/allItems'
 import { TinyItemClient } from './TinyItemClient'
 
@@ -11,8 +10,8 @@ export const TinyItem = async ({
 }) => {
   const item = await getItemByName(name)
   const action = async () => {
-    'use server'
-    return streamItemCard({ name })
+    // 'use server'
+    // return streamItemCard({ name })
   }
   return (
     <>
