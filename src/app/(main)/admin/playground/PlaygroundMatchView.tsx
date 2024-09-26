@@ -1,3 +1,5 @@
+'use client'
+
 import { MatchParticipant } from '@/components/game/MatchParticipants'
 import { MatchView } from '@/components/game/MatchView'
 import { Match } from '@/db/schema-zod'
@@ -49,7 +51,7 @@ export const PlaygroundMatchView = async ({
     <MatchView
       match={match}
       forceParticipants={participants}
-      calculateChangemakers
+      // calculateChangemakers
     />
   )
 }

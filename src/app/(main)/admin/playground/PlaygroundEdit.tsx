@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { Fragment } from 'react'
 import { playgroundHref, PlaygroundOptions } from './playgroundHref'
+import { ClientMatchButton } from './ClientMatchButton'
 
 export const PlaygroundEdit = async ({
   options,
@@ -32,6 +33,7 @@ export const PlaygroundEdit = async ({
                     {calcLoadoutPrice(loadout).then((gold) => (
                       <StatsDisplay stats={{ gold }} showZero />
                     ))}
+                    <ClientMatchButton options={options} />
                     <LeaderboardBenchmarkButton
                       loadout={{
                         id: 'fake',

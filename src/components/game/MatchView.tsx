@@ -1,19 +1,13 @@
 import { Game, Match } from '@/db/schema-zod'
-import { generateChangemakers } from '@/game/generateChangemakers'
 import { generateMatch } from '@/game/generateMatch'
-import { fallbackThemeId } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { createId } from '@paralleldrive/cuid2'
 import { every } from 'lodash-es'
 import { AlertCircle, Swords } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
-import { MatchBackground } from './MatchBackground'
-import { MatchCards } from './MatchCards'
 import { getMatchParticipants, MatchParticipant } from './MatchParticipants'
 import { MatchReportPlaybackControls } from './MatchReportPlaybackControls'
-import { MatchReportTabs } from './MatchReportTabs'
 import { MatchSide } from './MatchSide'
-import { NextRoundButton } from './NextRoundButton'
 
 export const MatchView = async ({
   game,
@@ -38,7 +32,7 @@ export const MatchView = async ({
             Game has changed too much to replay this match
           </AlertDescription>
         </Alert>
-        {!!game && <NextRoundButton game={game} />}
+        {/* {!!game && <NextRoundButton game={game} />} */}
       </>
     )
   }
@@ -50,19 +44,17 @@ export const MatchView = async ({
       participants: participants.map((p) => ({ loadout: p.loadout.data })),
       seed: [match.data.seed],
     }),
-    calculateChangemakers
-      ? generateChangemakers({ match, participants })
-      : undefined,
+    undefined,
   ])
   console.timeEnd(`generateMatchByWorker ${match.id} ${logId}`)
 
-  const themeIds = await Promise.all(
-    participants.map((p) => fallbackThemeId(p.user?.themeId)),
-  )
+  // const themeIds = await Promise.all(
+  //   participants.map((p) => fallbackThemeId(p.user?.themeId)),
+  // )
 
   return (
     <>
-      <MatchBackground themeIds={themeIds} autoGenerate={true} />
+      {/* <MatchBackground themeIds={themeIds} autoGenerate={true} /> */}
       <div
         className={cn(
           'flex-1 grid gap-4',
@@ -80,13 +72,13 @@ export const MatchView = async ({
           }}
           className="flex flex-row gap-4 items-start xl:items-center justify-start"
         >
-          <MatchCards
+          {/* <MatchCards
             items={participants[0].loadout.data.items}
             sideIdx={0}
             changemakers={changemakers}
             matchReport={matchReport}
             themeId={themeIds[0]}
-          />
+          /> */}
         </div>
         <div
           style={{
@@ -94,13 +86,13 @@ export const MatchView = async ({
           }}
           className="flex flex-row gap-4 items-start xl:items-center justify-end"
         >
-          <MatchCards
+          {/* <MatchCards
             items={participants[1].loadout.data.items}
             sideIdx={1}
             changemakers={changemakers}
             matchReport={matchReport}
             themeId={themeIds[1]}
-          />
+          /> */}
         </div>
         <div
           className="flex-1 flex flex-col gap-2 items-center justify-center self-stretch"
@@ -109,14 +101,14 @@ export const MatchView = async ({
           }}
         >
           <MatchReportPlaybackControls matchReport={matchReport} />
-          <MatchReportTabs
+          {/* <MatchReportTabs
             game={game}
             matchReport={matchReport}
             loadouts={participants.map((p) => p.loadout.data)}
             seed={match.data.seed}
-          />
+          /> */}
           <div className="flex-1" />
-          {!!game && <NextRoundButton game={game} />}
+          {/* {!!game && <NextRoundButton game={game} />} */}
         </div>
         <div
           style={{
