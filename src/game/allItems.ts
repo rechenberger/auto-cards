@@ -1118,22 +1118,18 @@ const allItemsConst = [
     price: 5,
     shop: true,
     triggers: [
-      // {
-      //   type: 'startOfBattle',
-      //   modifiers: [
-      //     {
-      //       arithmetic: 'add',
-      //       targetStats: 'statsSelf',
-      //       targetStat: 'hungry',
-      //       description: 'Get **+10** *hungry* for every *food*',
-      //       valueAddingTags: ['food'],
-      //       valueMultiplier: 10,
-      //     },
-      //   ],
-      // },
       {
         type: 'startOfBattle',
-        description: 'Item currently disabled 🥹',
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStats: 'statsSelf',
+            targetStat: 'hungry',
+            description: 'Get **+1.5** *hungry* for every *food*',
+            valueAddingTags: ['food'],
+            valueMultiplier: 1.5,
+          },
+        ],
       },
     ],
   },
