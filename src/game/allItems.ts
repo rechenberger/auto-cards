@@ -387,8 +387,8 @@ const allItemsConst = [
       'people are celebrating the thorny things like thorny roses and thorny bushes. the word thorns fest is written as letters of rose stems.',
     tags: ['event'],
     rarity: 'rare',
-    price: 8,
-    shop: true,
+    price: 4, // = roseBush
+    shop: false,
     stats: {
       space: space(-4),
     },
