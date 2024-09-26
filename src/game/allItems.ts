@@ -410,8 +410,8 @@ const allItemsConst = [
       'people are celebrating their shields and barricades. the word block fest is written as iron letters.',
     tags: ['event'],
     rarity: 'rare',
-    price: 8,
-    shop: true,
+    price: 4, // = woodenBuckler
+    shop: false,
     stats: {
       space: space(-4),
     },
@@ -433,8 +433,8 @@ const allItemsConst = [
       'people are celebrating the cold, ice and snow. the word frost fest is written as ice letters.',
     tags: ['event'],
     rarity: 'rare',
-    price: 8,
-    shop: true,
+    price: 4, // = icicle
+    shop: false,
     stats: {
       space: space(-4),
     },
@@ -1554,6 +1554,34 @@ const allItemsConst = [
         },
         statsSelf: {
           mana: 2,
+        },
+      },
+    ],
+  },
+  {
+    name: 'icicle',
+    prompt: 'a sharp icicle thrown',
+    tags: ['weapon'],
+    rarity: 'uncommon',
+    price: 4,
+    shop: true,
+    version: 2,
+    statsItem: {
+      ranged: 1,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_000,
+        attack: {
+          damage: 1,
+          accuracy: 80,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsEnemy: {
+          slow: 2,
         },
       },
     ],

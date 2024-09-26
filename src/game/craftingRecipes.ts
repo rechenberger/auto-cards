@@ -58,6 +58,22 @@ export const craftingRecipes: CraftingRecipe[] = [
     output: [{ name: 'roseBush', count: 1 }],
   },
   {
+    input: [{ name: 'icicle', count: 2 }],
+    output: [{ name: 'icicle', count: 1 }, { name: 'frostFest' }],
+  },
+  {
+    input: [{ name: 'frostFest', count: 1 }],
+    output: [{ name: 'icicle', count: 1 }],
+  },
+  {
+    input: [{ name: 'woodenBuckler', count: 2 }],
+    output: [{ name: 'woodenBuckler', count: 1 }, { name: 'blockFest' }],
+  },
+  {
+    input: [{ name: 'blockFest', count: 1 }],
+    output: [{ name: 'woodenBuckler', count: 1 }],
+  },
+  {
     input: [
       { name: 'woodenSword', count: 1 },
       { name: 'metalGloves', count: 2 },
