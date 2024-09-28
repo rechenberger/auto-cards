@@ -1,5 +1,3 @@
-'use client'
-
 import { MatchParticipant } from '@/components/game/MatchParticipants'
 import { MatchView } from '@/components/game/MatchView'
 import { Match } from '@/db/schema-zod'

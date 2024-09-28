@@ -1,16 +1,19 @@
 import { Game, Match } from '@/db/schema-zod'
+import { fallbackThemeId } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { every } from 'lodash-es'
 import { AlertCircle, Swords } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
+import { MatchBackground } from './MatchBackground'
 import { MatchCards } from './MatchCards'
-import { MatchParticipant } from './MatchParticipants'
+import { getMatchParticipants, MatchParticipant } from './MatchParticipants'
 import { MatchReportPlaybackControls } from './MatchReportPlaybackControls'
 import { MatchReportProvider } from './MatchReportProvider'
 import { MatchReportTabs } from './MatchReportTabs'
 import { MatchSide } from './MatchSide'
+import { NextRoundButton } from './NextRoundButton'
 
-export const MatchView = ({
+export const MatchView = async ({
   game,
   match,
   forceParticipants,
@@ -21,7 +24,8 @@ export const MatchView = ({
   forceParticipants?: MatchParticipant[]
   calculateChangemakers?: boolean
 }) => {
-  const participants = forceParticipants!
+  const participants =
+    forceParticipants ?? (await getMatchParticipants({ matchId: match.id }))
   if (participants.length !== 2 || !every(participants, (p) => p.loadout)) {
     return (
       <>
@@ -32,14 +36,14 @@ export const MatchView = ({
             Game has changed too much to replay this match
           </AlertDescription>
         </Alert>
-        {/* {!!game && <NextRoundButton game={game} />} */}
+        {!!game && <NextRoundButton game={game} />}
       </>
     )
   }
 
-  // const themeIds = await Promise.all(
-  //   participants.map((p) => fallbackThemeId(p.user?.themeId)),
-  // )
+  const themeIds = await Promise.all(
+    participants.map((p) => fallbackThemeId(p.user?.themeId)),
+  )
 
   return (
     <>
@@ -49,7 +53,7 @@ export const MatchView = ({
           seed: [match.data.seed],
         }}
       >
-        {/* <MatchBackground themeIds={themeIds} autoGenerate={true} /> */}
+        <MatchBackground themeIds={themeIds} autoGenerate={true} />
         <div
           className={cn(
             'flex-1 grid gap-4',
@@ -100,7 +104,7 @@ export const MatchView = ({
               seed={match.data.seed}
             />
             <div className="flex-1" />
-            {/* {!!game && <NextRoundButton game={game} />} */}
+            {!!game && <NextRoundButton game={game} />}
           </div>
           <div
             style={{
