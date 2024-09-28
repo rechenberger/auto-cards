@@ -70,6 +70,13 @@ export const loadout = sqliteTable(
       'loadoutPrimaryMatchParticipationIdIdx',
     ).on(table.primaryMatchParticipationId),
     loadoutGameIdIdx: index('loadoutGameIdIdx').on(table.gameId),
+    loadoutRoundNoUserIdVersionCreatedAtIdx: index(
+      'loadoutRoundNoUserIdVersionCreatedAtIdx',
+    ).on(table.roundNo, table.userId, table.version, table.createdAt),
+    loadoutGameIdRoundNoIdx: index('loadoutGameIdRoundNoIdx').on(
+      table.gameId,
+      table.roundNo,
+    ),
   }),
 )
 
@@ -124,6 +131,9 @@ export const matchParticipation = sqliteTable(
     ),
     matchParticipationMatchIdIdx: index('matchParticipationMatchIdIdx').on(
       table.matchId,
+    ),
+    matchParticipationUserIdIdx: index('matchParticipationUserIdIdx').on(
+      table.userId,
     ),
   }),
 )
@@ -222,11 +232,9 @@ export const leaderboardEntry = sqliteTable(
   },
   (table) => ({
     leaderboardUserIdIdx: index('leaderboardUserIdIdx').on(table.userId),
-    leaderboardTypeRoundNoScoreIdx: index('leaderboardTypeRoundNoScoreIdx').on(
-      table.type,
-      table.roundNo,
-      table.score,
-    ),
+    leaderboardTypeRoundNoVersionScoreIdx: index(
+      'leaderboardTypeRoundNoVersionScoreIdx',
+    ).on(table.type, table.roundNo, table.version, table.score),
   }),
 )
 
