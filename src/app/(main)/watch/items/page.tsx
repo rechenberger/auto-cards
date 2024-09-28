@@ -36,19 +36,34 @@ export default async function Page() {
 
   return (
     <>
-      <ItemChart
-        title="Leaderboard Items"
-        valueLabel="Total Count"
-        data={orderBy(
-          itemsRanked.map((item) => ({
-            name: capitalCase(item.item.name),
-            value: item.totalCount,
-            fill: 'hsl(var(--chart-1))',
-          })),
-          (i) => i.value,
-          'desc',
-        )}
-      />
+      <div className="grid xl:grid-cols-2 gap-4">
+        <ItemChart
+          title="Leaderboard Items"
+          valueLabel="Total Count"
+          data={orderBy(
+            itemsRanked.map((item) => ({
+              name: capitalCase(item.item.name),
+              value: item.totalCount,
+              fill: 'hsl(var(--chart-1))',
+            })),
+            (i) => i.value,
+            'desc',
+          )}
+        />
+        <ItemChart
+          title="Leaderboard Items"
+          valueLabel="Build Count"
+          data={orderBy(
+            itemsRanked.map((item) => ({
+              name: capitalCase(item.item.name),
+              value: item.entriesWithCount.filter((e) => e.count > 0).length,
+              fill: 'hsl(var(--chart-1))',
+            })),
+            (i) => i.value,
+            'desc',
+          )}
+        />
+      </div>
     </>
   )
 }

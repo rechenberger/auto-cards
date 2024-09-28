@@ -69,7 +69,10 @@ export function ItemChart({
               // }
             />
             <XAxis dataKey="value" type="number" hide />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent className="w-40" />}
+            />
             <Bar dataKey="value" layout="vertical" radius={5} />
           </BarChart>
         </ChartContainer>
