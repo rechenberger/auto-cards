@@ -378,22 +378,22 @@ export const generateMatch = async ({
       }
       const tryingToReach = !!statsEnemy || !!attack
       if (tryingToReach) {
-        let canReachEnemy = true
+        let cantReachReason = ''
         if (
           !!otherSide.stats.flying &&
           !statsForItem.flying &&
           !statsForItem.ranged
         ) {
-          canReachEnemy = false
+          cantReachReason = 'Cannot reach flying enemy'
         }
         if (!!statsForItem.ranged && !!otherSide.stats.barrier) {
-          canReachEnemy = false
+          cantReachReason = 'Blocked by barrier'
         }
-        if (!canReachEnemy) {
+        if (cantReachReason) {
           log({
             ...baseLog,
             targetSideIdx: otherSide.sideIdx,
-            msg: 'Cannot Reach',
+            msg: cantReachReason,
           })
         } else {
           if (statsEnemy) {
