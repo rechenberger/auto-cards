@@ -381,7 +381,8 @@ export const generateMatch = async ({
         let canReachEnemy = true
         if (
           !!otherSide.stats.flying &&
-          (!statsForItem.flying || !statsForItem.ranged)
+          !statsForItem.flying &&
+          !statsForItem.ranged
         ) {
           canReachEnemy = false
         }
