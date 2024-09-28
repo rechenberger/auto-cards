@@ -1,4 +1,3 @@
-import { getMyUserId } from '@/auth/getMyUser'
 import { getLiveMatchStuff } from '@/game/getLiveMatchStuff'
 import { getUserName } from '@/game/getUserName'
 import { cn } from '@/lib/utils'
@@ -23,15 +22,8 @@ export const LiveMatchCard = async ({
   liveMatchId: string
   inGame: boolean
 }) => {
-  const userId = await getMyUserId()
   const liveMatch = await getLiveMatchStuff({ liveMatchId })
   if (!liveMatch) return notFound()
-
-  const myParticipation = userId
-    ? liveMatch.liveMatchParticipations.find(
-        (participation) => participation.user.id === userId,
-      )
-    : undefined
 
   return (
     <>

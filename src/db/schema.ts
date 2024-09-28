@@ -25,13 +25,21 @@ const baseStats = () => ({
 
 const version = int('version').notNull().default(GAME_VERSION)
 
-export const game = sqliteTable('game', {
-  ...baseStats(),
-  userId: text('userId').notNull(),
-  data: text('data', { mode: 'json' }).$type<GameData>().notNull(),
-  liveMatchId: text('liveMatchId'),
-  version,
-})
+export const game = sqliteTable(
+  'game',
+  {
+    ...baseStats(),
+    userId: text('userId').notNull(),
+    data: text('data', { mode: 'json' }).$type<GameData>().notNull(),
+    liveMatchId: text('liveMatchId'),
+    version,
+  },
+  (table) => ({
+    gameLiveMatchIdIdx: index('gameLiveMatchIdIdx').on(table.liveMatchId),
+    gameUserIdIdx: index('gameUserIdIdx').on(table.userId),
+    gameCreatedAtIdx: index('gameCreatedAtIdx').on(table.createdAt),
+  }),
+)
 
 export const gameRelations = relations(game, ({ one, many }) => ({
   user: one(users, {
@@ -176,6 +184,9 @@ export const liveMatchParticipation = sqliteTable(
     liveMatchParticipationUserIdIdx: index(
       'liveMatchParticipationUserIdIdx',
     ).on(table.userId),
+    liveMatchParticipationLiveMatchIdIdx: index(
+      'liveMatchParticipationLiveMatchIdIdx',
+    ).on(table.liveMatchId),
   }),
 )
 
