@@ -95,6 +95,7 @@ export const fightLiveMatch = async ({
         },
       ],
       seed: [seedMatch],
+      skipLogs: true,
     })
 
     const sides = [blue, red].map((side, sideIdx) => {
