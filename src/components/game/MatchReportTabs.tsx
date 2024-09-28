@@ -1,7 +1,14 @@
+import { playgroundHref } from '@/app/(main)/admin/playground/playgroundHref'
+import { getIsAdmin } from '@/auth/getIsAdmin'
 import { Game, LoadoutData } from '@/db/schema-zod'
+import { Palette } from 'lucide-react'
+import Link from 'next/link'
+import { Button } from '../ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import { DpsReportDisplay } from './DpsReportDisplay'
+import { LiveMatchResults } from './LiveMatchResults'
 import { MatchReportDisplay } from './MatchReportDisplay'
+import { MatchReportShowWhenDone } from './MatchReportShowWhenDone'
 
 export const MatchReportTabs = async ({
   loadouts,
@@ -12,7 +19,7 @@ export const MatchReportTabs = async ({
   seed: string
   game?: Game
 }) => {
-  // const isAdmin = await getIsAdmin({ allowDev: true })
+  const isAdmin = await getIsAdmin({ allowDev: true })
   return (
     <>
       <Tabs defaultValue={'overview'} className="flex flex-col">
@@ -29,7 +36,7 @@ export const MatchReportTabs = async ({
         </TabsList>
         <TabsContent value={'overview'}>
           <div className="flex flex-col gap-4">
-            {/* {isAdmin && (
+            {isAdmin && (
               <Button variant="outline" asChild className="self-center">
                 <Link
                   href={playgroundHref({
@@ -39,15 +46,16 @@ export const MatchReportTabs = async ({
                   })}
                 >
                   <Palette className="size-4 mr-2" />
+                  {/* <Pen className="size-4 mr-2" /> */}
                   Edit in Playground
                 </Link>
               </Button>
-            )} */}
-            {/* {game?.liveMatchId && (
+            )}
+            {game?.liveMatchId && (
               <MatchReportShowWhenDone>
                 <LiveMatchResults liveMatchId={game.liveMatchId} />
               </MatchReportShowWhenDone>
-            )} */}
+            )}
           </div>
         </TabsContent>
         <TabsContent value={'logs'}>
