@@ -9,6 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           { name: 'Recent', href: '/watch/recent' },
           { name: 'Live Matches', href: '/watch/live-match' },
           { name: 'Leaderboard', href: '/watch/leaderboard' },
+          { name: 'Items', href: '/watch/items' },
         ]}
       />
       {children}
