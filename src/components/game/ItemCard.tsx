@@ -1,3 +1,5 @@
+'use client'
+
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
 import { Changemaker } from '@/game/generateChangemakers'
@@ -12,6 +14,7 @@ import { first } from 'lodash-es'
 import { Fragment } from 'react'
 import { StatsDisplay } from './StatsDisplay'
 import { TriggerDisplay } from './TriggerDisplay'
+import { streamItemCard } from './streamItemCard'
 
 export type ItemCardProps = {
   game?: Game
@@ -261,7 +264,7 @@ export const ItemCard = async (props: ItemCardProps) => {
           hideIcon
           action={async () => {
             // 'use server'
-            // return streamItemCard({ ...props, count: 1, onlyTop: false })
+            return streamItemCard({ ...props, count: 1, onlyTop: false })
           }}
         >
           {inner}

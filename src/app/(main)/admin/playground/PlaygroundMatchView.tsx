@@ -6,7 +6,7 @@ import { Match } from '@/db/schema-zod'
 import { GAME_VERSION } from '@/game/config'
 import { PlaygroundOptions } from './playgroundHref'
 
-export const PlaygroundMatchView = async ({
+export const PlaygroundMatchView = ({
   options,
 }: {
   options: PlaygroundOptions

@@ -15,7 +15,7 @@ export const TinyItem = async ({
   }
   return (
     <>
-      <TinyItemClient item={item} count={count} action={action} />
+      <TinyItemClient item={item} count={count} />
     </>
   )
 }

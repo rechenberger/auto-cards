@@ -4,14 +4,14 @@ import { cn } from '@/lib/utils'
 import { createId } from '@paralleldrive/cuid2'
 import { every } from 'lodash-es'
 import { AlertCircle, Swords } from 'lucide-react'
+import { use } from 'react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
-import { MatchCards } from './MatchCards'
-import { getMatchParticipants, MatchParticipant } from './MatchParticipants'
+import { MatchParticipant } from './MatchParticipants'
 import { MatchReportPlaybackControls } from './MatchReportPlaybackControls'
-import { MatchSide } from './MatchSide'
 import { MatchReportTabs } from './MatchReportTabs'
+import { MatchSide } from './MatchSide'
 
-export const MatchView = async ({
+export const MatchView = ({
   game,
   match,
   forceParticipants,
@@ -22,8 +22,7 @@ export const MatchView = async ({
   forceParticipants?: MatchParticipant[]
   calculateChangemakers?: boolean
 }) => {
-  const participants =
-    forceParticipants ?? (await getMatchParticipants({ matchId: match.id }))
+  const participants = forceParticipants!
   if (participants.length !== 2 || !every(participants, (p) => p.loadout)) {
     return (
       <>
@@ -41,13 +40,15 @@ export const MatchView = async ({
 
   const logId = createId().substring(0, 4)
   console.time(`generateMatchByWorker ${match.id} ${logId}`)
-  const [matchReport, changemakers] = await Promise.all([
-    generateMatch({
-      participants: participants.map((p) => ({ loadout: p.loadout.data })),
-      seed: [match.data.seed],
-    }),
-    undefined,
-  ])
+  const [matchReport, changemakers] = use(
+    Promise.all([
+      generateMatch({
+        participants: participants.map((p) => ({ loadout: p.loadout.data })),
+        seed: [match.data.seed],
+      }),
+      undefined,
+    ]),
+  )
   console.timeEnd(`generateMatchByWorker ${match.id} ${logId}`)
 
   // const themeIds = await Promise.all(
@@ -74,13 +75,13 @@ export const MatchView = async ({
           }}
           className="flex flex-row gap-4 items-start xl:items-center justify-start"
         >
-          <MatchCards
+          {/* <MatchCards
             items={participants[0].loadout.data.items}
             sideIdx={0}
             changemakers={changemakers}
             matchReport={matchReport}
             // themeId={themeIds[0]}
-          />
+          /> */}
         </div>
         <div
           style={{
@@ -88,13 +89,13 @@ export const MatchView = async ({
           }}
           className="flex flex-row gap-4 items-start xl:items-center justify-end"
         >
-          <MatchCards
+          {/* <MatchCards
             items={participants[1].loadout.data.items}
             sideIdx={1}
             changemakers={changemakers}
             matchReport={matchReport}
             // themeId={themeIds[1]}
-          />
+          /> */}
         </div>
         <div
           className="flex-1 flex flex-col gap-2 items-center justify-center self-stretch"
