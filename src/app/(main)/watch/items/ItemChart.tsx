@@ -48,7 +48,11 @@ export function ItemChart({
         <CardDescription>{subTitle}</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer
+          config={chartConfig}
+          className="aspect-auto"
+          style={{ height: data.length * 24 }}
+        >
           <BarChart
             accessibilityLayer
             data={data}
