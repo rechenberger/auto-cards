@@ -11,7 +11,8 @@
     "format": "prettier --write .",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:copy": "turso db shell auto-cards .dump | sqlite3 db.sqlite"
+    "db:copy": "turso db shell auto-cards .dump | sqlite3 db.sqlite",
+    "db:reset": "rm -rf db.sqlite && pnpm run db:copy"
   },
   "dependencies": {
     "@auth/core": "^0.29.0",
