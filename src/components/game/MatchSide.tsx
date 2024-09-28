@@ -1,24 +1,23 @@
 'use client'
 
 import { getBotName } from '@/game/botName'
-import { MatchReport } from '@/game/generateMatch'
 import { getUserName } from '@/game/getUserName'
 import { cn } from '@/lib/utils'
 import { useAtomValue } from 'jotai'
 import { Crown } from 'lucide-react'
 import { MatchParticipant } from './MatchParticipants'
 import { activeMatchLogAtom } from './matchPlaybackState'
+import { useMatchReport } from './MatchReportProvider'
 import { MatchStatsDisplay } from './MatchStatsDisplay'
 
 export const MatchSide = ({
   sideIdx,
   participant,
-  matchReport,
 }: {
   sideIdx: number
   participant: MatchParticipant
-  matchReport: MatchReport
 }) => {
+  const matchReport = useMatchReport()
   const isEnemy = sideIdx === 1
   const name = participant.user
     ? getUserName({ user: participant.user })

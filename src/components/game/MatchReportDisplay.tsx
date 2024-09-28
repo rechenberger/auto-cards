@@ -13,12 +13,10 @@ import {
   matchPlaybackPlayingAtom,
 } from './matchPlaybackState'
 import { StatsDisplay } from './StatsDisplay'
+import { useMatchReport } from './MatchReportProvider'
 
-export const MatchReportDisplay = ({
-  matchReport,
-}: {
-  matchReport: MatchReport
-}) => {
+export const MatchReportDisplay = () => {
+  const matchReport = useMatchReport()
   const [activeMatchLog, setActiveMatchLog] = useAtom(activeMatchLogAtom)
   const [isPlaying, setIsPlaying] = useAtom(matchPlaybackPlayingAtom)
 

@@ -13,6 +13,7 @@ import {
   activeMatchLogAtom,
   matchPlaybackSpeedAtom,
 } from './matchPlaybackState'
+import { useMatchReport } from './MatchReportProvider'
 import { StatsDisplay } from './StatsDisplay'
 
 const useOnLogEvent = ({
@@ -64,14 +65,13 @@ type AnimationData = {
 export const MatchCardOverlay = ({
   sideIdx,
   itemIdx,
-  matchReport,
   theme,
 }: {
   sideIdx: number
   itemIdx: number
-  matchReport: MatchReport
   theme?: ThemeDefinition
 }) => {
+  const matchReport = useMatchReport()
   const [animations, setAnimations] = useState<AnimationData[]>([])
 
   const speed = useAtomValue(matchPlaybackSpeedAtom)
