@@ -1,5 +1,6 @@
+'use client'
+
 import { dpsReport } from '@/game/dpsReport'
-import { MatchReport } from '@/game/generateMatch'
 import { getStatDefinition, Stat } from '@/game/stats'
 import { capitalCase } from 'change-case'
 import { keyBy, mapValues, orderBy, uniq } from 'lodash-es'
@@ -8,17 +9,13 @@ import { SimpleDataCard } from '../simple/SimpleDataCard'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import { DpsReportChart } from './DpsReportChart'
+import { useMatchReport } from './MatchReportProvider'
 import { StatDisplay } from './StatsDisplay'
 
 const statOrder: Stat[] = ['damage', 'health', 'block', 'stamina']
 
-export const DpsReportDisplay = ({
-  matchReport,
-  showCards,
-}: {
-  matchReport: MatchReport
-  showCards?: boolean
-}) => {
+export const DpsReportDisplay = ({ showCards }: { showCards?: boolean }) => {
+  const matchReport = useMatchReport()
   const { entries } = dpsReport({ matchReport })
   let stats = uniq(entries.map((entry) => entry.stat))
   stats = orderBy(stats, (stat) => {

@@ -41,6 +41,7 @@ export const fight = async ({ game }: { game: Game }) => {
       },
     ],
     seed: [seed],
+    skipLogs: true,
   })
 
   const myLoadout = await db

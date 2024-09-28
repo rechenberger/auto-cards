@@ -2,31 +2,28 @@ import { Game, LoadoutData } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
 import { countifyItems } from '@/game/countifyItems'
 import { Changemakers } from '@/game/generateChangemakers'
-import { MatchReport } from '@/game/generateMatch'
 import { orderItems } from '@/game/orderItems'
 import { fallbackThemeId, getThemeDefinition, ThemeId } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { find, map, take } from 'lodash-es'
 import { Fragment } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
-import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 import { ItemCard } from './ItemCard'
 import { MatchCardOverlay } from './MatchCardOverlay'
 import { MatchCardTimer } from './MatchCardTimer'
+import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 
 export const MatchCards = async ({
   items,
   game,
   sideIdx,
   changemakers,
-  matchReport,
   themeId,
 }: {
   items: LoadoutData['items']
   game?: Game
   sideIdx: number
   changemakers?: Changemakers
-  matchReport: MatchReport
   themeId?: ThemeId
 }) => {
   items = countifyItems(items)
@@ -79,18 +76,12 @@ export const MatchCards = async ({
                     sideIdx={sideIdx}
                     onlyTop
                   />
-                  {/* <MatchCardTimer
-                    sideIdx={sideIdx}
-                    itemIdx={itemIdx}
-                    matchReport={matchReport}
-                  /> */}
                   {hasInterval && (
                     <MatchCardTimer sideIdx={sideIdx} itemIdx={itemIdx} />
                   )}
                   <MatchCardOverlay
                     sideIdx={sideIdx}
                     itemIdx={itemIdx}
-                    matchReport={matchReport}
                     theme={theme}
                   />
                 </TooltipTrigger>

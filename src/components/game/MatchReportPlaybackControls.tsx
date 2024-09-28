@@ -1,6 +1,5 @@
 'use client'
 
-import { MatchReport } from '@/game/generateMatch'
 import { useAtom } from 'jotai'
 import { findIndex, last } from 'lodash-es'
 import { Pause, Play, RotateCcw } from 'lucide-react'
@@ -17,17 +16,15 @@ import {
   matchPlaybackPlayingAtom,
   matchPlaybackSpeedAtom,
 } from './matchPlaybackState'
+import { useMatchReport } from './MatchReportProvider'
 import { MatchTime } from './MatchTime'
 
 const MIN_TIMEOUT = 0
 
 const speeds = [0.5, 1, 2, 4]
 
-export const MatchReportPlaybackControls = ({
-  matchReport,
-}: {
-  matchReport: MatchReport
-}) => {
+export const MatchReportPlaybackControls = () => {
+  const matchReport = useMatchReport()
   const [activeMatchLog, setActiveMatchLog] = useAtom(activeMatchLogAtom)
   const [speed, setSpeed] = useAtom(matchPlaybackSpeedAtom)
   const [playing, setPlaying] = useAtom(matchPlaybackPlayingAtom)

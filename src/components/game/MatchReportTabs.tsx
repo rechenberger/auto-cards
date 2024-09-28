@@ -1,7 +1,6 @@
 import { playgroundHref } from '@/app/(main)/admin/playground/playgroundHref'
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { Game, LoadoutData } from '@/db/schema-zod'
-import { MatchReport } from '@/game/generateMatch'
 import { Palette } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '../ui/button'
@@ -12,12 +11,10 @@ import { MatchReportDisplay } from './MatchReportDisplay'
 import { MatchReportShowWhenDone } from './MatchReportShowWhenDone'
 
 export const MatchReportTabs = async ({
-  matchReport,
   loadouts,
   seed,
   game,
 }: {
-  matchReport: MatchReport
   loadouts: LoadoutData[]
   seed: string
   game?: Game
@@ -63,11 +60,11 @@ export const MatchReportTabs = async ({
         </TabsContent>
         <TabsContent value={'logs'}>
           <div className="max-h-96 overflow-auto rounded-lg self-stretch lg:self-center mt-2 max-w-[calc(100vw-2rem)] xl:max-w-[560px] bg-background">
-            <MatchReportDisplay matchReport={matchReport} />
+            <MatchReportDisplay />
           </div>
         </TabsContent>
         <TabsContent value={'metrics'}>
-          <DpsReportDisplay matchReport={matchReport} />
+          <DpsReportDisplay />
         </TabsContent>
       </Tabs>
     </>
