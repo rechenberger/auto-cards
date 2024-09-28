@@ -25,13 +25,16 @@ export const MatchReportDisplay = () => {
   const logs = useMemo(() => {
     let logs = matchReport.logs.map((log, idx) => ({ ...log, idx }))
     return logs.filter((log) => {
-      if (!search) return true
-      const searchable = [log.msg, log.itemName, ...keys(log.stats)].filter(
-        Boolean,
-      )
-      return searchable.some(
-        (s) => !!s && s.toLowerCase().includes(search.toLowerCase()),
-      )
+      const searches = search.split(' ')
+      return searches.every((search) => {
+        if (!search) return true
+        const searchable = [log.msg, log.itemName, ...keys(log.stats)].filter(
+          Boolean,
+        )
+        return searchable.some(
+          (s) => !!s && s.toLowerCase().includes(search.toLowerCase()),
+        )
+      })
     })
   }, [matchReport.logs, search])
 
@@ -50,7 +53,11 @@ export const MatchReportDisplay = () => {
             const cell = cn(
               'px-2 py-0.5 flex flex-row items-center h-8',
               'transition-colors duration-100 ease-in-out',
-              log.sideIdx === 0 ? 'bg-blue-500' : 'bg-red-500',
+              log.sideIdx === 0
+                ? 'bg-blue-500'
+                : log.sideIdx === 1
+                  ? 'bg-red-500'
+                  : 'bg-purple-500',
               isActive ? 'bg-opacity-50' : 'bg-opacity-20',
               isPlaying && 'cursor-pointer',
             )
