@@ -69,6 +69,7 @@ export const loadout = sqliteTable(
     loadoutPrimaryMatchParticipationIdIdx: index(
       'loadoutPrimaryMatchParticipationIdIdx',
     ).on(table.primaryMatchParticipationId),
+    loadoutGameIdIdx: index('loadoutGameIdIdx').on(table.gameId),
   }),
 )
 
@@ -120,6 +121,9 @@ export const matchParticipation = sqliteTable(
   (table) => ({
     matchParticipationLoadoutIdIdx: index('matchParticipationLoadoutIdIdx').on(
       table.loadoutId,
+    ),
+    matchParticipationMatchIdIdx: index('matchParticipationMatchIdIdx').on(
+      table.matchId,
     ),
   }),
 )
