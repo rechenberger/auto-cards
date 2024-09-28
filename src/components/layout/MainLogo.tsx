@@ -19,12 +19,12 @@ export const MainLogo = ({
       >
         <div
           className={cn(
-            'text-3xl flex flex-row gap-1 items-center',
+            'text-3xl flex flex-col gap-1 -space-y-4 items-center',
             // size === 'huge' && 'lg:text-6xl',
           )}
         >
-          <span className="text-primary">Sack</span>
-          <span
+          <span className="text-primary">Auto</span>
+          {/* <span
             className={cn(
               'text-xl',
 
@@ -32,18 +32,18 @@ export const MainLogo = ({
             )}
           >
             of
-          </span>
-          <span className="text-primary">Secrets</span>
+          </span> */}
+          <span className="">Cards</span>
         </div>
-        <div
+        {/* <div
           className={cn(
-            'text-xl',
+            'text-xs',
             // size === 'huge' && 'lg:text-5xl',
             // fontLore.className,
           )}
         >
-          Battlegrounds
-        </div>
+          Automatic Card Battle Game
+        </div> */}
       </Link>
     </>
   )

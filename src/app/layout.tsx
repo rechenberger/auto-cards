@@ -11,10 +11,10 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: 'Sack of Secrets: Battlegrounds',
-    template: isDev() ? '%s | DEV' : '%s | Sack of Secrets',
+    default: 'Auto Cards',
+    template: isDev() ? '%s | DEV' : '%s | Auto Cards',
   },
-  description: 'by Tristan Rechenberger',
+  description: 'Automatic Card Battle Game',
 }
 
 export default function RootLayout({

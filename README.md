@@ -1,8 +1,8 @@
 # Auto Cards
 
-Auto-Battler with Cards
+Automatic Card Battle Game
 
-Play Online: [Sack of Secrets: Battlegrounds](https://battlegrounds.sackofsecrets.com)
+Play Online: [auto-cards.com](https://auto-cards.com)
 
 ## Local development
 
