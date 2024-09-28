@@ -270,7 +270,7 @@ export const ItemCard = async (props: ItemCardProps) => {
           hideIcon
           action={async () => {
             'use server'
-            return streamItemCard({ ...props, count: 1, onlyTop: false })
+            return streamItemCard({ ...props, onlyTop: false })
           }}
         >
           {inner}
