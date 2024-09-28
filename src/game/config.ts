@@ -1,7 +1,8 @@
-export const NEXT_PHASE = process.env.NEXT_PHASE === 'true'
-
-export const GAME_VERSION = NEXT_PHASE ? 2 : 1
-export const NO_OF_ROUNDS = NEXT_PHASE ? 10 : 5
+export const DEFAULT_GAME_VERSION = 2
+export const GAME_VERSION = process.env.GAME_VERSION
+  ? parseInt(process.env.GAME_VERSION)
+  : DEFAULT_GAME_VERSION
+export const NO_OF_ROUNDS = GAME_VERSION === 2 ? 10 : 5
 
 export const NO_OF_SHOP_ITEMS = 5
 export const SALE_CHANCE = 0.2

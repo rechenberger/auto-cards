@@ -56,6 +56,7 @@ export const addToLeaderboard = async ({
           },
         ],
         seed: [seed],
+        skipLogs: true,
       })
 
       const win = result.winner.sideIdx === 0
@@ -116,7 +117,7 @@ export const addToLeaderboard = async ({
     }
   }
 
-  revalidatePath('docs/leaderboard')
+  revalidatePath('/watch/leaderboard')
 
   return {
     results,
