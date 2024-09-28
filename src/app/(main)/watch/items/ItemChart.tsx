@@ -1,6 +1,6 @@
 'use client'
 
-import { Bar, BarChart, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, LabelList, XAxis, YAxis } from 'recharts'
 
 import {
   Card,
@@ -77,7 +77,15 @@ export function ItemChart({
               cursor={false}
               content={<ChartTooltipContent className="w-40" />}
             />
-            <Bar dataKey="value" layout="vertical" radius={5} />
+            <Bar dataKey="value" layout="vertical" radius={5}>
+              <LabelList
+                dataKey="value"
+                position="right"
+                offset={8}
+                className="fill-foreground"
+                fontSize={12}
+              />
+            </Bar>
           </BarChart>
         </ChartContainer>
       </CardContent>
