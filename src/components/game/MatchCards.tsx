@@ -76,7 +76,6 @@ export const MatchCards = async ({
                     sideIdx={sideIdx}
                     onlyTop
                   />
-                  <MatchCardTimer sideIdx={sideIdx} itemIdx={itemIdx} />
                   {hasInterval && (
                     <MatchCardTimer sideIdx={sideIdx} itemIdx={itemIdx} />
                   )}
