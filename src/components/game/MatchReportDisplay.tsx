@@ -26,7 +26,9 @@ export const MatchReportDisplay = () => {
     let logs = matchReport.logs.map((log, idx) => ({ ...log, idx }))
     return logs.filter((log) => {
       if (!search) return true
-      const searchable = [log.msg, log.itemName].filter(Boolean)
+      const searchable = [log.msg, log.itemName, ...keys(log.stats)].filter(
+        Boolean,
+      )
       return searchable.some(
         (s) => !!s && s.toLowerCase().includes(search.toLowerCase()),
       )
