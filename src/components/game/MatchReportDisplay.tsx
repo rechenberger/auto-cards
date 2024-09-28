@@ -4,9 +4,10 @@ import { cn } from '@/lib/utils'
 import { capitalCase } from 'change-case'
 import { useAtom } from 'jotai'
 import { keys, pick, pickBy } from 'lodash-es'
-import { ArrowRight, Swords } from 'lucide-react'
+import { ArrowRight, Swords, X } from 'lucide-react'
 import { Fragment, useMemo, useState } from 'react'
 import { SimpleScrollIntoView } from '../simple/SimpleScrollIntoView'
+import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import {
   activeMatchLogAtom,
@@ -40,11 +41,23 @@ export const MatchReportDisplay = () => {
 
   return (
     <>
-      <Input
-        placeholder="Search"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      <div className="relative">
+        <Input
+          placeholder="Search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        {!!search && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSearch('')}
+            className="absolute right-0 inset-y-0"
+          >
+            <X className="size-4" />
+          </Button>
+        )}
+      </div>
       <div className="max-h-96 overflow-auto rounded-lg self-stretch lg:self-center mt-2 max-w-[calc(100vw-2rem)] xl:max-w-[560px] bg-background">
         <div className="grid grid-cols-[auto,auto,auto,1fr,auto,auto] text-xs rounded-md whitespace-nowrap relative">
           {logs.map((log) => {
