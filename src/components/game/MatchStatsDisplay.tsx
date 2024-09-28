@@ -35,7 +35,7 @@ export const MatchStatsDisplay = ({
           canWrap
           className={cn(
             sideIdx === 0 ? 'justify-start' : 'justify-end',
-            'grid grid-cols-4 items-start',
+            'grid grid-cols-3 md:grid-cols-4 items-start',
           )}
         />
       </div>
