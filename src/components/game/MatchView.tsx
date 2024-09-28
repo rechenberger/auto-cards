@@ -1,4 +1,5 @@
 import { Game, Match } from '@/db/schema-zod'
+import { generateChangemakers } from '@/game/generateChangemakers'
 import { fallbackThemeId } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { every } from 'lodash-es'
@@ -41,6 +42,10 @@ export const MatchView = async ({
     )
   }
 
+  const changemakers = calculateChangemakers
+    ? await generateChangemakers({ match, participants })
+    : undefined
+
   const themeIds = await Promise.all(
     participants.map((p) => fallbackThemeId(p.user?.themeId)),
   )
@@ -74,8 +79,8 @@ export const MatchView = async ({
             <MatchCards
               items={participants[0].loadout.data.items}
               sideIdx={0}
-              // changemakers={changemakers}
-              // themeId={themeIds[0]}
+              changemakers={changemakers}
+              themeId={themeIds[0]}
             />
           </div>
           <div
@@ -87,8 +92,8 @@ export const MatchView = async ({
             <MatchCards
               items={participants[1].loadout.data.items}
               sideIdx={1}
-              // changemakers={changemakers}
-              // themeId={themeIds[1]}
+              changemakers={changemakers}
+              themeId={themeIds[1]}
             />
           </div>
           <div
