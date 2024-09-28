@@ -59,9 +59,7 @@ export const MatchReportTabs = async ({
           </div>
         </TabsContent>
         <TabsContent value={'logs'}>
-          <div className="max-h-96 overflow-auto rounded-lg self-stretch lg:self-center mt-2 max-w-[calc(100vw-2rem)] xl:max-w-[560px] bg-background">
-            <MatchReportDisplay />
-          </div>
+          <MatchReportDisplay />
         </TabsContent>
         <TabsContent value={'metrics'}>
           <DpsReportDisplay />
