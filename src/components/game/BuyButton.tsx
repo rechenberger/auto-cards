@@ -62,6 +62,11 @@ export const BuyButton = async ({
                 const itemInLoadout = loadout.items.find(
                   (i) => i.name === shopItem.name,
                 )
+
+                if (item.unique && itemInLoadout) {
+                  throw new Error('You can only have a unique item once')
+                }
+
                 if (itemInLoadout) {
                   itemInLoadout.count = (itemInLoadout.count ?? 1) + 1
                 } else {

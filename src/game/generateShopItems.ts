@@ -15,7 +15,21 @@ export const generateShopItems = async ({
   skipRarityWeights?: boolean
 }) => {
   const allItems = await getAllItems()
-  const itemsForSale = allItems.filter((item) => !!item.shop)
+  let itemsForSale = allItems.filter((item) => !!item.shop)
+
+  // Check for unique items
+  itemsForSale = itemsForSale.filter((item) => {
+    if (!item.unique) return true
+    const alreadyInHand = game.data.currentLoadout.items.some(
+      (i) => i.name === item.name,
+    )
+    if (alreadyInHand) return false
+    const alreadyInShop = game.data.shopItems.some(
+      (i) => i.name === item.name && i.isReserved,
+    )
+    if (alreadyInShop) return false
+    return true
+  })
 
   const shopSeed = [
     game.data.seed,

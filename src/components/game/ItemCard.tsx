@@ -16,6 +16,7 @@ import { capitalCase } from 'change-case'
 import { first } from 'lodash-es'
 import { Fragment } from 'react'
 import { AiItemImage } from '../ai/AiItemImage'
+import { ItemCardChip } from './ItemCardChip'
 import { ItemSellButton } from './ItemSellButton'
 import { StatsDisplay } from './StatsDisplay'
 import { TriggerDisplay } from './TriggerDisplay'
@@ -140,29 +141,17 @@ export const ItemCard = async (props: ItemCardProps) => {
             </div>
             <div className="absolute top-6 inset-x-0 flex flex-col items-end gap-1">
               {!!item.tags?.length && (
-                <div
-                  className={cn(
-                    'bg-[#313130] pl-4 pr-3 py-1',
-                    'rounded-l-full',
-                    'border-l-2 border-y-2 border-black',
-                  )}
-                >
-                  <div className="text-xs">
-                    {item.tags?.map((t) => capitalCase(t)).join(',')}
-                  </div>
-                </div>
+                <ItemCardChip>
+                  {item.tags?.map((t) => capitalCase(t)).join(',')}
+                </ItemCardChip>
               )}
               {!!rarity && (
-                <div
-                  className={cn(
-                    'bg-[#313130] pl-4 pr-3 py-1',
-                    'rounded-l-full',
-                    'border-l-2 border-y-2 border-black',
-                    rarity.textClass,
-                  )}
-                >
-                  <div className="text-xs">{capitalCase(rarity.name)}</div>
-                </div>
+                <ItemCardChip className={rarity.textClass}>
+                  {capitalCase(rarity.name)}
+                </ItemCardChip>
+              )}
+              {!!item.unique && (
+                <ItemCardChip className="text-emerald-500">Unique</ItemCardChip>
               )}
             </div>
             <div className="border-black border-2 rounded-lg overflow-hidden">
