@@ -163,7 +163,7 @@ export default async function Page() {
             itemsWithAttack.map((item) => ({
               name: capitalCase(item.item.name),
               value: item.damagePerSecond,
-              fill: 'hsl(var(--chart-1))',
+              fill: 'hsl(var(--chart-2))',
             })),
             (i) => i.value,
             'desc',
@@ -176,7 +176,7 @@ export default async function Page() {
             itemsWithAttack.map((item) => ({
               name: capitalCase(item.item.name),
               value: item.staminaPerSecond,
-              fill: 'hsl(var(--chart-1))',
+              fill: 'hsl(var(--chart-3))',
             })),
             (i) => i.value,
             'desc',
