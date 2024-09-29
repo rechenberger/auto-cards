@@ -181,7 +181,7 @@ const allItemsConst = [
     shop: true,
     stats: {
       space: space(-1),
-      lifeSteal: 20,
+      lifeSteal: 10,
     },
   },
   {
@@ -199,7 +199,7 @@ const allItemsConst = [
         type: 'startOfBattle',
         forceStartTime: 1, // force 1 tick later, else fest might not reach
         statsSelf: {
-          flying: 5,
+          flying: 3,
         },
       },
     ],
@@ -917,7 +917,7 @@ const allItemsConst = [
       {
         type: 'startOfBattle',
         statsSelf: {
-          luck: 5,
+          luck: 4,
         },
       },
     ],
@@ -1029,20 +1029,20 @@ const allItemsConst = [
       {
         type: 'interval',
         cooldown: 3_000,
+        statsSelf: {
+          randomDebuff: -1,
+        },
+      },
+      {
+        type: 'interval',
+        cooldown: 3_000,
         statsRequired: {
-          luck: 4,
+          luck: 5,
         },
         statsSelf: {
           empower: 1,
         },
         chancePercent: 50,
-      },
-      {
-        type: 'interval',
-        cooldown: 3_000,
-        statsSelf: {
-          randomDebuff: -1,
-        },
       },
     ],
   },
