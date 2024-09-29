@@ -2,10 +2,10 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Loadout } from '@/db/schema-zod'
 import { and, eq } from 'drizzle-orm'
-import { revalidatePath } from 'next/cache'
 import { LEADERBOARD_TYPE } from './config'
 import { getLeaderboard } from './getLeaderboard'
 import { generateMatchByWorker } from './matchWorkerManager'
+import { revalidateLeaderboard } from './revalidateLeaderboard'
 import { seedToString } from './seed'
 
 export const addToLeaderboard = async ({
@@ -117,7 +117,7 @@ export const addToLeaderboard = async ({
     }
   }
 
-  revalidatePath('/watch/leaderboard')
+  revalidateLeaderboard()
 
   return {
     results,
