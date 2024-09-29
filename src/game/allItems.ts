@@ -1508,7 +1508,7 @@ const allItemsConst = [
         },
         statsSelf: {
           mana: -3,
-          flying: 3,
+          flying: 2,
         },
       },
     ],
