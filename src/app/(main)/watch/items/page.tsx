@@ -51,20 +51,6 @@ export default async function Page() {
           )}
         />
         <ItemChart
-          title="Build Count"
-          subTitle="count builds that have this item"
-          valueLabel="builds"
-          data={orderBy(
-            itemsRanked.map((item) => ({
-              name: capitalCase(item.item.name),
-              value: sumBy(item.entriesWithCount, (e) => (e.count ? 1 : 0)),
-              fill: 'hsl(var(--chart-1))',
-            })),
-            (i) => i.value,
-            'desc',
-          )}
-        />
-        <ItemChart
           title="Total Count (ranked)"
           subTitle={`count in leaderboard and multiply by ${LEADERBOARD_LIMIT} minus rank`}
           valueLabel="points"
@@ -75,6 +61,20 @@ export default async function Page() {
                 item.entriesWithCount,
                 (e) => e.count * (LEADERBOARD_LIMIT - e.rank),
               ),
+              fill: 'hsl(var(--chart-1))',
+            })),
+            (i) => i.value,
+            'desc',
+          )}
+        />
+        <ItemChart
+          title="Build Count"
+          subTitle="count builds that have this item"
+          valueLabel="builds"
+          data={orderBy(
+            itemsRanked.map((item) => ({
+              name: capitalCase(item.item.name),
+              value: sumBy(item.entriesWithCount, (e) => (e.count ? 1 : 0)),
               fill: 'hsl(var(--chart-1))',
             })),
             (i) => i.value,
