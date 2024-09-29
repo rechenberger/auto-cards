@@ -487,7 +487,12 @@ export const generateMatch = async ({
               damage = Math.round(damage)
 
               let blockedDamage = 0
-              if (!statsForItem?.unblockable) {
+              let unblockable = false
+              if (statsForItem?.unblockableChance) {
+                unblockable =
+                  rngFloat({ seed, max: 100 }) <= statsForItem.unblockableChance
+              }
+              if (!unblockable) {
                 blockedDamage = Math.min(damage, otherSide.stats.block ?? 0)
               }
               damage -= blockedDamage

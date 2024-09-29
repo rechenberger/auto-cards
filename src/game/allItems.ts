@@ -213,9 +213,6 @@ const allItemsConst = [
     stats: {
       space: space(-2),
     },
-    statsItem: {
-      unblockable: 1,
-    },
     triggers: [
       {
         type: 'interval',
@@ -229,6 +226,7 @@ const allItemsConst = [
         type: 'onAttackCritAfterHit',
         statsItem: {
           critChance: 10,
+          unblockableChance: 10,
         },
       },
     ],
@@ -242,9 +240,6 @@ const allItemsConst = [
     shop: false,
     stats: {
       space: space(-2),
-    },
-    statsItem: {
-      unblockable: 1,
     },
     triggers: [
       {
@@ -260,6 +255,7 @@ const allItemsConst = [
         statsItem: {
           critChance: 10,
           haste: 10,
+          unblockableChance: 10,
         },
       },
     ],
@@ -1533,9 +1529,6 @@ const allItemsConst = [
     price: 3 + 7, // dagger + unstableManaCrystal
     shop: false,
     version: 2,
-    statsItem: {
-      unblockable: 1,
-    },
     triggers: [
       {
         type: 'interval',
@@ -1549,6 +1542,7 @@ const allItemsConst = [
         type: 'onAttackCritAfterHit',
         statsItem: {
           critChance: 10,
+          unblockableChance: 10,
         },
         statsSelf: {
           mana: 2,
