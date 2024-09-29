@@ -206,6 +206,7 @@ export const ItemCard = async (props: ItemCardProps) => {
                   relative
                   stats={item.stats}
                   disableTooltip={disableTooltip}
+                  canWrap
                 />
               )}
               {item.statsItem && (
@@ -216,6 +217,7 @@ export const ItemCard = async (props: ItemCardProps) => {
                     relative
                     stats={item.statsItem}
                     disableTooltip={disableTooltip}
+                    canWrap
                   />
                 </div>
               )}

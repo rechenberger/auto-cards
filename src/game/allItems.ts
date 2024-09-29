@@ -20,6 +20,8 @@ const allItemsConst = [
       stamina: 50,
       staminaMax: 50,
       staminaRegen: 10,
+      critChance: 10,
+      critDamage: 200,
       space: space(14),
     },
   },
@@ -213,14 +215,13 @@ const allItemsConst = [
     },
     statsItem: {
       unblockable: 1,
-      critChance: 30,
     },
     triggers: [
       {
         type: 'interval',
         cooldown: 2_000,
         attack: {
-          damage: 6,
+          damage: 4,
           accuracy: 85,
         },
       },
@@ -244,8 +245,6 @@ const allItemsConst = [
     },
     statsItem: {
       unblockable: 1,
-      critChance: 30,
-      haste: 30,
     },
     triggers: [
       {
@@ -1536,7 +1535,6 @@ const allItemsConst = [
     version: 2,
     statsItem: {
       unblockable: 1,
-      critChance: 30,
     },
     triggers: [
       {

@@ -18,7 +18,6 @@ import {
 } from './calcStats'
 import {
   BASE_TICK_TIME,
-  CRIT_MULTIPLIER,
   FATIGUE_STARTS_AT,
   MAX_MATCH_TIME,
   MAX_THORNS_MULTIPLIER,
@@ -481,7 +480,6 @@ export const generateMatch = async ({
               }
 
               if (doesCrit) {
-                damage *= CRIT_MULTIPLIER
                 if (statsForItem?.critDamage) {
                   damage *= 1 + statsForItem.critDamage / 100
                 }
