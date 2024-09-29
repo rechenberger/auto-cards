@@ -318,7 +318,7 @@ const allItemsConst = [
     triggers: [
       {
         type: 'interval',
-        cooldown: 1_000,
+        cooldown: 1_500,
         statsSelf: {
           aim: 10,
         },
@@ -540,7 +540,7 @@ const allItemsConst = [
     shop: true,
     stats: {
       space: space(-2),
-      critDamage: 30,
+      critDamage: 15,
     },
   },
   {
@@ -1186,7 +1186,7 @@ const allItemsConst = [
         type: 'startOfBattle',
         statsSelf: {
           empower: 1,
-          haste: 15,
+          haste: 5,
         },
       },
     ],
@@ -1196,7 +1196,7 @@ const allItemsConst = [
     prompt: 'a long sword with a shiny metal blade',
     tags: ['weapon'],
     rarity: 'epic',
-    price: 3 + 4 + 4,
+    price: 3 + 4, // woodenSword + metalGloves
     shop: false,
     version: 2,
     stats: {
@@ -1221,7 +1221,7 @@ const allItemsConst = [
         type: 'startOfBattle',
         statsSelf: {
           empower: 2,
-          haste: 25,
+          haste: 20,
         },
       },
     ],

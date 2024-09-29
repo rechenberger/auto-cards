@@ -76,7 +76,7 @@ export const craftingRecipes: CraftingRecipe[] = [
   {
     input: [
       { name: 'woodenSword', count: 1 },
-      { name: 'metalGloves', count: 2 },
+      { name: 'metalGloves', count: 1 },
     ],
     output: [{ name: 'longSword' }],
     version: 2,
