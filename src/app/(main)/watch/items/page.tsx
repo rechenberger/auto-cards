@@ -49,11 +49,15 @@ export default async function Page() {
         ),
         2,
       )
+      const damagePerStamina = staminaPerSecond
+        ? round(damagePerSecond / staminaPerSecond, 2)
+        : 0
 
       return {
         ...item,
         damagePerSecond,
         staminaPerSecond,
+        damagePerStamina,
       }
     })
     .filter((item) => item.damagePerSecond > 0)
@@ -178,6 +182,21 @@ export default async function Page() {
               value: item.staminaPerSecond,
               fill: 'hsl(var(--chart-3))',
             })),
+            (i) => i.value,
+            'desc',
+          )}
+        />
+        <ItemChart
+          title="Damage per stamina"
+          valueLabel="damage/stamina"
+          data={orderBy(
+            itemsWithAttack
+              .filter((item) => item.damagePerStamina > 0)
+              .map((item) => ({
+                name: capitalCase(item.item.name),
+                value: item.damagePerStamina,
+                fill: 'hsl(var(--chart-4))',
+              })),
             (i) => i.value,
             'desc',
           )}

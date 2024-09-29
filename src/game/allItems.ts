@@ -519,6 +519,12 @@ const allItemsConst = [
       {
         type: 'interval',
         cooldown: 1_000,
+        statsRequired: {
+          stamina: 2,
+        },
+        statsSelf: {
+          stamina: -2,
+        },
         attack: {
           accuracy: 80,
           damage: 1,
@@ -1122,6 +1128,12 @@ const allItemsConst = [
       {
         type: 'interval',
         cooldown: 3_500,
+        statsRequired: {
+          stamina: 7,
+        },
+        statsSelf: {
+          stamina: -7,
+        },
         attack: {
           damage: 7,
           accuracy: 95,
@@ -1628,6 +1640,12 @@ const allItemsConst = [
       {
         type: 'interval',
         cooldown: 1_000,
+        statsRequired: {
+          stamina: 2,
+        },
+        statsSelf: {
+          stamina: -2,
+        },
         attack: {
           damage: 1,
           accuracy: 80,
