@@ -1,8 +1,7 @@
 import { getAllItems } from '@/game/allItems'
-import { LEADERBOARD_LIMIT } from '@/game/config'
 import { getLeaderboardRanked } from '@/game/getLeaderboard'
 import { capitalCase } from 'change-case'
-import { orderBy, round, sumBy } from 'lodash-es'
+import { meanBy, orderBy, round, sumBy } from 'lodash-es'
 import { Metadata } from 'next'
 import { ItemChart } from './ItemChart'
 
@@ -67,12 +66,15 @@ export default async function Page() {
       <div className="grid xl:grid-cols-2 gap-4">
         <ItemChart
           title="Total Count"
-          subTitle="count in leaderboard"
+          subTitle="mean count in leaderboard"
           valueLabel="count"
           data={orderBy(
             itemsRanked.map((item) => ({
               name: capitalCase(item.item.name),
-              value: sumBy(item.entriesWithCount, (e) => e.count),
+              value: round(
+                meanBy(item.entriesWithCount, (e) => e.count),
+                2,
+              ),
               fill: 'hsl(var(--chart-1))',
             })),
             (i) => i.value,
@@ -81,14 +83,14 @@ export default async function Page() {
         />
         <ItemChart
           title="Total Count (ranked)"
-          subTitle={`count in leaderboard and multiply by ${LEADERBOARD_LIMIT} minus rank`}
+          subTitle={`mean count in leaderboard and multiplied by win-rate`}
           valueLabel="points"
           data={orderBy(
             itemsRanked.map((item) => ({
               name: capitalCase(item.item.name),
-              value: sumBy(
-                item.entriesWithCount,
-                (e) => e.count * (LEADERBOARD_LIMIT - e.rank),
+              value: round(
+                meanBy(item.entriesWithCount, (e) => e.count * (e.score / 100)),
+                2,
               ),
               fill: 'hsl(var(--chart-1))',
             })),
@@ -98,12 +100,15 @@ export default async function Page() {
         />
         <ItemChart
           title="Build Count"
-          subTitle="count builds that have this item"
+          subTitle="fraction of builds that have this item"
           valueLabel="builds"
           data={orderBy(
             itemsRanked.map((item) => ({
               name: capitalCase(item.item.name),
-              value: sumBy(item.entriesWithCount, (e) => (e.count ? 1 : 0)),
+              value: round(
+                meanBy(item.entriesWithCount, (e) => (e.count ? 1 : 0)),
+                2,
+              ),
               fill: 'hsl(var(--chart-1))',
             })),
             (i) => i.value,
@@ -112,13 +117,16 @@ export default async function Page() {
         />
         <ItemChart
           title="Build Count (ranked)"
-          subTitle={`count builds that have this item and multiply by ${LEADERBOARD_LIMIT} minus rank`}
+          subTitle={`fraction of builds that have this item and multiplied by win-rate`}
           valueLabel="points"
           data={orderBy(
             itemsRanked.map((item) => ({
               name: capitalCase(item.item.name),
-              value: sumBy(item.entriesWithCount, (e) =>
-                e.count ? LEADERBOARD_LIMIT - e.rank : 0,
+              value: round(
+                meanBy(item.entriesWithCount, (e) =>
+                  e.count ? e.score / 100 : 0,
+                ),
+                2,
               ),
               fill: 'hsl(var(--chart-1))',
             })),
@@ -128,14 +136,14 @@ export default async function Page() {
         />
         <ItemChart
           title="Gold"
-          subTitle="gold spent on this item"
+          subTitle="mean gold spent on this item"
           valueLabel="gold"
           data={orderBy(
             itemsRanked.map((item) => ({
               name: capitalCase(item.item.name),
-              value: sumBy(
-                item.entriesWithCount,
-                (e) => e.count * item.item.price,
+              value: round(
+                meanBy(item.entriesWithCount, (e) => e.count * item.item.price),
+                2,
               ),
               fill: 'hsl(var(--chart-1))',
             })),
@@ -145,14 +153,17 @@ export default async function Page() {
         />
         <ItemChart
           title="Gold (ranked)"
-          subTitle={`gold spent on this item and multiply by ${LEADERBOARD_LIMIT} minus rank`}
+          subTitle={`mean gold spent on this item and multiplied by win-rate`}
           valueLabel="points"
           data={orderBy(
             itemsRanked.map((item) => ({
               name: capitalCase(item.item.name),
-              value: sumBy(
-                item.entriesWithCount,
-                (e) => e.count * item.item.price * (LEADERBOARD_LIMIT - e.rank),
+              value: round(
+                meanBy(
+                  item.entriesWithCount,
+                  (e) => e.count * item.item.price * (e.score / 100),
+                ),
+                2,
               ),
               fill: 'hsl(var(--chart-1))',
             })),
