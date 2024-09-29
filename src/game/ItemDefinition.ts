@@ -52,11 +52,13 @@ export const ItemDefinition = z.object({
   tags: z.array(Tag).optional(),
   triggers: z.array(Trigger).optional(),
   price: z.number(),
+  sellPrice: z.number().optional(),
   shop: z.boolean(),
   stats: Stats.optional(),
   statsItem: Stats.optional(),
   rarity: Rarity.optional(),
   version: z.number().optional(),
   unique: z.boolean().optional(),
+  description: z.string().optional(),
 })
 export type ItemDefinition = z.infer<typeof ItemDefinition>

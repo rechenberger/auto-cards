@@ -42,6 +42,10 @@ export const allTagsDefinition = [
     name: 'bag',
     bgClass: 'bg-amber-600/50',
   },
+  {
+    name: 'deprecated',
+    bgClass: 'bg-gray-500/20',
+  },
 ] as const
 
 export const getTagDefinition = (stat: Tag) => {

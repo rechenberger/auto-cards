@@ -9,7 +9,7 @@ import {
   getThemeDefinition,
   ThemeId,
 } from '@/game/themes'
-import { fontHeading } from '@/lib/fonts'
+import { fontHeading, fontLore } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
@@ -38,6 +38,7 @@ export type ItemCardProps = {
   canSell?: boolean
   onlyTop?: boolean
   disableTooltip?: boolean
+  showPrice?: boolean
 }
 
 export const ItemCard = async (props: ItemCardProps) => {
@@ -56,6 +57,7 @@ export const ItemCard = async (props: ItemCardProps) => {
     canSell,
     onlyTop,
     disableTooltip,
+    showPrice,
   } = props
 
   const item = await getItemByName(name)
@@ -128,7 +130,7 @@ export const ItemCard = async (props: ItemCardProps) => {
           )}
         >
           <div className="relative rounded-tr-lg rounded-b-lg overflow-hidden">
-            <div className="absolute top-0 inset-x-0 flex flex-col items-start">
+            <div className="absolute top-0 inset-x-0 gap-2 flex flex-col items-start">
               <div
                 className={cn(
                   'bg-[#313130] pl-4 pr-6 pb-1.5',
@@ -152,6 +154,9 @@ export const ItemCard = async (props: ItemCardProps) => {
               )}
               {!!item.unique && (
                 <ItemCardChip className="text-emerald-500">Unique</ItemCardChip>
+              )}
+              {item.sellPrice === 0 && (
+                <ItemCardChip className="text-red-500">Unsellable</ItemCardChip>
               )}
             </div>
             <div className="border-black border-2 rounded-lg overflow-hidden">
@@ -193,12 +198,21 @@ export const ItemCard = async (props: ItemCardProps) => {
         {!onlyTop && (
           <div
             className={cn(
-              'flex-1 flex flex-col justify-center rounded-lg p-2 text-xs',
+              'flex-1 flex flex-col justify-center rounded-lg p-2 text-xs relative',
               tag.bgClass,
               tag.bgClass && 'border-2 border-black',
               theme.classBottom,
             )}
           >
+            <div className="absolute -top-8 inset-x-2 gap-2 flex flex-col items-start">
+              {showPrice && !!item.price && (
+                <StatsDisplay
+                  size="sm"
+                  stats={{ gold: item.price }}
+                  className={cn(theme.classBottom)}
+                />
+              )}
+            </div>
             <div className="flex flex-col items-center gap-2">
               {item.stats && (
                 <StatsDisplay
@@ -232,6 +246,13 @@ export const ItemCard = async (props: ItemCardProps) => {
                   />
                 </Fragment>
               ))}
+              {item.description && (
+                <div className="flex flex-row gap-2 items-center">
+                  <div className={cn(fontLore.className)}>
+                    {item.description}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

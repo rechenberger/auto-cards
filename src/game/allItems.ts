@@ -1151,13 +1151,13 @@ const allItemsConst = [
     ],
   },
   {
-    name: 'piggyBank',
-    prompt: 'a bright pink piggy bank',
+    name: 'cursedPiggyBank',
+    prompt: 'a bright pink piggy bank but with evil red eyes',
     tags: ['accessory'],
     rarity: 'common',
     price: 3,
+    sellPrice: 0,
     shop: true,
-    unique: true,
     version: 2,
     stats: {
       space: space(-3),
@@ -1167,6 +1167,13 @@ const allItemsConst = [
         type: 'onShopEntered',
         statsSelf: {
           gold: 1,
+        },
+      },
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        statsSelf: {
+          randomDebuff: 1,
         },
       },
     ],
@@ -1678,16 +1685,17 @@ export const tryGetItemByName = async (name: string) => {
   return item
 }
 
-export const getItemByName = async (name: string) => {
+export const getItemByName = async (name: string): Promise<ItemDefinition> => {
   const item = await tryGetItemByName(name)
   if (!item) {
     // throw new Error(`Item not found: ${name}`)
     // console.warn(`Item not found: ${name}`)
     return {
       name,
-      tags: [],
+      tags: ['deprecated'],
       price: 0,
       shop: false,
+      description: 'Item was removed from the game',
     }
   }
   return item

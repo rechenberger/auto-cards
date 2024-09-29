@@ -16,7 +16,12 @@ export const streamItemCard = async (props: ItemCardProps) => {
         <>
           <div className="flex flex-col gap-4 max-h-[calc(100svh-160px)] overflow-auto max-md:-mx-4 items-center">
             <div className="">
-              <ItemCard {...props} size="320" tooltipOnClick={false} />
+              <ItemCard
+                {...props}
+                size="320"
+                tooltipOnClick={false}
+                showPrice
+              />
             </div>
             {props.changemaker && (
               <div className="bg-[#313130] text-white px-4 py-1 rounded-md">

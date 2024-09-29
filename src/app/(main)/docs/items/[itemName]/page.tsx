@@ -35,7 +35,7 @@ export default async function Page({ params: { itemName } }: PageProps) {
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-4">
-        <ItemCard name={itemName} size="480" />
+        <ItemCard name={itemName} size="480" showPrice />
         <div className="flex-1 flex flex-col gap-4">
           <div className="p-4 bg-border rounded-lg">
             <StatDescriptionsItem name={itemName} />
@@ -59,7 +59,12 @@ export default async function Page({ params: { itemName } }: PageProps) {
               return (
                 <Fragment key={theme.name}>
                   <div className="relative">
-                    <ItemCard name={itemName} themeId={theme.name} size="320" />
+                    <ItemCard
+                      name={itemName}
+                      themeId={theme.name}
+                      size="320"
+                      showPrice
+                    />
                     <AiImageGalleryItem
                       itemId={itemName}
                       themeId={theme.name}
