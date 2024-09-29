@@ -62,7 +62,7 @@ const generateMatchStateSides = async (input: GenerateMatchInput) => {
           return {
             ...def,
             statsItem: def.statsItem ? { ...def.statsItem } : undefined,
-            count: i.count ?? 1,
+            count: def.unique ? 1 : (i.count ?? 1),
           }
         }),
       )

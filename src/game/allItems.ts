@@ -1124,6 +1124,7 @@ const allItemsConst = [
     rarity: 'rare',
     price: 5,
     shop: true,
+    unique: true,
     triggers: [
       {
         type: 'startOfBattle',
@@ -1132,9 +1133,9 @@ const allItemsConst = [
             arithmetic: 'add',
             targetStats: 'statsSelf',
             targetStat: 'hungry',
-            description: 'Get **+1.5** *hungry* for every *food*',
+            description: 'Get **+10** *hungry* for every *food*',
             valueAddingTags: ['food'],
-            valueMultiplier: 1.5,
+            valueMultiplier: 10,
           },
         ],
       },
