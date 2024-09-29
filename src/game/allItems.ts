@@ -889,8 +889,8 @@ const allItemsConst = [
             targetStat: 'damage',
             targetStats: 'attack',
             valueAddingStats: ['thorns'],
-            description: '**+0.2** *damage* per *thorns*',
-            valueMultiplier: 0.2,
+            description: '**+0.5** *damage* per *thorns*',
+            valueMultiplier: 0.5,
           },
         ],
       },
@@ -899,7 +899,7 @@ const allItemsConst = [
         statsSelf: {
           thorns: 1,
         },
-        chancePercent: 50,
+        chancePercent: 70,
       },
     ],
   },
@@ -949,6 +949,16 @@ const allItemsConst = [
           damage: 5,
           accuracy: 100,
         },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['luck'],
+            description: '**+0.2** *damage* per *luck*',
+            valueMultiplier: 0.2,
+          },
+        ],
       },
       {
         type: 'onAttackAfterHit',
@@ -986,12 +996,22 @@ const allItemsConst = [
           damage: 5,
           accuracy: 85,
         },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['poison'],
+            sourceSide: 'enemy',
+            description: '**+0.5** *damage* per *poison* on enemy',
+            valueMultiplier: 0.5,
+          },
+        ],
       },
       {
         type: 'onAttackAfterHit',
         statsEnemy: {
           poison: 1,
-          randomDebuff: 1,
         },
         chancePercent: 70,
       },
