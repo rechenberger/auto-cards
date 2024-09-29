@@ -1,4 +1,5 @@
 import { GameMatchBoard } from '@/components/game/GameMatchBoard'
+import { LeaderboardRankCard } from '@/components/game/LeaderboardRankCard'
 import { TimeAgo } from '@/components/simple/TimeAgo'
 import {
   Card,
@@ -11,6 +12,7 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { getUserName } from '@/game/getUserName'
 import { desc } from 'drizzle-orm'
+import { first } from 'lodash-es'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
 
@@ -24,6 +26,10 @@ const getGames = async () => {
     limit: 24,
     with: {
       user: true,
+      loadouts: {
+        orderBy: desc(schema.loadout.roundNo),
+        limit: 1,
+      },
     },
   })
 }
@@ -33,7 +39,7 @@ export default async function Page() {
   const games = await getGames()
   return (
     <>
-      <div className="grid xl:grid-cols-3 gap-4 justify-center items-center text-center">
+      <div className="grid xl:grid-cols-3 gap-4 text-center">
         {games.map((game) => (
           <Fragment key={game.id}>
             <GameEntry game={game} />
@@ -45,17 +51,19 @@ export default async function Page() {
 }
 
 const GameEntry = async ({ game }: { game: Game }) => {
+  const loadout = first(game.loadouts)
   return (
     <>
-      <Card>
+      <Card className="flex flex-col">
         <CardHeader>
           <CardTitle>{getUserName({ user: game.user })}</CardTitle>
           <CardDescription>
             <TimeAgo date={new Date(game.updatedAt ?? '')} />
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col gap-4 items-center">
+        <CardContent className="flex-1 flex flex-col gap-4 items-center">
           <GameMatchBoard game={game} />
+          {loadout && <LeaderboardRankCard loadout={loadout} />}
         </CardContent>
       </Card>
     </>
