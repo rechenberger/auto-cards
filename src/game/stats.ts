@@ -196,11 +196,10 @@ const heroStats = [
     tooltip: 'Increases accuracy by X%.',
   },
   {
-    name: 'unblockable',
+    name: 'unblockableChance',
     icon: ShieldOff,
     bgClass: 'bg-cyan-500',
-    tooltip: 'Cannot be blocked.',
-    hideCount: true,
+    tooltip: 'X% chance to ignore block.',
   },
   {
     name: 'critChance',

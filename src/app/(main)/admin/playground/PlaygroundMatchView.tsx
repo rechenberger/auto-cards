@@ -49,7 +49,7 @@ export const PlaygroundMatchView = ({
     <MatchView
       match={match}
       forceParticipants={participants}
-      // calculateChangemakers
+      calculateChangemakers
     />
   )
 }

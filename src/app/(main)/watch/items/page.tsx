@@ -2,7 +2,7 @@ import { getAllItems } from '@/game/allItems'
 import { LEADERBOARD_LIMIT } from '@/game/config'
 import { getLeaderboardRanked } from '@/game/getLeaderboard'
 import { capitalCase } from 'change-case'
-import { orderBy, sumBy } from 'lodash-es'
+import { orderBy, round, sumBy } from 'lodash-es'
 import { Metadata } from 'next'
 import { ItemChart } from './ItemChart'
 
@@ -32,6 +32,31 @@ export default async function Page() {
       entriesWithCount,
     }
   })
+
+  const itemsWithAttack = itemsRanked
+    .map((item) => {
+      const attacks = item.item.triggers?.flatMap((t) =>
+        t.type === 'interval' && t.attack ? t : [],
+      )
+      const damagePerSecond = round(
+        sumBy(attacks, (a) => (a.attack?.damage ?? 0) / (a.cooldown / 1000)),
+        2,
+      )
+      const staminaPerSecond = round(
+        sumBy(
+          attacks,
+          (a) => ((a.statsSelf?.stamina ?? 0) / (a.cooldown / 1000)) * -1,
+        ),
+        2,
+      )
+
+      return {
+        ...item,
+        damagePerSecond,
+        staminaPerSecond,
+      }
+    })
+    .filter((item) => item.damagePerSecond > 0)
 
   return (
     <>
@@ -126,6 +151,32 @@ export default async function Page() {
                 (e) => e.count * item.item.price * (LEADERBOARD_LIMIT - e.rank),
               ),
               fill: 'hsl(var(--chart-1))',
+            })),
+            (i) => i.value,
+            'desc',
+          )}
+        />
+        <ItemChart
+          title="Damage per second"
+          valueLabel="dps"
+          data={orderBy(
+            itemsWithAttack.map((item) => ({
+              name: capitalCase(item.item.name),
+              value: item.damagePerSecond,
+              fill: 'hsl(var(--chart-2))',
+            })),
+            (i) => i.value,
+            'desc',
+          )}
+        />
+        <ItemChart
+          title="Stamina per second"
+          valueLabel="stamina/s"
+          data={orderBy(
+            itemsWithAttack.map((item) => ({
+              name: capitalCase(item.item.name),
+              value: item.staminaPerSecond,
+              fill: 'hsl(var(--chart-3))',
             })),
             (i) => i.value,
             'desc',

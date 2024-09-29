@@ -20,6 +20,8 @@ const allItemsConst = [
       stamina: 50,
       staminaMax: 50,
       staminaRegen: 10,
+      critChance: 10,
+      critDamage: 200,
       space: space(14),
     },
   },
@@ -179,7 +181,7 @@ const allItemsConst = [
     shop: true,
     stats: {
       space: space(-1),
-      lifeSteal: 20,
+      lifeSteal: 10,
     },
   },
   {
@@ -189,6 +191,7 @@ const allItemsConst = [
     rarity: 'uncommon',
     price: 4,
     shop: true,
+    unique: true,
     stats: {
       space: space(-2),
     },
@@ -211,16 +214,18 @@ const allItemsConst = [
     stats: {
       space: space(-2),
     },
-    statsItem: {
-      unblockable: 1,
-      critChance: 30,
-    },
     triggers: [
       {
         type: 'interval',
         cooldown: 2_000,
+        statsRequired: {
+          stamina: 5,
+        },
+        statsSelf: {
+          stamina: -5,
+        },
         attack: {
-          damage: 6,
+          damage: 4,
           accuracy: 85,
         },
       },
@@ -228,6 +233,7 @@ const allItemsConst = [
         type: 'onAttackCritAfterHit',
         statsItem: {
           critChance: 10,
+          unblockableChance: 10,
         },
       },
     ],
@@ -242,15 +248,16 @@ const allItemsConst = [
     stats: {
       space: space(-2),
     },
-    statsItem: {
-      unblockable: 1,
-      critChance: 30,
-      haste: 30,
-    },
     triggers: [
       {
         type: 'interval',
         cooldown: 2_000,
+        statsRequired: {
+          stamina: 5,
+        },
+        statsSelf: {
+          stamina: -5,
+        },
         attack: {
           damage: 6,
           accuracy: 85,
@@ -261,6 +268,7 @@ const allItemsConst = [
         statsItem: {
           critChance: 10,
           haste: 10,
+          unblockableChance: 10,
         },
       },
     ],
@@ -311,7 +319,7 @@ const allItemsConst = [
     triggers: [
       {
         type: 'interval',
-        cooldown: 1_000,
+        cooldown: 1_500,
         statsSelf: {
           aim: 10,
         },
@@ -513,8 +521,20 @@ const allItemsConst = [
         cooldown: 1_000,
         attack: {
           accuracy: 80,
-          damage: 2,
+          damage: 1,
         },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['flying'],
+            valueMultiplier: 5,
+            valueMax: 5,
+            sourceSide: 'enemy',
+            description: '**+5** *damage* if enemy has *flying*',
+          },
+        ],
       },
       {
         type: 'onAttackAfterHit',
@@ -533,7 +553,7 @@ const allItemsConst = [
     shop: true,
     stats: {
       space: space(-2),
-      critDamage: 30,
+      critDamage: 15,
     },
   },
   {
@@ -550,10 +570,10 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 1_500,
         statsRequired: {
-          stamina: 10,
+          stamina: 7,
         },
         statsSelf: {
-          stamina: -10,
+          stamina: -7,
         },
         statsEnemy: {
           blind: 3,
@@ -655,6 +675,7 @@ const allItemsConst = [
     rarity: 'common',
     price: 4,
     shop: true,
+    unique: true,
     stats: {
       space: space(-2),
     },
@@ -663,10 +684,10 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 2_200,
         statsRequired: {
-          stamina: 20,
+          stamina: 15,
         },
         statsSelf: {
-          stamina: -20,
+          stamina: -15,
         },
         attack: {
           damage: 8,
@@ -679,6 +700,13 @@ const allItemsConst = [
             targetStats: 'attack',
             valueAddingTags: ['food'],
             description: '**+1** *damage* per *food*',
+          },
+          {
+            arithmetic: 'add',
+            targetStat: 'haste',
+            targetStats: 'statsForItem',
+            valueAddingStats: ['hungry'],
+            description: '**+1** *haste* per *hungry*',
           },
         ],
       },
@@ -712,7 +740,7 @@ const allItemsConst = [
       {
         type: 'onAttackAfterHit',
         chancePercent: 30,
-        statsItem: {
+        statsSelf: {
           empower: 1,
         },
       },
@@ -844,7 +872,7 @@ const allItemsConst = [
       {
         type: 'startOfBattle',
         statsSelf: {
-          thorns: 1,
+          thorns: 2,
         },
       },
     ],
@@ -854,7 +882,7 @@ const allItemsConst = [
     prompt: 'a bow and arrow made out of thorny wood',
     tags: ['weapon'],
     rarity: 'rare',
-    price: 8,
+    price: 4 + 4, // shortBow + roseBush
     shop: false,
     stats: {
       space: space(-2),
@@ -882,8 +910,8 @@ const allItemsConst = [
             targetStat: 'damage',
             targetStats: 'attack',
             valueAddingStats: ['thorns'],
-            description: '**+0.2** *damage* per *thorns*',
-            valueMultiplier: 0.2,
+            description: '**+0.5** *damage* per *thorns*',
+            valueMultiplier: 0.5,
           },
         ],
       },
@@ -892,7 +920,7 @@ const allItemsConst = [
         statsSelf: {
           thorns: 1,
         },
-        chancePercent: 50,
+        chancePercent: 70,
       },
     ],
   },
@@ -910,7 +938,7 @@ const allItemsConst = [
       {
         type: 'startOfBattle',
         statsSelf: {
-          luck: 5,
+          luck: 4,
         },
       },
     ],
@@ -942,6 +970,16 @@ const allItemsConst = [
           damage: 5,
           accuracy: 100,
         },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['luck'],
+            description: '**+0.2** *damage* per *luck*',
+            valueMultiplier: 0.2,
+          },
+        ],
       },
       {
         type: 'onAttackAfterHit',
@@ -979,12 +1017,22 @@ const allItemsConst = [
           damage: 5,
           accuracy: 85,
         },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['poison'],
+            sourceSide: 'enemy',
+            description: '**+0.5** *damage* per *poison* on enemy',
+            valueMultiplier: 0.5,
+          },
+        ],
       },
       {
         type: 'onAttackAfterHit',
         statsEnemy: {
           poison: 1,
-          randomDebuff: 1,
         },
         chancePercent: 70,
       },
@@ -1022,20 +1070,20 @@ const allItemsConst = [
       {
         type: 'interval',
         cooldown: 3_000,
+        statsSelf: {
+          randomDebuff: -1,
+        },
+      },
+      {
+        type: 'interval',
+        cooldown: 3_000,
         statsRequired: {
-          luck: 4,
+          luck: 5,
         },
         statsSelf: {
           empower: 1,
         },
         chancePercent: 50,
-      },
-      {
-        type: 'interval',
-        cooldown: 3_000,
-        statsSelf: {
-          randomDebuff: -1,
-        },
       },
     ],
   },
@@ -1097,6 +1145,7 @@ const allItemsConst = [
     rarity: 'common',
     price: 3,
     shop: true,
+    unique: true,
     version: 2,
     stats: {
       space: space(-3),
@@ -1117,6 +1166,7 @@ const allItemsConst = [
     rarity: 'rare',
     price: 5,
     shop: true,
+    unique: true,
     triggers: [
       {
         type: 'startOfBattle',
@@ -1125,9 +1175,9 @@ const allItemsConst = [
             arithmetic: 'add',
             targetStats: 'statsSelf',
             targetStat: 'hungry',
-            description: 'Get **+1.5** *hungry* for every *food*',
+            description: 'Get **+10** *hungry* for every *food*',
             valueAddingTags: ['food'],
-            valueMultiplier: 1.5,
+            valueMultiplier: 10,
           },
         ],
       },
@@ -1149,7 +1199,7 @@ const allItemsConst = [
         type: 'startOfBattle',
         statsSelf: {
           empower: 1,
-          haste: 15,
+          haste: 5,
         },
       },
     ],
@@ -1159,7 +1209,7 @@ const allItemsConst = [
     prompt: 'a long sword with a shiny metal blade',
     tags: ['weapon'],
     rarity: 'epic',
-    price: 3 + 4 + 4,
+    price: 3 + 4, // woodenSword + metalGloves
     shop: false,
     version: 2,
     stats: {
@@ -1184,7 +1234,7 @@ const allItemsConst = [
         type: 'startOfBattle',
         statsSelf: {
           empower: 2,
-          haste: 25,
+          haste: 20,
         },
       },
     ],
@@ -1489,6 +1539,7 @@ const allItemsConst = [
     rarity: 'epic',
     price: 8,
     shop: true,
+    unique: true,
     version: 2,
     triggers: [
       {
@@ -1499,7 +1550,7 @@ const allItemsConst = [
         },
         statsSelf: {
           mana: -3,
-          flying: 3,
+          flying: 2,
         },
       },
     ],
@@ -1511,6 +1562,7 @@ const allItemsConst = [
     rarity: 'epic',
     price: 8,
     shop: true,
+    unique: true,
     version: 2,
     triggers: [
       {
@@ -1521,7 +1573,7 @@ const allItemsConst = [
         },
         statsSelf: {
           mana: -3,
-          barrier: 3,
+          block: 20,
         },
       },
     ],
@@ -1534,14 +1586,16 @@ const allItemsConst = [
     price: 3 + 7, // dagger + unstableManaCrystal
     shop: false,
     version: 2,
-    statsItem: {
-      unblockable: 1,
-      critChance: 30,
-    },
     triggers: [
       {
         type: 'interval',
         cooldown: 2_000,
+        statsRequired: {
+          stamina: 5,
+        },
+        statsSelf: {
+          stamina: -5,
+        },
         attack: {
           damage: 6,
           accuracy: 85,
@@ -1551,6 +1605,7 @@ const allItemsConst = [
         type: 'onAttackCritAfterHit',
         statsItem: {
           critChance: 10,
+          unblockableChance: 10,
         },
         statsSelf: {
           mana: 2,

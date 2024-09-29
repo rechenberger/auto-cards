@@ -15,13 +15,14 @@ import { calcLoadoutPrice } from '@/game/calcLoadoutPrice'
 import { LEADERBOARD_LIMIT } from '@/game/config'
 import { getLeaderboardRanked } from '@/game/getLeaderboard'
 import { getUserName } from '@/game/getUserName'
+import { revalidateLeaderboard } from '@/game/revalidateLeaderboard'
 import {
   streamDialog,
   streamToast,
   superAction,
 } from '@/super-action/action/createSuperAction'
-import { streamRevalidatePath } from '@/super-action/action/streamRevalidatePath'
 import { ActionButton } from '@/super-action/button/ActionButton'
+import { AutoActionClient } from '@/super-action/command/AutoActionClient'
 import { createStreamableUI } from 'ai/rsc'
 import { eq } from 'drizzle-orm'
 import { countBy, omitBy, orderBy, uniqBy } from 'lodash-es'
@@ -132,9 +133,14 @@ export default async function Page({
                           ui.done(
                             <>
                               <Progress value={100} />
+                              <AutoActionClient
+                                action={async () => {
+                                  'use server'
+                                  revalidateLeaderboard()
+                                }}
+                              />
                             </>,
                           )
-                          revalidatePath('/watch/leaderboard')
                         }
                       },
                     })
@@ -170,9 +176,14 @@ export default async function Page({
                       ui.done(
                         <>
                           <Progress value={100} />
+                          <AutoActionClient
+                            action={async () => {
+                              'use server'
+                              revalidateLeaderboard()
+                            }}
+                          />
                         </>,
                       )
-                      streamRevalidatePath('/watch/leaderboard')
                     }
                     streamDialog({
                       title: 'Leaderboard Updated',

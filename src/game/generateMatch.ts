@@ -18,13 +18,12 @@ import {
 } from './calcStats'
 import {
   BASE_TICK_TIME,
-  CRIT_MULTIPLIER,
   FATIGUE_STARTS_AT,
   MAX_MATCH_TIME,
   MAX_THORNS_MULTIPLIER,
 } from './config'
 import { TriggerEventType } from './ItemDefinition'
-import { getAllModifiedStats } from './modifiers'
+import { getAllModifiedStats, getModifiedStats } from './modifiers'
 import { orderItems } from './orderItems'
 import { randomStatsResolve } from './randomStatsResolve'
 import { Stats } from './stats'
@@ -63,7 +62,7 @@ const generateMatchStateSides = async (input: GenerateMatchInput) => {
           return {
             ...def,
             statsItem: def.statsItem ? { ...def.statsItem } : undefined,
-            count: i.count ?? 1,
+            count: def.unique ? 1 : (i.count ?? 1),
           }
         }),
       )
@@ -481,7 +480,6 @@ export const generateMatch = async ({
               }
 
               if (doesCrit) {
-                damage *= CRIT_MULTIPLIER
                 if (statsForItem?.critDamage) {
                   damage *= 1 + statsForItem.critDamage / 100
                 }
@@ -489,7 +487,12 @@ export const generateMatch = async ({
               damage = Math.round(damage)
 
               let blockedDamage = 0
-              if (!statsForItem?.unblockable) {
+              let unblockable = false
+              if (statsForItem?.unblockableChance) {
+                unblockable =
+                  rngFloat({ seed, max: 100 }) <= statsForItem.unblockableChance
+              }
+              if (!unblockable) {
                 blockedDamage = Math.min(damage, otherSide.stats.block ?? 0)
               }
               damage -= blockedDamage
@@ -683,6 +686,7 @@ export const generateMatch = async ({
     }
 
     // UPDATE COOLDOWN
+    // TODO: merge this with the cooldown set at start
     for (const action of futureActions) {
       if (action.time !== time) continue
       if (action.type !== 'baseTick') {
@@ -692,9 +696,22 @@ export const generateMatch = async ({
         if (trigger.type === 'startOfBattle') {
           action.time = MAX_MATCH_TIME // TODO: find a more elegant solution
         } else if (trigger.type === 'interval') {
-          const statsForItem = item.statsItem
+          let statsForItem = item.statsItem
             ? sumStats2(side.stats, item.statsItem)
             : side.stats
+          const modifiedStatsForItem = getModifiedStats(
+            {
+              state,
+              sideIdx: action.sideIdx,
+              itemIdx: action.itemIdx,
+              triggerIdx: action.triggerIdx,
+              statsForItem,
+            },
+            'statsForItem',
+          )
+          if (modifiedStatsForItem) {
+            statsForItem = modifiedStatsForItem
+          }
           const cooldown = calcCooldown({
             cooldown: trigger.cooldown,
             stats: statsForItem,

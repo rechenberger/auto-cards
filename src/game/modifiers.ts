@@ -37,7 +37,7 @@ export const Modifier = z.object({
 })
 export type Modifier = z.infer<typeof Modifier>
 
-const getModifiedStats = (
+export const getModifiedStats = (
   {
     state,
     sideIdx,
