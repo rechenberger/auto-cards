@@ -719,7 +719,7 @@ const allItemsConst = [
       {
         type: 'onAttackAfterHit',
         chancePercent: 30,
-        statsItem: {
+        statsSelf: {
           empower: 1,
         },
       },
