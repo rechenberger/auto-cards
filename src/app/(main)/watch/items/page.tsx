@@ -66,7 +66,7 @@ export default async function Page() {
         />
         <ItemChart
           title="Total Count (ranked)"
-          subTitle={`count in leaderboard and multiply by ${LEADERBOARD_LIMIT} - rank`}
+          subTitle={`count in leaderboard and multiply by ${LEADERBOARD_LIMIT} minus rank`}
           valueLabel="points"
           data={orderBy(
             itemsRanked.map((item) => ({
@@ -83,7 +83,7 @@ export default async function Page() {
         />
         <ItemChart
           title="Build Count (ranked)"
-          subTitle={`count builds that have this item and multiply by ${LEADERBOARD_LIMIT} - rank`}
+          subTitle={`count builds that have this item and multiply by ${LEADERBOARD_LIMIT} minus rank`}
           valueLabel="points"
           data={orderBy(
             itemsRanked.map((item) => ({

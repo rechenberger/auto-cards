@@ -59,6 +59,7 @@ export function ItemChart({
             layout="vertical"
             margin={{
               left: 10,
+              right: 40,
             }}
           >
             <YAxis
