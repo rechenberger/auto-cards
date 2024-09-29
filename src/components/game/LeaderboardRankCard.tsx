@@ -10,11 +10,12 @@ import { cn } from '@/lib/utils'
 import { superAction } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { eq } from 'drizzle-orm'
-import { ExternalLink } from 'lucide-react'
+import { ExternalLink, Plus } from 'lucide-react'
 import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
 import { SimpleRefresher } from '../simple/SimpleRefresher'
 import { Button } from '../ui/button'
+import { revalidateLeaderboard } from '@/game/revalidateLeaderboard'
 
 export const LeaderboardRankCard = async ({
   loadout,
@@ -69,7 +70,26 @@ export const LeaderboardRankCard = async ({
       : 'border-gray-500'
 
   if (tiny) {
-    if (!entry) return null
+    if (!entry) {
+      if (isAdmin) {
+        return (
+          <ActionButton
+            variant={'outline'}
+            size={'icon'}
+            hideIcon
+            action={async () => {
+              'use server'
+              await addToLeaderboard({ loadout })
+              revalidateLeaderboard()
+            }}
+          >
+            <Plus className="size-4" />
+          </ActionButton>
+        )
+      }
+
+      return null
+    }
     return (
       <>
         <div
