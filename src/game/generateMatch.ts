@@ -23,7 +23,7 @@ import {
   MAX_THORNS_MULTIPLIER,
 } from './config'
 import { TriggerEventType } from './ItemDefinition'
-import { getAllModifiedStats } from './modifiers'
+import { getAllModifiedStats, getModifiedStats } from './modifiers'
 import { orderItems } from './orderItems'
 import { randomStatsResolve } from './randomStatsResolve'
 import { Stats } from './stats'
@@ -686,6 +686,7 @@ export const generateMatch = async ({
     }
 
     // UPDATE COOLDOWN
+    // TODO: merge this with the cooldown set at start
     for (const action of futureActions) {
       if (action.time !== time) continue
       if (action.type !== 'baseTick') {
@@ -695,9 +696,22 @@ export const generateMatch = async ({
         if (trigger.type === 'startOfBattle') {
           action.time = MAX_MATCH_TIME // TODO: find a more elegant solution
         } else if (trigger.type === 'interval') {
-          const statsForItem = item.statsItem
+          let statsForItem = item.statsItem
             ? sumStats2(side.stats, item.statsItem)
             : side.stats
+          const modifiedStatsForItem = getModifiedStats(
+            {
+              state,
+              sideIdx: action.sideIdx,
+              itemIdx: action.itemIdx,
+              triggerIdx: action.triggerIdx,
+              statsForItem,
+            },
+            'statsForItem',
+          )
+          if (modifiedStatsForItem) {
+            statsForItem = modifiedStatsForItem
+          }
           const cooldown = calcCooldown({
             cooldown: trigger.cooldown,
             stats: statsForItem,

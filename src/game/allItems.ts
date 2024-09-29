@@ -662,6 +662,7 @@ const allItemsConst = [
     rarity: 'common',
     price: 4,
     shop: true,
+    unique: true,
     stats: {
       space: space(-2),
     },
@@ -670,10 +671,10 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 2_200,
         statsRequired: {
-          stamina: 20,
+          stamina: 15,
         },
         statsSelf: {
-          stamina: -20,
+          stamina: -15,
         },
         attack: {
           damage: 8,
@@ -686,6 +687,13 @@ const allItemsConst = [
             targetStats: 'attack',
             valueAddingTags: ['food'],
             description: '**+1** *damage* per *food*',
+          },
+          {
+            arithmetic: 'add',
+            targetStat: 'haste',
+            targetStats: 'statsForItem',
+            valueAddingStats: ['hungry'],
+            description: '**+1** *haste* per *hungry*',
           },
         ],
       },
