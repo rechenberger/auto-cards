@@ -52,6 +52,7 @@ export const ItemDefinition = z.object({
   tags: z.array(Tag).optional(),
   triggers: z.array(Trigger).optional(),
   price: z.number(),
+  sellPrice: z.number().optional(),
   shop: z.boolean(),
   stats: Stats.optional(),
   statsItem: Stats.optional(),

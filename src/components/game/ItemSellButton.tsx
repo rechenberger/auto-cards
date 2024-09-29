@@ -12,11 +12,11 @@ export const ItemSellButton = ({
   gameId?: string
   item: ItemDefinition
 }) => {
-  if (!gameId || item.price <= 0) {
+  const sellPrice = item.sellPrice ?? Math.ceil(item.price / 2)
+  if (!gameId || sellPrice <= 0) {
     return null
   }
 
-  const sellPrice = Math.ceil(item.price / 2)
   return (
     <>
       <div className="absolute md:opacity-0 group-hover:opacity-100 transition-opacity inset-x-0 top-12 z-10 flex flex-col items-center">
