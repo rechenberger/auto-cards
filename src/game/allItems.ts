@@ -1171,7 +1171,7 @@ const allItemsConst = [
       },
       {
         type: 'interval',
-        cooldown: 2_000,
+        cooldown: 3_000,
         statsSelf: {
           randomDebuff: 1,
         },
