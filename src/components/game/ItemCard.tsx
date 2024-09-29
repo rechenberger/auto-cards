@@ -164,6 +164,18 @@ export const ItemCard = async (props: ItemCardProps) => {
                   <div className="text-xs">{capitalCase(rarity.name)}</div>
                 </div>
               )}
+              {!!item.unique && (
+                <div
+                  className={cn(
+                    'bg-[#313130] pl-4 pr-3 py-1',
+                    'rounded-l-full',
+                    'border-l-2 border-y-2 border-black',
+                    'text-emerald-500',
+                  )}
+                >
+                  <div className="text-xs">Unique</div>
+                </div>
+              )}
             </div>
             <div className="border-black border-2 rounded-lg overflow-hidden">
               <AiItemImage
