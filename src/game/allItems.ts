@@ -1685,16 +1685,17 @@ export const tryGetItemByName = async (name: string) => {
   return item
 }
 
-export const getItemByName = async (name: string) => {
+export const getItemByName = async (name: string): Promise<ItemDefinition> => {
   const item = await tryGetItemByName(name)
   if (!item) {
     // throw new Error(`Item not found: ${name}`)
     // console.warn(`Item not found: ${name}`)
     return {
       name,
-      tags: [],
+      tags: ['deprecated'],
       price: 0,
       shop: false,
+      description: 'Item was removed from the game',
     }
   }
   return item

@@ -9,7 +9,7 @@ import {
   getThemeDefinition,
   ThemeId,
 } from '@/game/themes'
-import { fontHeading } from '@/lib/fonts'
+import { fontHeading, fontLore } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
@@ -235,6 +235,13 @@ export const ItemCard = async (props: ItemCardProps) => {
                   />
                 </Fragment>
               ))}
+              {item.description && (
+                <div className="flex flex-row gap-2 items-center">
+                  <div className={cn(fontLore.className)}>
+                    {item.description}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
