@@ -1,4 +1,5 @@
 import { addToLeaderboard } from '@/game/addToLeaderboard'
+import { NO_OF_ROUNDS } from '@/game/config'
 import { getLeaderboard } from '@/game/getLeaderboard'
 import { range } from 'lodash-es'
 import { headers } from 'next/headers'
@@ -19,21 +20,29 @@ export const GET = async () => {
 
   const CYCLES = 2
 
-  console.log(`Leaderboard Cron: Starting (${CYCLES} cycles)`)
   console.time(`Leaderboard Cron: Total Time`)
 
-  for (const cycle of range(1, CYCLES + 1)) {
-    const leaderboard = await getLeaderboard({})
+  for (const roundNo of range(NO_OF_ROUNDS)) {
+    console.log(`Leaderboard Cron: Round ${roundNo}`)
     console.log(
-      `Leaderboard Cron: Cycle ${cycle}, ${leaderboard.length} Entries`,
+      `Leaderboard Cron: Starting (round ${roundNo}, ${CYCLES} cycles)`,
     )
 
-    for (const [idx, entry] of leaderboard.entries()) {
-      const msg = `Leaderboard Cron: Cycle ${cycle} Rank ${idx + 1}`
-      console.time(msg)
-      await addToLeaderboard({ loadout: entry.loadout })
-      console.timeEnd(msg)
+    for (const cycle of range(1, CYCLES + 1)) {
+      const leaderboard = await getLeaderboard({})
+      console.log(
+        `Leaderboard Cron: Round ${roundNo} Cycle ${cycle}, ${leaderboard.length} Entries`,
+      )
+
+      for (const [idx, entry] of leaderboard.entries()) {
+        const msg = `Leaderboard Cron: Round ${roundNo} Cycle ${cycle} Rank ${idx + 1}`
+        console.time(msg)
+        await addToLeaderboard({ loadout: entry.loadout })
+        console.timeEnd(msg)
+      }
     }
+
+    console.log(`Leaderboard Cron: Round ${roundNo} Done`)
   }
 
   console.log(`Leaderboard Cron: Done`)

@@ -3,6 +3,7 @@ import { ItemCardGrid } from '@/components/game/ItemCardGrid'
 import { LeaderboardBenchmarkButton } from '@/components/game/LeaderboardBenchmarkButton'
 import { PlaygroundSelector } from '@/components/game/PlaygroundSelector'
 import { StatsDisplay } from '@/components/game/StatsDisplay'
+import { SimpleParamSelect } from '@/components/simple/SimpleParamSelect'
 import { TimeAgo } from '@/components/simple/TimeAgo'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -12,7 +13,7 @@ import { addAllToLeaderboard } from '@/game/addAllToLeaderboard'
 import { addToLeaderboard } from '@/game/addToLeaderboard'
 import { getBotName } from '@/game/botName'
 import { calcLoadoutPrice } from '@/game/calcLoadoutPrice'
-import { LEADERBOARD_LIMIT } from '@/game/config'
+import { LEADERBOARD_LIMIT, NO_OF_ROUNDS } from '@/game/config'
 import { getLeaderboardRanked } from '@/game/getLeaderboard'
 import { getUserName } from '@/game/getUserName'
 import { revalidateLeaderboard } from '@/game/revalidateLeaderboard'
@@ -25,7 +26,7 @@ import { ActionButton } from '@/super-action/button/ActionButton'
 import { AutoActionClient } from '@/super-action/command/AutoActionClient'
 import { createStreamableUI } from 'ai/rsc'
 import { eq } from 'drizzle-orm'
-import { countBy, omitBy, orderBy, uniqBy } from 'lodash-es'
+import { countBy, omitBy, orderBy, range, uniqBy } from 'lodash-es'
 import { Delete, Plus, RotateCw } from 'lucide-react'
 import { Metadata } from 'next'
 import { revalidatePath } from 'next/cache'
@@ -39,9 +40,15 @@ export const metadata: Metadata = {
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { view: string }
+  searchParams: { view?: string; round?: string }
 }) {
-  const entries = await getLeaderboardRanked({})
+  const roundNo = searchParams.round
+    ? parseInt(searchParams.round) - 1
+    : NO_OF_ROUNDS - 1
+
+  const entries = await getLeaderboardRanked({
+    roundNo,
+  })
   const isAdmin = await getIsAdmin({ allowDev: false })
 
   const view = searchParams.view ?? 'all'
@@ -121,6 +128,7 @@ export default async function Page({
                       content: <>{ui.value}</>,
                     })
                     addAllToLeaderboard({
+                      roundNo,
                       onUpdate: (info) => {
                         ui.update(
                           <>
@@ -198,6 +206,14 @@ export default async function Page({
             </div>
           </>
         )}
+        <SimpleParamSelect
+          options={range(NO_OF_ROUNDS).map((roundNo) => ({
+            value: `${roundNo + 1}`,
+            label: `Round ${roundNo + 1}`,
+          }))}
+          paramKey="round"
+          label="Round"
+        />
         <Tabs value={view}>
           <TabsList>
             <TabsTrigger value="all">
