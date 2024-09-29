@@ -1,5 +1,5 @@
 import { GameMatchBoard } from '@/components/game/GameMatchBoard'
-import { LeaderboardRankCard } from '@/components/game/LeaderboardRankCard'
+import { LeaderboardRankCardByGame } from '@/components/game/LeaderboardRankCardByGame'
 import { TimeAgo } from '@/components/simple/TimeAgo'
 import {
   Card,
@@ -12,7 +12,6 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { getUserName } from '@/game/getUserName'
 import { desc } from 'drizzle-orm'
-import { first } from 'lodash-es'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
 
@@ -26,10 +25,6 @@ const getGames = async () => {
     limit: 24,
     with: {
       user: true,
-      loadouts: {
-        orderBy: desc(schema.loadout.roundNo),
-        limit: 1,
-      },
     },
   })
 }
@@ -51,7 +46,6 @@ export default async function Page() {
 }
 
 const GameEntry = async ({ game }: { game: Game }) => {
-  const loadout = first(game.loadouts)
   return (
     <>
       <Card className="flex flex-col">
@@ -62,9 +56,9 @@ const GameEntry = async ({ game }: { game: Game }) => {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col gap-4 items-center">
-          <div className="flex flex-row gap-4 justify-between items-center">
+          <div className="flex flex-row gap-4 justify-center items-center">
             <GameMatchBoard game={game} />
-            {loadout && <LeaderboardRankCard loadout={loadout} tiny />}
+            <LeaderboardRankCardByGame gameId={game.id} tiny />
           </div>
         </CardContent>
       </Card>

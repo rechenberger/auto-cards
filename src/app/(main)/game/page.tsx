@@ -2,6 +2,7 @@ import { getIsAdmin } from '@/auth/getIsAdmin'
 import { getMyUserIdOrLogin } from '@/auth/getMyUser'
 import { GameMatchBoard } from '@/components/game/GameMatchBoard'
 import { ItemCardGrid } from '@/components/game/ItemCardGrid'
+import { LeaderboardRankCardByGame } from '@/components/game/LeaderboardRankCardByGame'
 import { TitleScreen } from '@/components/game/TitleScreen'
 import { TimeAgo } from '@/components/simple/TimeAgo'
 import { Button } from '@/components/ui/button'
@@ -9,7 +10,7 @@ import { Card } from '@/components/ui/card'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Game } from '@/db/schema-zod'
-import { GAME_VERSION, LIMIT_GAME_OVERVIEW } from '@/game/config'
+import { GAME_VERSION, LIMIT_GAME_OVERVIEW, NO_OF_ROUNDS } from '@/game/config'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { and, desc, eq } from 'drizzle-orm'
 import { Zap } from 'lucide-react'
@@ -74,7 +75,12 @@ export default async function Page() {
         {games.map((game) => (
           <Fragment key={game.id}>
             <Card className="flex flex-col gap-4 p-4 items-center">
-              <GameMatchBoard game={game} />
+              <div className="flex flex-row gap-4 justify-center items-center">
+                <GameMatchBoard game={game} />
+                {game.data.roundNo >= NO_OF_ROUNDS - 1 && (
+                  <LeaderboardRankCardByGame gameId={game.id} tiny />
+                )}
+              </div>
               <ItemCardGrid items={game.data.currentLoadout.items} />
               {game.liveMatchId && (
                 <div className="text-sm opacity-60 flex flex-row items-center gap-1">
