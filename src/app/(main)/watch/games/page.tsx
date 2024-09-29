@@ -62,8 +62,10 @@ const GameEntry = async ({ game }: { game: Game }) => {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col gap-4 items-center">
-          <GameMatchBoard game={game} />
-          {loadout && <LeaderboardRankCard loadout={loadout} />}
+          <div className="flex flex-row gap-4 justify-between items-center">
+            <GameMatchBoard game={game} />
+            {loadout && <LeaderboardRankCard loadout={loadout} tiny />}
+          </div>
         </CardContent>
       </Card>
     </>

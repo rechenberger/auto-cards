@@ -4,7 +4,7 @@ import { schema } from '@/db/schema-export'
 import { Loadout } from '@/db/schema-zod'
 import { addToLeaderboard } from '@/game/addToLeaderboard'
 import { GREAT_WIN_RATE } from '@/game/config'
-import { getLeaderboard } from '@/game/getLeaderboard'
+import { getLeaderboardRanked } from '@/game/getLeaderboard'
 import { getOrdinalSuffix } from '@/lib/getOrdinalSuffix'
 import { cn } from '@/lib/utils'
 import { superAction } from '@/super-action/action/createSuperAction'
@@ -18,26 +18,31 @@ import { Button } from '../ui/button'
 
 export const LeaderboardRankCard = async ({
   loadout,
+  tiny,
 }: {
   loadout: Loadout
+  tiny?: boolean
 }) => {
-  const leaderboard = await getLeaderboard({ roundNo: loadout.roundNo })
-  const leaderboardIdx = leaderboard.findIndex(
-    (e) => e.loadoutId === loadout.id,
-  )
-  const top = leaderboardIdx !== -1
-  let entry = top ? leaderboard[leaderboardIdx] : undefined
+  const leaderboard = await getLeaderboardRanked({ roundNo: loadout.roundNo })
+  let entry = leaderboard.find((e) => e.loadoutId === loadout.id)
+  const top = !!entry
 
   const isAdmin = await getIsAdmin({ allowDev: true })
 
   if (!entry) {
-    entry = await db.query.leaderboardEntry.findFirst({
+    const entryDb = await db.query.leaderboardEntry.findFirst({
       where: eq(schema.leaderboardEntry.loadoutId, loadout.id),
       with: {
         user: true,
         loadout: true,
       },
     })
+    if (entryDb) {
+      entry = {
+        ...entryDb,
+        rank: 99,
+      }
+    }
   }
 
   // if (!entry) {
@@ -50,6 +55,41 @@ export const LeaderboardRankCard = async ({
   //     },
   //   })
   // }
+
+  const textColor = top
+    ? 'text-amber-300'
+    : entry?.score && entry.score >= GREAT_WIN_RATE
+      ? 'text-green-500'
+      : 'text-gray-500'
+
+  const borderColor = top
+    ? 'border-amber-300'
+    : entry?.score && entry.score >= GREAT_WIN_RATE
+      ? 'border-green-500'
+      : 'border-gray-500'
+
+  if (tiny) {
+    return (
+      <>
+        <div
+          className={cn(
+            'flex flex-col items-center justify-center',
+            textColor,
+            'rounded-md border-2 px-2 py-1',
+            borderColor,
+          )}
+        >
+          {top && entry && (
+            <div className={cn('text-4xl font-bold font-sans')}>
+              {entry.rank}
+              <span className="ordinal">{getOrdinalSuffix(entry.rank)}</span>
+            </div>
+          )}
+          <div className="font-sans">{entry?.score.toFixed(2)}%</div>
+        </div>
+      </>
+    )
+  }
 
   if (!entry) {
     // console.warn('Leaderboard entry not found')
@@ -121,10 +161,8 @@ export const LeaderboardRankCard = async ({
             <div
               className={cn('text-4xl font-bold font-sans', 'text-amber-300')}
             >
-              {leaderboardIdx + 1}
-              <span className="ordinal">
-                {getOrdinalSuffix(leaderboardIdx + 1)}
-              </span>
+              {entry.rank}
+              <span className="ordinal">{getOrdinalSuffix(entry.rank)}</span>
             </div>
             <div className="text-xs font-bold">Best Build in the World.</div>
           </div>
