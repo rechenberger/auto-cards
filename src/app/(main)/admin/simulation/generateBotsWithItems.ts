@@ -58,9 +58,19 @@ export const generateBotsWithItems = async ({
 
       while (game.data.gold > 0) {
         let buyables = await getAllItems()
-        buyables = buyables.filter(
-          (item) => item.price && item.price <= game.data.gold, // TODO: check negative stats?
-        )
+        buyables = buyables.filter((item) => {
+          if (!item.price) return false
+          if (item.price > game.data.gold) return false
+          if (item.unique) {
+            const alreadyInHand = game.data.currentLoadout.items.some(
+              (i) => i.name === item.name,
+            )
+            if (alreadyInHand) return false
+          }
+
+          // TODO: check negative stats?
+          return true
+        })
         const item = rngItem({
           seed: [bot.seed, 'buy', game.data.gold],
           items: buyables,
