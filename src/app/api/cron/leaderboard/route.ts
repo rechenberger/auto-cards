@@ -29,7 +29,9 @@ export const GET = async () => {
     )
 
     for (const cycle of range(1, CYCLES + 1)) {
-      const leaderboard = await getLeaderboard({})
+      const leaderboard = await getLeaderboard({
+        roundNo,
+      })
       console.log(
         `Leaderboard Cron: Round ${roundNo} Cycle ${cycle}, ${leaderboard.length} Entries`,
       )
