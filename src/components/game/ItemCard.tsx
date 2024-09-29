@@ -153,6 +153,9 @@ export const ItemCard = async (props: ItemCardProps) => {
               {!!item.unique && (
                 <ItemCardChip className="text-emerald-500">Unique</ItemCardChip>
               )}
+              {item.sellPrice === 0 && (
+                <ItemCardChip className="text-red-500">Unsellable</ItemCardChip>
+              )}
             </div>
             <div className="border-black border-2 rounded-lg overflow-hidden">
               <AiItemImage
