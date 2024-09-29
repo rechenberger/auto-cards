@@ -1156,6 +1156,7 @@ const allItemsConst = [
     tags: ['accessory'],
     rarity: 'common',
     price: 3,
+    sellPrice: 0,
     shop: true,
     version: 2,
     stats: {
