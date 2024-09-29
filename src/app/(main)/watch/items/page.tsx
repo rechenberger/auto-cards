@@ -97,6 +97,40 @@ export default async function Page() {
             'desc',
           )}
         />
+        <ItemChart
+          title="Gold"
+          subTitle="gold spent on this item"
+          valueLabel="gold"
+          data={orderBy(
+            itemsRanked.map((item) => ({
+              name: capitalCase(item.item.name),
+              value: sumBy(
+                item.entriesWithCount,
+                (e) => e.count * item.item.price,
+              ),
+              fill: 'hsl(var(--chart-1))',
+            })),
+            (i) => i.value,
+            'desc',
+          )}
+        />
+        <ItemChart
+          title="Gold (ranked)"
+          subTitle={`gold spent on this item and multiply by ${LEADERBOARD_LIMIT} minus rank`}
+          valueLabel="points"
+          data={orderBy(
+            itemsRanked.map((item) => ({
+              name: capitalCase(item.item.name),
+              value: sumBy(
+                item.entriesWithCount,
+                (e) => e.count * item.item.price * (LEADERBOARD_LIMIT - e.rank),
+              ),
+              fill: 'hsl(var(--chart-1))',
+            })),
+            (i) => i.value,
+            'desc',
+          )}
+        />
       </div>
     </>
   )
