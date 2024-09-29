@@ -1530,7 +1530,7 @@ const allItemsConst = [
         },
         statsSelf: {
           mana: -3,
-          barrier: 3,
+          barrier: 2,
         },
       },
     ],
