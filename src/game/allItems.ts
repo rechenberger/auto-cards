@@ -557,10 +557,10 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 1_500,
         statsRequired: {
-          stamina: 10,
+          stamina: 7,
         },
         statsSelf: {
-          stamina: -10,
+          stamina: -7,
         },
         statsEnemy: {
           blind: 3,
