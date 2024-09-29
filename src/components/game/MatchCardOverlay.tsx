@@ -166,7 +166,7 @@ export const MatchCardOverlay = ({
       {stats && (
         <div
           className={cn(
-            'absolute inset-2 flex items-center justify-center scale-75 pointer-events-none',
+            'absolute inset-2 flex flex-col items-center justify-end origin-bottom scale-75 pointer-events-none',
             theme?.classBottom,
           )}
         >

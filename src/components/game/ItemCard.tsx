@@ -164,7 +164,7 @@ export const ItemCard = async (props: ItemCardProps) => {
           </div>
           {count >= 2 && (
             <>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="absolute inset-0 flex flex-col items-center justify-start py-16">
                 <div className="text-white rounded-full font-black px-8 py-2 text-6xl bg-black/80 -rotate-12 scale-150">
                   {count}x
                 </div>
