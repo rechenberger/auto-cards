@@ -1151,8 +1151,8 @@ const allItemsConst = [
     ],
   },
   {
-    name: 'piggyBank',
-    prompt: 'a bright pink piggy bank',
+    name: 'cursedPiggyBank',
+    prompt: 'a bright pink piggy bank but with evil red eyes',
     tags: ['accessory'],
     rarity: 'common',
     price: 3,
