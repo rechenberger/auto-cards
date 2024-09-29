@@ -859,7 +859,7 @@ const allItemsConst = [
       {
         type: 'startOfBattle',
         statsSelf: {
-          thorns: 1,
+          thorns: 2,
         },
       },
     ],
@@ -869,7 +869,7 @@ const allItemsConst = [
     prompt: 'a bow and arrow made out of thorny wood',
     tags: ['weapon'],
     rarity: 'rare',
-    price: 8,
+    price: 4 + 4, // shortBow + roseBush
     shop: false,
     stats: {
       space: space(-2),
