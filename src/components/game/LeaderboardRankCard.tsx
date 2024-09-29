@@ -69,6 +69,7 @@ export const LeaderboardRankCard = async ({
       : 'border-gray-500'
 
   if (tiny) {
+    if (!entry) return null
     return (
       <>
         <div
