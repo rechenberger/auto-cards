@@ -191,6 +191,7 @@ const allItemsConst = [
     rarity: 'uncommon',
     price: 4,
     shop: true,
+    unique: true,
     stats: {
       space: space(-2),
     },
@@ -199,7 +200,7 @@ const allItemsConst = [
         type: 'startOfBattle',
         forceStartTime: 1, // force 1 tick later, else fest might not reach
         statsSelf: {
-          flying: 3,
+          flying: 5,
         },
       },
     ],
@@ -522,6 +523,18 @@ const allItemsConst = [
           accuracy: 80,
           damage: 1,
         },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['flying'],
+            valueMultiplier: 5,
+            valueMax: 5,
+            sourceSide: 'enemy',
+            description: '**+5** *damage* if enemy has *flying*',
+          },
+        ],
       },
       {
         type: 'onAttackAfterHit',
@@ -1526,6 +1539,7 @@ const allItemsConst = [
     rarity: 'epic',
     price: 8,
     shop: true,
+    unique: true,
     version: 2,
     triggers: [
       {
@@ -1548,6 +1562,7 @@ const allItemsConst = [
     rarity: 'epic',
     price: 8,
     shop: true,
+    unique: true,
     version: 2,
     triggers: [
       {
@@ -1558,7 +1573,7 @@ const allItemsConst = [
         },
         statsSelf: {
           mana: -3,
-          barrier: 2,
+          block: 20,
         },
       },
     ],
