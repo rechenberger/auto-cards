@@ -56,6 +56,7 @@ export const MatchView = async ({
         input={{
           participants: participants.map((p) => ({ loadout: p.loadout.data })),
           seed: [match.data.seed],
+          skipLogs: false,
         }}
       >
         <MatchBackground themeIds={themeIds} autoGenerate={true} />

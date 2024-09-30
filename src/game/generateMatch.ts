@@ -50,7 +50,7 @@ export type GenerateMatchInput = {
     loadout: LoadoutData
   }[]
   seed: SeedArray
-  skipLogs?: boolean
+  skipLogs: boolean
 }
 
 const generateMatchStateSides = async (input: GenerateMatchInput) => {
@@ -148,7 +148,11 @@ export const generateMatch = async ({
 }: GenerateMatchInput) => {
   let time = 0
 
-  const state = await generateMatchState({ participants, seed: _seed })
+  const state = await generateMatchState({
+    participants,
+    seed: _seed,
+    skipLogs,
+  })
   const { sides, futureActions } = state
 
   const seed = rngGenerator({ seed: _seed })
