@@ -83,13 +83,16 @@ export default async function Page() {
         />
         <ItemChart
           title="Total Count (ranked)"
-          subTitle={`mean count in leaderboard and multiplied by win-rate`}
+          subTitle={`mean count in leaderboard and multiplied by relative win-rate`}
           valueLabel="points"
           data={orderBy(
             itemsRanked.map((item) => ({
               name: capitalCase(item.item.name),
               value: round(
-                meanBy(item.entriesWithCount, (e) => e.count * (e.score / 100)),
+                meanBy(
+                  item.entriesWithCount,
+                  (e) => e.count * ((e.score - 50) / 100),
+                ),
                 2,
               ),
               fill: 'hsl(var(--chart-1))',
@@ -117,14 +120,14 @@ export default async function Page() {
         />
         <ItemChart
           title="Build Count (ranked)"
-          subTitle={`fraction of builds that have this item and multiplied by win-rate`}
+          subTitle={`fraction of builds that have this item and multiplied by relative win-rate`}
           valueLabel="points"
           data={orderBy(
             itemsRanked.map((item) => ({
               name: capitalCase(item.item.name),
               value: round(
                 meanBy(item.entriesWithCount, (e) =>
-                  e.count ? e.score / 100 : 0,
+                  e.count ? (e.score - 50) / 100 : 0,
                 ),
                 2,
               ),
@@ -153,7 +156,7 @@ export default async function Page() {
         />
         <ItemChart
           title="Gold (ranked)"
-          subTitle={`mean gold spent on this item and multiplied by win-rate`}
+          subTitle={`mean gold spent on this item and multiplied by relative win-rate`}
           valueLabel="points"
           data={orderBy(
             itemsRanked.map((item) => ({
@@ -161,7 +164,7 @@ export default async function Page() {
               value: round(
                 meanBy(
                   item.entriesWithCount,
-                  (e) => e.count * item.item.price * (e.score / 100),
+                  (e) => e.count * item.item.price * ((e.score - 50) / 100),
                 ),
                 2,
               ),
