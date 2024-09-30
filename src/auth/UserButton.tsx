@@ -18,6 +18,12 @@ import {
   changeUsernameWithRedirect,
   loginWithRedirect,
 } from './loginWithRedirect'
+import { createAPIKey } from './createAPIKey'
+import {
+  streamDialog,
+  superAction,
+} from '@/super-action/action/createSuperAction'
+import { CreateApiKeyForm } from './CreateApiKeyForm'
 
 export const UserButton = async () => {
   // const session = await auth()
@@ -68,6 +74,27 @@ export const UserButton = async () => {
               >
                 <KeyRound className="w-4 h-4 mr-2" />
                 Change Password
+              </ActionButton>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <ActionButton
+                variant={'ghost'}
+                hideIcon
+                className="w-full text-left"
+                size={'sm'}
+                action={async () => {
+                  'use server'
+                  return superAction(async () => {
+                    streamDialog({
+                      title: 'Create API Key',
+                      content: <CreateApiKeyForm />,
+                    })
+                  })
+                }}
+              >
+                <KeyRound className="w-4 h-4 mr-2" />
+                Create API Key
               </ActionButton>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
