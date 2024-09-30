@@ -1,10 +1,14 @@
-import {
-  authenticateWithApiKey,
-  getMyUserFromApiKeyOrThrow,
-} from '@/auth/getMyUserFromApiKey'
+import { authenticateWithApiKey } from '@/auth/getMyUserFromApiKey'
 
 export async function GET(req: Request) {
-  const user = await authenticateWithApiKey(req)
+  try {
+    const user = await authenticateWithApiKey(req)
 
-  return Response.json(user)
+    return Response.json(user)
+  } catch (e) {
+    if (e instanceof Error) {
+      return Response.json({ error: e.message }, { status: 400 })
+    }
+    return Response.json({ error: 'Unknown error' }, { status: 500 })
+  }
 }
