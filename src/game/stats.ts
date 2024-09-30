@@ -90,7 +90,13 @@ const heroStats = [
     name: 'staminaRegen',
     icon: Carrot,
     bgClass: 'bg-yellow-500',
-    tooltip: 'Stamina points.',
+    tooltip: 'Stamina points per second.',
+  },
+  {
+    name: 'staminaUsage',
+    icon: Carrot,
+    bgClass: 'bg-yellow-500',
+    tooltip: 'Stamina points used per second.',
   },
   {
     name: 'block',

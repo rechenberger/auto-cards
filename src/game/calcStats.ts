@@ -1,9 +1,14 @@
 import { LoadoutData } from '@/db/schema-zod'
 import { capitalCase } from 'change-case'
-import { keys, map, omitBy, range, sumBy, uniq } from 'lodash-es'
+import { keys, map, omitBy, range, sum, sumBy, uniq } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { randomStats } from './randomStats'
 import { Stat, Stats } from './stats'
+
+const numberFormatter = new Intl.NumberFormat('en-US', {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 2
+});
 
 export const calcStats = async ({ loadout }: { loadout: LoadoutData }) => {
   const items = await Promise.all(
@@ -14,10 +19,42 @@ export const calcStats = async ({ loadout }: { loadout: LoadoutData }) => {
       }
     }),
   )
+
   const stats = sumStats(
     ...items.flatMap((i) => range(i.count ?? 1).map(() => i.item.stats || {})),
   )
-  return stats
+
+  // Calculate total stamina regeneration and stamina usage per second based on cooldown (milliseconds)
+  const { totalRegenPerSecond, totalUsagePerSecond } = items.reduce((totals, i) => {
+    const regenAmount = i.item.stats?.staminaRegen ?? 0;
+
+    const summedStamina = sumBy(i.item.triggers, (t) => t.statsSelf?.stamina ?? 0)
+
+    const otherRegen = summedStamina < 0 ? 0 : summedStamina;
+
+    const cooldownInMilliseconds = i.item.triggers?.at(0)?.cooldown ?? 1000;
+    const staminaUsage = i.item.triggers?.at(0)?.statsRequired?.stamina ?? 0;
+
+    const cooldownInSeconds = cooldownInMilliseconds / 1000;
+
+    // If cooldown is 0 or undefined, treat usage as 0 (can't trigger)
+    if (cooldownInSeconds > 0) {
+      const regenPerSecond = (regenAmount + otherRegen) / cooldownInSeconds;
+      totals.totalRegenPerSecond += regenPerSecond;
+
+      const usagePerSecond = staminaUsage / cooldownInSeconds;
+      totals.totalUsagePerSecond += usagePerSecond;
+    }
+
+    return totals;
+  }, { totalRegenPerSecond: 0, totalUsagePerSecond: 0 });
+
+  return {
+    ...stats,
+    staminaRegen: numberFormatter.format(totalRegenPerSecond),
+    staminaUsage: numberFormatter.format(totalUsagePerSecond)
+
+  }
 }
 
 export const sumStats = (...allStats: Stats[]) => {
