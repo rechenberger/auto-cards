@@ -1,0 +1,16 @@
+meta {
+  name: Buy Item
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{BASE_URL}}/api/rest/game/{{GAME_ID}}/buyItem/{{ITEM_NAME}}
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  GAME_ID: v7n9x4p8jriutz77kagrl7fk
+  ITEM_NAME: frostHammer
+}

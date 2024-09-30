@@ -1,0 +1,15 @@
+meta {
+  name: Reroll Shop
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{BASE_URL}}/api/rest/game/{{GAME_ID}}/reroll
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  GAME_ID: v7n9x4p8jriutz77kagrl7fk
+}
