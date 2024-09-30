@@ -7,8 +7,9 @@ import { RotateCw } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 import { StatsDisplay } from './StatsDisplay'
 
+export const priceToReroll = 1 // TODO: make this dynamic
+
 export const ReRollButton = ({ game }: { game: Game }) => {
-  const priceToReroll = 1 // TODO: make this dynamic
   const enoughGold = game.data.gold >= priceToReroll
   return (
     <>

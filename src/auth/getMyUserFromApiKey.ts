@@ -20,3 +20,15 @@ export const getMyUserFromApiKeyOrThrow = async (apiKey: string) => {
   }
   return user
 }
+
+export const authenticateWithApiKey = async (req: Request) => {
+  const apiKey = req.headers.get('x-api-key')
+
+  if (!apiKey) {
+    throw new Error('API key not found')
+  }
+
+  const user = await getMyUserFromApiKeyOrThrow(apiKey)
+
+  return user
+}

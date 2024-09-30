@@ -5,7 +5,7 @@ import { eq } from 'drizzle-orm'
 import { first } from 'lodash-es'
 
 export const updateGame = async ({ game }: { game: Game }) => {
-  await db
+  return await db
     .update(schema.game)
     .set({
       ...game,
