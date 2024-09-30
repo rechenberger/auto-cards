@@ -21,7 +21,7 @@ const allItemsConst = [
       staminaMax: 50,
       staminaRegen: 10,
       critChance: 10,
-      critDamage: 200,
+      critDamage: 100,
       space: space(14),
     },
   },
