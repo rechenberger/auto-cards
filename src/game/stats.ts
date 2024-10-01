@@ -95,7 +95,7 @@ const heroStats = [
   {
     name: 'staminaUsage',
     icon: Carrot,
-    bgClass: 'bg-yellow-500',
+    bgClass: 'bg-red-500',
     tooltip: 'Stamina points used per second.',
   },
   {
