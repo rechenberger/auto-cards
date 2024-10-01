@@ -1,4 +1,5 @@
 import { authenticateWithApiKey } from '@/auth/getMyUserFromApiKey'
+import { addPriceToGame } from '@/game/addPriceToGame'
 import { gameActionRest } from '@/game/gameActionRest'
 import { getCraftingRecipesGame } from '@/game/getCraftingRecipesGame'
 import { getGameFromDb } from '@/game/getGame'
@@ -20,7 +21,7 @@ export async function POST(
       throw new Error('Recipe not found')
     }
 
-    const updatedGame = await gameActionRest({
+    const g = await gameActionRest({
       gameId: params.gameId,
       action: async ({ ctx }) => {
         ctx.game.data.currentLoadout.items = sumItems(
@@ -30,6 +31,8 @@ export async function POST(
         )
       },
     })
+
+    const updatedGame = await addPriceToGame(g)
 
     return Response.json(updatedGame)
   } catch (e) {

@@ -1,5 +1,6 @@
 import { authenticateWithApiKey } from '@/auth/getMyUserFromApiKey'
 import { getShopItemByName } from '@/components/game/getShopItemByName'
+import { addPriceToGame } from '@/game/addPriceToGame'
 import { gameActionRest } from '@/game/gameActionRest'
 
 export async function POST(
@@ -9,7 +10,7 @@ export async function POST(
   try {
     await authenticateWithApiKey(req)
 
-    const updatedGame = await gameActionRest({
+    const g = await gameActionRest({
       gameId: params.gameId,
       action: async ({ ctx }) => {
         const shopItem = await getShopItemByName(ctx.game, params.itemName)
@@ -18,6 +19,8 @@ export async function POST(
         s.isReserved = !s.isReserved
       },
     })
+
+    const updatedGame = await addPriceToGame(g)
 
     return Response.json(updatedGame)
   } catch (e) {

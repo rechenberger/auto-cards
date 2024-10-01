@@ -1,5 +1,6 @@
 import { authenticateWithApiKey } from '@/auth/getMyUserFromApiKey'
 import { getShopItemByName } from '@/components/game/getShopItemByName'
+import { addPriceToGame } from '@/game/addPriceToGame'
 import { getItemByName } from '@/game/allItems'
 import { calcStats, throwIfNegativeStats } from '@/game/calcStats'
 import { gameActionRest } from '@/game/gameActionRest'
@@ -23,7 +24,7 @@ export async function POST(
       price = Math.ceil(price * 0.5)
     }
 
-    const updatedGame = await gameActionRest({
+    const g = await gameActionRest({
       gameId: params.gameId,
       action: async ({ ctx }) => {
         const game = ctx.game
@@ -58,6 +59,8 @@ export async function POST(
         throwIfNegativeStats({ stats })
       },
     })
+
+    const updatedGame = await addPriceToGame(g)
 
     return Response.json(updatedGame)
   } catch (e) {

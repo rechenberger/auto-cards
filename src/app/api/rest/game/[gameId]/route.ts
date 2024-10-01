@@ -1,4 +1,5 @@
 import { authenticateWithApiKey } from '@/auth/getMyUserFromApiKey'
+import { addPriceToGame } from '@/game/addPriceToGame'
 import { getGameFromDb } from '@/game/getGame'
 
 export async function GET(
@@ -8,7 +9,8 @@ export async function GET(
   try {
     await authenticateWithApiKey(req)
 
-    const game = await getGameFromDb({ id: params.gameId })
+    const g = await getGameFromDb({ id: params.gameId })
+    const game = await addPriceToGame(g)
 
     return Response.json(game)
   } catch (e) {

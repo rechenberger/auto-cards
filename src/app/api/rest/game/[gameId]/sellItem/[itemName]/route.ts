@@ -1,4 +1,5 @@
 import { authenticateWithApiKey } from '@/auth/getMyUserFromApiKey'
+import { addPriceToGame } from '@/game/addPriceToGame'
 import { getItemByName } from '@/game/allItems'
 import { gameActionRest } from '@/game/gameActionRest'
 import { negativeItems, sumItems } from '@/game/sumItems'
@@ -14,7 +15,7 @@ export async function POST(
 
     const sellPrice = item.sellPrice ?? Math.ceil(item.price / 2)
 
-    const updatedGame = await gameActionRest({
+    const g = await gameActionRest({
       gameId: params.gameId,
       action: async ({ ctx }) => {
         ctx.game.data.currentLoadout.items = sumItems(
@@ -24,6 +25,8 @@ export async function POST(
         ctx.game.data.gold += sellPrice
       },
     })
+
+    const updatedGame = await addPriceToGame(g)
 
     return Response.json(updatedGame)
   } catch (e) {
