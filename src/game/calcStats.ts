@@ -24,29 +24,48 @@ export const calcStats = async ({ loadout }: { loadout: LoadoutData }) => {
     ...items.flatMap((i) => range(i.count ?? 1).map(() => i.item.stats || {})),
   )
 
-  const totalRegenPerSecond = sumBy(items, (i) => {
+  const totalStaminaRegenPerSecond = sumBy(items, (i) => {
     const regenAmount = i.item.stats?.staminaRegen ?? 0;
-    const summedStamina = sumBy(i.item.triggers, (t) => t.statsSelf?.stamina ?? 0);
-    const otherRegen = summedStamina < 0 ? 0 : summedStamina;
-    const cooldownInMilliseconds = sumBy(i.item.triggers, (t) => (t.type === 'interval' ? t.cooldown ?? 1000 : 1000));
-    const cooldownInSeconds = cooldownInMilliseconds === 0 ? 1 : cooldownInMilliseconds / 1000;
+
+    let totalRegenFromTriggers = 0;
+    let totalCooldownInMilliseconds = 0;
+
+    i.item.triggers?.forEach((t) => {
+      if (t.statsSelf?.stamina) {
+        totalRegenFromTriggers += t.statsSelf.stamina;
+        totalCooldownInMilliseconds += t.type === 'interval' ? t.cooldown ?? 1000 : 1000;
+      }
+    });
+
+    const otherRegen = totalRegenFromTriggers < 0 ? 0 : totalRegenFromTriggers;
+    const cooldownInSeconds = totalCooldownInMilliseconds === 0 ? 1 : totalCooldownInMilliseconds / 1000;
 
     return cooldownInSeconds > 0 ? (regenAmount + otherRegen) / cooldownInSeconds : 0;
   });
 
-  const totalUsagePerSecond = sumBy(items, (i) => {
-    const staminaUsage = sumBy(i.item.triggers, (t) => t.statsRequired?.stamina ?? 0);
-    const cooldownInMilliseconds = sumBy(i.item.triggers, (t) => (t.type === 'interval' ? t.cooldown ?? 1000 : 1000));
-    const cooldownInSeconds = cooldownInMilliseconds === 0 ? 1 : cooldownInMilliseconds / 1000;
+  const totalStaminaUsagePerSecond = sumBy(items, (i) => {
+    let totalStaminaUsage = 0;
+    let totalCooldownInMilliseconds = 0;
 
-    return cooldownInSeconds > 0 ? staminaUsage / cooldownInSeconds : 0;
+    i.item.triggers?.forEach((t) => {
+      if (t.statsRequired?.stamina && t.type === 'interval') {
+        totalStaminaUsage += t.statsRequired.stamina;
+        totalCooldownInMilliseconds += t.cooldown ?? 1000;
+      }
+    });
+
+    const cooldownInSeconds = totalCooldownInMilliseconds === 0 ? 1 : totalCooldownInMilliseconds / 1000;
+
+    const res = totalStaminaUsage / cooldownInSeconds;
+
+    return res;
   });
 
 
   return {
     ...stats,
-    staminaRegen: numberFormatter.format(totalRegenPerSecond),
-    staminaUsage: numberFormatter.format(totalUsagePerSecond)
+    staminaRegen: numberFormatter.format(totalStaminaRegenPerSecond),
+    staminaUsage: numberFormatter.format(totalStaminaUsagePerSecond)
 
   }
 }
