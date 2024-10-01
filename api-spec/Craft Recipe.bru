@@ -1,0 +1,16 @@
+meta {
+  name: Craft Recipe
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{BASE_URL}}/api/rest/game/{{GAME_ID}}/craft/{{RECIPE_ID}}
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  GAME_ID: v7n9x4p8jriutz77kagrl7fk
+  RECIPE_ID: 14
+}

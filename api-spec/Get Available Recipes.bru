@@ -1,0 +1,15 @@
+meta {
+  name: Get Available Recipes
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{BASE_URL}}/api/rest/game/{{GAME_ID}}/craft
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  GAME_ID: v7n9x4p8jriutz77kagrl7fk
+}
