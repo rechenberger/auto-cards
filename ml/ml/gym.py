@@ -13,6 +13,8 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
+import os
+
 env = gym.make("CartPole-v1")
 
 # set up matplotlib
@@ -190,7 +192,44 @@ if torch.cuda.is_available() or torch.backends.mps.is_available():
 else:
     num_episodes = 50
 
-for i_episode in range(num_episodes):
+# Add these variables
+SAVE_DIR = 'models'
+SAVE_INTERVAL = 50  # Save every 50 episodes
+BEST_DURATION = 0
+BEST_EPISODE = 0
+
+def save_model(episode, duration):
+    global BEST_DURATION, BEST_EPISODE
+    if duration > BEST_DURATION:
+        BEST_DURATION = duration
+        BEST_EPISODE = episode
+        if not os.path.exists(SAVE_DIR):
+            os.makedirs(SAVE_DIR)
+        torch.save({
+            'episode': episode,
+            'model_state_dict': policy_net.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'best_duration': BEST_DURATION,
+        }, os.path.join(SAVE_DIR, 'best_model.pth'))
+        print(f"Saved new best model at episode {episode} with duration {duration}")
+
+def load_model(filename):
+    global BEST_DURATION, BEST_EPISODE, policy_net, target_net, optimizer
+    if os.path.exists(filename):
+        checkpoint = torch.load(filename)
+        policy_net.load_state_dict(checkpoint['model_state_dict'])
+        target_net.load_state_dict(checkpoint['model_state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        BEST_EPISODE = checkpoint['episode']
+        BEST_DURATION = checkpoint['best_duration']
+        print(f"Loaded model from episode {BEST_EPISODE} with best duration {BEST_DURATION}")
+        return checkpoint['episode']
+    return 0
+
+# Try to load the best model if it exists
+start_episode = load_model(os.path.join(SAVE_DIR, 'best_model.pth'))
+
+for i_episode in range(start_episode, num_episodes):
     # Initialize the environment and get its state
     state, info = env.reset()
     state = torch.tensor(state, dtype=torch.float32, device=device).unsqueeze(0)
@@ -225,9 +264,25 @@ for i_episode in range(num_episodes):
         if done:
             episode_durations.append(t + 1)
             plot_durations()
+            save_model(i_episode, t + 1)
+            if (i_episode + 1) % SAVE_INTERVAL == 0:
+                torch.save({
+                    'episode': i_episode,
+                    'model_state_dict': policy_net.state_dict(),
+                    'optimizer_state_dict': optimizer.state_dict(),
+                    'best_duration': BEST_DURATION,
+                }, os.path.join(SAVE_DIR, f'checkpoint_episode_{i_episode}.pth'))
             break
 
 print('Complete')
 plot_durations(show_result=True)
 plt.ioff()
 plt.show()
+
+# Save the final model
+torch.save({
+    'episode': num_episodes - 1,
+    'model_state_dict': policy_net.state_dict(),
+    'optimizer_state_dict': optimizer.state_dict(),
+    'best_duration': BEST_DURATION,
+}, os.path.join(SAVE_DIR, 'final_model.pth'))
