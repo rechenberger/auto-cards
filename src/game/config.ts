@@ -26,5 +26,6 @@ export const WORKER_MAX_LISTENERS = 100
 
 export const LEADERBOARD_LIMIT = 50
 export const LEADERBOARD_TYPE = 'rollingTop'
+export const LEADERBOARD_TYPE_ACC = 'rollingTopAcc'
 
 export const GREAT_WIN_RATE = 2
