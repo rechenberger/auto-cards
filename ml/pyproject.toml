@@ -10,6 +10,8 @@ python = "^3.11"
 torch = "^2.4.1"
 gym = "^0.26.2"
 numpy = "^2.1.1"
+gymnasium = "^0.29.1"
+matplotlib = "^3.9.2"
 
 
 [build-system]
