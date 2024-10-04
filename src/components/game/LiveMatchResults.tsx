@@ -113,7 +113,7 @@ export const LiveMatchResults = async ({
                 </div>
                 <div className="flex flex-row gap-2 items-center">
                   <GameMatchBoard game={p.game} showScore />
-                  <div className="hidden xl:flex flex-col">
+                  <div className="hidden xl:flex flex-col -mx-6 scale-50">
                     <LeaderboardRankCardByGame gameId={p.game.id} tiny />
                   </div>
                 </div>
