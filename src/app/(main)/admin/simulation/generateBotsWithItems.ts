@@ -1,11 +1,10 @@
 import { Game } from '@/db/schema-zod'
-import { getAllItems, ItemName } from '@/game/allItems'
+import { ItemName } from '@/game/allItems'
 import { GAME_VERSION } from '@/game/config'
-import { countifyItems } from '@/game/countifyItems'
-import { orderItems } from '@/game/orderItems'
-import { rngItem, SeedArray, seedToString } from '@/game/seed'
+import { rngGenerator, SeedArray, seedToString } from '@/game/seed'
 import { typedParse } from '@/lib/typedParse'
 import { range } from 'lodash-es'
+import { generateRandomLoadout } from './generateRandomLoadout'
 
 export type BotGame = Awaited<ReturnType<typeof generateBotsWithItems>>[number]
 
@@ -36,6 +35,8 @@ export const generateBotsWithItems = async ({
     bots.map(async (bot) => {
       const items = startingItems.map((name) => ({ name }))
 
+      const seed = seedToString({ seed: [...bot.seed, 'game'] })
+
       const game = typedParse(Game, {
         id: `simulation-${bot.name}`,
         createdAt: new Date().toISOString(),
@@ -47,7 +48,7 @@ export const generateBotsWithItems = async ({
           },
           gold: startingGold,
           roundNo: 0,
-          seed: seedToString({ seed: [...bot.seed, 'game'] }),
+          seed,
           shopItems: [],
           shopRerolls: 0,
           version: 1,
@@ -56,36 +57,13 @@ export const generateBotsWithItems = async ({
         version: GAME_VERSION,
       })
 
-      while (game.data.gold > 0) {
-        let buyables = await getAllItems()
-        buyables = buyables.filter((item) => {
-          if (!item.price) return false
-          if (item.price > game.data.gold) return false
-          if (item.unique) {
-            const alreadyInHand = game.data.currentLoadout.items.some(
-              (i) => i.name === item.name,
-            )
-            if (alreadyInHand) return false
-          }
+      const { loadout, goldRemaining } = await generateRandomLoadout({
+        gold: game.data.gold,
+        seed: rngGenerator({ seed }),
+      })
 
-          // TODO: check negative stats?
-          return true
-        })
-        const item = rngItem({
-          seed: [bot.seed, 'buy', game.data.gold],
-          items: buyables,
-        })
-        if (!item) {
-          break
-        }
-
-        game.data.gold -= item.price
-        game.data.currentLoadout.items.push({ name: item.name })
-      }
-
-      game.data.currentLoadout.items = await orderItems(
-        countifyItems(game.data.currentLoadout.items),
-      )
+      game.data.gold = goldRemaining
+      game.data.currentLoadout = loadout
 
       return {
         ...bot,
