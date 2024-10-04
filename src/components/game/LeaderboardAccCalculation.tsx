@@ -22,13 +22,13 @@ export const LeaderboardAccCalculation = async ({
 
   return (
     <>
-      <p className="text-sm opacity-60">
+      <p className="text-sm opacity-60 max-sm:text-xs">
         For the overall score, the win-rate of each round against the Top 50
         Leaderboard of that round is weighted by the round number. This means
         that the win-rate of round 10 is 10 times more important than the
         win-rate of round 1.
       </p>
-      <div className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-2 gap-x-4 items-center">
+      <div className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-2 gap-x-4 items-center max-sm:text-xs">
         <div className="font-bold">Round</div>
         <div className="font-bold"></div>
         <div className="font-bold text-right">Win-Rate</div>
