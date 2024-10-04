@@ -1,7 +1,7 @@
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { and, eq } from 'drizzle-orm'
-import { maxBy, meanBy } from 'lodash-es'
+import { maxBy, sumBy } from 'lodash-es'
 import { LEADERBOARD_TYPE, LEADERBOARD_TYPE_ACC } from './config'
 
 export const addToLeaderboardAcc = async ({
@@ -13,7 +13,7 @@ export const addToLeaderboardAcc = async ({
   roundNo: number
   dryRun?: boolean
 }) => {
-  let entries = await db.query.leaderboardEntry.findMany({
+  let leaderboard = await db.query.leaderboardEntry.findMany({
     where: and(
       eq(schema.leaderboardEntry.gameId, gameId),
       eq(schema.leaderboardEntry.type, LEADERBOARD_TYPE),
@@ -23,7 +23,28 @@ export const addToLeaderboardAcc = async ({
     },
   })
 
-  entries = entries.filter((e) => e.roundNo !== null && e.roundNo <= roundNo)
+  leaderboard = leaderboard.filter(
+    (e) => e.roundNo !== null && e.roundNo <= roundNo,
+  )
+
+  const entriesRelative = leaderboard.map((e) => {
+    const weightRelative = (e.roundNo + 1) / (roundNo + 1)
+
+    return {
+      ...e,
+      weightRelative,
+      pointsRelative: e.score * weightRelative,
+    }
+  })
+
+  const totalWeight = sumBy(entriesRelative, (e) => e.weightRelative)
+
+  const entries = entriesRelative.map((e) => ({
+    ...e,
+    weightAbsolute: e.weightRelative / totalWeight,
+    pointsAbsolute: e.pointsRelative / totalWeight,
+  }))
+
   if (entries.length !== roundNo + 1) {
     return
   }
@@ -33,7 +54,7 @@ export const addToLeaderboardAcc = async ({
     return
   }
 
-  const score = meanBy(entries, (e) => e.score)
+  const score = sumBy(entries, (e) => e.pointsAbsolute)
 
   if (!dryRun) {
     const entry = await db.query.leaderboardEntry.findFirst({

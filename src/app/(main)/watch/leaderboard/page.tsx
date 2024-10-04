@@ -1,6 +1,6 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { ItemCardGrid } from '@/components/game/ItemCardGrid'
-import { LeaderboardAccEntries } from '@/components/game/LeaderboardAccEntries'
+import { LeaderboardAccCalculation } from '@/components/game/LeaderboardAccCalculation'
 import { LeaderboardBenchmarkButton } from '@/components/game/LeaderboardBenchmarkButton'
 import { PlaygroundSelector } from '@/components/game/PlaygroundSelector'
 import { StatsDisplay } from '@/components/game/StatsDisplay'
@@ -296,8 +296,11 @@ export default async function Page({
                         return
                       }
                       streamDialog({
+                        title: 'Leaderboard Calculation',
                         content: (
-                          <LeaderboardAccEntries gameId={entry.gameId} />
+                          <>
+                            <LeaderboardAccCalculation gameId={entry.gameId} />
+                          </>
                         ),
                       })
                     })
