@@ -2,7 +2,7 @@ import { throwIfNotAdmin } from '@/auth/getIsAdmin'
 import { db } from '@/db/db'
 import { getAllItems } from '@/game/allItems'
 import { GAME_VERSION } from '@/game/config'
-import { countifyItems } from '@/game/countifyItems'
+import { toSimpleMatchDataItemCounts } from '@/game/SimpleMatchData'
 
 export const GET = async () => {
   await throwIfNotAdmin({ allowDev: true })
@@ -24,10 +24,9 @@ export const GET = async () => {
       if (!p.loadout) return []
       if (p.loadout.version !== GAME_VERSION) return []
 
-      const counted = countifyItems(p.loadout?.data.items || [])
-      const counts = allItems.map((item) => {
-        const count = counted.find((c) => c.name === item.name)?.count || 0
-        return count
+      const counts = toSimpleMatchDataItemCounts({
+        items: p.loadout.data.items,
+        allItems,
       })
 
       return {
