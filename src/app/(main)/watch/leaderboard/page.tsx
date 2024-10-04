@@ -1,7 +1,7 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { ItemCardGrid } from '@/components/game/ItemCardGrid'
-import { streamLeaderboardAccCalculation } from '@/components/game/LeaderboardAccCalculation'
 import { LeaderboardBenchmarkButton } from '@/components/game/LeaderboardBenchmarkButton'
+import { LeaderboardRankCard } from '@/components/game/LeaderboardRankCard'
 import { PlaygroundSelector } from '@/components/game/PlaygroundSelector'
 import { StatsDisplay } from '@/components/game/StatsDisplay'
 import { SimpleParamSelect } from '@/components/simple/SimpleParamSelect'
@@ -248,7 +248,13 @@ export default async function Page({
 
           return (
             <Fragment key={entry.id}>
-              <div className="text-xl">#{entry.rank}</div>
+              <div>
+                <LeaderboardRankCard
+                  entry={entry}
+                  loadout={entry.loadout}
+                  tiny
+                />
+              </div>
               <div>
                 <div className="flex flex-row gap-1">
                   <div>{name}</div>
@@ -284,22 +290,6 @@ export default async function Page({
                     <PlaygroundSelector loadout={loadout.data} />
                   </div>
                 )}
-                <ActionButton
-                  variant="ghost"
-                  size="default"
-                  hideIcon
-                  className="flex-1"
-                  action={async () => {
-                    'use server'
-                    return streamLeaderboardAccCalculation({
-                      gameId: entry.gameId,
-                    })
-                  }}
-                >
-                  <div className="text-xl text-right">
-                    {entry.score.toFixed(2)}
-                  </div>
-                </ActionButton>
                 {isAdmin && (
                   <>
                     <ActionButton

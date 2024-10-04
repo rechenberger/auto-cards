@@ -1,11 +1,12 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
-import { Loadout } from '@/db/schema-zod'
+import { LeaderboardEntry, Loadout } from '@/db/schema-zod'
 import { addToLeaderboard } from '@/game/addToLeaderboard'
 import {
   GAME_VERSION,
   GREAT_WIN_RATE,
+  LEADERBOARD_LIMIT,
   LEADERBOARD_TYPE_ACC,
 } from '@/game/config'
 import { getLeaderboardRanked } from '@/game/getLeaderboard'
@@ -25,15 +26,19 @@ import { streamLeaderboardAccCalculation } from './LeaderboardAccCalculation'
 export const LeaderboardRankCard = async ({
   loadout,
   tiny,
+  entry,
 }: {
   loadout: Loadout
   tiny?: boolean
+  entry?: LeaderboardEntry & { rank: number }
 }) => {
-  const leaderboard = await getLeaderboardRanked({
-    roundNo: loadout.roundNo,
-    type: LEADERBOARD_TYPE_ACC,
-  })
-  let entry = leaderboard.find((e) => e.loadoutId === loadout.id)
+  if (!entry) {
+    const leaderboard = await getLeaderboardRanked({
+      roundNo: loadout.roundNo,
+      type: LEADERBOARD_TYPE_ACC,
+    })
+    entry = leaderboard.find((e) => e.loadoutId === loadout.id)
+  }
   const top = !!entry
 
   const isAdmin = await getIsAdmin({ allowDev: true })
@@ -125,6 +130,10 @@ export const LeaderboardRankCard = async ({
               borderColor,
               entry.rank === 1 &&
                 'bg-gradient-to-bl from-amber-100 to-amber-500 text-black',
+              entry.rank === 2 &&
+                'bg-gradient-to-bl from-gray-100 to-gray-500 text-black border-gray-300',
+              entry.rank === 3 &&
+                'bg-gradient-to-bl from-orange-100 to-orange-500 text-black border-orange-300',
             )}
           >
             {top && entry ? (
@@ -188,7 +197,7 @@ export const LeaderboardRankCard = async ({
             {entry.score.toFixed(2)}%
           </div>
           <div className="text-xs">
-            against the <strong>Top {leaderboard.length}</strong> Leaderboard.
+            against the <strong>Top {LEADERBOARD_LIMIT}</strong> Leaderboard.
           </div>
         </div>
 
