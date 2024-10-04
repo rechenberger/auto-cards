@@ -13,9 +13,9 @@ export const ShopEffectDisplay = ({
     ban: 'Removes',
   }[shopEffect.type]
   const postfix = {
-    unlock: 'in shop',
-    boost: 'in shop',
-    ban: 'from shop',
+    unlock: 'items in shop',
+    boost: 'items in shop',
+    ban: 'items from shop',
   }[shopEffect.type]
   return (
     <>
