@@ -113,6 +113,7 @@ export const addToLeaderboard = async ({
         roundNo,
         score,
         userId: loadout.userId,
+        gameId: loadout.gameId,
       })
     }
   }
