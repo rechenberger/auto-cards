@@ -16,6 +16,7 @@ export const users = sqliteTable('user', {
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  apiKeys: many(apiKeys), // Add this line
 }))
 
 export const accounts = sqliteTable(
@@ -68,3 +69,21 @@ export const verificationTokens = sqliteTable(
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   }),
 )
+
+// New API Keys table
+export const apiKeys = sqliteTable('apiKey', {
+  id: text('id').notNull().primaryKey(),
+  userId: text('userId')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  key: text('key').notNull().unique(),
+  name: text('name'),
+  expiresAt: integer('expiresAt', { mode: 'timestamp_ms' }),
+})
+
+export const apiKeysRelations = relations(apiKeys, ({ one }) => ({
+  user: one(users, {
+    fields: [apiKeys.userId],
+    references: [users.id],
+  }),
+}))

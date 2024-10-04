@@ -5,7 +5,7 @@ import { eq } from 'drizzle-orm'
 import { first } from 'lodash-es'
 
 export const updateGame = async ({ game }: { game: Game }) => {
-  await db
+  const updatedGame = await db
     .update(schema.game)
     .set({
       ...game,
@@ -15,4 +15,6 @@ export const updateGame = async ({ game }: { game: Game }) => {
     .where(eq(schema.game.id, game.id))
     .returning()
     .then(first)
+
+  return Game.parse(updatedGame)
 }

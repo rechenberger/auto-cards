@@ -9,7 +9,13 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { getUserName } from '@/game/getUserName'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { ChevronDown, KeyRound, LogOut, PersonStanding } from 'lucide-react'
+import {
+  ChevronDown,
+  KeyRound,
+  LockKeyhole,
+  LogOut,
+  PersonStanding,
+} from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { signOut } from './auth'
 import { getMyUser } from './getMyUser'
@@ -18,6 +24,13 @@ import {
   changeUsernameWithRedirect,
   loginWithRedirect,
 } from './loginWithRedirect'
+import { createAPIKey } from './createAPIKey'
+import {
+  streamDialog,
+  superAction,
+} from '@/super-action/action/createSuperAction'
+import { CreateApiKeyForm } from './CreateApiKeyForm'
+import { ManageApiKeyForm } from './ManageApiKeyForm'
 
 export const UserButton = async () => {
   // const session = await auth()
@@ -68,6 +81,48 @@ export const UserButton = async () => {
               >
                 <KeyRound className="w-4 h-4 mr-2" />
                 Change Password
+              </ActionButton>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <ActionButton
+                variant={'ghost'}
+                hideIcon
+                className="w-full text-left"
+                size={'sm'}
+                action={async () => {
+                  'use server'
+                  return superAction(async () => {
+                    streamDialog({
+                      title: 'Create API Key',
+                      content: <CreateApiKeyForm />,
+                    })
+                  })
+                }}
+              >
+                <LockKeyhole className="w-4 h-4 mr-2" />
+                Create API Key
+              </ActionButton>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <ActionButton
+                variant={'ghost'}
+                hideIcon
+                className="w-full text-left"
+                size={'sm'}
+                action={async () => {
+                  'use server'
+                  return superAction(async () => {
+                    streamDialog({
+                      title: 'Manage API Keys',
+                      content: <ManageApiKeyForm />,
+                    })
+                  })
+                }}
+              >
+                <LockKeyhole className="w-4 h-4 mr-2" />
+                Manage API Keys
               </ActionButton>
             </DropdownMenuItem>
             <DropdownMenuSeparator />

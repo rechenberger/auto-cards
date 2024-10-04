@@ -1,0 +1,15 @@
+meta {
+  name: Fight
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{BASE_URL}}/api/rest/game/{{GAME_ID}}/fight
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  GAME_ID: v7n9x4p8jriutz77kagrl7fk
+}
