@@ -25,22 +25,27 @@ export const StatsBars = ({ stats }: { stats: Stats }) => {
 
   return (
     <div className="flex flex-col gap-2">
-      {bars.map((bar, idx) => (
-        <Fragment key={idx}>
-          <div className="relative w-28 sm:w-40">
-            <Progress
-              value={100 * (bar.current / bar.max)}
-              className="border shadow h-6"
-              classNameIndicator={bar.bgClass}
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="font-bold">
-                {Math.max(bar.current, 0)} / {bar.max}
+      {bars.map((bar, idx) => {
+        if (bar.current === 0 && bar.max === 0) {
+          return null
+        }
+        return (
+          <Fragment key={idx}>
+            <div className="relative w-28 sm:w-40">
+              <Progress
+                value={100 * (bar.current / bar.max)}
+                className="border shadow h-6"
+                classNameIndicator={bar.bgClass}
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="font-bold">
+                  {Math.max(bar.current, 0)} / {bar.max}
+                </div>
               </div>
             </div>
-          </div>
-        </Fragment>
-      ))}
+          </Fragment>
+        )
+      })}
     </div>
   )
 }
