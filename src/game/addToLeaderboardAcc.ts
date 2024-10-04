@@ -2,7 +2,7 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { and, eq } from 'drizzle-orm'
 import { maxBy, sumBy } from 'lodash-es'
-import { LEADERBOARD_TYPE, LEADERBOARD_TYPE_ACC } from './config'
+import { GAME_VERSION, LEADERBOARD_TYPE, LEADERBOARD_TYPE_ACC } from './config'
 
 export const addToLeaderboardAcc = async ({
   gameId,
@@ -15,8 +15,9 @@ export const addToLeaderboardAcc = async ({
 }) => {
   let leaderboard = await db.query.leaderboardEntry.findMany({
     where: and(
-      eq(schema.leaderboardEntry.gameId, gameId),
       eq(schema.leaderboardEntry.type, LEADERBOARD_TYPE),
+      eq(schema.leaderboardEntry.version, GAME_VERSION),
+      eq(schema.leaderboardEntry.gameId, gameId),
     ),
     with: {
       loadout: true,

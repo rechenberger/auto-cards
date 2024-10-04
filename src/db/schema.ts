@@ -236,6 +236,9 @@ export const leaderboardEntry = sqliteTable(
     leaderboardTypeRoundNoVersionScoreIdx: index(
       'leaderboardTypeRoundNoVersionScoreIdx',
     ).on(table.type, table.roundNo, table.version, table.score),
+    leaderboardTypeRoundNoVersionGameIdIdx: index(
+      'leaderboardTypeVersionGameIdIdx',
+    ).on(table.type, table.version, table.gameId),
   }),
 )
 
