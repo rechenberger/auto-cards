@@ -77,17 +77,30 @@ export const LeaderboardRankCard = async ({
 
   const great = entry?.score && entry.score >= GREAT_WIN_RATE
 
-  const textColor = top
-    ? 'text-amber-300'
-    : great
-      ? 'text-green-500'
-      : 'text-gray-500'
+  const top3 = entry?.rank && entry.rank <= 3
+
+  const textColor = top3
+    ? 'text-black'
+    : top
+      ? 'text-amber-300'
+      : great
+        ? 'text-green-500'
+        : 'text-gray-500'
 
   const borderColor = top
     ? 'border-amber-300'
     : great
       ? 'border-green-500'
       : 'border-gray-500'
+
+  const classTop3 = cn(
+    entry?.rank === 1 &&
+      'bg-gradient-to-bl from-amber-100 to-amber-500 text-black',
+    entry?.rank === 2 &&
+      'bg-gradient-to-bl from-gray-100 to-gray-500 text-black border-gray-300',
+    entry?.rank === 3 &&
+      'bg-gradient-to-bl from-orange-100 to-orange-500 text-black border-orange-300',
+  )
 
   if (tiny) {
     if (!entry) {
@@ -128,12 +141,7 @@ export const LeaderboardRankCard = async ({
               'rounded-md border-2 px-2 py-1',
               'w-24',
               borderColor,
-              entry.rank === 1 &&
-                'bg-gradient-to-bl from-amber-100 to-amber-500 text-black',
-              entry.rank === 2 &&
-                'bg-gradient-to-bl from-gray-100 to-gray-500 text-black border-gray-300',
-              entry.rank === 3 &&
-                'bg-gradient-to-bl from-orange-100 to-orange-500 text-black border-orange-300',
+              classTop3,
             )}
           >
             {top && entry ? (
@@ -184,6 +192,7 @@ export const LeaderboardRankCard = async ({
         className={cn(
           'flex flex-col gap-4 items-center justify-center bg-background/80 p-4 rounded-lg',
           top && 'border-2 border-amber-300',
+          classTop3,
         )}
       >
         {great && (
@@ -204,9 +213,7 @@ export const LeaderboardRankCard = async ({
         {top && (
           <div className="flex flex-col items-center gap-1">
             <div className="text-xs">Making this the</div>
-            <div
-              className={cn('text-4xl font-bold font-sans', 'text-amber-300')}
-            >
+            <div className={cn('text-4xl font-bold font-sans', textColor)}>
               {entry.rank}
               <span className="ordinal">{getOrdinalSuffix(entry.rank)}</span>
             </div>
