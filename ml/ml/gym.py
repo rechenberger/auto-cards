@@ -199,7 +199,7 @@ BEST_DURATION = 0
 BEST_EPISODE = 0
 
 def save_model(episode, duration):
-    global BEST_DURATION, BEST_EPISODE
+    global BEST_DURATION, BEST_EPISODE, steps_done
     if duration > BEST_DURATION:
         BEST_DURATION = duration
         BEST_EPISODE = episode
@@ -210,11 +210,12 @@ def save_model(episode, duration):
             'model_state_dict': policy_net.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
             'best_duration': BEST_DURATION,
+            'steps_done': steps_done,
         }, os.path.join(SAVE_DIR, 'best_model.pth'))
         print(f"Saved new best model at episode {episode} with duration {duration}")
 
 def load_model(filename):
-    global BEST_DURATION, BEST_EPISODE, policy_net, target_net, optimizer
+    global BEST_DURATION, BEST_EPISODE, policy_net, target_net, optimizer, steps_done
     if os.path.exists(filename):
         checkpoint = torch.load(filename)
         policy_net.load_state_dict(checkpoint['model_state_dict'])
@@ -222,8 +223,9 @@ def load_model(filename):
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         BEST_EPISODE = checkpoint['episode']
         BEST_DURATION = checkpoint['best_duration']
+        steps_done = checkpoint['steps_done']
         print(f"Loaded model from episode {BEST_EPISODE} with best duration {BEST_DURATION}")
-        return checkpoint['episode']
+        return BEST_EPISODE
     return 0
 
 # Try to load the best model if it exists
@@ -271,6 +273,7 @@ for i_episode in range(start_episode, num_episodes):
                     'model_state_dict': policy_net.state_dict(),
                     'optimizer_state_dict': optimizer.state_dict(),
                     'best_duration': BEST_DURATION,
+                    'steps_done': steps_done,
                 }, os.path.join(SAVE_DIR, f'checkpoint_episode_{i_episode}.pth'))
             break
 
@@ -285,4 +288,5 @@ torch.save({
     'model_state_dict': policy_net.state_dict(),
     'optimizer_state_dict': optimizer.state_dict(),
     'best_duration': BEST_DURATION,
+    'steps_done': steps_done,
 }, os.path.join(SAVE_DIR, 'final_model.pth'))
