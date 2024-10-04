@@ -1,11 +1,15 @@
+import { db } from '@/db/db'
+import { schema } from '@/db/schema-export'
 import { addToLeaderboardAcc } from '@/game/addToLeaderboardAcc'
 import { NO_OF_ROUNDS } from '@/game/config'
 import {
   streamDialog,
   superAction,
 } from '@/super-action/action/createSuperAction'
+import { eq } from 'drizzle-orm'
 import { Fragment } from 'react'
 import { Progress } from '../ui/progress'
+import { GameMatchBoardSingle } from './GameMatchBoard'
 
 export const LeaderboardAccCalculation = async ({
   gameId,
@@ -18,6 +22,13 @@ export const LeaderboardAccCalculation = async ({
     gameId,
     roundNo,
     dryRun: true,
+  })
+
+  const loadouts = await db.query.loadout.findMany({
+    where: eq(schema.loadout.gameId, gameId),
+    with: {
+      primaryMatchParticipation: true,
+    },
   })
 
   return (
@@ -35,25 +46,35 @@ export const LeaderboardAccCalculation = async ({
         <div className="font-bold text-right opacity-60">Weight</div>
         <div className="font-bold text-right">Points</div>
         <div className="col-span-5 border-b" />
-        {result?.entries.map((entry) => (
-          <Fragment key={entry.id}>
-            <div>{entry.roundNo + 1}</div>
-            <Progress
-              value={entry.score}
-              max={100}
-              style={{
-                width: `${100 * entry.weightRelative}%`,
-              }}
-            />
-            <div className="text-right font-mono">{entry.score.toFixed(2)}</div>
-            <div className="text-right font-mono opacity-60">
-              x {(entry.weightAbsolute * 100).toFixed(2)}%
-            </div>
-            <div className="text-right font-mono">
-              = {entry.pointsAbsolute.toFixed(2)}
-            </div>
-          </Fragment>
-        ))}
+        {result?.entries.map((entry) => {
+          const loadout = loadouts.find((l) => l.id === entry.loadoutId)
+          return (
+            <Fragment key={entry.id}>
+              <div className="flex flex-row gap-2 items-center">
+                <div className="flex-1">{entry.roundNo + 1}</div>
+                {loadout && loadout.primaryMatchParticipation && (
+                  <GameMatchBoardSingle loadout={loadout} />
+                )}
+              </div>
+              <Progress
+                value={entry.score}
+                max={100}
+                style={{
+                  width: `${100 * entry.weightRelative}%`,
+                }}
+              />
+              <div className="text-right font-mono">
+                {entry.score.toFixed(2)}
+              </div>
+              <div className="text-right font-mono opacity-60">
+                x {(entry.weightAbsolute * 100).toFixed(2)}%
+              </div>
+              <div className="text-right font-mono">
+                = {entry.pointsAbsolute.toFixed(2)}
+              </div>
+            </Fragment>
+          )
+        })}
         <div className="col-span-5 border-t" />
         <div className="font-bold">Total</div>
         <div className="col-span-3">
