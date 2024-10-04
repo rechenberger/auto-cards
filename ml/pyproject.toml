@@ -11,6 +11,7 @@ torch = "^2.4.1"
 numpy = "^2.1.1"
 gymnasium = "^0.29.1"
 matplotlib = "^3.9.2"
+requests = "^2.32.3"
 
 
 [build-system]
