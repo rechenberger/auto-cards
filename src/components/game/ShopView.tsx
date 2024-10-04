@@ -3,6 +3,7 @@ import { CraftingButton } from './CraftingButton'
 import { FightButton } from './FightButton'
 import { LiveMatchCard } from './LiveMatchCard'
 import { LoadoutDisplay } from './LoadoutDisplay'
+import { LoadoutStaminaInfo } from './LoadoutStaminaInfo'
 import { MatchReportResetter } from './MatchReportResetter'
 import { Shop } from './Shop'
 
@@ -26,6 +27,7 @@ export const ShopView = ({ game }: { game: Game }) => {
           loadout={game.data.currentLoadout}
           canSell
         />
+        <LoadoutStaminaInfo loadout={game.data.currentLoadout} />
         <MatchReportResetter />
       </div>
     </>
