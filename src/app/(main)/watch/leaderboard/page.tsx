@@ -1,6 +1,6 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { ItemCardGrid } from '@/components/game/ItemCardGrid'
-import { LeaderboardAccCalculation } from '@/components/game/LeaderboardAccCalculation'
+import { streamLeaderboardAccCalculation } from '@/components/game/LeaderboardAccCalculation'
 import { LeaderboardBenchmarkButton } from '@/components/game/LeaderboardBenchmarkButton'
 import { PlaygroundSelector } from '@/components/game/PlaygroundSelector'
 import { StatsDisplay } from '@/components/game/StatsDisplay'
@@ -291,18 +291,8 @@ export default async function Page({
                   className="flex-1"
                   action={async () => {
                     'use server'
-                    return superAction(async () => {
-                      if (!entry.gameId) {
-                        return
-                      }
-                      streamDialog({
-                        title: 'Leaderboard Calculation',
-                        content: (
-                          <>
-                            <LeaderboardAccCalculation gameId={entry.gameId} />
-                          </>
-                        ),
-                      })
+                    return streamLeaderboardAccCalculation({
+                      gameId: entry.gameId,
                     })
                   }}
                 >

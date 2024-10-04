@@ -1,5 +1,9 @@
 import { addToLeaderboardAcc } from '@/game/addToLeaderboardAcc'
 import { NO_OF_ROUNDS } from '@/game/config'
+import {
+  streamDialog,
+  superAction,
+} from '@/super-action/action/createSuperAction'
 import { Fragment } from 'react'
 import { Progress } from '../ui/progress'
 
@@ -64,4 +68,26 @@ export const LeaderboardAccCalculation = async ({
       </div>
     </>
   )
+}
+
+export const streamLeaderboardAccCalculation = async ({
+  gameId,
+  roundNo,
+}: {
+  gameId: string | null
+  roundNo?: number
+}) => {
+  return superAction(async () => {
+    if (!gameId) {
+      return
+    }
+    streamDialog({
+      title: 'Leaderboard Calculation',
+      content: (
+        <>
+          <LeaderboardAccCalculation gameId={gameId} roundNo={roundNo} />
+        </>
+      ),
+    })
+  })
 }

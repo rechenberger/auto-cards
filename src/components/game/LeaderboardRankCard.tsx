@@ -3,8 +3,9 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Loadout } from '@/db/schema-zod'
 import { addToLeaderboard } from '@/game/addToLeaderboard'
-import { GREAT_WIN_RATE } from '@/game/config'
+import { GREAT_WIN_RATE, LEADERBOARD_TYPE_ACC } from '@/game/config'
 import { getLeaderboardRanked } from '@/game/getLeaderboard'
+import { revalidateLeaderboard } from '@/game/revalidateLeaderboard'
 import { getOrdinalSuffix } from '@/lib/getOrdinalSuffix'
 import { cn } from '@/lib/utils'
 import { superAction } from '@/super-action/action/createSuperAction'
@@ -15,7 +16,7 @@ import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
 import { SimpleRefresher } from '../simple/SimpleRefresher'
 import { Button } from '../ui/button'
-import { revalidateLeaderboard } from '@/game/revalidateLeaderboard'
+import { streamLeaderboardAccCalculation } from './LeaderboardAccCalculation'
 
 export const LeaderboardRankCard = async ({
   loadout,
@@ -24,7 +25,10 @@ export const LeaderboardRankCard = async ({
   loadout: Loadout
   tiny?: boolean
 }) => {
-  const leaderboard = await getLeaderboardRanked({ roundNo: loadout.roundNo })
+  const leaderboard = await getLeaderboardRanked({
+    roundNo: loadout.roundNo,
+    type: LEADERBOARD_TYPE_ACC,
+  })
   let entry = leaderboard.find((e) => e.loadoutId === loadout.id)
   const top = !!entry
 
@@ -92,22 +96,32 @@ export const LeaderboardRankCard = async ({
     }
     return (
       <>
-        <div
-          className={cn(
-            'flex flex-col items-center justify-center',
-            textColor,
-            'rounded-md border-2 px-2 py-1',
-            borderColor,
-          )}
+        <ActionButton
+          variant={'vanilla'}
+          size={'vanilla'}
+          hideIcon
+          action={async () => {
+            'use server'
+            return streamLeaderboardAccCalculation({ gameId: entry.gameId })
+          }}
         >
-          {top && entry && (
-            <div className={cn('text-4xl font-bold font-sans')}>
-              {entry.rank}
-              <span className="ordinal">{getOrdinalSuffix(entry.rank)}</span>
-            </div>
-          )}
-          <div className="font-sans">{entry?.score.toFixed(2)}%</div>
-        </div>
+          <div
+            className={cn(
+              'flex flex-col items-center justify-center',
+              textColor,
+              'rounded-md border-2 px-2 py-1',
+              borderColor,
+            )}
+          >
+            {top && entry && (
+              <div className={cn('text-4xl font-bold font-sans')}>
+                {entry.rank}
+                <span className="ordinal">{getOrdinalSuffix(entry.rank)}</span>
+              </div>
+            )}
+            <div className="font-sans">{entry?.score.toFixed(2)}%</div>
+          </div>
+        </ActionButton>
       </>
     )
   }
@@ -189,11 +203,27 @@ export const LeaderboardRankCard = async ({
           </div>
         )}
 
-        <Button variant={'ghost'} asChild size={'sm'}>
-          <Link href={`/watch/leaderboard`}>
-            View Leaderboard <ExternalLink className="ml-1 mb-0.5 size-4" />
-          </Link>
-        </Button>
+        <div className="flex flex-col">
+          <ActionButton
+            variant="ghost"
+            hideIcon
+            className="flex-1"
+            action={async () => {
+              'use server'
+              return streamLeaderboardAccCalculation({
+                gameId: entry.gameId,
+              })
+            }}
+          >
+            See Calculation <ExternalLink className="ml-1 mb-0.5 size-4" />
+          </ActionButton>
+
+          <Button variant={'ghost'} asChild size={'sm'}>
+            <Link href={`/watch/leaderboard`} target="_blank">
+              View Leaderboard <ExternalLink className="ml-1 mb-0.5 size-4" />
+            </Link>
+          </Button>
+        </div>
       </div>
     </>
   )
