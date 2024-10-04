@@ -12,12 +12,12 @@ export const generateBotsWithItems = async ({
   noOfBots,
   simulationSeed,
   startingGold = 10,
-  startingItems = ['hero'],
+  startingItems = [{ name: 'hero', count: 1 }],
 }: {
   noOfBots: number
   simulationSeed: SeedArray
   startingGold?: number
-  startingItems?: ItemName[]
+  startingItems?: { name: ItemName; count: number }[]
 }) => {
   const bots = range(noOfBots).map((idx) => {
     return {
@@ -33,9 +33,11 @@ export const generateBotsWithItems = async ({
 
   const botsWithGame = await Promise.all(
     bots.map(async (bot) => {
-      const items = startingItems.map((name) => ({ name }))
-
-      const seed = seedToString({ seed: [...bot.seed, 'game'] })
+      const { loadout, goldRemaining } = await generateRandomLoadout({
+        startingGold,
+        seed: rngGenerator({ seed: [...bot.seed, 'loadout'] }),
+        startingItems,
+      })
 
       const game = typedParse(Game, {
         id: `simulation-${bot.name}`,
@@ -43,12 +45,10 @@ export const generateBotsWithItems = async ({
         updatedAt: new Date().toISOString(),
         userId: 'nope',
         data: {
-          currentLoadout: {
-            items,
-          },
-          gold: startingGold,
+          currentLoadout: loadout,
+          gold: goldRemaining,
           roundNo: 0,
-          seed,
+          seed: seedToString({ seed: [...bot.seed, 'game'] }),
           shopItems: [],
           shopRerolls: 0,
           version: 1,
@@ -56,14 +56,6 @@ export const generateBotsWithItems = async ({
         liveMatchId: null,
         version: GAME_VERSION,
       })
-
-      const { loadout, goldRemaining } = await generateRandomLoadout({
-        gold: game.data.gold,
-        seed: rngGenerator({ seed }),
-      })
-
-      game.data.gold = goldRemaining
-      game.data.currentLoadout = loadout
 
       return {
         ...bot,

@@ -1,6 +1,8 @@
 import { generateRandomLoadout } from '@/app/(main)/admin/simulation/generateRandomLoadout'
+import { startingByRound } from '@/app/(main)/admin/simulation/startingByRound'
 import { throwIfNotAdmin } from '@/auth/getIsAdmin'
-import { getAllItems } from '@/game/allItems'
+import { getAllItems, ItemName } from '@/game/allItems'
+import { NO_OF_ROUNDS } from '@/game/config'
 import { generateMatchByWorker } from '@/game/matchWorkerManager'
 import { createSeed, rngGenerator } from '@/game/seed'
 import {
@@ -11,22 +13,26 @@ import { range } from 'lodash-es'
 
 const generateParticipantGroups = async ({
   noOfMatches,
-  gold,
+  startingGold,
+  startingItems,
 }: {
   noOfMatches: number
-  gold: number
+  startingGold: number
+  startingItems: { name: ItemName; count: number }[]
 }) => {
   const seed = rngGenerator({ seed: createSeed() })
 
   const matchups = await Promise.all(
     range(noOfMatches).map(async (idx) => {
       const { loadout: loadoutBlue } = await generateRandomLoadout({
-        gold,
+        startingGold,
+        startingItems,
         seed,
       })
 
       const { loadout: loadoutRed } = await generateRandomLoadout({
-        gold,
+        startingGold,
+        startingItems,
         seed,
       })
 
@@ -43,9 +49,11 @@ export const GET = async () => {
   const allItems = await getAllItems()
 
   const doBatch = async () => {
+    const input = startingByRound(NO_OF_ROUNDS - 1)
+
     const participantGroups = await generateParticipantGroups({
       noOfMatches: 10,
-      gold: 100,
+      ...input,
     })
 
     const matches = await Promise.all(

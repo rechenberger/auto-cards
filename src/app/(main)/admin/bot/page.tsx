@@ -36,7 +36,7 @@ const baseInput: SimulationInput = {
   noOfRepeats: 1,
   simulationSeed: ['bot'],
   startingGold: 0,
-  startingItems: ['hero'],
+  startingItems: [{ name: 'hero', count: 1 }],
   noOfBotsSelected: 5,
   noOfSelectionRounds: 20,
 }

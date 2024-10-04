@@ -2,15 +2,18 @@ import { getAllItems } from '@/game/allItems'
 import { countifyItems } from '@/game/countifyItems'
 import { orderItems } from '@/game/orderItems'
 import { rngItem, SeedRng } from '@/game/seed'
+import { cloneDeep } from 'lodash-es'
 
 export const generateRandomLoadout = async ({
-  gold,
+  startingGold: gold,
   seed,
+  startingItems,
 }: {
-  gold: number
+  startingGold: number
   seed: SeedRng
+  startingItems: { name: string; count: number }[]
 }) => {
-  let items: { name: string; count: number }[] = []
+  let items: { name: string; count: number }[] = cloneDeep(startingItems)
 
   while (gold > 0) {
     let buyables = await getAllItems()

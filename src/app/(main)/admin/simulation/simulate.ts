@@ -9,7 +9,7 @@ export type SimulationInput = {
   noOfRepeats: number
   simulationSeed: SeedArray
   startingGold: number
-  startingItems: ItemName[]
+  startingItems: { name: ItemName; count: number }[]
   noOfBotsSelected: number
   noOfSelectionRounds: number
 }
