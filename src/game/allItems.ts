@@ -1225,7 +1225,7 @@ const allItemsConst = [
   },
   {
     name: 'longSword',
-    prompt: 'a long sword with a shiny metal blade',
+    prompt: 'a long sword with a shiny metal blade slashing through the air',
     tags: ['weapon'],
     rarity: 'epic',
     price: 3 + 4, // woodenSword + metalGloves
