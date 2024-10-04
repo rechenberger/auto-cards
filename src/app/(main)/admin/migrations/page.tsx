@@ -22,7 +22,7 @@ export default async function Page() {
             with: {
               loadout: true,
             },
-            limit: 10,
+            // limit: 10,
           })
           for (const entries of chunk(leaderboard, 10)) {
             await Promise.all(
