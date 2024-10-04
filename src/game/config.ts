@@ -29,3 +29,4 @@ export const LEADERBOARD_TYPE = 'rollingTop'
 export const LEADERBOARD_TYPE_ACC = 'rollingTopAcc'
 
 export const GREAT_WIN_RATE = 2
+export const LEADERBOARD_CRON_CYCLES = 1

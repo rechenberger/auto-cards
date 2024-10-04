@@ -1,7 +1,11 @@
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { addToLeaderboard } from '@/game/addToLeaderboard'
-import { LEADERBOARD_TYPE_ACC, NO_OF_ROUNDS } from '@/game/config'
+import {
+  LEADERBOARD_CRON_CYCLES,
+  LEADERBOARD_TYPE_ACC,
+  NO_OF_ROUNDS,
+} from '@/game/config'
 import { getLeaderboard } from '@/game/getLeaderboard'
 import { eq } from 'drizzle-orm'
 import { range } from 'lodash-es'
@@ -21,8 +25,6 @@ export const GET = async () => {
     return new Response('Unauthorized', { status: 401 })
   }
 
-  const CYCLES = 2
-
   console.time(`Leaderboard Cron: Total Time`)
 
   console.time(`Leaderboard Cron: Delete ACC`)
@@ -34,10 +36,10 @@ export const GET = async () => {
   for (const roundNo of range(NO_OF_ROUNDS)) {
     console.log(`Leaderboard Cron: Round ${roundNo}`)
     console.log(
-      `Leaderboard Cron: Starting (round ${roundNo}, ${CYCLES} cycles)`,
+      `Leaderboard Cron: Starting (round ${roundNo}, ${LEADERBOARD_CRON_CYCLES} cycles)`,
     )
 
-    for (const cycle of range(1, CYCLES + 1)) {
+    for (const cycle of range(1, LEADERBOARD_CRON_CYCLES + 1)) {
       const leaderboard = await getLeaderboard({
         roundNo,
       })
