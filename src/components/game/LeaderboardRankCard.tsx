@@ -70,15 +70,17 @@ export const LeaderboardRankCard = async ({
   //   })
   // }
 
+  const great = entry?.score && entry.score >= GREAT_WIN_RATE
+
   const textColor = top
     ? 'text-amber-300'
-    : entry?.score && entry.score >= GREAT_WIN_RATE
+    : great
       ? 'text-green-500'
       : 'text-gray-500'
 
   const borderColor = top
     ? 'border-amber-300'
-    : entry?.score && entry.score >= GREAT_WIN_RATE
+    : great
       ? 'border-green-500'
       : 'border-gray-500'
 
@@ -119,15 +121,20 @@ export const LeaderboardRankCard = async ({
               'flex flex-col items-center justify-center',
               textColor,
               'rounded-md border-2 px-2 py-1',
+              'w-24',
               borderColor,
+              entry.rank === 1 &&
+                'bg-gradient-to-bl from-amber-100 to-amber-500 text-black',
             )}
           >
-            {top && entry && (
+            {top && entry ? (
               <div className={cn('text-4xl font-bold font-sans')}>
                 {entry.rank}
                 <span className="ordinal">{getOrdinalSuffix(entry.rank)}</span>
               </div>
-            )}
+            ) : entry.score >= GREAT_WIN_RATE ? (
+              <div className={cn('text-xl font-bold font-sans')}>GREAT</div>
+            ) : null}
             <div className="font-sans">{entry?.score.toFixed(2)}%</div>
           </div>
         </ActionButton>
@@ -170,28 +177,14 @@ export const LeaderboardRankCard = async ({
           top && 'border-2 border-amber-300',
         )}
       >
-        {entry.score >= GREAT_WIN_RATE && (
-          <div
-            className={cn(
-              'text-xl font-bold',
-              top ? 'text-amber-300' : 'text-green-500',
-            )}
-          >
+        {great && (
+          <div className={cn('text-xl font-bold', textColor)}>
             {top ? 'Awesome!' : 'Great!'}
           </div>
         )}
         <div className="flex flex-col items-center gap-1">
           <div className="text-xs">Your cards have a win-rate of</div>
-          <div
-            className={cn(
-              'text-xl font-bold font-sans',
-              top
-                ? 'text-amber-300'
-                : entry.score >= GREAT_WIN_RATE
-                  ? 'text-green-500'
-                  : 'text-gray-500',
-            )}
-          >
+          <div className={cn('text-xl font-bold font-sans', textColor)}>
             {entry.score.toFixed(2)}%
           </div>
           <div className="text-xs">
