@@ -223,7 +223,7 @@ export const leaderboardEntry = sqliteTable(
   {
     ...baseStats(),
     userId: text('userId').notNull(),
-    roundNo: int('roundNo'),
+    roundNo: int('roundNo').notNull(),
     loadoutId: text('loadoutId').notNull(),
     gameId: text('gameId'),
 
