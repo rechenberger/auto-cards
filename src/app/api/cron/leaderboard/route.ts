@@ -1,6 +1,9 @@
+import { db } from '@/db/db'
+import { schema } from '@/db/schema-export'
 import { addToLeaderboard } from '@/game/addToLeaderboard'
-import { NO_OF_ROUNDS } from '@/game/config'
+import { LEADERBOARD_TYPE_ACC, NO_OF_ROUNDS } from '@/game/config'
 import { getLeaderboard } from '@/game/getLeaderboard'
+import { eq } from 'drizzle-orm'
 import { range } from 'lodash-es'
 import { headers } from 'next/headers'
 
@@ -21,6 +24,12 @@ export const GET = async () => {
   const CYCLES = 2
 
   console.time(`Leaderboard Cron: Total Time`)
+
+  console.time(`Leaderboard Cron: Delete ACC`)
+  await db
+    .delete(schema.leaderboardEntry)
+    .where(eq(schema.leaderboardEntry.type, LEADERBOARD_TYPE_ACC))
+  console.timeEnd(`Leaderboard Cron: Delete ACC`)
 
   for (const roundNo of range(NO_OF_ROUNDS)) {
     console.log(`Leaderboard Cron: Round ${roundNo}`)

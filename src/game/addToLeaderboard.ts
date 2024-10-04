@@ -120,7 +120,7 @@ export const addToLeaderboard = async ({
   }
 
   if (loadout.gameId) {
-    await addToLeaderboardAcc({ gameId: loadout.gameId })
+    await addToLeaderboardAcc({ gameId: loadout.gameId, roundNo })
   }
 
   revalidateLeaderboard()

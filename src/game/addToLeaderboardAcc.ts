@@ -4,8 +4,14 @@ import { and, eq } from 'drizzle-orm'
 import { maxBy, meanBy } from 'lodash-es'
 import { LEADERBOARD_TYPE, LEADERBOARD_TYPE_ACC } from './config'
 
-export const addToLeaderboardAcc = async ({ gameId }: { gameId: string }) => {
-  const entries = await db.query.leaderboardEntry.findMany({
+export const addToLeaderboardAcc = async ({
+  gameId,
+  roundNo,
+}: {
+  gameId: string
+  roundNo: number
+}) => {
+  let entries = await db.query.leaderboardEntry.findMany({
     where: and(
       eq(schema.leaderboardEntry.gameId, gameId),
       eq(schema.leaderboardEntry.type, LEADERBOARD_TYPE),
@@ -14,6 +20,11 @@ export const addToLeaderboardAcc = async ({ gameId }: { gameId: string }) => {
       loadout: true,
     },
   })
+
+  entries = entries.filter((e) => e.roundNo !== null && e.roundNo <= roundNo)
+  if (entries.length !== roundNo + 1) {
+    return
+  }
 
   const latestEntry = maxBy(entries, (e) => e.roundNo ?? -1)
   if (!latestEntry) {
@@ -26,6 +37,7 @@ export const addToLeaderboardAcc = async ({ gameId }: { gameId: string }) => {
     where: and(
       eq(schema.leaderboardEntry.gameId, gameId),
       eq(schema.leaderboardEntry.type, LEADERBOARD_TYPE_ACC),
+      eq(schema.leaderboardEntry.roundNo, roundNo),
     ),
   })
   if (entry) {
