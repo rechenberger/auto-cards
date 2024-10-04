@@ -3,14 +3,18 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Loadout } from '@/db/schema-zod'
 import { addToLeaderboard } from '@/game/addToLeaderboard'
-import { GREAT_WIN_RATE, LEADERBOARD_TYPE_ACC } from '@/game/config'
+import {
+  GAME_VERSION,
+  GREAT_WIN_RATE,
+  LEADERBOARD_TYPE_ACC,
+} from '@/game/config'
 import { getLeaderboardRanked } from '@/game/getLeaderboard'
 import { revalidateLeaderboard } from '@/game/revalidateLeaderboard'
 import { getOrdinalSuffix } from '@/lib/getOrdinalSuffix'
 import { cn } from '@/lib/utils'
 import { superAction } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { ExternalLink, Plus } from 'lucide-react'
 import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
@@ -36,7 +40,12 @@ export const LeaderboardRankCard = async ({
 
   if (!entry) {
     const entryDb = await db.query.leaderboardEntry.findFirst({
-      where: eq(schema.leaderboardEntry.loadoutId, loadout.id),
+      where: and(
+        eq(schema.leaderboardEntry.roundNo, loadout.roundNo),
+        eq(schema.leaderboardEntry.version, GAME_VERSION),
+        eq(schema.leaderboardEntry.type, LEADERBOARD_TYPE_ACC),
+        eq(schema.leaderboardEntry.loadoutId, loadout.id),
+      ),
       with: {
         user: true,
         loadout: true,
