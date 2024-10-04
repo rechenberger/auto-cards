@@ -2,6 +2,7 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Loadout } from '@/db/schema-zod'
 import { and, eq } from 'drizzle-orm'
+import { addToLeaderboardAcc } from './addToLeaderboardAcc'
 import { LEADERBOARD_TYPE } from './config'
 import { getLeaderboard } from './getLeaderboard'
 import { generateMatchByWorker } from './matchWorkerManager'
@@ -116,6 +117,10 @@ export const addToLeaderboard = async ({
         gameId: loadout.gameId,
       })
     }
+  }
+
+  if (loadout.gameId) {
+    await addToLeaderboardAcc({ gameId: loadout.gameId })
   }
 
   revalidateLeaderboard()
