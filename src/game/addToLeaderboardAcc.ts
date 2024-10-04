@@ -7,9 +7,11 @@ import { LEADERBOARD_TYPE, LEADERBOARD_TYPE_ACC } from './config'
 export const addToLeaderboardAcc = async ({
   gameId,
   roundNo,
+  dryRun,
 }: {
   gameId: string
   roundNo: number
+  dryRun?: boolean
 }) => {
   let entries = await db.query.leaderboardEntry.findMany({
     where: and(
@@ -33,30 +35,37 @@ export const addToLeaderboardAcc = async ({
 
   const score = meanBy(entries, (e) => e.score)
 
-  const entry = await db.query.leaderboardEntry.findFirst({
-    where: and(
-      eq(schema.leaderboardEntry.gameId, gameId),
-      eq(schema.leaderboardEntry.type, LEADERBOARD_TYPE_ACC),
-      eq(schema.leaderboardEntry.roundNo, roundNo),
-    ),
-  })
-  if (entry) {
-    await db
-      .update(schema.leaderboardEntry)
-      .set({
+  if (!dryRun) {
+    const entry = await db.query.leaderboardEntry.findFirst({
+      where: and(
+        eq(schema.leaderboardEntry.gameId, gameId),
+        eq(schema.leaderboardEntry.type, LEADERBOARD_TYPE_ACC),
+        eq(schema.leaderboardEntry.roundNo, roundNo),
+      ),
+    })
+    if (entry) {
+      await db
+        .update(schema.leaderboardEntry)
+        .set({
+          score,
+          loadoutId: latestEntry.loadoutId,
+          roundNo: latestEntry.roundNo,
+        })
+        .where(eq(schema.leaderboardEntry.id, entry.id))
+    } else {
+      await db.insert(schema.leaderboardEntry).values({
+        gameId,
         score,
+        type: LEADERBOARD_TYPE_ACC,
+        userId: latestEntry.userId,
         loadoutId: latestEntry.loadoutId,
         roundNo: latestEntry.roundNo,
       })
-      .where(eq(schema.leaderboardEntry.id, entry.id))
-  } else {
-    await db.insert(schema.leaderboardEntry).values({
-      gameId,
-      score,
-      type: LEADERBOARD_TYPE_ACC,
-      userId: latestEntry.userId,
-      loadoutId: latestEntry.loadoutId,
-      roundNo: latestEntry.roundNo,
-    })
+    }
+  }
+
+  return {
+    score,
+    entries,
   }
 }

@@ -1,5 +1,6 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { ItemCardGrid } from '@/components/game/ItemCardGrid'
+import { LeaderboardAccEntries } from '@/components/game/LeaderboardAccEntries'
 import { LeaderboardBenchmarkButton } from '@/components/game/LeaderboardBenchmarkButton'
 import { PlaygroundSelector } from '@/components/game/PlaygroundSelector'
 import { StatsDisplay } from '@/components/game/StatsDisplay'
@@ -283,9 +284,29 @@ export default async function Page({
                     <PlaygroundSelector loadout={loadout.data} />
                   </div>
                 )}
-                <div className="text-xl text-right flex-1">
-                  {entry.score.toFixed(2)}
-                </div>
+                <ActionButton
+                  variant="ghost"
+                  size="default"
+                  hideIcon
+                  className="flex-1"
+                  action={async () => {
+                    'use server'
+                    return superAction(async () => {
+                      if (!entry.gameId) {
+                        return
+                      }
+                      streamDialog({
+                        content: (
+                          <LeaderboardAccEntries gameId={entry.gameId} />
+                        ),
+                      })
+                    })
+                  }}
+                >
+                  <div className="text-xl text-right">
+                    {entry.score.toFixed(2)}
+                  </div>
+                </ActionButton>
                 {isAdmin && (
                   <>
                     <ActionButton
