@@ -26,7 +26,7 @@ export const addToLeaderboardAcc = async ({
     return
   }
 
-  const latestEntry = maxBy(entries, (e) => e.roundNo ?? -1)
+  const latestEntry = maxBy(entries, (e) => e.roundNo)
   if (!latestEntry) {
     return
   }
