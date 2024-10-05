@@ -317,6 +317,7 @@ export const generateMatch = async ({
           sideIdx,
           triggerIdx,
           statsForItem,
+          statsEnemy: enemy.stats,
         })
       : trigger
     const { statsRequired, statsSelf, statsEnemy, attack } = allStats
@@ -759,6 +760,7 @@ export const generateMatch = async ({
               itemIdx: action.itemIdx,
               triggerIdx: action.triggerIdx,
               statsForItem,
+              statsEnemy: sides[1 - action.sideIdx].stats,
             },
             'statsForItem',
           )

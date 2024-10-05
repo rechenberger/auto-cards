@@ -1678,7 +1678,7 @@ const allItemsConst = [
     statsItem: {
       health: 25,
       healthMax: 25,
-      block: 20,
+      flying: 20,
       priority: 1,
       // flying: 30,
     },
