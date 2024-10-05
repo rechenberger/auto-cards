@@ -1673,6 +1673,7 @@ const allItemsConst = [
     rarity: 'uncommon',
     price: 6,
     shop: true,
+    unique: true,
     version: 2,
     statsItem: {
       health: 25,
