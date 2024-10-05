@@ -132,7 +132,9 @@ export const generateMatchState = async (input: GenerateMatchInput) => {
   const { sides, futureActionsItems } =
     await generateMatchStateFutureActionsItems(input)
 
-  const futureActionsBase = [{ type: 'baseTick' as const, time: 0 }]
+  const futureActionsBase = [
+    { type: 'baseTick' as const, time: 0, active: true },
+  ]
 
   const futureActions = [...futureActionsBase, ...futureActionsItems]
   return { sides, futureActions }
@@ -686,6 +688,7 @@ export const generateMatch = async ({
 
     for (const action of futureActions) {
       if (action.time !== time) continue
+      if (!action.active) continue
 
       if (action.type === 'baseTick') {
         action.time += BASE_TICK_TIME
@@ -706,6 +709,25 @@ export const generateMatch = async ({
       }
 
       // END OF ACTION CHECK
+      for (const side of sides) {
+        side.items.forEach((item, itemIdx) => {
+          if (item.statsItem?.health && item.statsItem.health <= 0) {
+            // Deactivate future actions
+            // TODO: onDie trigger
+            item.statsItem.health = 0
+            for (const action of futureActions) {
+              if (
+                action.type === 'interval' &&
+                action.sideIdx === side.sideIdx &&
+                action.itemIdx === itemIdx
+              ) {
+                action.active = false
+                action.time = MAX_MATCH_TIME // TODO: find a more elegant solution
+              }
+            }
+          }
+        })
+      }
       const dead = sides.some((side) => (side.stats.health ?? 0) <= 0)
       if (dead) {
         return endOfMatch()
@@ -716,11 +738,13 @@ export const generateMatch = async ({
     // TODO: merge this with the cooldown set at start
     for (const action of futureActions) {
       if (action.time !== time) continue
+      if (!action.active) continue
       if (action.type !== 'baseTick') {
         const side = sides[action.sideIdx]
         const item = side.items[action.itemIdx]
         const trigger = item.triggers![action.triggerIdx]
         if (trigger.type === 'startOfBattle') {
+          action.active = false
           action.time = MAX_MATCH_TIME // TODO: find a more elegant solution
         } else if (trigger.type === 'interval') {
           let statsForItem = item.statsItem

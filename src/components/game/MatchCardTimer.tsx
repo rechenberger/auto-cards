@@ -69,7 +69,7 @@ export const MatchCardTimer = ({
     <motion.div
       className="absolute bottom-0 right-0 left-0 bg-gray-500/40 pointer-events-none"
       initial={{ height: '0%' }}
-      animate={{ height: `${newHeight}%` }}
+      animate={{ height: `${Math.min(newHeight, 100)}%` }}
       transition={{ duration: tick / 1000, ease: 'linear' }}
     />
   )
