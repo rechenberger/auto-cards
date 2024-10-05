@@ -1,11 +1,18 @@
 'use client'
 
 import { Stats } from '@/game/stats'
+import { cn } from '@/lib/utils'
 import { Banana, Heart } from 'lucide-react'
 import { Fragment } from 'react'
 import { Progress } from '../ui/progress'
 
-export const StatsBars = ({ stats }: { stats: Stats }) => {
+export const StatsBars = ({
+  stats,
+  tiny,
+}: {
+  stats: Stats
+  tiny?: boolean
+}) => {
   const bars = [
     {
       current: stats.health ?? 0,
@@ -31,7 +38,7 @@ export const StatsBars = ({ stats }: { stats: Stats }) => {
         }
         return (
           <Fragment key={idx}>
-            <div className="relative w-28 sm:w-40">
+            <div className={cn('relative', tiny ? 'w-24' : 'w-28 sm:w-40')}>
               <Progress
                 value={100 * (bar.current / bar.max)}
                 className="border shadow h-6"

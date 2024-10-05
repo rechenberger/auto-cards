@@ -178,7 +178,7 @@ export const MatchCardOverlay = ({
             className="gap-1"
             hideBars
           />
-          <StatsBars stats={stats} />
+          <StatsBars stats={stats} tiny />
         </div>
       )}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none flex-col gap-1 scale-75">
