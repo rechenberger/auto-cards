@@ -188,64 +188,77 @@ export const generateMatch = async ({
     return { logs, winner, loser, time }
   }
 
-  const baseTick = ({ side }: { side: MatchState['sides'][number] }) => {
+  const baseTick = ({
+    target,
+  }: {
+    target: {
+      stats: Stats
+      sideIdx: number
+      itemIdx?: number
+    }
+  }) => {
     // REGEN
-    const missingHealth = (side.stats.healthMax ?? 0) - (side.stats.health ?? 0)
+    const missingHealth =
+      (target.stats.healthMax ?? 0) - (target.stats.health ?? 0)
     const missingStamina =
-      (side.stats.staminaMax ?? 0) - (side.stats.stamina ?? 0)
+      (target.stats.staminaMax ?? 0) - (target.stats.stamina ?? 0)
     const regenStats = {
-      health: Math.min(missingHealth, side.stats.regen ?? 0),
-      stamina: Math.min(missingStamina, side.stats.staminaRegen ?? 0),
+      health: Math.min(missingHealth, target.stats.regen ?? 0),
+      stamina: Math.min(missingStamina, target.stats.staminaRegen ?? 0),
     }
     if (regenStats.health > 0 || regenStats.stamina > 0) {
-      addStats(side.stats, regenStats)
+      addStats(target.stats, regenStats)
       log({
         msg: 'Regenerate',
-        sideIdx: side.sideIdx,
+        sideIdx: target.sideIdx,
         stats: regenStats,
-        targetSideIdx: side.sideIdx,
+        targetSideIdx: target.sideIdx,
+        targetItemIdx: target.itemIdx,
       })
     }
 
     // POISON
-    if (side.stats.poison) {
+    if (target.stats.poison) {
       const poisonStats = {
-        health: -1 * side.stats.poison ?? 0,
+        health: -1 * target.stats.poison ?? 0,
       }
-      addStats(side.stats, poisonStats)
+      addStats(target.stats, poisonStats)
       log({
         msg: 'Poison',
-        sideIdx: side.sideIdx,
+        sideIdx: target.sideIdx,
         stats: poisonStats,
-        targetSideIdx: side.sideIdx,
+        targetSideIdx: target.sideIdx,
+        targetItemIdx: target.itemIdx,
       })
     }
 
     // FLYING
-    if (side.stats.flying) {
+    if (target.stats.flying) {
       const flyingStats = {
         flying: -1,
       }
-      addStats(side.stats, flyingStats)
+      addStats(target.stats, flyingStats)
       log({
         msg: 'Flying',
-        sideIdx: side.sideIdx,
+        sideIdx: target.sideIdx,
         stats: flyingStats,
-        targetSideIdx: side.sideIdx,
+        targetSideIdx: target.sideIdx,
+        targetItemIdx: target.itemIdx,
       })
     }
 
     // BARRIER
-    if (side.stats.barrier) {
+    if (target.stats.barrier) {
       const barrierStats = {
         barrier: -1,
       }
-      addStats(side.stats, barrierStats)
+      addStats(target.stats, barrierStats)
       log({
         msg: 'Barrier',
-        sideIdx: side.sideIdx,
+        sideIdx: target.sideIdx,
         stats: barrierStats,
-        targetSideIdx: side.sideIdx,
+        targetSideIdx: target.sideIdx,
+        targetItemIdx: target.itemIdx,
       })
     }
 
@@ -255,12 +268,13 @@ export const generateMatch = async ({
       const fatigueStats = {
         health: -1 * fatigue,
       }
-      addStats(side.stats, fatigueStats)
+      addStats(target.stats, fatigueStats)
       log({
         msg: 'Fatigue',
-        sideIdx: side.sideIdx,
+        sideIdx: target.sideIdx,
         stats: fatigueStats,
-        targetSideIdx: side.sideIdx,
+        targetSideIdx: target.sideIdx,
+        targetItemIdx: target.itemIdx,
       })
     }
   }
@@ -700,7 +714,18 @@ export const generateMatch = async ({
           seed,
         })) {
           baseTick({
-            side,
+            target: side,
+          })
+          side.items.forEach((item, itemIdx) => {
+            if (item.statsItem?.health) {
+              baseTick({
+                target: {
+                  sideIdx: side.sideIdx,
+                  itemIdx,
+                  stats: item.statsItem ?? {},
+                },
+              })
+            }
           })
         }
       } else {
