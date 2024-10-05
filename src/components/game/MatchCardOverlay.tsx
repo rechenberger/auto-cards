@@ -14,6 +14,7 @@ import {
   matchPlaybackSpeedAtom,
 } from './matchPlaybackState'
 import { useMatchReport } from './MatchReportProvider'
+import { StatsBars } from './StatsBars'
 import { StatsDisplay } from './StatsDisplay'
 
 const useOnLogEvent = ({
@@ -166,11 +167,18 @@ export const MatchCardOverlay = ({
       {stats && (
         <div
           className={cn(
-            'absolute inset-2 flex flex-col items-center justify-end origin-bottom scale-75 pointer-events-none',
+            'absolute inset-2 flex flex-col gap-1 items-center justify-end origin-bottom scale-75 pointer-events-none',
             theme?.classBottom,
           )}
         >
-          <StatsDisplay stats={stats} size="sm" canWrap className="gap-1" />
+          <StatsDisplay
+            stats={stats}
+            size="sm"
+            canWrap
+            className="gap-1"
+            hideBars
+          />
+          <StatsBars stats={stats} />
         </div>
       )}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none flex-col gap-1 scale-75">
