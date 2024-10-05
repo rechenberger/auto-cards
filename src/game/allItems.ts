@@ -1694,6 +1694,12 @@ const allItemsConst = [
           slow: 10,
         },
       },
+      {
+        type: 'onDefendAfterHit',
+        statsEnemy: {
+          slow: 10,
+        },
+      },
     ],
   },
 ] as const satisfies ItemDefinition[]

@@ -659,6 +659,7 @@ export const generateMatch = async ({
     // Find Actions
     const actions = futureActions.filter(
       (a) =>
+        a.active &&
         a.type === eventType &&
         a.sideIdx === sideIdx &&
         (itemIdx === undefined || a.itemIdx === itemIdx) &&
@@ -717,7 +718,7 @@ export const generateMatch = async ({
             item.statsItem.health = 0
             for (const action of futureActions) {
               if (
-                action.type === 'interval' &&
+                action.type !== 'baseTick' &&
                 action.sideIdx === side.sideIdx &&
                 action.itemIdx === itemIdx
               ) {
