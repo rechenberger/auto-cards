@@ -116,6 +116,7 @@ const generateMatchStateFutureActionsItems = async (
             triggerIdx,
             itemCounter, // to have different seed for each item in a stack
             active: true,
+            creature: !!item.statsItem?.healthMax,
           }))
         }) || []
       )
@@ -662,7 +663,7 @@ export const generateMatch = async ({
         a.active &&
         a.type === eventType &&
         a.sideIdx === sideIdx &&
-        (itemIdx === undefined || a.itemIdx === itemIdx) &&
+        (itemIdx === undefined ? !a.creature : a.itemIdx === itemIdx) &&
         (itemCounter === undefined || a.itemCounter === itemCounter),
     )
 
