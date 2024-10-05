@@ -124,7 +124,7 @@ const generateMatchStateFutureActionsItems = async (
   return { sides, futureActionsItems }
 }
 
-type FutureActionItem = Awaited<
+export type FutureActionItem = Awaited<
   ReturnType<typeof generateMatchStateFutureActionsItems>
 >['futureActionsItems'][number]
 

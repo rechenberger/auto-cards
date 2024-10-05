@@ -1679,7 +1679,7 @@ const allItemsConst = [
       healthMax: 25,
       block: 20,
       priority: 1,
-      flying: 30,
+      // flying: 30,
     },
     triggers: [
       {
