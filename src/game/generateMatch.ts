@@ -6,7 +6,7 @@ import {
   SeedArray,
   SeedRng,
 } from '@/game/seed'
-import { cloneDeep, minBy, orderBy, range } from 'lodash-es'
+import { cloneDeep, maxBy, minBy, orderBy, range } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { calcCooldown } from './calcCooldown'
 import {
@@ -115,6 +115,7 @@ const generateMatchStateFutureActionsItems = async (
             itemIdx,
             triggerIdx,
             itemCounter, // to have different seed for each item in a stack
+            active: true,
           }))
         }) || []
       )
@@ -276,6 +277,23 @@ export const generateMatch = async ({
     const item = mySide.items[itemIdx]
     const trigger = item.triggers![triggerIdx]
 
+    const targetItem = maxBy(
+      otherSide.items.filter((i) => i.statsItem?.health),
+      (i) => i.statsItem?.priority ?? 0,
+    )
+    const enemy =
+      targetItem && targetItem.statsItem
+        ? {
+            sideIdx: otherSide.sideIdx,
+            itemIdx: otherSide.items.indexOf(targetItem),
+            stats: targetItem.statsItem,
+          }
+        : {
+            sideIdx: otherSide.sideIdx,
+            itemIdx: undefined,
+            stats: otherSide.stats,
+          }
+
     action.lastUsed = time
 
     const baseLog = {
@@ -383,38 +401,41 @@ export const generateMatch = async ({
       if (tryingToReach) {
         let cantReachReason = ''
         if (
-          !!otherSide.stats.flying &&
+          !!enemy.stats.flying &&
           !statsForItem.flying &&
           !statsForItem.ranged
         ) {
           cantReachReason = 'Cannot reach flying enemy'
         }
-        if (!!statsForItem.ranged && !!otherSide.stats.barrier) {
+        if (!!statsForItem.ranged && !!enemy.stats.barrier) {
           cantReachReason = 'Blocked by barrier'
         }
         if (cantReachReason) {
           log({
             ...baseLog,
-            targetSideIdx: otherSide.sideIdx,
+            targetSideIdx: enemy.sideIdx,
+            targetItemIdx: enemy.itemIdx,
             msg: cantReachReason,
           })
         } else {
           if (statsEnemy) {
-            tryAddStats(otherSide.stats, statsEnemy)
+            tryAddStats(enemy.stats, statsEnemy)
             log({
               ...baseLog,
               stats: statsEnemy,
-              targetSideIdx: otherSide.sideIdx,
+              targetSideIdx: enemy.sideIdx,
+              targetItemIdx: enemy.itemIdx,
             })
             randomStatsResolve({
-              stats: otherSide.stats,
+              stats: enemy.stats,
               seed,
               onRandomStat: ({ stats, randomStat }) => {
                 log({
                   ...baseLog,
                   stats,
                   msg: randomStat,
-                  targetSideIdx: otherSide.sideIdx,
+                  targetSideIdx: enemy.sideIdx,
+                  targetItemIdx: enemy.itemIdx,
                 })
               },
             })
@@ -446,7 +467,8 @@ export const generateMatch = async ({
               triggerEvents({
                 eventType: 'onDefendBeforeHit',
                 parentTrigger: input,
-                sideIdx: otherSide.sideIdx,
+                sideIdx: enemy.sideIdx,
+                itemIdx: enemy.itemIdx,
               })
 
               let critChance = 0
@@ -469,7 +491,8 @@ export const generateMatch = async ({
                 triggerEvents({
                   eventType: 'onDefendCritBeforeHit',
                   parentTrigger: input,
-                  sideIdx: otherSide.sideIdx,
+                  sideIdx: enemy.sideIdx,
+                  itemIdx: enemy.itemIdx,
                 })
               }
 
@@ -497,18 +520,19 @@ export const generateMatch = async ({
                   rngFloat({ seed, max: 100 }) <= statsForItem.unblockableChance
               }
               if (!unblockable) {
-                blockedDamage = Math.min(damage, otherSide.stats.block ?? 0)
+                blockedDamage = Math.min(damage, enemy.stats.block ?? 0)
               }
               damage -= blockedDamage
               const targetStats: Stats = {
                 health: -1 * damage,
                 block: -1 * blockedDamage,
               }
-              addStats(otherSide.stats, targetStats)
+              addStats(enemy.stats, targetStats)
               log({
                 ...baseLog,
                 msg: doesCrit ? `Critical Hit` : `Hit`,
-                targetSideIdx: otherSide.sideIdx,
+                targetSideIdx: enemy.sideIdx,
+                targetItemIdx: enemy.itemIdx,
                 stats: targetStats,
               })
               if (doesCrit) {
@@ -548,12 +572,8 @@ export const generateMatch = async ({
               }
 
               // THORNS
-              if (
-                otherSide.stats.thorns &&
-                damage > 0 &&
-                !statsForItem.ranged
-              ) {
-                let thornsDamage = otherSide.stats.thorns
+              if (enemy.stats.thorns && damage > 0 && !statsForItem.ranged) {
+                let thornsDamage = enemy.stats.thorns
                 const maxThornsDamage = Math.round(
                   damage * MAX_THORNS_MULTIPLIER,
                 )
@@ -565,11 +585,11 @@ export const generateMatch = async ({
                 addStats(mySide.stats, thornsStats)
                 log({
                   ...baseLog,
-                  sideIdx: otherSide.sideIdx,
+                  sideIdx: enemy.sideIdx,
+                  itemIdx: enemy.itemIdx,
                   msg: `Thorns`,
                   targetSideIdx: mySide.sideIdx,
                   stats: thornsStats,
-                  itemIdx: undefined,
                 })
               }
 
@@ -583,7 +603,8 @@ export const generateMatch = async ({
               triggerEvents({
                 eventType: 'onDefendAfterHit',
                 parentTrigger: input,
-                sideIdx: otherSide.sideIdx,
+                sideIdx: enemy.sideIdx,
+                itemIdx: enemy.itemIdx,
               })
               if (doesCrit) {
                 triggerEvents({
@@ -596,14 +617,16 @@ export const generateMatch = async ({
                 triggerEvents({
                   eventType: 'onDefendCritAfterHit',
                   parentTrigger: input,
-                  sideIdx: otherSide.sideIdx,
+                  sideIdx: enemy.sideIdx,
+                  itemIdx: enemy.itemIdx,
                 })
               }
             } else {
               log({
                 ...baseLog,
                 msg: 'Miss',
-                targetSideIdx: otherSide.sideIdx,
+                targetSideIdx: enemy.sideIdx,
+                targetItemIdx: enemy.itemIdx,
               })
             }
           }
