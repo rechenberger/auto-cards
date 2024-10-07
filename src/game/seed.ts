@@ -76,7 +76,7 @@ export const rngItems = <T>({
   const itemsCopy = [...items]
   const results: T[] = []
   for (let i = 0; i < count; i++) {
-    const idx = rngInt({ seed, max: itemsCopy.length - 1 })
+    const idx = rngInt({ seed: [seed, i], max: itemsCopy.length - 1 })
     const item = itemsCopy.splice(idx, 1)[0]!
     results.push(item)
   }
