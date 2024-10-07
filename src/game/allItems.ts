@@ -712,7 +712,7 @@ const allItemsConst = [
             targetStat: 'haste',
             targetStats: 'statsForItem',
             valueAddingStats: ['hungry'],
-            description: '**+1** *haste* per *hungry*',
+            description: 'Pan gets **+1** *haste* per *hungry*',
           },
         ],
       },

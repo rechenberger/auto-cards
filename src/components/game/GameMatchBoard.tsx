@@ -39,6 +39,7 @@ export const GameMatchBoard = async ({
               <GameMatchBoardSingle
                 loadout={loadout}
                 isActive={roundNo === game.data.roundNo}
+                showScore={showScore}
               />
             </Fragment>
           )
