@@ -7,7 +7,7 @@ import {
   SeedRng,
 } from '@/game/seed'
 import { cloneDeep, minBy, orderBy, range } from 'lodash-es'
-import { getItemByName } from './allItems'
+import { getAllItems, getItemByName } from './allItems'
 import { calcCooldown } from './calcCooldown'
 import {
   addStats,
@@ -26,6 +26,7 @@ import { TriggerEventType } from './ItemDefinition'
 import { getAllModifiedStats, getModifiedStats } from './modifiers'
 import { orderItems } from './orderItems'
 import { randomStatsResolve } from './randomStatsResolve'
+import { SimpleMatchData, toSimpleMatchDataItemCounts } from './SimpleMatchData'
 import { Stats } from './stats'
 
 export type MatchLog = {
@@ -148,6 +149,7 @@ export const generateMatch = async ({
 }: GenerateMatchInput) => {
   let time = 0
 
+  const allItems = await getAllItems()
   const state = await generateMatchState({
     participants,
     seed: _seed,
@@ -170,7 +172,7 @@ export const generateMatch = async ({
     logs.push({ ...log, time, itemName, stateSnapshot, logIdx: logs.length })
   }
 
-  const endOfMatch = () => {
+  const endOfMatch = async () => {
     const sidesRandom = rngOrder({ items: sides, seed })
     const sidesByHealth = orderBy(
       sidesRandom,
@@ -181,6 +183,24 @@ export const generateMatch = async ({
     log({ msg: 'Game over', sideIdx: loser.sideIdx })
     log({ msg: 'Loses', sideIdx: loser.sideIdx })
     log({ msg: 'Wins!', sideIdx: winner.sideIdx, isDone: true })
+
+    // Save to file
+    if (typeof window === 'undefined') {
+      const fs = await import('fs/promises')
+      const simpleMatchData: SimpleMatchData = {
+        itemCounts: participants.map((p) =>
+          toSimpleMatchDataItemCounts({
+            items: p.loadout.items,
+            allItems,
+          }),
+        ),
+        winner: winner.sideIdx,
+      }
+      const path = await import('path')
+      const p = path.join(process.cwd(), '/tmp/matches.ndjson')
+      await fs.appendFile(p, JSON.stringify(simpleMatchData) + '\n').catch()
+    }
+
     return { logs, winner, loser, time }
   }
 

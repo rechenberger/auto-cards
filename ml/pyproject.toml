@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "ml"
+version = "0.1.0"
+description = ""
+authors = ["Tristan Rechenberger <rechenberger@me.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+torch = "^2.4.1"
+numpy = "^2.1.1"
+gymnasium = "^0.29.1"
+matplotlib = "^3.9.2"
+requests = "^2.32.3"
+scikit-learn = "^1.5.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

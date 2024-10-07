@@ -13,7 +13,8 @@ import {
 import { LoadoutData } from '@/db/schema-zod'
 import { countifyItems } from '@/game/countifyItems'
 import { ItemDefinition } from '@/game/ItemDefinition'
-import { cloneDeep, omit, orderBy, sum, sumBy } from 'lodash-es'
+import { negativeItems, sumItems } from '@/game/sumItems'
+import { omit, orderBy, sum, sumBy } from 'lodash-es'
 import { Fragment } from 'react'
 import { SimulationInput, SimulationResult } from './simulate'
 
@@ -31,19 +32,7 @@ export const SimulationDisplay = async ({
   const { bots } = simulationResult
 
   const withoutStartingItems = (items: LoadoutData['items']) => {
-    const result = cloneDeep(items)
-    for (const startingItem of input.startingItems) {
-      const idx = result.findIndex((i) => i.name === startingItem)
-      if (idx !== -1) {
-        const item = result[idx]
-        if (item && item.count && item.count > 1) {
-          item.count -= 1
-        } else {
-          result.splice(idx, 1)
-        }
-      }
-    }
-    return result
+    return sumItems(items, negativeItems(input.startingItems))
   }
 
   let itemStats = allItems
@@ -94,7 +83,9 @@ export const SimulationDisplay = async ({
           data={{
             ...input,
             ...omit(simulationResult, 'bots'),
-            startingItems: input.startingItems.join(', '),
+            startingItems: input.startingItems
+              .map((i) => `${i.count}x ${i.name}`)
+              .join(', '),
             noOfItems: allItems.length,
             simulatedTime: `${(
               sumBy(bots, (bot) => bot.time) /

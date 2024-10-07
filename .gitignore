@@ -39,3 +39,6 @@ db.sqlite
 
 # notes
 .notes
+
+# tmp
+tmp/
