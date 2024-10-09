@@ -44,12 +44,14 @@ export const getModifiedStats = (
     itemIdx,
     triggerIdx,
     statsForItem,
+    statsEnemy,
   }: {
     state: MatchState
     sideIdx: number
     itemIdx: number
     triggerIdx: number
     statsForItem: Stats
+    statsEnemy: Stats
   },
   stats: ModifierTargetStats,
 ) => {
@@ -74,7 +76,7 @@ export const getModifiedStats = (
         if (modifier.sourceSide === 'self') {
           sourceCount += statsForItem[stat] ?? 0
         } else {
-          sourceCount += sourceSide.stats[stat] ?? 0
+          sourceCount += statsEnemy[stat] ?? 0
         }
       }
     }
@@ -128,6 +130,7 @@ export const getAllModifiedStats = (props: {
   itemIdx: number
   triggerIdx: number
   statsForItem: Stats
+  statsEnemy: Stats
 }) => {
   return {
     statsSelf: getModifiedStats(props, 'statsSelf'),
