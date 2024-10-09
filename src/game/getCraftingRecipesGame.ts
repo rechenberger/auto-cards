@@ -25,7 +25,7 @@ export const getCraftingRecipesGame = async ({ game }: { game?: Game }) => {
     const hasAll = every(input, (i) => i.hasEnough)
     const hasSome = some(input, (i) => i.countCurrent > 0)
 
-    const outputs = map(recipe.output, (item) => {
+    const output = map(recipe.output, (item) => {
       const def = allItems.find((i) => i.name === item.name)
       if (!def) {
         throw new Error(`Item ${item.name} not found`)
@@ -39,11 +39,12 @@ export const getCraftingRecipesGame = async ({ game }: { game?: Game }) => {
       }
     })
 
-    const uniqueAlreadyCrafted = some(outputs, (i) => i.uniqueAlreadyCrafted)
+    const uniqueAlreadyCrafted = some(output, (i) => i.uniqueAlreadyCrafted)
 
     return {
       ...recipe,
       input,
+      output,
       hasAll,
       hasSome,
       uniqueAlreadyCrafted,
