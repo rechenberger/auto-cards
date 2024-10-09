@@ -397,6 +397,7 @@ const allItemsConst = [
     rarity: 'rare',
     price: 4, // = roseBush
     shop: false,
+    unique: true,
     stats: {
       space: space(-4),
     },
