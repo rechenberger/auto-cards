@@ -1,9 +1,14 @@
 import { LoadoutData } from '@/db/schema-zod'
 import { capitalCase } from 'change-case'
-import { keys, map, omitBy, range, sumBy, uniq } from 'lodash-es'
+import { keys, map, omitBy, range, sum, sumBy, uniq } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { randomStats } from './randomStats'
 import { Stat, Stats } from './stats'
+
+const numberFormatter = new Intl.NumberFormat('en-US', {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 2
+});
 
 export const calcStats = async ({ loadout }: { loadout: LoadoutData }) => {
   const items = await Promise.all(
@@ -14,10 +19,55 @@ export const calcStats = async ({ loadout }: { loadout: LoadoutData }) => {
       }
     }),
   )
+
   const stats = sumStats(
     ...items.flatMap((i) => range(i.count ?? 1).map(() => i.item.stats || {})),
   )
-  return stats
+
+  const totalStaminaRegenPerSecond = sumBy(items, (i) => {
+    const regenAmount = i.item.stats?.staminaRegen ?? 0;
+
+    let totalRegenFromTriggers = 0;
+    let totalCooldownInMilliseconds = 0;
+
+    i.item.triggers?.forEach((t) => {
+      if (t.statsSelf?.stamina) {
+        totalRegenFromTriggers += t.statsSelf.stamina;
+        totalCooldownInMilliseconds += t.type === 'interval' ? t.cooldown ?? 1000 : 1000;
+      }
+    });
+
+    const otherRegen = totalRegenFromTriggers < 0 ? 0 : totalRegenFromTriggers;
+    const cooldownInSeconds = totalCooldownInMilliseconds === 0 ? 1 : totalCooldownInMilliseconds / 1000;
+
+    return cooldownInSeconds > 0 ? (regenAmount + otherRegen) / cooldownInSeconds : 0;
+  });
+
+  const totalStaminaUsagePerSecond = sumBy(items, (i) => {
+    let totalStaminaUsage = 0;
+    let totalCooldownInMilliseconds = 0;
+
+    i.item.triggers?.forEach((t) => {
+      if (t.statsRequired?.stamina && t.type === 'interval') {
+        totalStaminaUsage += t.statsRequired.stamina;
+        totalCooldownInMilliseconds += t.cooldown ?? 1000;
+      }
+    });
+
+    const cooldownInSeconds = totalCooldownInMilliseconds === 0 ? 1 : totalCooldownInMilliseconds / 1000;
+
+    const res = totalStaminaUsage / cooldownInSeconds;
+
+    return res;
+  });
+
+
+  return {
+    ...stats,
+    staminaRegen: numberFormatter.format(totalStaminaRegenPerSecond),
+    staminaUsage: numberFormatter.format(totalStaminaUsagePerSecond)
+
+  }
 }
 
 export const sumStats = (...allStats: Stats[]) => {
