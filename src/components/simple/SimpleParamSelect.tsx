@@ -28,12 +28,12 @@ export const SimpleParamSelect = ({
   options,
   paramKey,
   label,
-  all,
+  nullLabel,
 }: {
   options: { value: string; label: string }[]
   paramKey: string
   label: string
-  all?: string
+  nullLabel?: string
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -59,7 +59,7 @@ export const SimpleParamSelect = ({
           className="flex flex-col max-h-[40vh]"
           onKeyDown={handleKeyDown}
         >
-          {!!all && (
+          {!!nullLabel && (
             <DropdownMenuItem>
               <Button
                 type="button"
@@ -73,7 +73,7 @@ export const SimpleParamSelect = ({
                   router.push(`${pathname}?${newSearchParams.toString()}`)
                 }}
               >
-                {all}
+                {nullLabel}
               </Button>
             </DropdownMenuItem>
           )}

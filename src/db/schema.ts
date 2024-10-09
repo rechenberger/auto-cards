@@ -225,6 +225,7 @@ export const leaderboardEntry = sqliteTable(
     userId: text('userId').notNull(),
     roundNo: int('roundNo').notNull(),
     loadoutId: text('loadoutId').notNull(),
+    gameId: text('gameId'),
 
     type: text('type').notNull(),
     score: int('score').notNull(),
@@ -235,6 +236,9 @@ export const leaderboardEntry = sqliteTable(
     leaderboardTypeRoundNoVersionScoreIdx: index(
       'leaderboardTypeRoundNoVersionScoreIdx',
     ).on(table.type, table.roundNo, table.version, table.score),
+    leaderboardTypeRoundNoVersionGameIdIdx: index(
+      'leaderboardTypeVersionGameIdIdx',
+    ).on(table.type, table.version, table.gameId),
   }),
 )
 

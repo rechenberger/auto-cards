@@ -1,6 +1,7 @@
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { ItemCardGrid } from '@/components/game/ItemCardGrid'
 import { LeaderboardBenchmarkButton } from '@/components/game/LeaderboardBenchmarkButton'
+import { LeaderboardRankCard } from '@/components/game/LeaderboardRankCard'
 import { PlaygroundSelector } from '@/components/game/PlaygroundSelector'
 import { StatsDisplay } from '@/components/game/StatsDisplay'
 import { SimpleParamSelect } from '@/components/simple/SimpleParamSelect'
@@ -13,7 +14,12 @@ import { addAllToLeaderboard } from '@/game/addAllToLeaderboard'
 import { addToLeaderboard } from '@/game/addToLeaderboard'
 import { getBotName } from '@/game/botName'
 import { calcLoadoutPrice } from '@/game/calcLoadoutPrice'
-import { LEADERBOARD_LIMIT, NO_OF_ROUNDS } from '@/game/config'
+import {
+  LEADERBOARD_LIMIT,
+  LEADERBOARD_TYPE,
+  LEADERBOARD_TYPE_ACC,
+  NO_OF_ROUNDS,
+} from '@/game/config'
 import { getLeaderboardRanked } from '@/game/getLeaderboard'
 import { getUserName } from '@/game/getUserName'
 import { revalidateLeaderboard } from '@/game/revalidateLeaderboard'
@@ -46,8 +52,11 @@ export default async function Page({
     ? parseInt(searchParams.round) - 1
     : NO_OF_ROUNDS - 1
 
+  const type = searchParams.round ? LEADERBOARD_TYPE : LEADERBOARD_TYPE_ACC
+
   const entries = await getLeaderboardRanked({
     roundNo,
+    type,
   })
   const isAdmin = await getIsAdmin({ allowDev: false })
 
@@ -79,6 +88,10 @@ export default async function Page({
                   return superAction(async () => {
                     const leaderboard =
                       await db.query.leaderboardEntry.findMany({
+                        where: eq(
+                          schema.leaderboardEntry.type,
+                          LEADERBOARD_TYPE,
+                        ),
                         // orderBy: asc(schema.leaderboardEntry.score),
                       })
                     let counts = countBy(leaderboard, (e) => e.loadoutId)
@@ -213,6 +226,7 @@ export default async function Page({
           }))}
           paramKey="round"
           label="Round"
+          nullLabel="All Rounds"
         />
         <Tabs value={view}>
           <TabsList>
@@ -234,7 +248,13 @@ export default async function Page({
 
           return (
             <Fragment key={entry.id}>
-              <div className="text-xl">#{entry.rank}</div>
+              <div>
+                <LeaderboardRankCard
+                  entry={entry}
+                  loadout={entry.loadout}
+                  tiny
+                />
+              </div>
               <div>
                 <div className="flex flex-row gap-1">
                   <div>{name}</div>
@@ -270,9 +290,6 @@ export default async function Page({
                     <PlaygroundSelector loadout={loadout.data} />
                   </div>
                 )}
-                <div className="text-xl text-right flex-1">
-                  {entry.score.toFixed(2)}
-                </div>
                 {isAdmin && (
                   <>
                     <ActionButton

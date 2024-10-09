@@ -97,3 +97,6 @@ export const LiveMatchParticipation = createSelectSchema(
   },
 )
 export type LiveMatchParticipation = z.infer<typeof LiveMatchParticipation>
+
+export const LeaderboardEntry = createSelectSchema(schema.leaderboardEntry)
+export type LeaderboardEntry = z.infer<typeof LeaderboardEntry>

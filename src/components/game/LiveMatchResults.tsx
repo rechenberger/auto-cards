@@ -15,6 +15,7 @@ import { Fragment } from 'react'
 import { Card } from '../ui/card'
 import { GameMatchBoard } from './GameMatchBoard'
 import { ItemCardGrid } from './ItemCardGrid'
+import { LeaderboardRankCardByGame } from './LeaderboardRankCardByGame'
 
 export const LiveMatchResults = async ({
   liveMatchId,
@@ -110,8 +111,11 @@ export const LiveMatchResults = async ({
                 <div className="max-md:text-right truncate">
                   {getUserName({ user: p.user })}
                 </div>
-                <div className="flex flex-row">
+                <div className="flex flex-row gap-2 items-center">
                   <GameMatchBoard game={p.game} showScore />
+                  <div className="hidden xl:flex flex-col -mx-6 scale-50">
+                    <LeaderboardRankCardByGame gameId={p.game.id} tiny />
+                  </div>
                 </div>
                 <div className="text-right font-bold">{p.score}&nbsp;Pt.</div>
                 {showCards && (

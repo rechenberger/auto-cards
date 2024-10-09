@@ -1,5 +1,5 @@
 import { addToLeaderboard } from '@/game/addToLeaderboard'
-import { NO_OF_ROUNDS } from '@/game/config'
+import { LEADERBOARD_CRON_CYCLES, NO_OF_ROUNDS } from '@/game/config'
 import { getLeaderboard } from '@/game/getLeaderboard'
 import { range } from 'lodash-es'
 import { headers } from 'next/headers'
@@ -18,17 +18,21 @@ export const GET = async () => {
     return new Response('Unauthorized', { status: 401 })
   }
 
-  const CYCLES = 2
-
   console.time(`Leaderboard Cron: Total Time`)
+
+  // console.time(`Leaderboard Cron: Delete ACC`)
+  // await db
+  //   .delete(schema.leaderboardEntry)
+  //   .where(eq(schema.leaderboardEntry.type, LEADERBOARD_TYPE_ACC))
+  // console.timeEnd(`Leaderboard Cron: Delete ACC`)
 
   for (const roundNo of range(NO_OF_ROUNDS)) {
     console.log(`Leaderboard Cron: Round ${roundNo}`)
     console.log(
-      `Leaderboard Cron: Starting (round ${roundNo}, ${CYCLES} cycles)`,
+      `Leaderboard Cron: Starting (round ${roundNo}, ${LEADERBOARD_CRON_CYCLES} cycles)`,
     )
 
-    for (const cycle of range(1, CYCLES + 1)) {
+    for (const cycle of range(1, LEADERBOARD_CRON_CYCLES + 1)) {
       const leaderboard = await getLeaderboard({
         roundNo,
       })

@@ -19,7 +19,7 @@ export default async function Page() {
   const itemsRanked = items.map((item) => {
     const entriesWithCount = entries.map((entry) => {
       const count = sumBy(entry.loadout.data.items, (i) =>
-        i.name === item.name ? i.count ?? 1 : 0,
+        i.name === item.name ? (i.count ?? 1) : 0,
       )
       return {
         ...entry,
@@ -52,11 +52,16 @@ export default async function Page() {
         ? round(damagePerSecond / staminaPerSecond, 2)
         : 0
 
+      const dpsPerGold = damagePerSecond
+        ? round(damagePerSecond / item.item.price, 2)
+        : 0
+
       return {
         ...item,
         damagePerSecond,
         staminaPerSecond,
         damagePerStamina,
+        dpsPerGold,
       }
     })
     .filter((item) => item.damagePerSecond > 0)
@@ -207,6 +212,21 @@ export default async function Page() {
                 name: capitalCase(item.item.name),
                 value: item.damagePerStamina,
                 fill: 'hsl(var(--chart-4))',
+              })),
+            (i) => i.value,
+            'desc',
+          )}
+        />
+        <ItemChart
+          title="DPS per gold"
+          valueLabel="dps/gold"
+          data={orderBy(
+            itemsWithAttack
+              .filter((item) => item.dpsPerGold > 0)
+              .map((item) => ({
+                name: capitalCase(item.item.name),
+                value: item.dpsPerGold,
+                fill: 'hsl(var(--chart-5))',
               })),
             (i) => i.value,
             'desc',
