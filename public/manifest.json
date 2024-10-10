@@ -3,7 +3,7 @@
   "short_name": "Auto Cards",
   "icons": [
     {
-      "src": "/autocards.svg",
+      "src": "/icons/autocards.svg",
       "sizes": "any",
       "purpose": "any maskable"
     },
