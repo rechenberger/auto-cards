@@ -1,8 +1,8 @@
-export const DEFAULT_GAME_VERSION = 2
+export const DEFAULT_GAME_VERSION = 3
 export const GAME_VERSION = process.env.GAME_VERSION
   ? parseInt(process.env.GAME_VERSION)
   : DEFAULT_GAME_VERSION
-export const NO_OF_ROUNDS = GAME_VERSION === 2 ? 10 : 5
+export const NO_OF_ROUNDS = GAME_VERSION >= 2 ? 10 : 5
 
 export const NO_OF_SHOP_ITEMS = 5
 export const SALE_CHANCE = 0.2
