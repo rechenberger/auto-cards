@@ -551,7 +551,7 @@ const allItemsConst = [
     name: 'darts',
     tags: ['weapon'],
     rarity: 'uncommon',
-    price: 3,
+    price: 4,
     shop: true,
     stats: {
       space: space(-2),
