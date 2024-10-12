@@ -1849,6 +1849,47 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'luckyCharm',
+    prompt: 'a small lucky charm with a four leaf clover',
+    tags: ['accessory'],
+    rarity: 'rare',
+    price: 5,
+    shop: true,
+    version: 3,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsRequired: {
+          luck: 10,
+        },
+        statsSelf: {
+          luck: -10,
+          critChance: 5,
+        },
+      },
+    ],
+  },
+  {
+    name: 'bloodAmulet',
+    prompt: 'a red amulet with a drop of blood in the center',
+    tags: ['accessory'],
+    rarity: 'epic',
+    price: 7,
+    shop: true,
+    version: 3,
+    triggers: [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          lifeSteal: 20,
+          healthMax: 20,
+          health: 20,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')
