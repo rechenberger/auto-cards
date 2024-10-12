@@ -81,10 +81,10 @@ export type TagDefinition = Omit<TagDefinitionRaw, 'name'> & {
   name: Tag
 }
 
-export const getTagDefinition = (stat: Tag): TagDefinition => {
-  const def = allTagsDefinition.find((b) => b.name === stat)
+export const getTagDefinition = (tag: Tag): TagDefinition => {
+  const def = allTagsDefinition.find((b) => b.name === tag)
   if (!def) {
-    throw new Error(`Unknown stat: ${stat}`)
+    throw new Error(`Unknown tag: ${tag}`)
   }
   return def
 }

@@ -838,7 +838,7 @@ const allItemsConst = [
   {
     name: 'shortBow',
     prompt: 'a short bow and an arrow in a quiver standing next to each other',
-    tags: ['weapon'],
+    tags: ['weapon', 'hunting'],
     rarity: 'common',
     price: 4,
     shop: true,
