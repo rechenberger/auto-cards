@@ -1558,7 +1558,7 @@ const allItemsConst = [
   {
     name: 'manaWings',
     prompt: 'a pair of wings made out of pure mana',
-    tags: ['accessory'],
+    tags: ['spell'],
     rarity: 'epic',
     price: 8,
     shop: true,
@@ -1581,7 +1581,7 @@ const allItemsConst = [
   {
     name: 'manaBarrier',
     prompt: 'a magical dome of mana blocking incoming projectiles',
-    tags: ['accessory'],
+    tags: ['spell'],
     rarity: 'epic',
     price: 8,
     shop: true,
@@ -2034,6 +2034,30 @@ const allItemsConst = [
         },
         statsTarget: {
           health: -50,
+        },
+      },
+    ],
+  },
+  {
+    name: 'dustDevil',
+    prompt: 'a magical dust devil',
+    tags: ['spell'],
+    rarity: 'rare',
+    price: 6,
+    shop: true,
+    version: 3,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsRequired: {
+          mana: 2,
+        },
+        statsSelf: {
+          mana: -2,
+        },
+        statsTarget: {
+          blind: 4,
         },
       },
     ],

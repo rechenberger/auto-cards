@@ -11,7 +11,10 @@ export const StatDescriptionsItem = async ({ name }: { name: string }) => {
     item.statsItem,
     ...(item.triggers?.flatMap((t) => [
       t.statsSelf,
+      t.statsRequired,
+      t.statsRequiredTarget,
       t.statsEnemy,
+      t.statsTarget,
       t.statsItem,
       t.attack,
       ...map(t.modifiers, (m) => ({ [m.targetStat]: 1 })),

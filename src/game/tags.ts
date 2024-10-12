@@ -43,6 +43,10 @@ export const allTagsDefinition = [
     bgClass: 'bg-sky-500',
   },
   {
+    name: 'spell',
+    bgClass: 'bg-indigo-700',
+  },
+  {
     name: 'event',
     bgClass: 'bg-purple-500/50',
   },
