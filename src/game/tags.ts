@@ -52,6 +52,11 @@ export const allTagsDefinition = [
     name: 'deprecated',
     bgClass: 'bg-gray-500/20',
   },
+  {
+    name: 'class',
+    bgClass: '',
+    locked: true,
+  },
 ] as const satisfies TagDefinitionRaw[]
 
 export const allTags = constArrayMap(allTagsDefinition, 'name')
