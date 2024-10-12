@@ -2040,7 +2040,7 @@ const allItemsConst = [
   },
   {
     name: 'dustDevil',
-    prompt: 'a magical dust devil',
+    prompt: 'a magical dust devil / tiny tornado',
     tags: ['spell'],
     rarity: 'rare',
     price: 6,
