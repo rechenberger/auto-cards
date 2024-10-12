@@ -51,7 +51,7 @@ export const BuyButton = async ({
             return gameAction({
               gameId: game.id,
               // checkUpdatedAt: shopItem.isSpecial ? game.updatedAt : undefined, // TODO: maybe only this
-              checkUpdatedAt: game.updatedAt, // TODO:
+              checkUpdatedAt: game.updatedAt,
               action: async ({ ctx }) => {
                 const game = ctx.game
                 if (game.data.gold < price) {
