@@ -34,10 +34,6 @@ const allRoundStats: RoundStats[] = [
       uncommon: 4,
       rare: 1,
     },
-    specialBuyRound: {
-      tag: 'profession',
-      noOfItems: 3,
-    },
   },
   {
     roundNo: 1,
@@ -59,6 +55,10 @@ const allRoundStats: RoundStats[] = [
       common: 50,
       uncommon: 40,
       rare: 10,
+    },
+    specialBuyRound: {
+      tag: 'profession',
+      noOfItems: 3,
     },
   },
   {
