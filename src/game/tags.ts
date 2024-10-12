@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 type TagDefinitionRaw = {
   name: string
-  bgClass: string
+  bgClass?: string
   locked?: boolean
   isSpecial?: boolean
 }
@@ -57,6 +57,10 @@ export const allTagsDefinition = [
     name: 'profession',
     bgClass: '',
     isSpecial: true,
+  },
+  {
+    name: 'smithing',
+    locked: true,
   },
 ] as const satisfies TagDefinitionRaw[]
 

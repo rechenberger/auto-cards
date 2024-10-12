@@ -1118,7 +1118,7 @@ const allItemsConst = [
   {
     name: 'forgingHammer',
     prompt: 'a small forging hammer',
-    tags: ['weapon'],
+    tags: ['weapon', 'smithing'],
     rarity: 'common',
     price: 3,
     shop: true,
@@ -1667,28 +1667,24 @@ const allItemsConst = [
       },
     ],
   },
-  // {
-  //   name: 'anvil',
-  //   tags: ['accessory'],
-  //   rarity: 'common',
-  //   price: 1,
-  //   shop: true,
-  //   version: 2,
-  //   shopEffects: [
-  //     {
-  //       type: 'boost',
-  //       tags: ['weapon', 'shield'],
-  //     },
-  //     {
-  //       type: 'unlock',
-  //       tags: ['potion'],
-  //     },
-  //     {
-  //       type: 'ban',
-  //       tags: ['food'],
-  //     },
-  //   ],
-  // },
+  {
+    name: 'blacksmith',
+    tags: ['profession'],
+    rarity: 'common',
+    price: 1,
+    shop: true,
+    version: 3,
+    shopEffects: [
+      {
+        type: 'boost',
+        tags: ['weapon', 'shield'],
+      },
+      {
+        type: 'unlock',
+        tags: ['smithing'],
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')
