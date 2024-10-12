@@ -2150,7 +2150,7 @@ const allItemsConst = [
   },
   {
     name: 'icyBuckler',
-    prompt: 'a wooden shield with a layer of ice on it',
+    prompt: 'a wooden shield with a thick layer of ice and snow on it',
     tags: ['accessory'],
     rarity: 'uncommon',
     price: 4 + 4, // woodenBuckler + icycle
