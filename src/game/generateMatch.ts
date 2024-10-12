@@ -815,7 +815,7 @@ export const generateMatch = async ({
               triggerIdx: action.triggerIdx,
               statsForItem,
               statsEnemy: sides[1 - action.sideIdx].stats,
-              statsTarget: sides[1 - action.sideIdx].stats,
+              statsTarget: sides[1 - action.sideIdx].stats, // TODO: this is technically wrong, should be target.stats (but we dont want to calculate target here again)
             },
             'statsForItem',
           )
