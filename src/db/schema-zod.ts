@@ -36,6 +36,7 @@ export const GameData = z.object({
       isOnSale: z.boolean().optional(),
       isReserved: z.boolean().optional(),
       isSold: z.boolean().optional(),
+      isSpecial: z.boolean().optional(),
     }),
   ),
   currentLoadout: LoadoutData,

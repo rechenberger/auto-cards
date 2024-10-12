@@ -17,6 +17,11 @@ export const generateShopItems = async ({
   game: Game
   skipRarityWeights?: boolean
 }) => {
+  const roundStat = roundStats[game.data.roundNo]
+
+  const specialBuyRound =
+    game.data.shopRerolls === 0 && roundStat.specialBuyRound
+
   const allItems = await getAllItems()
   let itemsForSale = allItems.filter((item) => !!item.shop)
 
@@ -48,19 +53,24 @@ export const generateShopItems = async ({
   })
 
   const oldItems = game.data.shopItems.filter((item) => item.isReserved)
-  const itemsToGenerate = NO_OF_SHOP_ITEMS - oldItems.length
+  const itemsToGenerate = specialBuyRound
+    ? specialBuyRound.noOfItems
+    : NO_OF_SHOP_ITEMS - oldItems.length
 
-  const roundStat = roundStats[game.data.roundNo]
   const itemsWeighted = itemsForSale
     .map((item) => {
       let weight = 1
       let locked = false
+      let isSpecial = false
 
       if (!skipRarityWeights && roundStat.rarityWeights) {
         for (const tag of item.tags ?? []) {
           const tagDef = getTagDefinition(tag)
           if (tagDef.locked) {
             locked = true
+          }
+          if (tagDef.isSpecial) {
+            isSpecial = true
           }
         }
 
@@ -96,6 +106,10 @@ export const generateShopItems = async ({
         weight = 0
       }
 
+      if (isSpecial !== !!specialBuyRound) {
+        weight = 0
+      }
+
       return {
         item,
         weight,
@@ -120,6 +134,7 @@ export const generateShopItems = async ({
     return {
       name: newItem.name,
       isOnSale,
+      isSpecial: !!specialBuyRound,
     }
   })
   shopItems.push(...oldItems)

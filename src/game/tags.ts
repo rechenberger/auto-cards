@@ -5,6 +5,7 @@ type TagDefinitionRaw = {
   name: string
   bgClass: string
   locked?: boolean
+  isSpecial?: boolean
 }
 
 export const allTagsDefinition = [
@@ -55,7 +56,7 @@ export const allTagsDefinition = [
   {
     name: 'class',
     bgClass: '',
-    locked: true,
+    isSpecial: true,
   },
 ] as const satisfies TagDefinitionRaw[]
 

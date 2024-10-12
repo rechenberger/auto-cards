@@ -11,6 +11,7 @@ type RoundStats = {
   rarityWeights: RarityWeights
   specialBuyRound?: {
     tag: Tag
+    noOfItems: number
   }
 }
 
@@ -35,6 +36,7 @@ const allRoundStats: RoundStats[] = [
     },
     specialBuyRound: {
       tag: 'class',
+      noOfItems: 3,
     },
   },
   {
