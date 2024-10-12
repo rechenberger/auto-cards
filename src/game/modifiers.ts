@@ -12,6 +12,7 @@ import { Tag } from './tags'
 export const ModifierTargetStats = z.enum([
   'statsSelf',
   'statsEnemy',
+  'statsTarget',
   'statsItem',
   'statsRequired',
   'attack',
@@ -24,7 +25,7 @@ export const Modifier = z.object({
   targetStat: Stat,
   targetStats: ModifierTargetStats,
 
-  sourceSide: z.enum(['self', 'enemy']).optional(),
+  sourceSide: z.enum(['self', 'enemy', 'target']),
 
   valueBase: z.number().optional(), // value = base
   valueAddingItems: z.array(z.string()).optional(), // value += count(item)
@@ -45,6 +46,7 @@ export const getModifiedStats = (
     triggerIdx,
     statsForItem,
     statsEnemy,
+    statsTarget,
   }: {
     state: MatchState
     sideIdx: number
@@ -52,6 +54,7 @@ export const getModifiedStats = (
     triggerIdx: number
     statsForItem: Stats
     statsEnemy: Stats
+    statsTarget: Stats
   },
   stats: ModifierTargetStats,
 ) => {
@@ -75,8 +78,12 @@ export const getModifiedStats = (
       for (const stat of modifier.valueAddingStats) {
         if (modifier.sourceSide === 'self') {
           sourceCount += statsForItem[stat] ?? 0
-        } else {
+        } else if (modifier.sourceSide === 'enemy') {
           sourceCount += statsEnemy[stat] ?? 0
+        } else if (modifier.sourceSide === 'target') {
+          sourceCount += statsTarget[stat] ?? 0
+        } else {
+          const _exhaustiveCheck: never = modifier.sourceSide
         }
       }
     }
@@ -131,6 +138,7 @@ export const getAllModifiedStats = (props: {
   triggerIdx: number
   statsForItem: Stats
   statsEnemy: Stats
+  statsTarget: Stats
 }) => {
   return {
     statsSelf: getModifiedStats(props, 'statsSelf'),
@@ -139,5 +147,6 @@ export const getAllModifiedStats = (props: {
     statsRequired: getModifiedStats(props, 'statsRequired'),
     attack: getModifiedStats(props, 'attack'),
     statsForItem: getModifiedStats(props, 'statsForItem'),
+    statsTarget: getModifiedStats(props, 'statsTarget'),
   }
 }

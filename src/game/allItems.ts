@@ -135,7 +135,7 @@ const allItemsConst = [
       {
         type: 'interval',
         cooldown: 4_000,
-        statsEnemy: {
+        statsTarget: {
           poison: 1,
         },
       },
@@ -300,7 +300,7 @@ const allItemsConst = [
       },
       {
         type: 'onAttackAfterHit',
-        statsEnemy: {
+        statsTarget: {
           thorns: -2,
           regen: -2,
         },
@@ -352,6 +352,7 @@ const allItemsConst = [
             valueMultiplier: 3,
             description:
               'Also attack with **3** *damage* and **90** *accuracy*\n\nwhen you have *beerFest*',
+            sourceSide: 'self',
           },
           {
             arithmetic: 'add',
@@ -361,6 +362,7 @@ const allItemsConst = [
             valueAddingItems: ['beerFest'],
             valueMultiplier: 90,
             description: '',
+            sourceSide: 'self',
           },
         ],
       },
@@ -484,7 +486,7 @@ const allItemsConst = [
           slow: 5,
           stamina: -30,
         },
-        statsEnemy: {
+        statsTarget: {
           slow: 5,
         },
       },
@@ -545,7 +547,7 @@ const allItemsConst = [
       },
       {
         type: 'onAttackAfterHit',
-        statsEnemy: {
+        statsTarget: {
           flying: -1,
         },
       },
@@ -582,7 +584,7 @@ const allItemsConst = [
         statsSelf: {
           stamina: -7,
         },
-        statsEnemy: {
+        statsTarget: {
           blind: 3,
         },
         attack: {
@@ -608,13 +610,7 @@ const allItemsConst = [
         cooldown: 3_000,
         statsSelf: {
           luck: 2,
-          // randomBuff: 3,
-          // randomDebuff: -3,
         },
-        // statsEnemy: {
-        //   randomBuff: -3,
-        //   randomDebuff: 3,
-        // },
       },
     ],
   },
@@ -663,6 +659,7 @@ const allItemsConst = [
             targetStats: 'attack',
             valueAddingStats: ['thorns'],
             description: '**+1** *damage* per *thorns*',
+            sourceSide: 'self',
           },
         ],
       },
@@ -707,6 +704,7 @@ const allItemsConst = [
             targetStats: 'attack',
             valueAddingTags: ['food'],
             description: '**+1** *damage* per *food*',
+            sourceSide: 'self',
           },
           {
             arithmetic: 'add',
@@ -714,6 +712,7 @@ const allItemsConst = [
             targetStats: 'statsForItem',
             valueAddingStats: ['hungry'],
             description: 'Pan gets **+1** *haste* per *hungry*',
+            sourceSide: 'self',
           },
         ],
       },
@@ -780,7 +779,7 @@ const allItemsConst = [
       },
       {
         type: 'onAttackBeforeHit',
-        statsEnemy: {
+        statsTarget: {
           block: -8,
         },
       },
@@ -807,7 +806,7 @@ const allItemsConst = [
       {
         type: 'interval',
         cooldown: 4_000,
-        statsEnemy: {
+        statsTarget: {
           lifeSteal: -10,
         },
         chancePercent: 30,
@@ -919,6 +918,7 @@ const allItemsConst = [
             valueAddingStats: ['thorns'],
             description: '**+0.5** *damage* per *thorns*',
             valueMultiplier: 0.5,
+            sourceSide: 'self',
           },
         ],
       },
@@ -985,6 +985,7 @@ const allItemsConst = [
             valueAddingStats: ['luck'],
             description: '**+0.2** *damage* per *luck*',
             valueMultiplier: 0.2,
+            sourceSide: 'self',
           },
         ],
       },
@@ -1038,7 +1039,7 @@ const allItemsConst = [
       },
       {
         type: 'onAttackAfterHit',
-        statsEnemy: {
+        statsTarget: {
           poison: 1,
         },
         chancePercent: 70,
@@ -1146,6 +1147,7 @@ const allItemsConst = [
             targetStats: 'attack',
             valueAddingStats: ['empower'],
             description: 'Additional **+1** *damage* per *empower*',
+            sourceSide: 'self',
           },
         ],
       },
@@ -1198,6 +1200,7 @@ const allItemsConst = [
             description: 'Get **+10** *hungry* for every *food*',
             valueAddingTags: ['food'],
             valueMultiplier: 10,
+            sourceSide: 'self',
           },
         ],
       },
@@ -1292,6 +1295,7 @@ const allItemsConst = [
             valueAddingStats: ['lifeSteal'],
             valueMultiplier: 0.1,
             description: 'Additional **+1** *damage* per 10 *lifeSteal*',
+            sourceSide: 'self',
           },
         ],
       },
@@ -1344,7 +1348,7 @@ const allItemsConst = [
       },
       {
         type: 'onAttackBeforeHit',
-        statsEnemy: {
+        statsTarget: {
           block: -28,
         },
       },
@@ -1381,7 +1385,7 @@ const allItemsConst = [
       },
       {
         type: 'onAttackBeforeHit',
-        statsEnemy: {
+        statsTarget: {
           randomBuff: -1,
         },
         description:
@@ -1396,7 +1400,7 @@ const allItemsConst = [
       },
       {
         type: 'onAttackCritBeforeHit',
-        statsEnemy: {
+        statsTarget: {
           randomBuff: -1,
         },
         hidden: true,
@@ -1514,6 +1518,7 @@ const allItemsConst = [
             description: 'Generate **1** *mana* for every *crystal*',
             valueAddingTags: ['crystal'],
             valueMultiplier: 1,
+            sourceSide: 'self',
           },
         ],
       },
@@ -1661,7 +1666,7 @@ const allItemsConst = [
       },
       {
         type: 'onAttackAfterHit',
-        statsEnemy: {
+        statsTarget: {
           slow: 2,
         },
       },
@@ -1713,13 +1718,13 @@ const allItemsConst = [
           damage: 10,
           accuracy: 85,
         },
-        statsEnemy: {
+        statsTarget: {
           slow: 10,
         },
       },
       {
         type: 'onDefendAfterHit',
-        statsEnemy: {
+        statsTarget: {
           slow: 10,
         },
       },
