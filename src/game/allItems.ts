@@ -1256,7 +1256,7 @@ const allItemsConst = [
       {
         type: 'startOfBattle',
         statsSelf: {
-          empower: 2,
+          empower: 1,
           haste: 20,
         },
       },
