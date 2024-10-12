@@ -1328,20 +1328,20 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 3_500,
         statsRequired: {
-          stamina: 30,
+          stamina: 10,
         },
         statsSelf: {
-          stamina: -30,
+          stamina: -10,
         },
         attack: {
           damage: 18,
-          accuracy: 75,
+          accuracy: 80,
         },
       },
       {
         type: 'onAttackBeforeHit',
         statsEnemy: {
-          block: -28,
+          block: -32,
         },
       },
     ],
