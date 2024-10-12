@@ -2170,6 +2170,25 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'worldEnder',
+    prompt: 'a giant monster eating the world',
+    tags: ['weapon'],
+    rarity: 'legendary',
+    price: 12,
+    shop: true,
+    version: 3,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 30_000,
+        maxCount: 1,
+        statsEnemy: {
+          health: -666,
+        },
+      },
+    ],
+  },
   // {
   //   name: 'bob',
   //   prompt: 'a friendly little ice dragon friend',
@@ -2178,7 +2197,7 @@ const allItemsConst = [
   //   price: 6,
   //   shop: true,
   //   unique: true,
-  //   version: 2,
+  //   version: 2
   //   statsItem: {
   //     health: 25,
   //     healthMax: 25,
