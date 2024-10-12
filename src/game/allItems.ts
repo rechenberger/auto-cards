@@ -2099,6 +2099,23 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'bottleOfPoison',
+    prompt:
+      'a round battle of poison with a light green liquid and a skull on it',
+    tags: ['potion'],
+    rarity: 'common',
+    price: 3,
+    shop: true,
+    triggers: [
+      {
+        type: 'startOfBattle',
+        statsEnemy: {
+          poison: 2,
+        },
+      },
+    ],
+  },
   // {
   //   name: 'bob',
   //   prompt: 'a friendly little ice dragon friend',

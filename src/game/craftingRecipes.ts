@@ -30,7 +30,7 @@ export const craftingRecipes: CraftingRecipe[] = [
   {
     input: [
       { name: 'shortBow', count: 1 },
-      { name: 'flyAgaric', count: 1 },
+      { name: 'bottleOfPoison', count: 1 },
     ],
     output: [{ name: 'poisonBow' }],
   },
@@ -44,7 +44,7 @@ export const craftingRecipes: CraftingRecipe[] = [
   {
     input: [
       { name: 'dagger', count: 1 },
-      { name: 'flyAgaric', count: 1 },
+      { name: 'bottleOfPoison', count: 1 },
     ],
     output: [{ name: 'poisonDagger' }],
   },
