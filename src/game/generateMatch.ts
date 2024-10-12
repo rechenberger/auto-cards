@@ -419,7 +419,7 @@ export const generateMatch = async ({
           },
         })
       }
-      const tryingToReach = !!statsEnemy || !!attack || !!statsTarget
+      const tryingToReach = !!attack
       if (tryingToReach) {
         let cantReachReason = ''
         if (
