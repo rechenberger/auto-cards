@@ -1669,6 +1669,7 @@ const allItemsConst = [
   },
   {
     name: 'farmer',
+    prompt: 'a male farmer on his farm',
     tags: ['profession'],
     rarity: 'common',
     price: 0,
@@ -1699,6 +1700,7 @@ const allItemsConst = [
   },
   {
     name: 'blacksmith',
+    prompt: 'a female blacksmith forging at the anvil',
     tags: ['profession'],
     rarity: 'common',
     price: 0,
@@ -1717,6 +1719,7 @@ const allItemsConst = [
   },
   {
     name: 'hunter',
+    prompt: 'a female hunter stalking the wilds',
     tags: ['profession'],
     rarity: 'common',
     price: 0,
