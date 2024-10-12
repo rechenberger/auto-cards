@@ -337,6 +337,9 @@ const allItemsConst = [
     stats: {
       space: space(-2),
     },
+    statsItem: {
+      ranged: 1,
+    },
     triggers: [
       {
         type: 'interval',
