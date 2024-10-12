@@ -6,8 +6,19 @@ import { SimpleDataTableCard } from '@/components/simple/SimpleDataTable'
 import { getItemByName } from '@/game/allItems'
 import { NO_OF_SHOP_ITEMS } from '@/game/config'
 import { createGame } from '@/game/createGame'
+import { roundStats } from '@/game/roundStats'
 import { capitalCase } from 'change-case'
-import { countBy, groupBy, map, orderBy, range, sumBy } from 'lodash-es'
+import {
+  countBy,
+  groupBy,
+  map,
+  mapValues,
+  orderBy,
+  range,
+  sum,
+  sumBy,
+  values,
+} from 'lodash-es'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -19,6 +30,12 @@ const formatPercent = (fraction: number) => `${(100 * fraction).toFixed(2)}%`
 export default async function Page() {
   const noOfGames = 10_000
   const noOfShopItems = noOfGames * NO_OF_SHOP_ITEMS
+  const roundNo = 0
+  const { rarityWeights } = roundStats[roundNo]
+  const rarityChances = mapValues(
+    rarityWeights,
+    (weight) => (weight ?? 0) / sum(values(rarityWeights)),
+  )
 
   await notFoundIfNotAdmin({ allowDev: true })
 
@@ -59,17 +76,27 @@ export default async function Page() {
   const noOfDifferentItems = byItems.length
 
   const byRarity = map(groupBy(byItems, 'rarity'), (items, rarity) => {
-    const itemsCount = items.length
-    const xx = itemsCount / noOfShopItems
+    const rarityChance = (rarityChances as any)[rarity]
 
     const count = sumBy(items, (i) => i.count)
     const countRelative = count / noOfShopItems
 
+    const itemsCount = items.length
+    const itemsCountRelative = itemsCount / noOfDifferentItems
+
+    const representation = itemsCountRelative * 3
+
+    // const adjusted = countRelative / representation
+
     return {
       rarity,
-      itemsCount,
+      rarityChance: formatPercent(rarityChance),
       count,
       countRelative: formatPercent(countRelative),
+      itemsCount,
+      itemsCountRelative: formatPercent(itemsCountRelative),
+      representation: formatPercent(representation),
+      // adjusted: formatPercent(adjusted),
     }
   })
 
