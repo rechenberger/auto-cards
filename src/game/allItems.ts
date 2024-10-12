@@ -406,10 +406,10 @@ const allItemsConst = [
       {
         type: 'startOfBattle',
         statsSelf: {
-          thorns: 5,
+          thorns: 6,
         },
         statsEnemy: {
-          thorns: 5,
+          thorns: 6,
         },
       },
     ],
