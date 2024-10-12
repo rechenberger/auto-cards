@@ -102,6 +102,17 @@ export const TriggerDisplay = ({
             />
           </div>
         )}
+        {trigger.statsTarget && (
+          <div className="flex flex-row gap-2 items-center">
+            <div>Target:</div>
+            <StatsDisplay
+              size="sm"
+              relative
+              stats={trigger.statsTarget}
+              disableTooltip={disableTooltip}
+            />
+          </div>
+        )}
         {trigger.statsEnemy && (
           <div className="flex flex-row gap-2 items-center">
             <div>Enemy:</div>
