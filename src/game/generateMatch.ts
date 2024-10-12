@@ -62,7 +62,7 @@ const generateMatchStateSides = async (input: GenerateMatchInput) => {
           return {
             ...def,
             statsItem: def.statsItem ? { ...def.statsItem } : undefined,
-            count: def.unique ? 1 : (i.count ?? 1),
+            count: def.unique ? 1 : i.count ?? 1,
           }
         }),
       )
@@ -383,8 +383,7 @@ export const generateMatch = async ({
       if (tryingToReach) {
         let cantReachReason = ''
         if (
-          !!otherSide.stats.flying &&
-          !statsForItem.flying &&
+          !!otherSide.stats.flying !== !!statsForItem.flying &&
           !statsForItem.ranged
         ) {
           cantReachReason = 'Cannot reach flying enemy'

@@ -132,7 +132,8 @@ const heroStats = [
     name: 'flying',
     icon: Bird,
     bgClass: 'bg-sky-500',
-    tooltip: 'Last X seconds. Can only be hit if enemy is also flying',
+    tooltip:
+      'Last X seconds. When only one side is flying, only ranged weapons can hit.',
   },
   {
     name: 'haste',
