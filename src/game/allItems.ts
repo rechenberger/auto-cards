@@ -1232,7 +1232,7 @@ const allItemsConst = [
     prompt: 'a long sword with a shiny metal blade slashing through the air',
     tags: ['weapon'],
     rarity: 'epic',
-    price: 3 + 4, // woodenSword + metalGloves
+    price: 3 + 4, // broadSword + metalGloves
     shop: false,
     version: 2,
     stats: {
@@ -1257,7 +1257,7 @@ const allItemsConst = [
         type: 'startOfBattle',
         statsSelf: {
           empower: 1,
-          haste: 20,
+          haste: 10,
         },
       },
     ],
