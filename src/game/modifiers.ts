@@ -17,6 +17,7 @@ export const ModifierTargetStats = z.enum([
   'statsRequired',
   'attack',
   'statsForItem',
+  'statsRequiredTarget',
 ])
 export type ModifierTargetStats = z.infer<typeof ModifierTargetStats>
 
@@ -147,5 +148,6 @@ export const getAllModifiedStats = (props: {
     attack: getModifiedStats(props, 'attack'),
     statsForItem: getModifiedStats(props, 'statsForItem'),
     statsTarget: getModifiedStats(props, 'statsTarget'),
+    statsRequiredTarget: getModifiedStats(props, 'statsRequiredTarget'),
   }
 }

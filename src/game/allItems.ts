@@ -2015,6 +2015,29 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'tripWire',
+    prompt: 'a tripwire with a obvious rock hanging from a tree',
+    tags: ['accessory'],
+    rarity: 'rare',
+    price: 8,
+    shop: true,
+    unique: true,
+    version: 3,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_000,
+        maxCount: 1,
+        statsRequiredTarget: {
+          blind: 30,
+        },
+        statsTarget: {
+          health: -50,
+        },
+      },
+    ],
+  },
   // {
   //   name: 'bob',
   //   prompt: 'a friendly little ice dragon friend',

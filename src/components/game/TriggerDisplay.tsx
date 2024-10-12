@@ -69,6 +69,17 @@ export const TriggerDisplay = ({
             <div className="">({Math.round(trigger.chancePercent)}%)</div>
           )}
         </div>
+        {trigger.statsRequiredTarget && (
+          <div className="flex flex-row gap-2 items-center">
+            <div>If Target has:</div>
+            <StatsDisplay
+              size="sm"
+              relative
+              stats={trigger.statsRequiredTarget}
+              disableTooltip={disableTooltip}
+            />
+          </div>
+        )}
         {trigger.statsRequired && !hideRequiredStats && (
           <div className="flex flex-row gap-2 items-center">
             <div>Required:</div>
@@ -143,6 +154,15 @@ export const TriggerDisplay = ({
                 disableTooltip={disableTooltip}
               />
             ))}
+          </div>
+        )}
+        {trigger.maxCount && (
+          <div className="flex flex-row gap-2 items-center">
+            <div>
+              {trigger.maxCount === 1
+                ? 'max once'
+                : `max ${trigger.maxCount} times`}
+            </div>
           </div>
         )}
       </div>

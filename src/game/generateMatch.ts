@@ -344,6 +344,7 @@ export const generateMatch = async ({
       attack,
       statsTarget,
       statsItem,
+      statsRequiredTarget,
     } = allStats
     if ('statsForItem' in allStats) {
       statsForItem = allStats.statsForItem ?? statsForItem
@@ -375,9 +376,25 @@ export const generateMatch = async ({
         hasRequiredStats = false
       }
     }
+    if (statsRequiredTarget) {
+      const enough = hasStats(target.stats, statsRequiredTarget)
+      if (!enough) {
+        log({
+          ...baseLog,
+          msg: NOT_ENOUGH_MSG,
+          targetSideIdx: target.sideIdx,
+          stats: statsRequiredTarget,
+        })
+        hasRequiredStats = false
+      }
+    }
 
     if (hasRequiredStats) {
       action.usedCount++
+      if (trigger.maxCount && action.usedCount >= trigger.maxCount) {
+        action.active = false
+        action.time = MAX_MATCH_TIME
+      }
 
       if (statsSelf) {
         tryAddStats(mySide.stats, statsSelf)
