@@ -1713,6 +1713,22 @@ const allItemsConst = [
         tags: ['smithing'],
       },
     ],
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 3_000,
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStats: 'statsSelf',
+            targetStat: 'stamina',
+            description: 'Get **+1** *stamina* for every *block*',
+            valueAddingStats: ['block'],
+            valueMultiplier: 1,
+          },
+        ],
+      },
+    ],
   },
   {
     name: 'hunter',
@@ -1725,6 +1741,15 @@ const allItemsConst = [
       {
         type: 'unlock',
         tags: ['hunting'],
+      },
+    ],
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsSelf: {
+          critChance: 2,
+        },
       },
     ],
   },
