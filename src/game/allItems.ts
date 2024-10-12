@@ -1929,6 +1929,38 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'wilma',
+    prompt: 'a friendly black poodle with a red bandana',
+    tags: ['friend', 'farming'],
+    rarity: 'uncommon',
+    price: 8,
+    shop: true,
+    unique: true,
+    version: 3,
+    statsItem: {
+      health: 30,
+      healthMax: 30,
+      priority: 3,
+      // flying: 30,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_300,
+        attack: {
+          damage: 8,
+          accuracy: 80,
+        },
+        statsSelf: {
+          randomBuff: 1,
+        },
+        statsTarget: {
+          randomDebuff: 1,
+        },
+      },
+    ],
+  },
   // {
   //   name: 'bob',
   //   prompt: 'a friendly little ice dragon friend',
