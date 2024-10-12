@@ -2,6 +2,7 @@ import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
 import { calcStats, throwIfNegativeStats } from '@/game/calcStats'
 import { gameAction } from '@/game/gameAction'
+import { generateShopItems } from '@/game/generateShopItems'
 import { cn } from '@/lib/utils'
 import { streamToast } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
@@ -49,6 +50,8 @@ export const BuyButton = async ({
             'use server'
             return gameAction({
               gameId: game.id,
+              // checkUpdatedAt: shopItem.isSpecial ? game.updatedAt : undefined, // TODO: maybe only this
+              checkUpdatedAt: game.updatedAt, // TODO:
               action: async ({ ctx }) => {
                 const game = ctx.game
                 if (game.data.gold < price) {
@@ -80,6 +83,12 @@ export const BuyButton = async ({
                   loadout: loadout,
                 })
                 throwIfNegativeStats({ stats })
+
+                if (s.isSpecial) {
+                  game.data.shopRerolls += 1
+                  game.data.shopItems = await generateShopItems({ game })
+                }
+
                 streamToast({
                   title: 'Item bought from shop',
                   description: `You bought ${capitalCase(
