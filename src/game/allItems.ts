@@ -1776,6 +1776,76 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'knightShield',
+    prompt: 'a medium sized knight shield made of steel',
+    tags: ['shield'],
+    rarity: 'rare',
+    price: 4, // = woodenBuckler
+    shop: false,
+    version: 3,
+    stats: {
+      space: space(-4),
+      // block: 30,
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          block: 20,
+        },
+      },
+      {
+        type: 'onDefendBeforeHit',
+        chancePercent: 40,
+        statsRequired: {
+          stamina: 2,
+        },
+        statsSelf: {
+          block: 8,
+          stamina: -2,
+        },
+        statsEnemy: {
+          stamina: -5,
+        },
+      },
+    ],
+  },
+  {
+    name: 'towerShield',
+    prompt: 'a large tower shield made of steel',
+    tags: ['shield'],
+    rarity: 'epic',
+    price: 4 * 2, // = 2 * knightShield
+    shop: false,
+    version: 3,
+    stats: {
+      space: space(-4),
+      // block: 30,
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          block: 40,
+        },
+      },
+      {
+        type: 'onDefendBeforeHit',
+        chancePercent: 50,
+        statsRequired: {
+          stamina: 4,
+        },
+        statsSelf: {
+          stamina: -4,
+          block: 10,
+        },
+        statsEnemy: {
+          stamina: -10,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')

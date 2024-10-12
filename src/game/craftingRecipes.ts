@@ -129,6 +129,19 @@ export const craftingRecipes: CraftingRecipe[] = [
     output: [{ name: 'manaDagger', count: 1 }],
     version: 2,
   },
+  {
+    input: [
+      { name: 'woodenBuckler', count: 1 },
+      { name: 'forgingHammer', count: 1 },
+    ],
+    output: [{ name: 'knightShield', count: 1 }],
+    version: 3,
+  },
+  {
+    input: [{ name: 'knightShield', count: 2 }],
+    output: [{ name: 'towerShield', count: 1 }],
+    version: 3,
+  },
 ]
 
 export const getCraftingRecipes = async () => {
