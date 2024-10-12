@@ -1,6 +1,7 @@
 import { sumBy } from 'lodash-es'
 import { NO_OF_ROUNDS } from './config'
 import { RarityWeights } from './rarities'
+import { Tag } from './tags'
 
 type RoundStats = {
   roundNo: number
@@ -8,6 +9,10 @@ type RoundStats = {
   // health: number
   experience: number
   rarityWeights: RarityWeights
+  specialBuyRound?: {
+    tag: Tag
+    noOfItems: number
+  }
 }
 
 const defaultRarityWeights: RarityWeights = {
@@ -29,6 +34,10 @@ const allRoundStats: RoundStats[] = [
       uncommon: 4,
       rare: 1,
     },
+    // specialBuyRound: {
+    //   tag: 'class',
+    //   noOfItems: 3,
+    // },
   },
   {
     roundNo: 1,

@@ -1,6 +1,7 @@
 import { Game } from '@/db/schema-zod'
 import { gameAction } from '@/game/gameAction'
 import { generateShopItems } from '@/game/generateShopItems'
+import { getSpecialBuyRound } from '@/game/getSpecialBuyRound'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { RotateCw } from 'lucide-react'
@@ -10,6 +11,13 @@ import { StatsDisplay } from './StatsDisplay'
 export const ReRollButton = ({ game }: { game: Game }) => {
   const priceToReroll = 1 // TODO: make this dynamic
   const enoughGold = game.data.gold >= priceToReroll
+
+  const specialBuyRound = getSpecialBuyRound({ game })
+
+  if (specialBuyRound) {
+    return null
+  }
+
   return (
     <>
       <Tooltip>

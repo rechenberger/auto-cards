@@ -5,6 +5,7 @@ type TagDefinitionRaw = {
   name: string
   bgClass: string
   locked?: boolean
+  isSpecial?: boolean
 }
 
 export const allTagsDefinition = [
@@ -51,6 +52,11 @@ export const allTagsDefinition = [
   {
     name: 'deprecated',
     bgClass: 'bg-gray-500/20',
+  },
+  {
+    name: 'class',
+    bgClass: '',
+    isSpecial: true,
   },
 ] as const satisfies TagDefinitionRaw[]
 
