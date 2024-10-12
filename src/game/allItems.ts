@@ -1757,15 +1757,15 @@ const allItemsConst = [
     triggers: [
       {
         type: 'interval',
-        cooldown: 3_000,
+        cooldown: 1_500,
         modifiers: [
           {
             arithmetic: 'add',
             targetStats: 'statsSelf',
             targetStat: 'stamina',
-            description: 'Get **+1** *stamina* for every *block*',
+            description: 'Get **+0.5** *stamina* for every *block*',
             valueAddingStats: ['block'],
-            valueMultiplier: 1,
+            valueMultiplier: 0.5,
             sourceSide: 'self',
           },
         ],
