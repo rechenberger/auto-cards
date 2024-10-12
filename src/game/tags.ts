@@ -66,6 +66,10 @@ export const allTagsDefinition = [
     name: 'smithing',
     locked: true,
   },
+  {
+    name: 'hunting',
+    locked: true,
+  },
 ] as const satisfies TagDefinitionRaw[]
 
 export const allTags = constArrayMap(allTagsDefinition, 'name')

@@ -1716,6 +1716,20 @@ const allItemsConst = [
     ],
   },
   {
+    name: 'hunter',
+    tags: ['profession'],
+    rarity: 'common',
+    price: 0,
+    shop: true,
+    version: 3,
+    shopEffects: [
+      {
+        type: 'unlock',
+        tags: ['hunting'],
+      },
+    ],
+  },
+  {
     name: 'broadSword',
     tags: ['weapon'],
     rarity: 'common',
