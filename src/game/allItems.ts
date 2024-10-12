@@ -1669,8 +1669,8 @@ const allItemsConst = [
   {
     name: 'anvil',
     tags: ['accessory'],
-    rarity: 'rare',
-    price: 10,
+    rarity: 'common',
+    price: 1,
     shop: true,
     version: 2,
     shopEffects: [

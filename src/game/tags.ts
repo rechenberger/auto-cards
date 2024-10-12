@@ -31,7 +31,6 @@ export const allTagsDefinition = [
   {
     name: 'crystal',
     bgClass: 'bg-sky-500',
-    locked: true,
   },
   {
     name: 'event',
@@ -40,6 +39,7 @@ export const allTagsDefinition = [
   {
     name: 'potion',
     bgClass: 'bg-yellow-500/50',
+    locked: true,
   },
   {
     name: 'default',
@@ -55,7 +55,7 @@ export const allTagsDefinition = [
   },
 ] as const satisfies TagDefinitionRaw[]
 
-const allTags = constArrayMap(allTagsDefinition, 'name')
+export const allTags = constArrayMap(allTagsDefinition, 'name')
 
 export const Tag = z.enum(allTags)
 export type Tag = z.infer<typeof Tag>
