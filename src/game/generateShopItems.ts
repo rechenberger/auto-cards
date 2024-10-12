@@ -6,6 +6,7 @@ import {
   SALE_CHANCE,
   SHOP_EFFECT_BOOST_MULTIPLIER,
 } from './config'
+import { getSpecialBuyRound } from './getSpecialBuyRound'
 import { roundStats } from './roundStats'
 import { rngFloat, rngItemsWithWeights } from './seed'
 import { getTagDefinition } from './tags'
@@ -19,8 +20,7 @@ export const generateShopItems = async ({
 }) => {
   const roundStat = roundStats[game.data.roundNo]
 
-  const specialBuyRound =
-    game.data.shopRerolls === 0 && roundStat.specialBuyRound
+  const specialBuyRound = getSpecialBuyRound({ game })
 
   const allItems = await getAllItems()
   let itemsForSale = allItems.filter((item) => !!item.shop)
