@@ -69,6 +69,13 @@ export const craftingRecipes: CraftingRecipe[] = [
     output: [{ name: 'icicle', count: 1 }, { name: 'frostFest' }],
   },
   {
+    input: [
+      { name: 'icicle', count: 1 },
+      { name: 'woodenBuckler', count: 1 },
+    ],
+    output: [{ name: 'icyBuckler', count: 1 }],
+  },
+  {
     input: [{ name: 'frostFest', count: 1 }],
     output: [{ name: 'icicle', count: 1 }],
   },

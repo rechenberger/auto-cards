@@ -2148,6 +2148,28 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'icyBuckler',
+    prompt: 'a wooden shield with a layer of ice on it',
+    tags: ['accessory'],
+    rarity: 'uncommon',
+    price: 4 + 4, // woodenBuckler + icycle
+    shop: false,
+    version: 3,
+    triggers: [
+      {
+        type: 'onAttackBeforeHit',
+        chancePercent: 30,
+        statsSelf: {
+          block: 5,
+        },
+        statsTarget: {
+          stamina: -5,
+          slow: 2,
+        },
+      },
+    ],
+  },
   // {
   //   name: 'bob',
   //   prompt: 'a friendly little ice dragon friend',
