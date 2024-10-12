@@ -25,6 +25,7 @@ export const allTagsDefinition = [
   {
     name: 'crystal',
     bgClass: 'bg-sky-500',
+    locked: true,
   },
   {
     name: 'event',
