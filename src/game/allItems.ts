@@ -1182,9 +1182,9 @@ const allItemsConst = [
   {
     name: 'mixer',
     prompt: 'a food mixer',
-    tags: ['accessory'],
+    tags: ['class'],
     rarity: 'rare',
-    price: 5,
+    price: 0,
     shop: true,
     unique: true,
     triggers: [
@@ -1667,28 +1667,28 @@ const allItemsConst = [
       },
     ],
   },
-  // {
-  //   name: 'anvil',
-  //   tags: ['accessory'],
-  //   rarity: 'common',
-  //   price: 1,
-  //   shop: true,
-  //   version: 2,
-  //   shopEffects: [
-  //     {
-  //       type: 'boost',
-  //       tags: ['weapon', 'shield'],
-  //     },
-  //     {
-  //       type: 'unlock',
-  //       tags: ['potion'],
-  //     },
-  //     {
-  //       type: 'ban',
-  //       tags: ['food'],
-  //     },
-  //   ],
-  // },
+  {
+    name: 'anvil',
+    tags: ['class'],
+    rarity: 'common',
+    price: 0,
+    shop: true,
+    version: 2,
+    shopEffects: [
+      {
+        type: 'boost',
+        tags: ['weapon', 'shield'],
+      },
+      {
+        type: 'unlock',
+        tags: ['potion'],
+      },
+      {
+        type: 'ban',
+        tags: ['food'],
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')

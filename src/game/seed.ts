@@ -99,7 +99,7 @@ const rngItemWithWeightsRaw = <T>({
       return item
     }
   }
-  throw new Error('No item found')
+  return undefined
 }
 
 export const rngItemWithWeights = <T>({
@@ -108,8 +108,8 @@ export const rngItemWithWeights = <T>({
 }: {
   seed: Seed
   items: { item: T; weight: number }[]
-}): T => {
-  return rngItemWithWeightsRaw({ seed, items }).item
+}): T | undefined => {
+  return rngItemWithWeightsRaw({ seed, items })?.item
 }
 
 export const rngItemsWithWeights = <T>({
@@ -126,7 +126,9 @@ export const rngItemsWithWeights = <T>({
   for (let i = 0; i < count; i++) {
     const item = rngItemWithWeightsRaw({ seed: [seed, i], items: itemsCopy })
     itemsCopy = itemsCopy.filter((i) => i !== item)
-    results.push(item.item)
+    if (item) {
+      results.push(item.item)
+    }
   }
   return results
 }
