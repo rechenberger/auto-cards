@@ -187,7 +187,7 @@ const allItemsConst = [
   {
     name: 'balloon',
     prompt: 'hot air balloon flying in the skies',
-    tags: ['accessory'],
+    tags: ['accessory', 'hunting'],
     rarity: 'uncommon',
     price: 4,
     shop: true,
@@ -1048,7 +1048,7 @@ const allItemsConst = [
   {
     name: 'leatherArmor',
     prompt: 'a leather armor on an armor stand',
-    tags: ['accessory'],
+    tags: ['accessory', 'hunting'],
     rarity: 'uncommon',
     price: 7,
     shop: true,
