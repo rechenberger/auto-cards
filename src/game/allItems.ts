@@ -1737,7 +1737,8 @@ const allItemsConst = [
   },
   {
     name: 'hunter',
-    prompt: 'a female hunter stalking the wilds',
+    prompt:
+      'a female hunter stalking the wilds wearing a hat and wielding a short bow',
     tags: ['profession'],
     price: 0,
     shop: true,
