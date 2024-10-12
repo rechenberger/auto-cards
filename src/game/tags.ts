@@ -54,7 +54,7 @@ export const allTagsDefinition = [
     bgClass: 'bg-gray-500/20',
   },
   {
-    name: 'class',
+    name: 'profession',
     bgClass: '',
     isSpecial: true,
   },
