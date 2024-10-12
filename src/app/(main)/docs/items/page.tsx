@@ -8,7 +8,9 @@ import { ThemeSwitchButton } from '@/components/game/ThemeSwitchButton'
 import { SimpleParamSelect } from '@/components/simple/SimpleParamSelect'
 import { getAllItems } from '@/game/allItems'
 import { orderItems } from '@/game/orderItems'
+import { allRarities } from '@/game/rarities'
 import { allTags, Tag } from '@/game/tags'
+import { capitalCase } from 'change-case'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { Fragment } from 'react'
@@ -20,7 +22,10 @@ export const metadata: Metadata = {
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { tag?: string }
+  searchParams: {
+    tag?: string
+    rarity?: string
+  }
 }) {
   let items = await getAllItems()
   items = await orderItems(items)
@@ -28,6 +33,9 @@ export default async function Page({
 
   if (searchParams.tag) {
     items = items.filter((item) => item.tags?.includes(searchParams.tag as Tag))
+  }
+  if (searchParams.rarity) {
+    items = items.filter((item) => item.rarity === searchParams.rarity)
   }
 
   const themeId = await getMyUserThemeIdWithFallback()
@@ -47,6 +55,15 @@ export default async function Page({
           paramKey="tag"
           label="Tag"
           nullLabel="All Tags"
+        />
+        <SimpleParamSelect
+          options={allRarities.map((rarity) => ({
+            value: rarity,
+            label: capitalCase(rarity),
+          }))}
+          paramKey="rarity"
+          label="Rarity"
+          nullLabel="All Rarities"
         />
         <ThemeSwitchButton />
       </div>
