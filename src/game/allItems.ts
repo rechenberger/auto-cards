@@ -1694,42 +1694,42 @@ const allItemsConst = [
   //     },
   //   ],
   // },
-  {
-    name: 'bob',
-    prompt: 'a friendly little ice dragon friend',
-    tags: ['friend'],
-    rarity: 'uncommon',
-    price: 6,
-    shop: true,
-    unique: true,
-    version: 2,
-    statsItem: {
-      health: 25,
-      healthMax: 25,
-      flying: 5,
-      priority: 1,
-      // flying: 30,
-    },
-    triggers: [
-      {
-        type: 'interval',
-        cooldown: 3_000,
-        attack: {
-          damage: 10,
-          accuracy: 85,
-        },
-        statsTarget: {
-          slow: 10,
-        },
-      },
-      {
-        type: 'onDefendAfterHit',
-        statsTarget: {
-          slow: 10,
-        },
-      },
-    ],
-  },
+  // {
+  //   name: 'bob',
+  //   prompt: 'a friendly little ice dragon friend',
+  //   tags: ['friend'],
+  //   rarity: 'uncommon',
+  //   price: 6,
+  //   shop: true,
+  //   unique: true,
+  //   version: 2,
+  //   statsItem: {
+  //     health: 25,
+  //     healthMax: 25,
+  //     flying: 5,
+  //     priority: 1,
+  //     // flying: 30,
+  //   },
+  //   triggers: [
+  //     {
+  //       type: 'interval',
+  //       cooldown: 3_000,
+  //       attack: {
+  //         damage: 10,
+  //         accuracy: 85,
+  //       },
+  //       statsTarget: {
+  //         slow: 10,
+  //       },
+  //     },
+  //     {
+  //       type: 'onDefendAfterHit',
+  //       statsTarget: {
+  //         slow: 10,
+  //       },
+  //     },
+  //   ],
+  // },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')
