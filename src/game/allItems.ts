@@ -2142,7 +2142,8 @@ const allItemsConst = [
           thorns: -5,
         },
         statsTarget: {
-          randomDebuff: 30,
+          randomDebuff: 20,
+          randomBuff: -10,
         },
       },
     ],
