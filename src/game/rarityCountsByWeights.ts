@@ -20,7 +20,9 @@ export const rarityCountsByWeights = ({
         weight: rarityWeights[rarity] || 0,
       })),
     })
-    result[randomRarity] = (result[randomRarity] || 0) + 1
+    if (randomRarity) {
+      result[randomRarity] = (result[randomRarity] || 0) + 1
+    }
   })
   return result
 }

@@ -2,7 +2,7 @@ import { Game } from '@/db/schema-zod'
 import { getGameFromDb } from '@/game/getGame'
 import { updateGame } from '@/game/updateGame'
 import {
-  streamDialog,
+  streamToast,
   superAction,
 } from '@/super-action/action/createSuperAction'
 import { streamRevalidatePath } from '@/super-action/action/streamRevalidatePath'
@@ -27,9 +27,9 @@ export const gameAction = async ({
   return superAction(async () => {
     const game = await getGameFromDb({ id: gameId }).then(cloneDeep)
     if (checkUpdatedAt && game.updatedAt !== checkUpdatedAt) {
-      streamDialog({
+      streamToast({
         title: 'Game has been updated',
-        content: 'Refreshing...',
+        description: 'Refreshing...',
       })
       revalidatePath('/', 'layout')
       return

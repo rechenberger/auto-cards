@@ -1677,6 +1677,28 @@ const allItemsConst = [
       },
     ],
   },
+  // {
+  //   name: 'anvil',
+  //   tags: ['accessory'],
+  //   rarity: 'common',
+  //   price: 1,
+  //   shop: true,
+  //   version: 2,
+  //   shopEffects: [
+  //     {
+  //       type: 'boost',
+  //       tags: ['weapon', 'shield'],
+  //     },
+  //     {
+  //       type: 'unlock',
+  //       tags: ['potion'],
+  //     },
+  //     {
+  //       type: 'ban',
+  //       tags: ['food'],
+  //     },
+  //   ],
+  // },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')

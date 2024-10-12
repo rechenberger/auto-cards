@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation'
+import { isDev } from './dev'
 import { getMyUser } from './getMyUser'
-
-export const isDev = () => process.env.NODE_ENV === 'development'
 
 type IsAdminOptions = {
   allowDev?: boolean

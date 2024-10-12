@@ -2,6 +2,7 @@ import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
 import { calcStats, throwIfNegativeStats } from '@/game/calcStats'
 import { gameAction } from '@/game/gameAction'
+import { generateShopItems } from '@/game/generateShopItems'
 import { cn } from '@/lib/utils'
 import { streamToast } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
@@ -28,6 +29,9 @@ export const BuyButton = async ({
 
   const enoughGold = game.data.gold >= price
 
+  const isSpecial = !!shopItem.isSpecial
+  const showReserveButton = !isSpecial
+
   return (
     <>
       <div className="flex flex-row justify-end items-center rounded-xl gap-0.5">
@@ -38,13 +42,15 @@ export const BuyButton = async ({
           variant="secondary"
           disabled={!enoughGold}
           className={cn(
-            'flex flex-row gap-1 items-center rounded-r-none',
+            'flex flex-row gap-1 items-center',
             !enoughGold && 'grayscale',
+            showReserveButton && 'rounded-r-none',
           )}
           action={async () => {
             'use server'
             return gameAction({
               gameId: game.id,
+              checkUpdatedAt: shopItem.isSpecial ? game.updatedAt : undefined,
               action: async ({ ctx }) => {
                 const game = ctx.game
                 if (game.data.gold < price) {
@@ -76,6 +82,12 @@ export const BuyButton = async ({
                   loadout: loadout,
                 })
                 throwIfNegativeStats({ stats })
+
+                if (s.isSpecial) {
+                  game.data.shopRerolls += 1
+                  game.data.shopItems = await generateShopItems({ game })
+                }
+
                 streamToast({
                   title: 'Item bought from shop',
                   description: `You bought ${capitalCase(
@@ -119,40 +131,42 @@ export const BuyButton = async ({
             />
           </div>
         </ActionButton>
-        <Tooltip>
-          <TooltipTrigger>
-            <ActionButton
-              variant={'secondary'}
-              size="sm"
-              className={cn(
-                shopItem.isReserved && 'text-green-500',
-                'rounded-l-none',
-              )}
-              hideIcon
-              action={async () => {
-                'use server'
-                return gameAction({
-                  gameId: game.id,
-                  action: async ({ ctx }) => {
-                    const s = ctx.game.data.shopItems[shopItem.idx]
-                    s.isReserved = !s.isReserved
-                  },
-                })
-              }}
-            >
-              {shopItem.isReserved ? (
-                <Lock className="size-3" strokeWidth={3} />
-              ) : (
-                <LockOpen className="size-3" strokeWidth={3} />
-              )}
-            </ActionButton>
-            <TooltipContent>
-              {shopItem.isReserved
-                ? 'Item is reserved. Click again to un-reserve it'
-                : 'Reserve item for later purchase'}
-            </TooltipContent>
-          </TooltipTrigger>
-        </Tooltip>
+        {showReserveButton && (
+          <Tooltip>
+            <TooltipTrigger>
+              <ActionButton
+                variant={'secondary'}
+                size="sm"
+                className={cn(
+                  shopItem.isReserved && 'text-green-500',
+                  'rounded-l-none',
+                )}
+                hideIcon
+                action={async () => {
+                  'use server'
+                  return gameAction({
+                    gameId: game.id,
+                    action: async ({ ctx }) => {
+                      const s = ctx.game.data.shopItems[shopItem.idx]
+                      s.isReserved = !s.isReserved
+                    },
+                  })
+                }}
+              >
+                {shopItem.isReserved ? (
+                  <Lock className="size-3" strokeWidth={3} />
+                ) : (
+                  <LockOpen className="size-3" strokeWidth={3} />
+                )}
+              </ActionButton>
+              <TooltipContent>
+                {shopItem.isReserved
+                  ? 'Item is reserved. Click again to un-reserve it'
+                  : 'Reserve item for later purchase'}
+              </TooltipContent>
+            </TooltipTrigger>
+          </Tooltip>
+        )}
       </div>
     </>
   )
