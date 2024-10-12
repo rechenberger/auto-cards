@@ -74,6 +74,7 @@ export const craftingRecipes: CraftingRecipe[] = [
       { name: 'woodenBuckler', count: 1 },
     ],
     output: [{ name: 'icyBuckler', count: 1 }],
+    version: 3,
   },
   {
     input: [{ name: 'frostFest', count: 1 }],
@@ -96,7 +97,7 @@ export const craftingRecipes: CraftingRecipe[] = [
       { name: 'broadSword', count: 1 },
       { name: 'forgingHammer', count: 1 },
     ],
-    version: 2,
+    version: 3,
   },
   {
     input: [
@@ -104,7 +105,7 @@ export const craftingRecipes: CraftingRecipe[] = [
       { name: 'metalGloves', count: 1 },
     ],
     output: [{ name: 'longSword', count: 1 }],
-    version: 2,
+    version: 3,
   },
   {
     input: [
@@ -148,7 +149,10 @@ export const craftingRecipes: CraftingRecipe[] = [
       { name: 'woodenBuckler', count: 1 },
       { name: 'forgingHammer', count: 1 },
     ],
-    output: [{ name: 'knightShield', count: 1 }],
+    output: [
+      { name: 'knightShield', count: 1 },
+      { name: 'forgingHammer', count: 1 },
+    ],
     version: 3,
   },
   {
