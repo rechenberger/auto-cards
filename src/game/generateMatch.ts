@@ -419,6 +419,53 @@ export const generateMatch = async ({
           },
         })
       }
+
+      if (statsTarget) {
+        tryAddStats(target.stats, statsTarget)
+        log({
+          ...baseLog,
+          stats: statsTarget,
+          targetSideIdx: target.sideIdx,
+          targetItemIdx: target.itemIdx,
+        })
+        randomStatsResolve({
+          stats: target.stats,
+          seed,
+          onRandomStat: ({ stats, randomStat }) => {
+            log({
+              ...baseLog,
+              stats,
+              msg: randomStat,
+              targetSideIdx: target.sideIdx,
+              targetItemIdx: target.itemIdx,
+            })
+          },
+        })
+      }
+
+      if (statsEnemy) {
+        tryAddStats(otherSide.stats, statsEnemy)
+        log({
+          ...baseLog,
+          stats: statsEnemy,
+          targetSideIdx: otherSide.sideIdx,
+          targetItemIdx: undefined,
+        })
+        randomStatsResolve({
+          stats: otherSide.stats,
+          seed,
+          onRandomStat: ({ stats, randomStat }) => {
+            log({
+              ...baseLog,
+              stats,
+              msg: randomStat,
+              targetSideIdx: otherSide.sideIdx,
+              targetItemIdx: undefined,
+            })
+          },
+        })
+      }
+
       const tryingToReach = !!attack
       if (tryingToReach) {
         let cantReachReason = ''
@@ -440,50 +487,6 @@ export const generateMatch = async ({
             msg: cantReachReason,
           })
         } else {
-          if (statsTarget) {
-            tryAddStats(target.stats, statsTarget)
-            log({
-              ...baseLog,
-              stats: statsTarget,
-              targetSideIdx: target.sideIdx,
-              targetItemIdx: target.itemIdx,
-            })
-            randomStatsResolve({
-              stats: target.stats,
-              seed,
-              onRandomStat: ({ stats, randomStat }) => {
-                log({
-                  ...baseLog,
-                  stats,
-                  msg: randomStat,
-                  targetSideIdx: target.sideIdx,
-                  targetItemIdx: target.itemIdx,
-                })
-              },
-            })
-          }
-          if (statsEnemy) {
-            tryAddStats(otherSide.stats, statsEnemy)
-            log({
-              ...baseLog,
-              stats: statsEnemy,
-              targetSideIdx: otherSide.sideIdx,
-              targetItemIdx: undefined,
-            })
-            randomStatsResolve({
-              stats: otherSide.stats,
-              seed,
-              onRandomStat: ({ stats, randomStat }) => {
-                log({
-                  ...baseLog,
-                  stats,
-                  msg: randomStat,
-                  targetSideIdx: otherSide.sideIdx,
-                  targetItemIdx: undefined,
-                })
-              },
-            })
-          }
           if (attack) {
             const accuracyRng = rngFloat({
               seed,
