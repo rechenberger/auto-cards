@@ -911,19 +911,17 @@ const allItemsConst = [
           damage: 5,
           accuracy: 85,
         },
-      },
-      {
-        type: 'onAttackBeforeHit',
-        description: 'use 2 *thorns* to gain +9 *damage*',
-        statsRequired: {
-          thorns: 2,
-        },
-        statsSelf: {
-          thorns: -2,
-        },
-        statsItem: {
-          empower: 9,
-        },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['thorns'],
+            description: '**+0.5** *damage* (max 10) per *thorns*',
+            valueMultiplier: 0.5,
+            valueMax: 10,
+          },
+        ],
       },
       {
         type: 'onAttackAfterHit',
@@ -931,13 +929,6 @@ const allItemsConst = [
           thorns: 1,
         },
         chancePercent: 70,
-      },
-      {
-        type: 'onAttackAfterHit',
-        description: '',
-        statsItem: {
-          empower: -9,
-        },
       },
     ],
   },
