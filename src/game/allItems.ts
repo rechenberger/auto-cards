@@ -1991,6 +1991,30 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'cryoChamber',
+    prompt: 'a cryogenic chamber with cold fog coming out, blue lights',
+    tags: ['accessory'],
+    rarity: 'rare',
+    price: 8,
+    shop: true,
+    unique: true,
+    version: 3,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsRequired: {
+          mana: 3,
+        },
+        statsSelf: {
+          staminaRegen: 2,
+          mana: -3,
+          slow: 3,
+        },
+      },
+    ],
+  },
   // {
   //   name: 'bob',
   //   prompt: 'a friendly little ice dragon friend',
