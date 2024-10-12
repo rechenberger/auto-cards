@@ -1,7 +1,11 @@
 import { Game, GameData } from '@/db/schema-zod'
 import { range } from 'lodash-es'
 import { getAllItems } from './allItems'
-import { NO_OF_SHOP_ITEMS, SALE_CHANCE } from './config'
+import {
+  NO_OF_SHOP_ITEMS,
+  SALE_CHANCE,
+  SHOP_EFFECT_BOOST_MULTIPLIER,
+} from './config'
 import { roundStats } from './roundStats'
 import { rngFloat, rngItemsWithWeights } from './seed'
 import { getTagDefinition } from './tags'
@@ -69,7 +73,7 @@ export const generateShopItems = async ({
         for (const shopEffect of shopEffects) {
           if (shopEffect.tags.some((t) => item.tags?.includes(t))) {
             if (shopEffect.type === 'boost') {
-              weight *= 2
+              weight *= SHOP_EFFECT_BOOST_MULTIPLIER
             } else if (shopEffect.type === 'ban') {
               weight = 0
             } else if (shopEffect.type === 'unlock') {
