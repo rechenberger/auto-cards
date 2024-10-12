@@ -321,10 +321,10 @@ export const generateMatch = async ({
     }
 
     let statsForItem = item.statsItem?.healthMax
-      ? item.statsItem ?? {}
+      ? item.statsItem ?? {} // creatures only have their own stats
       : item.statsItem
-        ? sumStats2(mySide.stats, item.statsItem)
-        : mySide.stats
+        ? sumStats2(mySide.stats, item.statsItem) // merge stats of item and hero
+        : mySide.stats // fallback to hero stats
 
     const allStats = trigger.modifiers?.length
       ? getAllModifiedStats({
