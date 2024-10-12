@@ -1669,7 +1669,7 @@ const allItemsConst = [
   },
   {
     name: 'farmer',
-    prompt: 'a male farmer on his farm',
+    prompt: 'a male farmer on with a pitchfork sitting on a bale of hay',
     tags: ['profession'],
     rarity: 'common',
     price: 0,
