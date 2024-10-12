@@ -483,29 +483,25 @@ const allItemsConst = [
           damage: 20,
         },
         statsRequired: {
-          stamina: 30,
+          stamina: 20,
         },
         statsSelf: {
-          slow: 5,
-          stamina: -30,
+          slow: 1,
+          stamina: -20,
         },
         statsEnemy: {
           slow: 5,
         },
-      },
-      {
-        type: 'interval',
-        cooldown: 3_000,
-        attack: {
-          accuracy: 80,
-          damage: 20,
-        },
-        statsRequired: {
-          slow: 20,
-        },
-        statsSelf: {
-          slow: -20,
-        },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['slow'],
+            sourceSide: 'enemy',
+            description: '**+1** *damage* per *slow* on enemy',
+          },
+        ],
       },
     ],
   },
