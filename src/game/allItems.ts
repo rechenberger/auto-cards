@@ -136,7 +136,7 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 4_000,
         statsTarget: {
-          poison: 1,
+          poison: 2,
         },
       },
     ],
@@ -794,7 +794,7 @@ const allItemsConst = [
     prompt: 'a garlic bulb with a strong smell',
     tags: ['food'],
     rarity: 'common',
-    price: 2,
+    price: 4,
     shop: true,
     stats: {
       space: space(-2),
@@ -802,7 +802,7 @@ const allItemsConst = [
     triggers: [
       {
         type: 'interval',
-        cooldown: 4_000,
+        cooldown: 3_200,
         statsSelf: {
           block: 6,
         },
@@ -1068,7 +1068,7 @@ const allItemsConst = [
     name: 'carrot',
     tags: ['food'],
     rarity: 'common',
-    price: 3,
+    price: 5,
     shop: true,
     stats: {
       space: space(-3),
@@ -1902,7 +1902,7 @@ const allItemsConst = [
     prompt: 'a friendly scarecrow on a field of crops',
     tags: ['friend', 'farming'],
     rarity: 'uncommon',
-    price: 4,
+    price: 6,
     shop: true,
     unique: true,
     version: 3,
