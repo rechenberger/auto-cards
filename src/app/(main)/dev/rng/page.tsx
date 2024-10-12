@@ -14,9 +14,11 @@ export const metadata: Metadata = {
   title: 'RNG',
 }
 
+const formatPercent = (fraction: number) => `${(100 * fraction).toFixed(2)}%`
+
 export default async function Page() {
-  const NO_OF_GAMES = 10_000
-  const NO_OF_ITEMS = NO_OF_GAMES * NO_OF_SHOP_ITEMS
+  const noOfGames = 10_000
+  const noOfShopItems = noOfGames * NO_OF_SHOP_ITEMS
 
   await notFoundIfNotAdmin({ allowDev: true })
 
@@ -26,7 +28,7 @@ export default async function Page() {
     return <>Only use this with local DB</>
   }
   const games = await Promise.all(
-    range(NO_OF_GAMES).map(async () => {
+    range(noOfGames).map(async () => {
       return createGame({ userId, skipSave: true })
     }),
   )
@@ -40,7 +42,7 @@ export default async function Page() {
       (count, name) => ({
         count,
         name,
-        countRelative: `${((100 * count) / NO_OF_ITEMS).toFixed(2)}%`,
+        countRelative: formatPercent(count / noOfShopItems),
       }),
     ),
     'count',
@@ -54,14 +56,20 @@ export default async function Page() {
     }),
   )
 
+  const noOfDifferentItems = byItems.length
+
   const byRarity = map(groupBy(byItems, 'rarity'), (items, rarity) => {
+    const itemsCount = items.length
+    const xx = itemsCount / noOfShopItems
+
     const count = sumBy(items, (i) => i.count)
-    const countRelative = `${((100 * count) / NO_OF_ITEMS).toFixed(2)}%`
+    const countRelative = count / noOfShopItems
 
     return {
       rarity,
+      itemsCount,
       count,
-      countRelative,
+      countRelative: formatPercent(countRelative),
     }
   })
 
@@ -89,9 +97,11 @@ export default async function Page() {
       </div> */}
       <SimpleDataCard
         data={{
-          NO_OF_GAMES,
-          NO_OF_ITEMS,
+          noOfGames,
+          noOfShopItems,
+          noOfDifferentItems,
         }}
+        formatKey={capitalCase}
       />
       <SimpleDataTableCard
         title="Rarity"
