@@ -28,6 +28,9 @@ export const BuyButton = async ({
 
   const enoughGold = game.data.gold >= price
 
+  const isSpecial = !!shopItem.isSpecial
+  const showReserveButton = !isSpecial
+
   return (
     <>
       <div className="flex flex-row justify-end items-center rounded-xl gap-0.5">
@@ -38,8 +41,9 @@ export const BuyButton = async ({
           variant="secondary"
           disabled={!enoughGold}
           className={cn(
-            'flex flex-row gap-1 items-center rounded-r-none',
+            'flex flex-row gap-1 items-center',
             !enoughGold && 'grayscale',
+            showReserveButton && 'rounded-r-none',
           )}
           action={async () => {
             'use server'
@@ -119,40 +123,42 @@ export const BuyButton = async ({
             />
           </div>
         </ActionButton>
-        <Tooltip>
-          <TooltipTrigger>
-            <ActionButton
-              variant={'secondary'}
-              size="sm"
-              className={cn(
-                shopItem.isReserved && 'text-green-500',
-                'rounded-l-none',
-              )}
-              hideIcon
-              action={async () => {
-                'use server'
-                return gameAction({
-                  gameId: game.id,
-                  action: async ({ ctx }) => {
-                    const s = ctx.game.data.shopItems[shopItem.idx]
-                    s.isReserved = !s.isReserved
-                  },
-                })
-              }}
-            >
-              {shopItem.isReserved ? (
-                <Lock className="size-3" strokeWidth={3} />
-              ) : (
-                <LockOpen className="size-3" strokeWidth={3} />
-              )}
-            </ActionButton>
-            <TooltipContent>
-              {shopItem.isReserved
-                ? 'Item is reserved. Click again to un-reserve it'
-                : 'Reserve item for later purchase'}
-            </TooltipContent>
-          </TooltipTrigger>
-        </Tooltip>
+        {showReserveButton && (
+          <Tooltip>
+            <TooltipTrigger>
+              <ActionButton
+                variant={'secondary'}
+                size="sm"
+                className={cn(
+                  shopItem.isReserved && 'text-green-500',
+                  'rounded-l-none',
+                )}
+                hideIcon
+                action={async () => {
+                  'use server'
+                  return gameAction({
+                    gameId: game.id,
+                    action: async ({ ctx }) => {
+                      const s = ctx.game.data.shopItems[shopItem.idx]
+                      s.isReserved = !s.isReserved
+                    },
+                  })
+                }}
+              >
+                {shopItem.isReserved ? (
+                  <Lock className="size-3" strokeWidth={3} />
+                ) : (
+                  <LockOpen className="size-3" strokeWidth={3} />
+                )}
+              </ActionButton>
+              <TooltipContent>
+                {shopItem.isReserved
+                  ? 'Item is reserved. Click again to un-reserve it'
+                  : 'Reserve item for later purchase'}
+              </TooltipContent>
+            </TooltipTrigger>
+          </Tooltip>
+        )}
       </div>
     </>
   )
