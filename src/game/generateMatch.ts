@@ -746,7 +746,7 @@ export const generateMatch = async ({
             target: side,
           })
           side.items.forEach((item, itemIdx) => {
-            if (item.statsItem?.health) {
+            if ((item.statsItem?.health ?? 0) > 0) {
               baseTick({
                 target: {
                   sideIdx: side.sideIdx,
