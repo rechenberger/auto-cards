@@ -50,7 +50,7 @@ export const BuyButton = async ({
             'use server'
             return gameAction({
               gameId: game.id,
-              // checkUpdatedAt: shopItem.isSpecial ? game.updatedAt : undefined, // TODO: maybe only this
+              // checkUpdatedAt: shopItem.isSpecial ? game.updatedAt : undefined, // TODO: maybe only check updatedAt for special items
               checkUpdatedAt: game.updatedAt,
               action: async ({ ctx }) => {
                 const game = ctx.game
