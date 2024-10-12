@@ -1179,30 +1179,30 @@ const allItemsConst = [
       },
     ],
   },
-  {
-    name: 'mixer',
-    prompt: 'a food mixer',
-    tags: ['accessory'],
-    rarity: 'rare',
-    price: 5,
-    shop: true,
-    unique: true,
-    triggers: [
-      {
-        type: 'startOfBattle',
-        modifiers: [
-          {
-            arithmetic: 'add',
-            targetStats: 'statsSelf',
-            targetStat: 'hungry',
-            description: 'Get **+10** *hungry* for every *food*',
-            valueAddingTags: ['food'],
-            valueMultiplier: 10,
-          },
-        ],
-      },
-    ],
-  },
+  // {
+  //   name: 'mixer',
+  //   prompt: 'a food mixer',
+  //   tags: ['accessory'],
+  //   rarity: 'rare',
+  //   price: 5,
+  //   shop: true,
+  //   unique: true,
+  //   triggers: [
+  //     {
+  //       type: 'startOfBattle',
+  //       modifiers: [
+  //         {
+  //           arithmetic: 'add',
+  //           targetStats: 'statsSelf',
+  //           targetStat: 'hungry',
+  //           description: 'Get **+10** *hungry* for every *food*',
+  //           valueAddingTags: ['food'],
+  //           valueMultiplier: 10,
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // },
   {
     name: 'metalGloves',
     prompt: 'a pair of metal gloves',
@@ -1668,10 +1668,40 @@ const allItemsConst = [
     ],
   },
   {
+    name: 'farmer',
+    tags: ['profession'],
+    rarity: 'common',
+    price: 0,
+    shop: true,
+    unique: true,
+    version: 3,
+    shopEffects: [
+      {
+        type: 'unlock',
+        tags: ['farming'],
+      },
+    ],
+    triggers: [
+      {
+        type: 'startOfBattle',
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStats: 'statsSelf',
+            targetStat: 'hungry',
+            description: 'Get **+10** *hungry* for every *food*',
+            valueAddingTags: ['food'],
+            valueMultiplier: 10,
+          },
+        ],
+      },
+    ],
+  },
+  {
     name: 'blacksmith',
     tags: ['profession'],
     rarity: 'common',
-    price: 1,
+    price: 0,
     shop: true,
     version: 3,
     shopEffects: [

@@ -130,10 +130,11 @@ export const generateShopItems = async ({
   const shopItems: GameData['shopItems'] = newItems.map((newItem, idx) => {
     const itemSeed = [...shopSeed, idx]
 
-    const isOnSale =
-      rngFloat({
-        seed: [...itemSeed, 'isOnSale'],
-      }) < SALE_CHANCE
+    const isOnSale = specialBuyRound
+      ? false
+      : rngFloat({
+          seed: [...itemSeed, 'isOnSale'],
+        }) < SALE_CHANCE
 
     return {
       name: newItem.name,

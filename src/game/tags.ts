@@ -59,6 +59,10 @@ export const allTagsDefinition = [
     isSpecial: true,
   },
   {
+    name: 'farming',
+    locked: true,
+  },
+  {
     name: 'smithing',
     locked: true,
   },
