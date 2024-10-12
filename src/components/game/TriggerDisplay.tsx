@@ -31,7 +31,10 @@ export const TriggerDisplay = ({
     return statSelf === -1 * value
   })
 
-  if (trigger.description) {
+  if (trigger.description !== undefined) {
+    if (!trigger.description) {
+      return null
+    }
     return (
       <div className="px-2 py-2 bg-border/40 rounded-md flex flex-col gap-1 items-center min-w-40">
         <div className="text-center text-xs">
