@@ -1097,7 +1097,7 @@ const allItemsConst = [
   {
     name: 'heartyDurian',
     prompt: 'a big ripe hearty durian fruit',
-    tags: ['food'],
+    tags: ['food', 'farming'],
     rarity: 'rare',
     price: 8,
     shop: true,
