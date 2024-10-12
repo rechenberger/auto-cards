@@ -60,14 +60,17 @@ export const allTagsDefinition = [
   },
   {
     name: 'farming',
+    bgClass: 'bg-amber-500/50',
     locked: true,
   },
   {
     name: 'smithing',
+    bgClass: 'bg-amber-500/50',
     locked: true,
   },
   {
     name: 'hunting',
+    bgClass: 'bg-amber-500/50',
     locked: true,
   },
 ] as const satisfies TagDefinitionRaw[]
