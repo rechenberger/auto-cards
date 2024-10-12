@@ -1857,8 +1857,8 @@ const allItemsConst = [
     ],
   },
   {
-    name: 'luckyCharm',
-    prompt: 'a small lucky charm with a four leaf clover',
+    name: 'practiceTarget',
+    prompt: 'an archery practice target on a hay bale with arrows sticking out',
     tags: ['accessory'],
     rarity: 'rare',
     price: 5,
@@ -1927,6 +1927,24 @@ const allItemsConst = [
             sourceSide: 'self',
           },
         ],
+      },
+    ],
+  },
+  {
+    name: 'medikit',
+    prompt: 'a medikit with a red cross on it',
+    tags: ['accessory'],
+    rarity: 'epic',
+    price: 6,
+    shop: true,
+    version: 3,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsSelf: {
+          regen: 1,
+        },
       },
     ],
   },
