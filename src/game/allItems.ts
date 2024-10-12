@@ -1933,7 +1933,7 @@ const allItemsConst = [
     name: 'wilma',
     prompt: 'a friendly black poodle with a red bandana',
     tags: ['friend', 'farming'],
-    rarity: 'uncommon',
+    rarity: 'epic',
     price: 8,
     shop: true,
     unique: true,
