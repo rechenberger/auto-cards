@@ -42,6 +42,13 @@ export const craftingRecipes: CraftingRecipe[] = [
     output: [{ name: 'fireDagger' }],
   },
   {
+    input: [
+      { name: 'dagger', count: 1 },
+      { name: 'flyAgaric', count: 1 },
+    ],
+    output: [{ name: 'poisonDagger' }],
+  },
+  {
     input: [{ name: 'beer', count: 2 }],
     output: [{ name: 'beer', count: 1 }, { name: 'beerFest' }],
   },

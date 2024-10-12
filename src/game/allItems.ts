@@ -276,6 +276,43 @@ const allItemsConst = [
     ],
   },
   {
+    name: 'poisonDagger',
+    prompt: 'a dagger with a greenish-black blade with poison dripping',
+    tags: ['weapon'],
+    rarity: 'uncommon',
+    price: 3 + 3, // = dagger + flyAgaric
+    shop: true,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsRequired: {
+          stamina: 5,
+        },
+        statsSelf: {
+          stamina: -5,
+        },
+        attack: {
+          damage: 4,
+          accuracy: 85,
+        },
+      },
+      {
+        type: 'onAttackCritAfterHit',
+        statsItem: {
+          critChance: 10,
+          unblockableChance: 10,
+        },
+        statsEnemy: {
+          poison: 2,
+        },
+      },
+    ],
+  },
+  {
     name: 'ripsawBlade',
     prompt: 'a dark sword with big teeth like a saw',
     tags: ['weapon'],
