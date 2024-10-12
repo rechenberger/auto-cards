@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 type TagDefinitionRaw = {
   name: string
-  bgClass: string
+  bgClass?: string
   locked?: boolean
   isSpecial?: boolean
 }
@@ -12,6 +12,11 @@ export const allTagsDefinition = [
   {
     name: 'hero',
     bgClass: '',
+  },
+  {
+    name: 'profession',
+    bgClass: '',
+    isSpecial: true,
   },
   {
     name: 'weapon',
@@ -38,6 +43,10 @@ export const allTagsDefinition = [
     bgClass: 'bg-sky-500',
   },
   {
+    name: 'spell',
+    bgClass: 'bg-indigo-700',
+  },
+  {
     name: 'event',
     bgClass: 'bg-purple-500/50',
   },
@@ -58,9 +67,19 @@ export const allTagsDefinition = [
     bgClass: 'bg-gray-500/20',
   },
   {
-    name: 'class',
-    bgClass: '',
-    isSpecial: true,
+    name: 'farming',
+    bgClass: 'bg-amber-500/50',
+    locked: true,
+  },
+  {
+    name: 'smithing',
+    bgClass: 'bg-amber-500/50',
+    locked: true,
+  },
+  {
+    name: 'hunting',
+    bgClass: 'bg-amber-500/50',
+    locked: true,
   },
 ] as const satisfies TagDefinitionRaw[]
 
@@ -73,10 +92,10 @@ export type TagDefinition = Omit<TagDefinitionRaw, 'name'> & {
   name: Tag
 }
 
-export const getTagDefinition = (stat: Tag): TagDefinition => {
-  const def = allTagsDefinition.find((b) => b.name === stat)
+export const getTagDefinition = (tag: Tag): TagDefinition => {
+  const def = allTagsDefinition.find((b) => b.name === tag)
   if (!def) {
-    throw new Error(`Unknown stat: ${stat}`)
+    throw new Error(`Unknown tag: ${tag}`)
   }
   return def
 }

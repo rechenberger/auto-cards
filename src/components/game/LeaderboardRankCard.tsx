@@ -75,7 +75,7 @@ export const LeaderboardRankCard = async ({
   //   })
   // }
 
-  const great = entry?.score && entry.score >= GREAT_WIN_RATE
+  const great = !!entry?.score && entry.score >= GREAT_WIN_RATE
 
   const top3 = entry?.rank && entry.rank <= 3
 

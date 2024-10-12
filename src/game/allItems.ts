@@ -136,7 +136,7 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 4_000,
         statsTarget: {
-          poison: 1,
+          poison: 2,
         },
       },
     ],
@@ -181,13 +181,13 @@ const allItemsConst = [
     shop: true,
     stats: {
       space: space(-1),
-      lifeSteal: 10,
+      lifeSteal: 15,
     },
   },
   {
     name: 'balloon',
     prompt: 'hot air balloon flying in the skies',
-    tags: ['accessory'],
+    tags: ['accessory', 'hunting'],
     rarity: 'uncommon',
     price: 4,
     shop: true,
@@ -267,8 +267,47 @@ const allItemsConst = [
         type: 'onAttackCritAfterHit',
         statsItem: {
           critChance: 10,
-          haste: 10,
           unblockableChance: 10,
+        },
+        statsSelf: {
+          haste: 5,
+        },
+      },
+    ],
+  },
+  {
+    name: 'poisonDagger',
+    prompt: 'a dagger with a greenish-black blade with poison dripping',
+    tags: ['weapon'],
+    rarity: 'uncommon',
+    price: 3 + 3, // = dagger + flyAgaric
+    shop: false,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsRequired: {
+          stamina: 5,
+        },
+        statsSelf: {
+          stamina: -5,
+        },
+        attack: {
+          damage: 4,
+          accuracy: 85,
+        },
+      },
+      {
+        type: 'onAttackCritAfterHit',
+        statsItem: {
+          critChance: 10,
+          unblockableChance: 10,
+        },
+        statsEnemy: {
+          poison: 2,
         },
       },
     ],
@@ -335,6 +374,9 @@ const allItemsConst = [
     stats: {
       space: space(-2),
     },
+    statsItem: {
+      ranged: 1,
+    },
     triggers: [
       {
         type: 'interval',
@@ -376,6 +418,7 @@ const allItemsConst = [
     rarity: 'rare',
     price: 2, // = beer
     shop: false,
+    unique: true,
     stats: {
       space: space(-4),
     },
@@ -407,10 +450,10 @@ const allItemsConst = [
       {
         type: 'startOfBattle',
         statsSelf: {
-          thorns: 20,
+          thorns: 6,
         },
         statsEnemy: {
-          thorns: 20,
+          thorns: 6,
         },
       },
     ],
@@ -423,6 +466,7 @@ const allItemsConst = [
     rarity: 'rare',
     price: 4, // = woodenBuckler
     shop: false,
+    unique: true,
     stats: {
       space: space(-4),
     },
@@ -446,6 +490,7 @@ const allItemsConst = [
     rarity: 'rare',
     price: 4, // = icicle
     shop: false,
+    unique: true,
     stats: {
       space: space(-4),
     },
@@ -480,29 +525,25 @@ const allItemsConst = [
           damage: 20,
         },
         statsRequired: {
-          stamina: 30,
+          stamina: 20,
         },
         statsSelf: {
-          slow: 5,
-          stamina: -30,
+          slow: 1,
+          stamina: -20,
         },
         statsTarget: {
           slow: 5,
         },
-      },
-      {
-        type: 'interval',
-        cooldown: 3_000,
-        attack: {
-          accuracy: 80,
-          damage: 20,
-        },
-        statsRequired: {
-          slow: 20,
-        },
-        statsSelf: {
-          slow: -20,
-        },
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStat: 'damage',
+            targetStats: 'attack',
+            valueAddingStats: ['slow'],
+            sourceSide: 'enemy',
+            description: '**+1** *damage* per *slow* on enemy',
+          },
+        ],
       },
     ],
   },
@@ -510,7 +551,7 @@ const allItemsConst = [
     name: 'darts',
     tags: ['weapon'],
     rarity: 'uncommon',
-    price: 3,
+    price: 4,
     shop: true,
     stats: {
       space: space(-2),
@@ -790,7 +831,7 @@ const allItemsConst = [
     prompt: 'a garlic bulb with a strong smell',
     tags: ['food'],
     rarity: 'common',
-    price: 2,
+    price: 4,
     shop: true,
     stats: {
       space: space(-2),
@@ -798,18 +839,13 @@ const allItemsConst = [
     triggers: [
       {
         type: 'interval',
-        cooldown: 4_000,
+        cooldown: 3_200,
         statsSelf: {
           block: 6,
         },
-      },
-      {
-        type: 'interval',
-        cooldown: 4_000,
         statsTarget: {
-          lifeSteal: -10,
+          lifeSteal: -1,
         },
-        chancePercent: 30,
       },
     ],
   },
@@ -837,7 +873,7 @@ const allItemsConst = [
   {
     name: 'shortBow',
     prompt: 'a short bow and an arrow in a quiver standing next to each other',
-    tags: ['weapon'],
+    tags: ['weapon', 'hunting'],
     rarity: 'common',
     price: 4,
     shop: true,
@@ -1049,7 +1085,7 @@ const allItemsConst = [
   {
     name: 'leatherArmor',
     prompt: 'a leather armor on an armor stand',
-    tags: ['accessory'],
+    tags: ['accessory', 'hunting'],
     rarity: 'uncommon',
     price: 7,
     shop: true,
@@ -1069,7 +1105,7 @@ const allItemsConst = [
     name: 'carrot',
     tags: ['food'],
     rarity: 'common',
-    price: 3,
+    price: 5,
     shop: true,
     stats: {
       space: space(-3),
@@ -1098,7 +1134,7 @@ const allItemsConst = [
   {
     name: 'heartyDurian',
     prompt: 'a big ripe hearty durian fruit',
-    tags: ['food'],
+    tags: ['food', 'farming'],
     rarity: 'rare',
     price: 8,
     shop: true,
@@ -1119,7 +1155,7 @@ const allItemsConst = [
   {
     name: 'forgingHammer',
     prompt: 'a small forging hammer',
-    tags: ['weapon'],
+    tags: ['weapon', 'smithing'],
     rarity: 'common',
     price: 3,
     shop: true,
@@ -1181,31 +1217,30 @@ const allItemsConst = [
       },
     ],
   },
-  {
-    name: 'mixer',
-    prompt: 'a food mixer',
-    tags: ['accessory'],
-    rarity: 'rare',
-    price: 5,
-    shop: true,
-    unique: true,
-    triggers: [
-      {
-        type: 'startOfBattle',
-        modifiers: [
-          {
-            arithmetic: 'add',
-            targetStats: 'statsSelf',
-            targetStat: 'hungry',
-            description: 'Get **+10** *hungry* for every *food*',
-            valueAddingTags: ['food'],
-            valueMultiplier: 10,
-            sourceSide: 'self',
-          },
-        ],
-      },
-    ],
-  },
+  // {
+  //   name: 'mixer',
+  //   prompt: 'a food mixer',
+  //   tags: ['accessory'],
+  //   rarity: 'rare',
+  //   price: 5,
+  //   shop: true,
+  //   unique: true,
+  //   triggers: [
+  //     {
+  //       type: 'startOfBattle',
+  //       modifiers: [
+  //         {
+  //           arithmetic: 'add',
+  //           targetStats: 'statsSelf',
+  //           targetStat: 'hungry',
+  //           description: 'Get **+10** *hungry* for every *food*',
+  //           valueAddingTags: ['food'],
+  //           valueMultiplier: 10,
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // },
   {
     name: 'metalGloves',
     prompt: 'a pair of metal gloves',
@@ -1222,7 +1257,7 @@ const allItemsConst = [
         type: 'startOfBattle',
         statsSelf: {
           empower: 1,
-          haste: 5,
+          haste: 3,
         },
       },
     ],
@@ -1232,7 +1267,7 @@ const allItemsConst = [
     prompt: 'a long sword with a shiny metal blade slashing through the air',
     tags: ['weapon'],
     rarity: 'epic',
-    price: 3 + 4, // woodenSword + metalGloves
+    price: 3 + 4, // broadSword + metalGloves
     shop: false,
     version: 2,
     stats: {
@@ -1256,8 +1291,8 @@ const allItemsConst = [
       {
         type: 'startOfBattle',
         statsSelf: {
-          empower: 2,
-          haste: 20,
+          empower: 1,
+          haste: 8,
         },
       },
     ],
@@ -1293,8 +1328,8 @@ const allItemsConst = [
             targetStat: 'damage',
             targetStats: 'attack',
             valueAddingStats: ['lifeSteal'],
-            valueMultiplier: 0.1,
-            description: 'Additional **+1** *damage* per 10 *lifeSteal*',
+            valueMultiplier: 0.2,
+            description: 'Additional **+0.2** *damage* per *lifeSteal*',
             sourceSide: 'self',
           },
         ],
@@ -1336,20 +1371,20 @@ const allItemsConst = [
         type: 'interval',
         cooldown: 3_500,
         statsRequired: {
-          stamina: 30,
+          stamina: 10,
         },
         statsSelf: {
-          stamina: -30,
+          stamina: -10,
         },
         attack: {
           damage: 18,
-          accuracy: 75,
+          accuracy: 80,
         },
       },
       {
         type: 'onAttackBeforeHit',
         statsTarget: {
-          block: -28,
+          block: -32,
         },
       },
     ],
@@ -1535,12 +1570,12 @@ const allItemsConst = [
     triggers: [
       {
         type: 'interval',
-        cooldown: 3_000,
+        cooldown: 2_000,
         statsRequired: {
-          stamina: 20,
+          stamina: 10,
         },
         statsSelf: {
-          stamina: -20,
+          stamina: -10,
         },
         attack: {
           damage: 10,
@@ -1560,7 +1595,7 @@ const allItemsConst = [
   {
     name: 'manaWings',
     prompt: 'a pair of wings made out of pure mana',
-    tags: ['accessory'],
+    tags: ['spell'],
     rarity: 'epic',
     price: 8,
     shop: true,
@@ -1583,7 +1618,7 @@ const allItemsConst = [
   {
     name: 'manaBarrier',
     prompt: 'a magical dome of mana blocking incoming projectiles',
-    tags: ['accessory'],
+    tags: ['spell'],
     rarity: 'epic',
     price: 8,
     shop: true,
@@ -1672,28 +1707,488 @@ const allItemsConst = [
       },
     ],
   },
-  // {
-  //   name: 'anvil',
-  //   tags: ['accessory'],
-  //   rarity: 'common',
-  //   price: 1,
-  //   shop: true,
-  //   version: 2,
-  //   shopEffects: [
-  //     {
-  //       type: 'boost',
-  //       tags: ['weapon', 'shield'],
-  //     },
-  //     {
-  //       type: 'unlock',
-  //       tags: ['potion'],
-  //     },
-  //     {
-  //       type: 'ban',
-  //       tags: ['food'],
-  //     },
-  //   ],
-  // },
+  {
+    name: 'farmer',
+    prompt: 'a male farmer on with a pitchfork sitting on a bale of hay',
+    tags: ['profession'],
+    price: 0,
+    shop: true,
+    version: 3,
+    shopEffects: [
+      {
+        type: 'unlock',
+        tags: ['farming'],
+      },
+    ],
+    triggers: [
+      {
+        type: 'startOfBattle',
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStats: 'statsSelf',
+            targetStat: 'hungry',
+            description: 'Get **+10** *hungry* for every *food*',
+            valueAddingTags: ['food'],
+            valueMultiplier: 10,
+            sourceSide: 'self',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: 'blacksmith',
+    prompt: 'a female blacksmith forging at the anvil',
+    tags: ['profession'],
+    price: 0,
+    shop: true,
+    version: 3,
+    shopEffects: [
+      {
+        type: 'boost',
+        tags: ['weapon', 'shield'],
+      },
+      {
+        type: 'unlock',
+        tags: ['smithing'],
+      },
+    ],
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_500,
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStats: 'statsSelf',
+            targetStat: 'stamina',
+            description: 'Get **+0.5** *stamina* for every *block*',
+            valueAddingStats: ['block'],
+            valueMultiplier: 0.5,
+            sourceSide: 'self',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: 'hunter',
+    prompt:
+      'a female hunter stalking the wilds wearing a hat and wielding a short bow',
+    tags: ['profession'],
+    price: 0,
+    shop: true,
+    version: 3,
+    shopEffects: [
+      {
+        type: 'unlock',
+        tags: ['hunting'],
+      },
+    ],
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsSelf: {
+          critChance: 2,
+        },
+      },
+    ],
+  },
+  {
+    name: 'broadSword',
+    tags: ['weapon'],
+    rarity: 'common',
+    price: 3, // = woodenSword
+    shop: false,
+    version: 3,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsRequired: {
+          stamina: 10,
+        },
+        statsSelf: {
+          stamina: -10,
+        },
+        attack: {
+          damage: 9,
+          accuracy: 80,
+        },
+      },
+    ],
+  },
+  {
+    name: 'knightShield',
+    prompt: 'a medium sized knight shield made of steel',
+    tags: ['shield'],
+    rarity: 'rare',
+    price: 4, // = woodenBuckler
+    shop: false,
+    version: 3,
+    stats: {
+      space: space(-4),
+      // block: 30,
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          block: 20,
+        },
+      },
+      {
+        type: 'onDefendBeforeHit',
+        chancePercent: 40,
+        statsRequired: {
+          stamina: 2,
+        },
+        statsSelf: {
+          block: 8,
+          stamina: -2,
+        },
+        statsEnemy: {
+          stamina: -5,
+        },
+      },
+    ],
+  },
+  {
+    name: 'towerShield',
+    prompt: 'a large tower shield made of steel',
+    tags: ['shield'],
+    rarity: 'epic',
+    price: 4 * 2, // = 2 * knightShield
+    shop: false,
+    version: 3,
+    stats: {
+      space: space(-4),
+      // block: 30,
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          block: 40,
+        },
+      },
+      {
+        type: 'onDefendBeforeHit',
+        chancePercent: 50,
+        statsRequired: {
+          stamina: 4,
+        },
+        statsSelf: {
+          stamina: -4,
+          block: 10,
+        },
+        statsEnemy: {
+          stamina: -10,
+        },
+      },
+    ],
+  },
+  {
+    name: 'practiceTarget',
+    prompt: 'an archery practice target on a hay bale with arrows sticking out',
+    tags: ['accessory'],
+    rarity: 'rare',
+    price: 5,
+    shop: true,
+    version: 3,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsRequired: {
+          luck: 10,
+        },
+        statsSelf: {
+          luck: -10,
+          critChance: 5,
+        },
+      },
+    ],
+  },
+  {
+    name: 'bloodAmulet',
+    prompt: 'a red amulet with a drop of blood in the center',
+    tags: ['accessory'],
+    rarity: 'epic',
+    price: 7,
+    shop: true,
+    version: 3,
+    triggers: [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          lifeSteal: 20,
+          healthMax: 20,
+          health: 20,
+        },
+      },
+    ],
+  },
+  {
+    name: 'scarecrow',
+    prompt: 'a friendly scarecrow on a field of crops',
+    tags: ['friend', 'farming'],
+    rarity: 'uncommon',
+    price: 6,
+    shop: true,
+    unique: true,
+    version: 3,
+    statsItem: {
+      health: 10,
+      healthMax: 10,
+      block: 10,
+      priority: 10,
+      // flying: 30,
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStats: 'statsItem',
+            targetStat: 'block',
+            description: 'Get **+4** *block* per *food*',
+            valueAddingTags: ['food'],
+            valueMultiplier: 4,
+            sourceSide: 'self',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: 'medikit',
+    prompt: 'a medikit with a red cross on it',
+    tags: ['accessory'],
+    rarity: 'epic',
+    price: 7,
+    shop: true,
+    version: 3,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsSelf: {
+          regen: 1,
+          randomDebuff: -1,
+        },
+      },
+    ],
+  },
+  {
+    name: 'wilma',
+    prompt: 'a friendly black poodle with a red bandana',
+    tags: ['friend', 'farming'],
+    rarity: 'epic',
+    price: 8,
+    shop: true,
+    unique: true,
+    version: 3,
+    statsItem: {
+      health: 30,
+      healthMax: 30,
+      priority: 3,
+      // flying: 30,
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_300,
+        attack: {
+          damage: 8,
+          accuracy: 80,
+        },
+        statsSelf: {
+          randomBuff: 1,
+        },
+      },
+      {
+        type: 'startOfBattle',
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStats: 'statsItem',
+            targetStat: 'haste',
+            description: 'Get **+5** *haste* for every enemy *food*',
+            valueAddingTags: ['food'],
+            valueMultiplier: 5,
+            sourceSide: 'enemy',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: 'cryoChamber',
+    prompt: 'a cryogenic chamber with cold fog coming out, blue lights',
+    tags: ['accessory'],
+    rarity: 'rare',
+    price: 8,
+    shop: true,
+    unique: true,
+    version: 3,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsRequired: {
+          mana: 3,
+        },
+        statsSelf: {
+          staminaRegen: 2,
+          mana: -3,
+          slow: 3,
+        },
+      },
+    ],
+  },
+  {
+    name: 'tripWire',
+    prompt: 'a tripwire with a obvious rock hanging from a tree',
+    tags: ['accessory'],
+    rarity: 'rare',
+    price: 8,
+    shop: true,
+    unique: true,
+    version: 3,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 1_000,
+        maxCount: 1,
+        statsRequiredTarget: {
+          blind: 30,
+        },
+        statsTarget: {
+          health: -50,
+        },
+      },
+    ],
+  },
+  {
+    name: 'dustDevil',
+    prompt: 'a magical dust devil / tiny tornado',
+    tags: ['spell'],
+    rarity: 'rare',
+    price: 6,
+    shop: true,
+    version: 3,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsRequired: {
+          mana: 2,
+        },
+        statsSelf: {
+          mana: -2,
+        },
+        statsTarget: {
+          blind: 4,
+        },
+      },
+    ],
+  },
+  {
+    name: 'bottleOfPoison',
+    prompt:
+      'a round battle of poison with a light green liquid and a skull on it',
+    tags: ['potion'],
+    rarity: 'common',
+    price: 3,
+    shop: true,
+    triggers: [
+      {
+        type: 'startOfBattle',
+        statsEnemy: {
+          poison: 2,
+        },
+      },
+    ],
+  },
+  {
+    name: 'chaosBolt',
+    prompt: 'a giant chaotic bolt orb of red blue and orange energy',
+    tags: ['spell'],
+    rarity: 'legendary',
+    price: 12,
+    shop: true,
+    version: 3,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsRequired: {
+          mana: 10,
+          regen: 10,
+          haste: 30,
+          thorns: 5,
+        },
+        statsSelf: {
+          mana: -10,
+          regen: -10,
+          haste: -30,
+          thorns: -5,
+        },
+        statsTarget: {
+          randomDebuff: 20,
+          randomBuff: -10,
+        },
+      },
+    ],
+  },
+  {
+    name: 'icyBuckler',
+    prompt: 'a wooden shield with a thick layer of ice and snow on it',
+    tags: ['accessory'],
+    rarity: 'uncommon',
+    price: 4 + 4, // woodenBuckler + icycle
+    shop: false,
+    version: 3,
+    triggers: [
+      {
+        type: 'onAttackBeforeHit',
+        chancePercent: 30,
+        statsSelf: {
+          block: 5,
+        },
+        statsTarget: {
+          stamina: -5,
+          slow: 2,
+        },
+      },
+    ],
+  },
+  {
+    name: 'worldEnder',
+    prompt: 'a giant monster eating the world',
+    tags: ['weapon'],
+    rarity: 'legendary',
+    price: 12,
+    shop: true,
+    version: 3,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 30_000,
+        maxCount: 1,
+        statsEnemy: {
+          health: -666,
+        },
+      },
+    ],
+  },
   // {
   //   name: 'bob',
   //   prompt: 'a friendly little ice dragon friend',
@@ -1702,7 +2197,7 @@ const allItemsConst = [
   //   price: 6,
   //   shop: true,
   //   unique: true,
-  //   version: 2,
+  //   version: 2
   //   statsItem: {
   //     health: 25,
   //     healthMax: 25,

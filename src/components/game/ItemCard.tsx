@@ -146,7 +146,7 @@ export const ItemCard = async (props: ItemCardProps) => {
             <div className="absolute top-6 inset-x-0 flex flex-col items-end gap-1">
               {!!item.tags?.length && (
                 <ItemCardChip>
-                  {item.tags?.map((t) => capitalCase(t)).join(',')}
+                  {item.tags?.map((t) => capitalCase(t)).join(', ')}
                 </ItemCardChip>
               )}
               {!!rarity && (

@@ -34,10 +34,6 @@ const allRoundStats: RoundStats[] = [
       uncommon: 4,
       rare: 1,
     },
-    // specialBuyRound: {
-    //   tag: 'class',
-    //   noOfItems: 3,
-    // },
   },
   {
     roundNo: 1,
@@ -59,6 +55,10 @@ const allRoundStats: RoundStats[] = [
       common: 50,
       uncommon: 40,
       rare: 10,
+    },
+    specialBuyRound: {
+      tag: 'profession',
+      noOfItems: 3,
     },
   },
   {
@@ -129,6 +129,7 @@ const allRoundStats: RoundStats[] = [
       uncommon: 25,
       rare: 30,
       epic: 20,
+      legendary: 2,
     },
   },
   {
@@ -141,6 +142,7 @@ const allRoundStats: RoundStats[] = [
       uncommon: 25,
       rare: 30,
       epic: 25,
+      legendary: 10,
     },
   },
   {

@@ -33,6 +33,7 @@ export const Trigger = z
   .object({
     chancePercent: z.number().optional(),
     statsRequired: Stats.optional(),
+    statsRequiredTarget: Stats.optional(),
     statsSelf: Stats.optional(),
     statsEnemy: Stats.optional(),
     statsTarget: Stats.optional(),

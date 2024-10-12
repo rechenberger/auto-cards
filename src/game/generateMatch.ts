@@ -337,8 +337,15 @@ export const generateMatch = async ({
           statsEnemy: otherSide.stats,
         })
       : trigger
-    const { statsRequired, statsSelf, statsEnemy, attack, statsTarget } =
-      allStats
+    const {
+      statsRequired,
+      statsSelf,
+      statsEnemy,
+      attack,
+      statsTarget,
+      statsItem,
+      statsRequiredTarget,
+    } = allStats
     if ('statsForItem' in allStats) {
       statsForItem = allStats.statsForItem ?? statsForItem
     }
@@ -369,9 +376,25 @@ export const generateMatch = async ({
         hasRequiredStats = false
       }
     }
+    if (statsRequiredTarget) {
+      const enough = hasStats(target.stats, statsRequiredTarget)
+      if (!enough) {
+        log({
+          ...baseLog,
+          msg: NOT_ENOUGH_MSG,
+          targetSideIdx: target.sideIdx,
+          stats: statsRequiredTarget,
+        })
+        hasRequiredStats = false
+      }
+    }
 
     if (hasRequiredStats) {
       action.usedCount++
+      if (trigger.maxCount && action.usedCount >= trigger.maxCount) {
+        action.active = false
+        action.time = MAX_MATCH_TIME
+      }
 
       if (statsSelf) {
         tryAddStats(mySide.stats, statsSelf)
@@ -393,15 +416,15 @@ export const generateMatch = async ({
           },
         })
       }
-      if (trigger.statsItem) {
+      if (statsItem) {
         if (!item.statsItem) {
           item.statsItem = {}
         }
-        tryAddStats(item.statsItem, trigger.statsItem)
+        tryAddStats(item.statsItem, statsItem)
         log({
           ...baseLog,
           msg: 'apply to item',
-          stats: trigger.statsItem,
+          stats: statsItem,
           targetSideIdx: mySide.sideIdx,
           targetItemIdx: itemIdx,
         })
@@ -470,8 +493,7 @@ export const generateMatch = async ({
       if (tryingToReach) {
         let cantReachReason = ''
         if (
-          !!target.stats.flying &&
-          !statsForItem.flying &&
+          !!target.stats.flying !== !!statsForItem.flying &&
           !statsForItem.ranged
         ) {
           cantReachReason = 'Cannot reach flying enemy'

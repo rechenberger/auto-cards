@@ -74,11 +74,10 @@ export const generateShopItems = async ({
           }
         }
 
-        if (!item.rarity) {
-          throw new Error(`Item ${item.name} has no rarity`)
+        if (item.rarity) {
+          const rarityWeight = roundStat.rarityWeights[item.rarity]
+          weight *= rarityWeight ?? 0
         }
-        const rarityWeight = roundStat.rarityWeights[item.rarity]
-        weight *= rarityWeight ?? 0
 
         for (const shopEffect of shopEffects) {
           if (shopEffect.tags.some((t) => item.tags?.includes(t))) {
@@ -130,10 +129,11 @@ export const generateShopItems = async ({
   const shopItems: GameData['shopItems'] = newItems.map((newItem, idx) => {
     const itemSeed = [...shopSeed, idx]
 
-    const isOnSale =
-      rngFloat({
-        seed: [...itemSeed, 'isOnSale'],
-      }) < SALE_CHANCE
+    const isOnSale = specialBuyRound
+      ? false
+      : rngFloat({
+          seed: [...itemSeed, 'isOnSale'],
+        }) < SALE_CHANCE
 
     return {
       name: newItem.name,

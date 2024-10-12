@@ -21,8 +21,9 @@ export const ShopEffectDisplay = ({
     <>
       <div className="flex flex-row gap-1 items-center flex-wrap text-center justify-center">
         <div className="text-nowrap">{prefix}</div>
-        {shopEffect.tags.map((tag) => (
+        {shopEffect.tags.map((tag, idx) => (
           <Fragment key={tag}>
+            {idx > 0 && <span>and</span>}
             <TagDisplay tag={tag} />
           </Fragment>
         ))}
