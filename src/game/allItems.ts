@@ -281,7 +281,7 @@ const allItemsConst = [
     tags: ['weapon'],
     rarity: 'uncommon',
     price: 3 + 3, // = dagger + flyAgaric
-    shop: true,
+    shop: false,
     stats: {
       space: space(-2),
     },
