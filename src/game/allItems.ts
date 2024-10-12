@@ -1671,10 +1671,8 @@ const allItemsConst = [
     name: 'farmer',
     prompt: 'a male farmer on with a pitchfork sitting on a bale of hay',
     tags: ['profession'],
-    rarity: 'common',
     price: 0,
     shop: true,
-    unique: true,
     version: 3,
     shopEffects: [
       {
@@ -1702,7 +1700,6 @@ const allItemsConst = [
     name: 'blacksmith',
     prompt: 'a female blacksmith forging at the anvil',
     tags: ['profession'],
-    rarity: 'common',
     price: 0,
     shop: true,
     version: 3,
@@ -1721,7 +1718,6 @@ const allItemsConst = [
     name: 'hunter',
     prompt: 'a female hunter stalking the wilds',
     tags: ['profession'],
-    rarity: 'common',
     price: 0,
     shop: true,
     version: 3,

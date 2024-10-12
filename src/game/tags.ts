@@ -14,6 +14,11 @@ export const allTagsDefinition = [
     bgClass: '',
   },
   {
+    name: 'profession',
+    bgClass: '',
+    isSpecial: true,
+  },
+  {
     name: 'weapon',
     bgClass: 'bg-red-500/50',
   },
@@ -52,11 +57,6 @@ export const allTagsDefinition = [
   {
     name: 'deprecated',
     bgClass: 'bg-gray-500/20',
-  },
-  {
-    name: 'profession',
-    bgClass: '',
-    isSpecial: true,
   },
   {
     name: 'farming',

@@ -74,11 +74,10 @@ export const generateShopItems = async ({
           }
         }
 
-        if (!item.rarity) {
-          throw new Error(`Item ${item.name} has no rarity`)
+        if (item.rarity) {
+          const rarityWeight = roundStat.rarityWeights[item.rarity]
+          weight *= rarityWeight ?? 0
         }
-        const rarityWeight = roundStat.rarityWeights[item.rarity]
-        weight *= rarityWeight ?? 0
 
         for (const shopEffect of shopEffects) {
           if (shopEffect.tags.some((t) => item.tags?.includes(t))) {
