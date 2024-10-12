@@ -181,7 +181,7 @@ const allItemsConst = [
     shop: true,
     stats: {
       space: space(-1),
-      lifeSteal: 10,
+      lifeSteal: 15,
     },
   },
   {
@@ -806,14 +806,9 @@ const allItemsConst = [
         statsSelf: {
           block: 6,
         },
-      },
-      {
-        type: 'interval',
-        cooldown: 4_000,
         statsEnemy: {
-          lifeSteal: -10,
+          lifeSteal: -1,
         },
-        chancePercent: 30,
       },
     ],
   },
