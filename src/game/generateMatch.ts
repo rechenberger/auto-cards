@@ -299,7 +299,7 @@ export const generateMatch = async ({
       (i) => i.statsItem?.priority ?? 0,
     )
     const target =
-      targetItem && targetItem.statsItem
+      !!targetItem && targetItem.statsItem
         ? {
             sideIdx: otherSide.sideIdx,
             itemIdx: otherSide.items.indexOf(targetItem),
