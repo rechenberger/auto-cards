@@ -374,6 +374,7 @@ const allItemsConst = [
     rarity: 'rare',
     price: 2, // = beer
     shop: false,
+    unique: true,
     stats: {
       space: space(-4),
     },
@@ -421,6 +422,7 @@ const allItemsConst = [
     rarity: 'rare',
     price: 4, // = woodenBuckler
     shop: false,
+    unique: true,
     stats: {
       space: space(-4),
     },
@@ -444,6 +446,7 @@ const allItemsConst = [
     rarity: 'rare',
     price: 4, // = icicle
     shop: false,
+    unique: true,
     stats: {
       space: space(-4),
     },
