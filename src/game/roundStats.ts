@@ -129,6 +129,7 @@ const allRoundStats: RoundStats[] = [
       uncommon: 25,
       rare: 30,
       epic: 20,
+      legendary: 2,
     },
   },
   {
@@ -141,6 +142,7 @@ const allRoundStats: RoundStats[] = [
       uncommon: 25,
       rare: 30,
       epic: 25,
+      legendary: 10,
     },
   },
   {

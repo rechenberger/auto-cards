@@ -2117,6 +2117,36 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'chaosBolt',
+    prompt: 'a giant chaotic bolt orb of red blue and orange energy',
+    tags: ['spell'],
+    rarity: 'legendary',
+    price: 12,
+    shop: true,
+    version: 3,
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsRequired: {
+          mana: 10,
+          regen: 10,
+          haste: 30,
+          thorns: 5,
+        },
+        statsSelf: {
+          mana: -10,
+          regen: -10,
+          haste: -30,
+          thorns: -5,
+        },
+        statsTarget: {
+          randomDebuff: 30,
+        },
+      },
+    ],
+  },
   // {
   //   name: 'bob',
   //   prompt: 'a friendly little ice dragon friend',
