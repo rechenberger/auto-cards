@@ -62,7 +62,7 @@ const generateMatchStateSides = async (input: GenerateMatchInput) => {
           return {
             ...def,
             statsItem: def.statsItem ? { ...def.statsItem } : undefined,
-            count: def.unique ? 1 : (i.count ?? 1),
+            count: def.unique ? 1 : i.count ?? 1,
           }
         }),
       )
@@ -320,9 +320,11 @@ export const generateMatch = async ({
       msg: input.baseLogMsg,
     }
 
-    let statsForItem = item.statsItem
-      ? sumStats2(mySide.stats, item.statsItem)
-      : mySide.stats
+    let statsForItem = item.statsItem?.healthMax
+      ? item.statsItem ?? {}
+      : item.statsItem
+        ? sumStats2(mySide.stats, item.statsItem)
+        : mySide.stats
 
     const allStats = trigger.modifiers?.length
       ? getAllModifiedStats({
