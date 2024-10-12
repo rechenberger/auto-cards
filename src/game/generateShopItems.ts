@@ -1,11 +1,14 @@
 import { Game, GameData } from '@/db/schema-zod'
-import { forEach } from 'lodash-es'
+import { range } from 'lodash-es'
 import { getAllItems } from './allItems'
-import { NO_OF_SHOP_ITEMS, SALE_CHANCE } from './config'
-import { ItemDefinition } from './ItemDefinition'
-import { rarityCountsByWeights } from './rarityCountsByWeights'
+import {
+  NO_OF_SHOP_ITEMS,
+  SALE_CHANCE,
+  SHOP_EFFECT_BOOST_MULTIPLIER,
+} from './config'
 import { roundStats } from './roundStats'
-import { rngFloat, rngItems } from './seed'
+import { rngFloat, rngItemsWithWeights } from './seed'
+import { getTagDefinition } from './tags'
 
 export const generateShopItems = async ({
   game,
@@ -38,36 +41,72 @@ export const generateShopItems = async ({
     'shop',
   ]
 
+  const shopEffects = game.data.currentLoadout.items.flatMap((item) => {
+    const def = allItems.find((i) => i.name === item.name)
+    if (!def) return []
+    return range(item.count ?? 1).flatMap(() => def.shopEffects ?? [])
+  })
+
   const oldItems = game.data.shopItems.filter((item) => item.isReserved)
   const itemsToGenerate = NO_OF_SHOP_ITEMS - oldItems.length
 
-  let items: ItemDefinition[] = []
   const roundStat = roundStats[game.data.roundNo]
-  if (skipRarityWeights || !roundStat.rarityWeights) {
-    items = rngItems({
-      seed: shopSeed,
-      items: itemsForSale,
-      count: itemsToGenerate,
-    })
-  } else {
-    const counts = rarityCountsByWeights({
-      rarityWeights: roundStat.rarityWeights,
-      seed: shopSeed,
-      count: itemsToGenerate,
-    })
-    forEach(counts, (count, rarity) => {
-      if (!count) return
-      items.push(
-        ...rngItems({
-          seed: [...shopSeed, rarity],
-          items: itemsForSale.filter((item) => item.rarity === rarity),
-          count,
-        }).filter(Boolean),
-      )
-    })
-  }
+  const itemsWeighted = itemsForSale
+    .map((item) => {
+      let weight = 1
+      let locked = false
 
-  const shopItems: GameData['shopItems'] = items.map((newItem, idx) => {
+      if (!skipRarityWeights && roundStat.rarityWeights) {
+        for (const tag of item.tags ?? []) {
+          const tagDef = getTagDefinition(tag)
+          if (tagDef.locked) {
+            locked = true
+          }
+        }
+
+        if (!item.rarity) {
+          throw new Error(`Item ${item.name} has no rarity`)
+        }
+        const rarityWeight = roundStat.rarityWeights[item.rarity]
+        weight *= rarityWeight ?? 0
+
+        for (const shopEffect of shopEffects) {
+          if (shopEffect.tags.some((t) => item.tags?.includes(t))) {
+            if (shopEffect.type === 'boost') {
+              weight *= SHOP_EFFECT_BOOST_MULTIPLIER
+            } else if (shopEffect.type === 'ban') {
+              weight = 0
+            } else if (shopEffect.type === 'unlock') {
+              locked = false
+            } else {
+              const _exhaustiveCheck: never = shopEffect.type
+            }
+          }
+        }
+
+        // Lower weight for items of a rarity group by it's size to keep the overall rarity weights (i.e. 1% rare items in first round)
+        const rarityItems = itemsForSale.filter((i) => i.rarity === item.rarity)
+        weight /= rarityItems.length
+      }
+
+      if (locked) {
+        weight = 0
+      }
+
+      return {
+        item,
+        weight,
+      }
+    })
+    .filter((i) => i.weight > 0)
+
+  const newItems = rngItemsWithWeights({
+    seed: shopSeed,
+    items: itemsWeighted,
+    count: itemsToGenerate,
+  })
+
+  const shopItems: GameData['shopItems'] = newItems.map((newItem, idx) => {
     const itemSeed = [...shopSeed, idx]
 
     const isOnSale =

@@ -124,7 +124,7 @@ export const rngItemsWithWeights = <T>({
   let itemsCopy = [...items]
   const results: T[] = []
   for (let i = 0; i < count; i++) {
-    const item = rngItemWithWeightsRaw({ seed, items: itemsCopy })
+    const item = rngItemWithWeightsRaw({ seed: [seed, i], items: itemsCopy })
     itemsCopy = itemsCopy.filter((i) => i !== item)
     results.push(item.item)
   }

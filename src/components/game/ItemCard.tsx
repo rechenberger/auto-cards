@@ -18,6 +18,7 @@ import { Fragment } from 'react'
 import { AiItemImage } from '../ai/AiItemImage'
 import { ItemCardChip } from './ItemCardChip'
 import { ItemSellButton } from './ItemSellButton'
+import { ShopEffectDisplay } from './ShopEffectDisplay'
 import { StatsDisplay } from './StatsDisplay'
 import { TriggerDisplay } from './TriggerDisplay'
 import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
@@ -244,6 +245,11 @@ export const ItemCard = async (props: ItemCardProps) => {
                     triggerIdx={idx}
                     disableTooltip={disableTooltip}
                   />
+                </Fragment>
+              ))}
+              {item.shopEffects?.map((shopEffect, idx) => (
+                <Fragment key={idx}>
+                  <ShopEffectDisplay shopEffect={shopEffect} />
                 </Fragment>
               ))}
               {item.description && (

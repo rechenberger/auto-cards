@@ -1,6 +1,12 @@
 import { constArrayMap } from '@/lib/constArrayMap'
 import { z } from 'zod'
 
+type TagDefinitionRaw = {
+  name: string
+  bgClass: string
+  locked?: boolean
+}
+
 export const allTagsDefinition = [
   {
     name: 'hero',
@@ -46,17 +52,21 @@ export const allTagsDefinition = [
     name: 'deprecated',
     bgClass: 'bg-gray-500/20',
   },
-] as const
+] as const satisfies TagDefinitionRaw[]
 
-export const getTagDefinition = (stat: Tag) => {
+export const allTags = constArrayMap(allTagsDefinition, 'name')
+
+export const Tag = z.enum(allTags)
+export type Tag = z.infer<typeof Tag>
+
+export type TagDefinition = Omit<TagDefinitionRaw, 'name'> & {
+  name: Tag
+}
+
+export const getTagDefinition = (stat: Tag): TagDefinition => {
   const def = allTagsDefinition.find((b) => b.name === stat)
   if (!def) {
     throw new Error(`Unknown stat: ${stat}`)
   }
   return def
 }
-
-export const allTags = constArrayMap(allTagsDefinition, 'name')
-
-export const Tag = z.enum(allTags)
-export type Tag = z.infer<typeof Tag>

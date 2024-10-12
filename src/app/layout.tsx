@@ -1,4 +1,4 @@
-import { isDev } from '@/auth/getIsAdmin'
+import { isDev } from '@/auth/dev'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
 import { Toaster } from '@/components/ui/toaster'
 import { TooltipProvider } from '@/components/ui/tooltip'

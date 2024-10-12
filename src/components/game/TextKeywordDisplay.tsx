@@ -2,10 +2,9 @@ import { TinyItem } from '@/components/game/TinyItem'
 import { getAllItems } from '@/game/allItems'
 import { allStatsDefinition } from '@/game/stats'
 import { allTagsDefinition } from '@/game/tags'
-import { cn } from '@/lib/utils'
-import { capitalCase } from 'change-case'
 import ReactMarkdown from 'react-markdown'
 import { StatDisplay } from './StatsDisplay'
+import { TagDisplay } from './TagDisplay'
 
 export const TextKeywordDisplay = async ({
   text,
@@ -32,11 +31,7 @@ export const TextKeywordDisplay = async ({
 
             const tag = allTagsDefinition.find((tag) => tag.name === text)
             if (tag) {
-              return (
-                <span className={cn('px-1 py-0.5 rounded', tag.bgClass)}>
-                  {capitalCase(tag.name)}
-                </span>
-              )
+              return <TagDisplay tag={tag.name} />
             }
 
             const stat = allStatsDefinition.find((stat) => stat.name === text)
