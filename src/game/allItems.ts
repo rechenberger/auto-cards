@@ -1955,9 +1955,20 @@ const allItemsConst = [
         statsSelf: {
           randomBuff: 1,
         },
-        statsTarget: {
-          randomDebuff: 1,
-        },
+      },
+      {
+        type: 'startOfBattle',
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStats: 'statsItem',
+            targetStat: 'haste',
+            description: 'Get **+5** *haste* for every enemy *food*',
+            valueAddingTags: ['food'],
+            valueMultiplier: 5,
+            sourceSide: 'enemy',
+          },
+        ],
       },
     ],
   },

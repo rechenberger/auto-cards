@@ -337,8 +337,14 @@ export const generateMatch = async ({
           statsEnemy: otherSide.stats,
         })
       : trigger
-    const { statsRequired, statsSelf, statsEnemy, attack, statsTarget } =
-      allStats
+    const {
+      statsRequired,
+      statsSelf,
+      statsEnemy,
+      attack,
+      statsTarget,
+      statsItem,
+    } = allStats
     if ('statsForItem' in allStats) {
       statsForItem = allStats.statsForItem ?? statsForItem
     }
@@ -393,15 +399,15 @@ export const generateMatch = async ({
           },
         })
       }
-      if (trigger.statsItem) {
+      if (statsItem) {
         if (!item.statsItem) {
           item.statsItem = {}
         }
-        tryAddStats(item.statsItem, trigger.statsItem)
+        tryAddStats(item.statsItem, statsItem)
         log({
           ...baseLog,
           msg: 'apply to item',
-          stats: trigger.statsItem,
+          stats: statsItem,
           targetSideIdx: mySide.sideIdx,
           targetItemIdx: itemIdx,
         })
