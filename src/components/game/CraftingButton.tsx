@@ -27,7 +27,7 @@ export const CraftingButton = async ({ game }: { game: Game }) => {
           return superAction(async () => {
             streamDialog({
               title: 'Crafting',
-              className: 'max-w-3xl',
+              className: 'lg:max-w-5xl',
               content: (
                 <>
                   <CraftingList

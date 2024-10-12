@@ -1685,6 +1685,33 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'broadSword',
+    tags: ['weapon'],
+    rarity: 'common',
+    price: 3, // = woodenSword
+    shop: false,
+    version: 3,
+    stats: {
+      space: space(-2),
+    },
+    triggers: [
+      {
+        type: 'interval',
+        cooldown: 2_000,
+        statsRequired: {
+          stamina: 10,
+        },
+        statsSelf: {
+          stamina: -10,
+        },
+        attack: {
+          damage: 9,
+          accuracy: 80,
+        },
+      },
+    ],
+  },
 ] as const satisfies ItemDefinition[]
 
 export const allItemNames = constArrayMap(allItemsConst, 'name')
