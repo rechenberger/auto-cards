@@ -39,7 +39,6 @@ export const allTagsDefinition = [
   {
     name: 'potion',
     bgClass: 'bg-yellow-500/50',
-    locked: true,
   },
   {
     name: 'default',
