@@ -59,7 +59,7 @@ export const generateShopItems = async ({
       if (!skipRarityWeights && roundStat.rarityWeights) {
         for (const tag of item.tags ?? []) {
           const tagDef = getTagDefinition(tag)
-          if ('locked' in tagDef && tagDef.locked) {
+          if (tagDef.locked) {
             locked = true
           }
         }
