@@ -1530,12 +1530,12 @@ const allItemsConst = [
     triggers: [
       {
         type: 'interval',
-        cooldown: 3_000,
+        cooldown: 2_000,
         statsRequired: {
-          stamina: 20,
+          stamina: 10,
         },
         statsSelf: {
-          stamina: -20,
+          stamina: -10,
         },
         attack: {
           damage: 10,
