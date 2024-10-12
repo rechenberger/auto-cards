@@ -220,7 +220,7 @@ export const generateMatch = async ({
     // POISON
     if (target.stats.poison) {
       const poisonStats = {
-        health: -1 * target.stats.poison ?? 0,
+        health: -1 * target.stats.poison,
       }
       addStats(target.stats, poisonStats)
       log({
@@ -295,7 +295,7 @@ export const generateMatch = async ({
     const trigger = item.triggers![triggerIdx]
 
     const targetItem = maxBy(
-      otherSide.items.filter((i) => i.statsItem?.health),
+      otherSide.items.filter((i) => (i.statsItem?.health ?? 0) > 0),
       (i) => i.statsItem?.priority ?? 0,
     )
     const target =
