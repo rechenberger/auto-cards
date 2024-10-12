@@ -34,10 +34,10 @@ const allRoundStats: RoundStats[] = [
       uncommon: 4,
       rare: 1,
     },
-    specialBuyRound: {
-      tag: 'class',
-      noOfItems: 3,
-    },
+    // specialBuyRound: {
+    //   tag: 'class',
+    //   noOfItems: 3,
+    // },
   },
   {
     roundNo: 1,
