@@ -1,6 +1,7 @@
 'use client'
 
 import { BATTLE_CLOCK_TICK_MS } from '@/game/config'
+import { FutureActionItem } from '@/game/generateMatch'
 import { motion } from 'framer-motion'
 import { useAtom, useAtomValue } from 'jotai'
 import { useEffect, useState } from 'react'
@@ -26,13 +27,13 @@ export const MatchCardTimer = ({
 
   const [progress, setProgress] = useState(0)
 
-  const nextItemActivation: any = futureActions?.find(
+  const nextItemActivation = futureActions?.find(
     (fai) =>
       fai.type === 'interval' &&
       fai.itemIdx === itemIdx &&
       fai.sideIdx === sideIdx &&
       !!fai.currentCooldown,
-  )
+  ) as FutureActionItem | undefined
 
   const cooldown = (nextItemActivation as any)?.currentCooldown ?? 0
 
@@ -61,7 +62,7 @@ export const MatchCardTimer = ({
     return () => clearInterval(interval)
   }, [isPlaying, cooldown, tick])
 
-  if (!futureActions) return <></>
+  if (!futureActions || !nextItemActivation?.active) return null
 
   const newHeight = (progress / cooldown) * 100
 
@@ -69,7 +70,7 @@ export const MatchCardTimer = ({
     <motion.div
       className="absolute bottom-0 right-0 left-0 bg-gray-500/40 pointer-events-none"
       initial={{ height: '0%' }}
-      animate={{ height: `${newHeight}%` }}
+      animate={{ height: `${Math.min(newHeight, 100)}%` }}
       transition={{ duration: tick / 1000, ease: 'linear' }}
     />
   )

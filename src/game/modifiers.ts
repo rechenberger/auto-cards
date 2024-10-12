@@ -12,6 +12,7 @@ import { Tag } from './tags'
 export const ModifierTargetStats = z.enum([
   'statsSelf',
   'statsEnemy',
+  'statsTarget',
   'statsItem',
   'statsRequired',
   'attack',
@@ -24,7 +25,7 @@ export const Modifier = z.object({
   targetStat: Stat,
   targetStats: ModifierTargetStats,
 
-  sourceSide: z.enum(['self', 'enemy']).optional(),
+  sourceSide: z.enum(['self', 'enemy', 'target']),
 
   valueBase: z.number().optional(), // value = base
   valueAddingItems: z.array(z.string()).optional(), // value += count(item)
@@ -44,12 +45,16 @@ export const getModifiedStats = (
     itemIdx,
     triggerIdx,
     statsForItem,
+    statsEnemy,
+    statsTarget,
   }: {
     state: MatchState
     sideIdx: number
     itemIdx: number
     triggerIdx: number
     statsForItem: Stats
+    statsEnemy: Stats
+    statsTarget: Stats
   },
   stats: ModifierTargetStats,
 ) => {
@@ -64,8 +69,7 @@ export const getModifiedStats = (
   result = { ...result }
 
   for (const modifier of modifiers) {
-    const sourceSideIdx =
-      modifier.sourceSide === 'enemy' ? 1 - sideIdx : sideIdx
+    const sourceSideIdx = modifier.sourceSide === 'self' ? sideIdx : 1 - sideIdx
     const sourceSide = state.sides[sourceSideIdx]
 
     let sourceCount = modifier.valueBase ?? 0
@@ -73,8 +77,12 @@ export const getModifiedStats = (
       for (const stat of modifier.valueAddingStats) {
         if (modifier.sourceSide === 'self') {
           sourceCount += statsForItem[stat] ?? 0
+        } else if (modifier.sourceSide === 'enemy') {
+          sourceCount += statsEnemy[stat] ?? 0
+        } else if (modifier.sourceSide === 'target') {
+          sourceCount += statsTarget[stat] ?? 0
         } else {
-          sourceCount += sourceSide.stats[stat] ?? 0
+          const _exhaustiveCheck: never = modifier.sourceSide
         }
       }
     }
@@ -128,6 +136,8 @@ export const getAllModifiedStats = (props: {
   itemIdx: number
   triggerIdx: number
   statsForItem: Stats
+  statsEnemy: Stats
+  statsTarget: Stats
 }) => {
   return {
     statsSelf: getModifiedStats(props, 'statsSelf'),
@@ -136,5 +146,6 @@ export const getAllModifiedStats = (props: {
     statsRequired: getModifiedStats(props, 'statsRequired'),
     attack: getModifiedStats(props, 'attack'),
     statsForItem: getModifiedStats(props, 'statsForItem'),
+    statsTarget: getModifiedStats(props, 'statsTarget'),
   }
 }
