@@ -1896,6 +1896,39 @@ const allItemsConst = [
       },
     ],
   },
+  {
+    name: 'scarecrow',
+    prompt: 'a friendly scarecrow on a field of crops',
+    tags: ['friend', 'farming'],
+    rarity: 'uncommon',
+    price: 4,
+    shop: true,
+    unique: true,
+    version: 3,
+    statsItem: {
+      health: 10,
+      healthMax: 10,
+      block: 10,
+      priority: 10,
+      // flying: 30,
+    },
+    triggers: [
+      {
+        type: 'startOfBattle',
+        modifiers: [
+          {
+            arithmetic: 'add',
+            targetStats: 'statsItem',
+            targetStat: 'block',
+            description: 'Get **+1** *block* per *food*',
+            valueAddingTags: ['food'],
+            valueMultiplier: 1,
+            sourceSide: 'self',
+          },
+        ],
+      },
+    ],
+  },
   // {
   //   name: 'bob',
   //   prompt: 'a friendly little ice dragon friend',
