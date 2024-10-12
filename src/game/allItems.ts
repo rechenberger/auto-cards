@@ -1972,7 +1972,7 @@ const allItemsConst = [
     prompt: 'a medikit with a red cross on it',
     tags: ['accessory'],
     rarity: 'epic',
-    price: 6,
+    price: 7,
     shop: true,
     version: 3,
     triggers: [
@@ -1981,6 +1981,7 @@ const allItemsConst = [
         cooldown: 2_000,
         statsSelf: {
           regen: 1,
+          randomDebuff: -1,
         },
       },
     ],
