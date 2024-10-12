@@ -267,8 +267,10 @@ const allItemsConst = [
         type: 'onAttackCritAfterHit',
         statsItem: {
           critChance: 10,
-          haste: 10,
           unblockableChance: 10,
+        },
+        statsSelf: {
+          haste: 5,
         },
       },
     ],
