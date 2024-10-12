@@ -1,6 +1,7 @@
 import { constArrayMap } from '@/lib/constArrayMap'
 import {
   ArrowBigUp,
+  ArrowBigUpDash,
   Axe,
   Backpack,
   Banana,
@@ -219,6 +220,12 @@ const heroStats = [
     icon: Shield,
     bgClass: 'bg-blue-500',
     tooltip: 'Immune to ranged attacks for X seconds.',
+  },
+  {
+    name: 'priority',
+    icon: ArrowBigUpDash,
+    bgClass: 'bg-rose-800',
+    tooltip: 'Enemies attack the target with the highest priority first.',
   },
 ] as const satisfies StatDefinitionPre[]
 export const allHeroStats = constArrayMap(heroStats, 'name')

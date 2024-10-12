@@ -35,6 +35,7 @@ export const Trigger = z
     statsRequired: Stats.optional(),
     statsSelf: Stats.optional(),
     statsEnemy: Stats.optional(),
+    statsTarget: Stats.optional(),
     attack: Stats.optional(),
     statsItem: Stats.optional(),
     maxCount: z.number().optional(),

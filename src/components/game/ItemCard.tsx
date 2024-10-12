@@ -19,6 +19,7 @@ import { AiItemImage } from '../ai/AiItemImage'
 import { ItemCardChip } from './ItemCardChip'
 import { ItemSellButton } from './ItemSellButton'
 import { ShopEffectDisplay } from './ShopEffectDisplay'
+import { StatsBars } from './StatsBars'
 import { StatsDisplay } from './StatsDisplay'
 import { TriggerDisplay } from './TriggerDisplay'
 import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
@@ -224,6 +225,9 @@ export const ItemCard = async (props: ItemCardProps) => {
                   canWrap
                 />
               )}
+              {item.statsItem?.healthMax && (
+                <StatsBars stats={item.statsItem} />
+              )}
               {item.statsItem && (
                 <div className="flex flex-row gap-2 items-center">
                   <div>Item:</div>
@@ -233,6 +237,7 @@ export const ItemCard = async (props: ItemCardProps) => {
                     stats={item.statsItem}
                     disableTooltip={disableTooltip}
                     canWrap
+                    hideBars
                   />
                 </div>
               )}
