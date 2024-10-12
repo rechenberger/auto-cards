@@ -110,6 +110,13 @@ export const generateShopItems = async ({
         weight = 0
       }
 
+      if (specialBuyRound) {
+        const hasSpecialTag = item.tags?.includes(specialBuyRound.tag)
+        if (!hasSpecialTag) {
+          weight = 0
+        }
+      }
+
       return {
         item,
         weight,
