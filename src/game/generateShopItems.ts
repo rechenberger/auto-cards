@@ -49,6 +49,13 @@ export const generateShopItems = async ({
         }
         const rarityWeight = roundStat.rarityWeights[item.rarity]
         weight *= rarityWeight ?? 0
+
+        // const rarityItems = itemsForSale.filter((i) => i.rarity === item.rarity)
+        // weight /= rarityItems.length
+
+        // if (item.tags?.includes('weapon')) {
+        //   weight *= 2
+        // }
       }
 
       return {
