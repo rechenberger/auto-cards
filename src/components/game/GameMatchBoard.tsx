@@ -33,12 +33,13 @@ export const GameMatchBoard = async ({
       >
         {range(NO_OF_ROUNDS).map((roundNo) => {
           const loadout = loadouts.find((l) => l.roundNo === roundNo)
-          if (!loadout) return null
           return (
             <Fragment key={roundNo}>
               <GameMatchBoardSingle
                 loadout={loadout}
                 isActive={roundNo === game.data.roundNo}
+                showScore={showScore}
+                roundNo={roundNo}
               />
             </Fragment>
           )
@@ -52,16 +53,17 @@ export const GameMatchBoardSingle = async ({
   loadout,
   isActive,
   showScore,
+  roundNo,
 }: {
-  loadout: Loadout & {
+  loadout?: Loadout & {
     primaryMatchParticipation: MatchParticipation | null
   }
   isActive?: boolean
   showScore?: boolean
+  roundNo: number
 }) => {
-  const status = loadout.primaryMatchParticipation?.status
-  const matchId = loadout.primaryMatchParticipation?.matchId
-  const roundNo = loadout.roundNo
+  const status = loadout?.primaryMatchParticipation?.status
+  const matchId = loadout?.primaryMatchParticipation?.matchId
   const inner = (
     <div
       className={cn(

@@ -15,6 +15,7 @@ export const NextRoundButton = ({ game }: { game: Game }) => {
           'use server'
           return gameAction({
             gameId: game.id,
+            checkUpdatedAt: game.updatedAt,
             action: async ({ ctx }) => {
               const { game } = ctx
               game.data.roundNo += 1

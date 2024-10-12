@@ -397,6 +397,7 @@ const allItemsConst = [
     rarity: 'rare',
     price: 4, // = roseBush
     shop: false,
+    unique: true,
     stats: {
       space: space(-4),
     },
@@ -712,7 +713,7 @@ const allItemsConst = [
             targetStat: 'haste',
             targetStats: 'statsForItem',
             valueAddingStats: ['hungry'],
-            description: '**+1** *haste* per *hungry*',
+            description: 'Pan gets **+1** *haste* per *hungry*',
           },
         ],
       },
