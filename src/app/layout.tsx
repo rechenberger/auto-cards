@@ -1,4 +1,4 @@
-import { isDev } from '@/auth/getIsAdmin'
+import { isDev } from '@/auth/dev'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
 import { Toaster } from '@/components/ui/toaster'
 import { TooltipProvider } from '@/components/ui/tooltip'
@@ -24,6 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <link rel="manifest" href="/manifest.json" />
       <body
         className={cn(
           'bg-background min-h-[100svh] flex flex-col',

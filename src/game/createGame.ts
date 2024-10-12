@@ -1,7 +1,7 @@
 import { getMyUser } from '@/auth/getMyUser'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
-import { GameData, LiveMatch } from '@/db/schema-zod'
+import { Game, GameData, LiveMatch } from '@/db/schema-zod'
 import { sendDiscordMessage } from '@/lib/discord'
 import { typedParse } from '@/lib/typedParse'
 import { createId } from '@paralleldrive/cuid2'
@@ -14,13 +14,15 @@ import { roundStats } from './roundStats'
 export const createGame = async ({
   userId,
   liveMatch,
+  skipSave,
 }: {
   userId: string
   liveMatch?: LiveMatch
-}) => {
+  skipSave?: boolean
+}): Promise<Game> => {
   const id = createId()
 
-  const game = {
+  const game: Game = {
     id,
     userId,
     data: typedParse(GameData, {
@@ -43,6 +45,10 @@ export const createGame = async ({
   }
 
   game.data.shopItems = await generateShopItems({ game })
+
+  if (skipSave) {
+    return game
+  }
 
   const gameSaved = await db
     .insert(schema.game)

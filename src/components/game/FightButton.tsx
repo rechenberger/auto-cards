@@ -13,6 +13,7 @@ export const FightButton = ({ game }: { game: Game }) => {
           'use server'
           return gameAction({
             gameId: game.id,
+            checkUpdatedAt: game.updatedAt,
             action: async ({ ctx }) => {
               const { game } = ctx
               const { matchReport } = await fight({ game })

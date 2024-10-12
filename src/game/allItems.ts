@@ -397,6 +397,7 @@ const allItemsConst = [
     rarity: 'rare',
     price: 4, // = roseBush
     shop: false,
+    unique: true,
     stats: {
       space: space(-4),
     },
@@ -712,7 +713,7 @@ const allItemsConst = [
             targetStat: 'haste',
             targetStats: 'statsForItem',
             valueAddingStats: ['hungry'],
-            description: '**+1** *haste* per *hungry*',
+            description: 'Pan gets **+1** *haste* per *hungry*',
           },
         ],
       },
@@ -1666,6 +1667,28 @@ const allItemsConst = [
       },
     ],
   },
+  // {
+  //   name: 'anvil',
+  //   tags: ['accessory'],
+  //   rarity: 'common',
+  //   price: 1,
+  //   shop: true,
+  //   version: 2,
+  //   shopEffects: [
+  //     {
+  //       type: 'boost',
+  //       tags: ['weapon', 'shield'],
+  //     },
+  //     {
+  //       type: 'unlock',
+  //       tags: ['potion'],
+  //     },
+  //     {
+  //       type: 'ban',
+  //       tags: ['food'],
+  //     },
+  //   ],
+  // },
   {
     name: 'bob',
     prompt: 'a friendly little ice dragon friend',

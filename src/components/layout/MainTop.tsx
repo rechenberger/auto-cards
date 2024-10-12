@@ -1,4 +1,5 @@
 import { UserButton } from '@/auth/UserButton'
+import { isDevDb } from '@/auth/dev'
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { getIsLoggedIn } from '@/auth/getMyUser'
 import { DarkModeToggle } from '@/components/layout/DarkModeToggle'
@@ -58,7 +59,7 @@ export const MainTop = async () => {
               v{GAME_VERSION}
             </div>
           )}
-          {process.env.DB_URL?.includes('file:') && (
+          {isDevDb() && (
             <div className="text-sm bg-red-500/50 rounded-md px-2 py-1">
               Local DB
             </div>

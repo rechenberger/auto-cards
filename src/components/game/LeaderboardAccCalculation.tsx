@@ -53,7 +53,10 @@ export const LeaderboardAccCalculation = async ({
               <div className="flex flex-row gap-2 items-center">
                 <div className="flex-1">{entry.roundNo + 1}</div>
                 {loadout && loadout.primaryMatchParticipation && (
-                  <GameMatchBoardSingle loadout={loadout} />
+                  <GameMatchBoardSingle
+                    loadout={loadout}
+                    roundNo={entry.roundNo}
+                  />
                 )}
               </div>
               <Progress

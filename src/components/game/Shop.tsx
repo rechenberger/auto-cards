@@ -2,6 +2,7 @@ import { getIsAdmin } from '@/auth/getIsAdmin'
 import { Game } from '@/db/schema-zod'
 import { calcStats } from '@/game/calcStats'
 import { gameAction } from '@/game/gameAction'
+import { getSpecialBuyRound } from '@/game/getSpecialBuyRound'
 import { orderItems } from '@/game/orderItems'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
@@ -25,6 +26,11 @@ export const Shop = async ({ game }: { game: Game }) => {
   shopItems = await orderItems(shopItems)
 
   const stats = await calcStats({ loadout: game.data.currentLoadout })
+
+  const specialBuyRound = getSpecialBuyRound({ game })
+  shopItems = shopItems.filter(
+    (shopItem) => !!shopItem.isSpecial === !!specialBuyRound,
+  )
 
   return (
     <>
