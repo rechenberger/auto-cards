@@ -84,12 +84,9 @@ export const generateShopItems = async ({
           }
         }
 
-        // const rarityItems = itemsForSale.filter((i) => i.rarity === item.rarity)
-        // weight /= rarityItems.length
-
-        // if (item.tags?.includes('weapon')) {
-        //   weight *= 2
-        // }
+        // Lower weight for items of a rarity group by it's size to keep the overall rarity weights (i.e. 1% rare items in first round)
+        const rarityItems = itemsForSale.filter((i) => i.rarity === item.rarity)
+        weight /= rarityItems.length
       }
 
       if (locked) {
