@@ -10,7 +10,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { ChevronDown } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { type KeyboardEvent, useMemo } from 'react'
+import { type KeyboardEvent, ReactNode, useMemo } from 'react'
 
 const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
   if (e.key === 'Enter') {
@@ -30,10 +30,10 @@ export const SimpleParamSelect = ({
   label,
   nullLabel,
 }: {
-  options: { value: string; label: string }[]
+  options: { value: string; label: ReactNode }[]
   paramKey: string
   label: string
-  nullLabel?: string
+  nullLabel?: ReactNode
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
