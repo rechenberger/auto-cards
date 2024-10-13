@@ -1159,7 +1159,7 @@ const allItemsConst = [
     rarity: 'common',
     price: 3,
     shop: true,
-    // unique: true,
+    unique: true,
     stats: {
       space: space(-3),
     },
