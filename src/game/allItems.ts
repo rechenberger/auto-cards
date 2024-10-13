@@ -1719,6 +1719,10 @@ const allItemsConst = [
         type: 'unlock',
         tags: ['farming'],
       },
+      {
+        type: 'boost',
+        tags: ['farming'],
+      },
     ],
     triggers: [
       {
@@ -1783,6 +1787,10 @@ const allItemsConst = [
     shopEffects: [
       {
         type: 'unlock',
+        tags: ['hunting'],
+      },
+      {
+        type: 'boost',
         tags: ['hunting'],
       },
     ],
