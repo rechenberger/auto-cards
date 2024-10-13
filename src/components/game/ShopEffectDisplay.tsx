@@ -1,3 +1,4 @@
+import { SHOP_EFFECT_BOOST_MULTIPLIER } from '@/game/config'
 import { ShopEffect } from '@/game/ItemDefinition'
 import { Fragment } from 'react'
 import { TagDisplay } from './TagDisplay'
@@ -9,7 +10,7 @@ export const ShopEffectDisplay = ({
 }) => {
   const prefix = {
     unlock: 'Unlocks',
-    boost: 'More',
+    boost: `${SHOP_EFFECT_BOOST_MULTIPLIER}x More`,
     ban: 'Removes',
   }[shopEffect.type]
   const postfix = {
