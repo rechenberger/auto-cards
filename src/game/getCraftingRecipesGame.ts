@@ -30,9 +30,20 @@ export const getCraftingRecipesGame = async ({ game }: { game?: Game }) => {
       if (!def) {
         throw new Error(`Item ${item.name} not found`)
       }
-      const myItem = myItems.find((i) => i.name === item.name)
-      const countCurrent = myItem?.count ?? 0
-      let uniqueAlreadyCrafted = def.unique && countCurrent > 0
+      let uniqueAlreadyCrafted = false
+      if (def.unique) {
+        const myItem = myItems.find((i) => i.name === item.name)
+        const countCurrent = myItem?.count ?? 0
+        let count = countCurrent
+        count += item.count ?? 1
+        const itemInput = input.find((i) => i.name === item.name)
+        if (itemInput) {
+          count -= itemInput.count ?? 1
+        }
+        if (count > 1) {
+          uniqueAlreadyCrafted = true
+        }
+      }
       return {
         ...item,
         uniqueAlreadyCrafted,

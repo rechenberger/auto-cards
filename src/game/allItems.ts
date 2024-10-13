@@ -1159,6 +1159,7 @@ const allItemsConst = [
     rarity: 'common',
     price: 3,
     shop: true,
+    unique: true,
     stats: {
       space: space(-3),
     },
@@ -1755,6 +1756,10 @@ const allItemsConst = [
       },
       {
         type: 'unlock',
+        tags: ['smithing'],
+      },
+      {
+        type: 'boost',
         tags: ['smithing'],
       },
     ],
