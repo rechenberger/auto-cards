@@ -31,4 +31,4 @@ export const LEADERBOARD_TYPE_ACC = 'rollingTopAcc'
 export const GREAT_WIN_RATE = 2
 export const LEADERBOARD_CRON_CYCLES = 1
 
-export const SHOP_EFFECT_BOOST_MULTIPLIER = 1.2
+export const SHOP_EFFECT_BOOST_MULTIPLIER = 2
