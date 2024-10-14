@@ -38,6 +38,8 @@ export type ActionWrapperProps = {
   triggerOn?: ReactEventHandler[]
 } & UseSuperActionOptions
 
+ActionWrapperSlot.displayName = 'ActionWrapperSlot'
+
 export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
   (props, ref) => {
     const {
