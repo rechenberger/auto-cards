@@ -2,7 +2,6 @@
 
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { Slot } from '@radix-ui/react-slot'
 import { ArrowRight, Loader2 } from 'lucide-react'
 import { ComponentPropsWithoutRef, forwardRef, ReactNode } from 'react'
 import { UseSuperActionOptions } from '../action/useSuperAction'
@@ -19,7 +18,6 @@ export type ActionButtonProps = {
   > & {
     label?: ReactNode
   }
-  asChild?: boolean
 } & UseSuperActionOptions &
   ComponentPropsWithoutRef<typeof Button>
 
@@ -33,33 +31,30 @@ export const ActionButton = forwardRef<HTMLButtonElement, ActionButtonProps>(
       askForConfirmation,
       stopPropagation,
       command,
-      asChild,
       ...buttonProps
     } = props
 
-    const Comp = asChild ? Slot : IconButton
-
     return (
       <>
-        {!hideButton && (
-          <ActionWrapper
-            action={action}
-            disabled={disabled}
-            askForConfirmation={askForConfirmation}
-            stopPropagation={stopPropagation}
-            command={command}
-            catchToast={catchToast}
-            triggerOn={['onClick']}
-          >
-            <Comp {...buttonProps} ref={ref} />
-          </ActionWrapper>
-        )}
+        <ActionWrapper
+          action={action}
+          disabled={disabled}
+          askForConfirmation={askForConfirmation}
+          stopPropagation={stopPropagation}
+          command={command}
+          catchToast={catchToast}
+          triggerOn={['onClick']}
+        >
+          {!hideButton && <InnerButton {...buttonProps} ref={ref} />}
+        </ActionWrapper>
       </>
     )
   },
 )
 
-const IconButton = forwardRef<
+ActionButton.displayName = 'ActionButton'
+
+const InnerButton = forwardRef<
   HTMLButtonElement,
   { hideIcon?: boolean; asChild?: boolean } & ActionWrapperSlotProps
 >(({ isLoading, children, hideIcon, asChild, ...props }, ref) => {
@@ -74,3 +69,5 @@ const IconButton = forwardRef<
     </Button>
   )
 })
+
+InnerButton.displayName = 'InnerButton'
