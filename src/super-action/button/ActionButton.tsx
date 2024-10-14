@@ -3,10 +3,10 @@
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { ArrowRight, Loader2 } from 'lucide-react'
-import { ComponentPropsWithoutRef, ReactNode } from 'react'
-import { UseSuperActionOptions, useSuperAction } from '../action/useSuperAction'
-import { ActionCommand } from '../command/ActionCommand'
+import { ComponentPropsWithoutRef, forwardRef, ReactNode } from 'react'
+import { UseSuperActionOptions } from '../action/useSuperAction'
 import { type ActionCommandConfig } from '../command/ActionCommandProvider'
+import { ActionWrapper, ActionWrapperSlotProps } from './ActionWrapper'
 
 export type ActionButtonProps<Comp extends typeof Button = typeof Button> = {
   children?: React.ReactNode
@@ -28,9 +28,7 @@ export const ActionButton = <Comp extends typeof Button = typeof Button>(
   const {
     action,
     disabled,
-    children,
     component: Component = Button,
-    hideIcon,
     hideButton,
     catchToast,
     askForConfirmation,
@@ -38,39 +36,37 @@ export const ActionButton = <Comp extends typeof Button = typeof Button>(
     command,
     ...buttonProps
   } = props
-  const { isLoading, trigger } = useSuperAction({
-    action,
-    disabled,
-    catchToast,
-    askForConfirmation,
-    stopPropagation,
-  })
-  const Icon = isLoading ? Loader2 : ArrowRight
 
   return (
     <>
       {!hideButton && (
-        <Component
-          type="button"
-          disabled={isLoading || disabled}
-          {...buttonProps}
-          onClick={trigger}
+        <ActionWrapper
+          action={action}
+          disabled={disabled}
+          askForConfirmation={askForConfirmation}
+          stopPropagation={stopPropagation}
+          command={command}
+          catchToast={catchToast}
+          triggerOn={['onClick']}
         >
-          {children}
-          {!hideIcon && (
-            <Icon className={cn('w-4 h-4 ml-2', isLoading && 'animate-spin')} />
-          )}
-        </Component>
-      )}
-      {command && (
-        <ActionCommand
-          icon={hideIcon ? undefined : Icon}
-          {...command}
-          action={trigger as any} // TODO: fix type
-        >
-          {command.label ?? children}
-        </ActionCommand>
+          <TheButton {...buttonProps} />
+        </ActionWrapper>
       )}
     </>
   )
 }
+
+const TheButton = forwardRef<
+  HTMLButtonElement,
+  { hideIcon?: boolean } & ActionWrapperSlotProps
+>(({ isLoading, children, hideIcon, ...props }, ref) => {
+  const Icon = isLoading ? Loader2 : ArrowRight
+  return (
+    <Button type="button" {...props} ref={ref}>
+      {children}
+      {!hideIcon && (
+        <Icon className={cn('w-4 h-4 ml-2', isLoading && 'animate-spin')} />
+      )}
+    </Button>
+  )
+})

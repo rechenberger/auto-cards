@@ -26,6 +26,18 @@ export type ActionWrapperProps = {
   triggerOn?: ReactEventHandler[]
 } & UseSuperActionOptions
 
+export type ActionWrapperSlotProps = {
+  isLoading?: boolean
+  disabled?: boolean
+  children?: ReactNode
+}
+
+const ActionWrapperSlot = forwardRef<HTMLElement, ActionWrapperSlotProps>(
+  (props, ref) => {
+    return <Slot {...props} ref={ref} />
+  },
+)
+
 export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
   (props, ref) => {
     const {
@@ -50,15 +62,17 @@ export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
 
     return (
       <>
-        <Slot
+        <ActionWrapperSlot
           ref={ref}
+          disabled={isLoading || disabled}
+          isLoading={isLoading}
           {...buttonProps}
           {...Object.fromEntries(
             map(triggerOn, (superOn) => [superOn, trigger]),
           )}
         >
           {children}
-        </Slot>
+        </ActionWrapperSlot>
         {command && (
           <ActionCommand
             icon={Icon}
