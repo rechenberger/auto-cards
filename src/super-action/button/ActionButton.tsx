@@ -23,39 +23,41 @@ export type ActionButtonProps = {
 } & UseSuperActionOptions &
   ComponentPropsWithoutRef<typeof Button>
 
-export const ActionButton = (props: ActionButtonProps) => {
-  const {
-    action,
-    disabled,
-    hideButton,
-    catchToast,
-    askForConfirmation,
-    stopPropagation,
-    command,
-    asChild,
-    ...buttonProps
-  } = props
+export const ActionButton = forwardRef<HTMLButtonElement, ActionButtonProps>(
+  (props, ref) => {
+    const {
+      action,
+      disabled,
+      hideButton,
+      catchToast,
+      askForConfirmation,
+      stopPropagation,
+      command,
+      asChild,
+      ...buttonProps
+    } = props
 
-  const Comp = asChild ? Slot : IconButton
+    const Comp = asChild ? Slot : IconButton
 
-  return (
-    <>
-      {!hideButton && (
-        <ActionWrapper
-          action={action}
-          disabled={disabled}
-          askForConfirmation={askForConfirmation}
-          stopPropagation={stopPropagation}
-          command={command}
-          catchToast={catchToast}
-          triggerOn={['onClick']}
-        >
-          <Comp {...buttonProps} />
-        </ActionWrapper>
-      )}
-    </>
-  )
-}
+    return (
+      <>
+        {!hideButton && (
+          <ActionWrapper
+            action={action}
+            disabled={disabled}
+            askForConfirmation={askForConfirmation}
+            stopPropagation={stopPropagation}
+            command={command}
+            catchToast={catchToast}
+            triggerOn={['onClick']}
+          >
+            <Comp {...buttonProps} ref={ref} />
+          </ActionWrapper>
+        )}
+      </>
+    )
+  },
+)
 
 const IconButton = forwardRef<
   HTMLButtonElement,
