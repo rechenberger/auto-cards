@@ -56,8 +56,8 @@ ActionButton.displayName = 'ActionButton'
 
 const InnerButton = forwardRef<
   HTMLButtonElement,
-  { hideIcon?: boolean; asChild?: boolean } & ActionWrapperSlotProps
->(({ isLoading, children, hideIcon, asChild, ...props }, ref) => {
+  { hideIcon?: boolean } & ActionWrapperSlotProps
+>(({ isLoading, children, hideIcon, ...props }, ref) => {
   const Icon = isLoading ? Loader2 : ArrowRight
 
   return (
