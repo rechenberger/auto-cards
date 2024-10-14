@@ -2,15 +2,15 @@
 
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { Slot } from '@radix-ui/react-slot'
 import { ArrowRight, Loader2 } from 'lucide-react'
 import { ComponentPropsWithoutRef, forwardRef, ReactNode } from 'react'
 import { UseSuperActionOptions } from '../action/useSuperAction'
 import { type ActionCommandConfig } from '../command/ActionCommandProvider'
 import { ActionWrapper, ActionWrapperSlotProps } from './ActionWrapper'
 
-export type ActionButtonProps<Comp extends typeof Button = typeof Button> = {
+export type ActionButtonProps = {
   children?: React.ReactNode
-  component?: Comp
   hideIcon?: boolean
   hideButton?: boolean
   command?: Omit<
@@ -19,23 +19,24 @@ export type ActionButtonProps<Comp extends typeof Button = typeof Button> = {
   > & {
     label?: ReactNode
   }
+  asChild?: boolean
 } & UseSuperActionOptions &
-  ComponentPropsWithoutRef<Comp>
+  ComponentPropsWithoutRef<typeof Button>
 
-export const ActionButton = <Comp extends typeof Button = typeof Button>(
-  props: ActionButtonProps<Comp>,
-) => {
+export const ActionButton = (props: ActionButtonProps) => {
   const {
     action,
     disabled,
-    component: Component = Button,
     hideButton,
     catchToast,
     askForConfirmation,
     stopPropagation,
     command,
+    asChild,
     ...buttonProps
   } = props
+
+  const Comp = asChild ? Slot : IconButton
 
   return (
     <>
@@ -49,18 +50,19 @@ export const ActionButton = <Comp extends typeof Button = typeof Button>(
           catchToast={catchToast}
           triggerOn={['onClick']}
         >
-          <TheButton {...buttonProps} />
+          <Comp {...buttonProps} />
         </ActionWrapper>
       )}
     </>
   )
 }
 
-const TheButton = forwardRef<
+const IconButton = forwardRef<
   HTMLButtonElement,
-  { hideIcon?: boolean } & ActionWrapperSlotProps
->(({ isLoading, children, hideIcon, ...props }, ref) => {
+  { hideIcon?: boolean; asChild?: boolean } & ActionWrapperSlotProps
+>(({ isLoading, children, hideIcon, asChild, ...props }, ref) => {
   const Icon = isLoading ? Loader2 : ArrowRight
+
   return (
     <Button type="button" {...props} ref={ref}>
       {children}

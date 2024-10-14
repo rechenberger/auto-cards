@@ -85,8 +85,7 @@ export default async function Page() {
                   <label className="">
                     <div className="flex-1">Admin</div>
                     <ActionButton
-                      component={Switch}
-                      checked={isAdmin}
+                      asChild
                       askForConfirmation
                       action={async () => {
                         'use server'
@@ -109,7 +108,9 @@ export default async function Page() {
                           user.email
                         }`,
                       }}
-                    />
+                    >
+                      <Switch checked={isAdmin} />
+                    </ActionButton>
                   </label>
                   <div className="flex flex-row gap-2 items-center justify-end">
                     <ActionButton
