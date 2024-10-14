@@ -2171,7 +2171,7 @@ const allItemsConst = [
     version: 3,
     triggers: [
       {
-        type: 'onAttackBeforeHit',
+        type: 'onDefendBeforeHit',
         chancePercent: 30,
         statsSelf: {
           block: 5,
