@@ -15,17 +15,6 @@ type ReactEventHandler = Exclude<
   undefined
 >
 
-export type ActionWrapperProps = {
-  children?: React.ReactNode
-  command?: Omit<
-    ActionCommandConfig,
-    'action' | 'children' | 'askForConfirmation'
-  > & {
-    label?: ReactNode
-  }
-  triggerOn?: ReactEventHandler[]
-} & UseSuperActionOptions
-
 export type ActionWrapperSlotProps = {
   isLoading?: boolean
   disabled?: boolean
@@ -37,6 +26,17 @@ const ActionWrapperSlot = forwardRef<HTMLElement, ActionWrapperSlotProps>(
     return <Slot {...props} ref={ref} />
   },
 )
+
+export type ActionWrapperProps = {
+  children?: React.ReactNode
+  command?: Omit<
+    ActionCommandConfig,
+    'action' | 'children' | 'askForConfirmation'
+  > & {
+    label?: ReactNode
+  }
+  triggerOn?: ReactEventHandler[]
+} & UseSuperActionOptions
 
 export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
   (props, ref) => {
