@@ -8,6 +8,7 @@ import { CardRow } from './CardRow'
 import { HandDisplay } from './HandDisplay'
 import { ItemCard } from './ItemCard'
 import { StatsDisplay } from './StatsDisplay'
+import ErrorBoundary from '@/lib/ErrorBoundary'
 
 export const LoadoutDisplay = async ({
   game,
@@ -41,20 +42,22 @@ export const LoadoutDisplay = async ({
         </CardRow>
       </div>
       <div className="max-xl:hidden">
-        <HandDisplay>
-          {map(items, (item) => (
-            <Fragment key={item.name}>
-              <ItemCard
-                game={game}
-                name={item.name}
-                count={item.count}
-                size="240"
-                tooltipOnClick
-                canSell={canSell}
-              />
-            </Fragment>
-          ))}
-        </HandDisplay>
+        <ErrorBoundary>
+          <HandDisplay>
+            {map(items, (item) => (
+              <Fragment key={item.name}>
+                <ItemCard
+                  game={game}
+                  name={item.name}
+                  count={item.count}
+                  size="240"
+                  tooltipOnClick
+                  canSell={canSell}
+                />
+              </Fragment>
+            ))}
+          </HandDisplay>
+        </ErrorBoundary>
       </div>
 
       <div className="flex flex-col items-center">
