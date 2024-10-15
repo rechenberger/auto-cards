@@ -3,74 +3,66 @@
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { ArrowRight, Loader2 } from 'lucide-react'
-import { ComponentPropsWithoutRef, ReactNode } from 'react'
-import { UseSuperActionOptions, useSuperAction } from '../action/useSuperAction'
-import { ActionCommand } from '../command/ActionCommand'
-import { type ActionCommandConfig } from '../command/ActionCommandProvider'
+import { ComponentPropsWithoutRef, forwardRef } from 'react'
+import {
+  ActionWrapper,
+  ActionWrapperProps,
+  ActionWrapperSlotProps,
+} from './ActionWrapper'
 
-export type ActionButtonProps<Comp extends typeof Button = typeof Button> = {
-  children?: React.ReactNode
-  component?: Comp
+export type ActionButtonProps = {
   hideIcon?: boolean
   hideButton?: boolean
-  command?: Omit<
-    ActionCommandConfig,
-    'action' | 'children' | 'askForConfirmation'
-  > & {
-    label?: ReactNode
-  }
-} & UseSuperActionOptions &
-  ComponentPropsWithoutRef<Comp>
+} & ActionWrapperProps &
+  ComponentPropsWithoutRef<typeof Button>
 
-export const ActionButton = <Comp extends typeof Button = typeof Button>(
-  props: ActionButtonProps<Comp>,
-) => {
-  const {
-    action,
-    disabled,
-    children,
-    component: Component = Button,
-    hideIcon,
-    hideButton,
-    catchToast,
-    askForConfirmation,
-    stopPropagation,
-    command,
-    ...buttonProps
-  } = props
-  const { isLoading, trigger } = useSuperAction({
-    action,
-    disabled,
-    catchToast,
-    askForConfirmation,
-    stopPropagation,
-  })
+export const ActionButton = forwardRef<HTMLButtonElement, ActionButtonProps>(
+  (props, ref) => {
+    const {
+      action,
+      disabled,
+      hideButton,
+      catchToast,
+      askForConfirmation,
+      stopPropagation,
+      command,
+      ...buttonProps
+    } = props
+
+    return (
+      <>
+        <ActionWrapper
+          action={action}
+          disabled={disabled}
+          askForConfirmation={askForConfirmation}
+          stopPropagation={stopPropagation}
+          command={command}
+          catchToast={catchToast}
+          triggerOn={['onClick']}
+        >
+          {!hideButton && <InnerButton {...buttonProps} ref={ref} />}
+        </ActionWrapper>
+      </>
+    )
+  },
+)
+
+ActionButton.displayName = 'ActionButton'
+
+const InnerButton = forwardRef<
+  HTMLButtonElement,
+  { hideIcon?: boolean } & ActionWrapperSlotProps
+>(({ isLoading, children, hideIcon, ...props }, ref) => {
   const Icon = isLoading ? Loader2 : ArrowRight
 
   return (
-    <>
-      {!hideButton && (
-        <Component
-          type="button"
-          disabled={isLoading || disabled}
-          {...buttonProps}
-          onClick={trigger}
-        >
-          {children}
-          {!hideIcon && (
-            <Icon className={cn('w-4 h-4 ml-2', isLoading && 'animate-spin')} />
-          )}
-        </Component>
+    <Button type="button" {...props} ref={ref}>
+      {children}
+      {!hideIcon && (
+        <Icon className={cn('w-4 h-4 ml-2', isLoading && 'animate-spin')} />
       )}
-      {command && (
-        <ActionCommand
-          icon={hideIcon ? undefined : Icon}
-          {...command}
-          action={trigger as any} // TODO: fix type
-        >
-          {command.label ?? children}
-        </ActionCommand>
-      )}
-    </>
+    </Button>
   )
-}
+})
+
+InnerButton.displayName = 'InnerButton'
