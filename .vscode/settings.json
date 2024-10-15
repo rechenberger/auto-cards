@@ -2,5 +2,6 @@
   "typescript.preferences.autoImportFileExcludePatterns": [
     "@radix-ui/*",
     "next/router"
-  ]
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

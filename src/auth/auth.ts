@@ -8,29 +8,35 @@ import { CredentialsProvider } from './CredentialsProvider'
 import { ImpersonateProvider } from './ImpersonateProvider'
 import { sendVerificationRequestEmail } from './sendVerificationRequestEmail'
 
+const hasEmailEnvVars = !!process.env.EMAIL_FROM && !!process.env.SMTP_URL
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db),
   providers: [
     Discord,
-    Nodemailer({
-      from: process.env.EMAIL_FROM,
-      server: process.env.SMTP_URL,
+    ...(hasEmailEnvVars
+      ? [
+          Nodemailer({
+            from: process.env.EMAIL_FROM,
+            server: process.env.SMTP_URL,
 
-      sendVerificationRequest: async (params) => {
-        const h = headers()
-        const baseUrl = h.get('Origin')
+            sendVerificationRequest: async (params) => {
+              const h = headers()
+              const baseUrl = h.get('Origin')
 
-        const url = `${baseUrl}/auth/verify-email?redirect=${encodeURIComponent(
-          params.url,
-        )}`
+              const url = `${baseUrl}/auth/verify-email?redirect=${encodeURIComponent(
+                params.url,
+              )}`
 
-        await sendVerificationRequestEmail({
-          ...params,
-          theme: { brandColor: '#79a913' },
-          url,
-        })
-      },
-    }),
+              await sendVerificationRequestEmail({
+                ...params,
+                theme: { brandColor: '#79a913' },
+                url,
+              })
+            },
+          }),
+        ]
+      : []),
     CredentialsProvider,
     ImpersonateProvider,
   ],
