@@ -1,3 +1,4 @@
+import { playgroundHref } from '@/app/(main)/admin/playground/playgroundHref'
 import { LoadoutData } from '@/db/schema-zod'
 import {
   rngFloat,
@@ -6,7 +7,7 @@ import {
   SeedArray,
   SeedRng,
 } from '@/game/seed'
-import { cloneDeep, maxBy, minBy, orderBy, range } from 'lodash-es'
+import { cloneDeep, first, maxBy, minBy, orderBy, range } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { calcCooldown } from './calcCooldown'
 import {
@@ -19,6 +20,8 @@ import {
 import {
   BASE_TICK_TIME,
   FATIGUE_STARTS_AT,
+  MAX_LOGS,
+  MAX_MATCH_MS,
   MAX_MATCH_TIME,
   MAX_THORNS_MULTIPLIER,
 } from './config'
@@ -62,7 +65,7 @@ const generateMatchStateSides = async (input: GenerateMatchInput) => {
           return {
             ...def,
             statsItem: def.statsItem ? { ...def.statsItem } : undefined,
-            count: def.unique ? 1 : i.count ?? 1,
+            count: def.unique ? 1 : (i.count ?? 1),
           }
         }),
       )
@@ -159,12 +162,16 @@ export const generateMatch = async ({
   })
   const { sides, futureActions } = state
 
+  const startedAtMs = Date.now()
+  let logCount = 0
+
   const seed = rngGenerator({ seed: _seed })
 
   const logs: MatchLog[] = []
   const log = (
     log: Omit<MatchLog, 'time' | 'itemName' | 'stateSnapshot' | 'logIdx'>,
   ) => {
+    logCount++
     if (skipLogs) return
     const itemName =
       log.itemIdx !== undefined
@@ -263,10 +270,14 @@ export const generateMatch = async ({
     }
 
     // FATIGUE
-    const fatigue = Math.max(1 + (time - FATIGUE_STARTS_AT) / BASE_TICK_TIME, 0)
-    if (fatigue > 0) {
+    const fatigueLevel = Math.max(
+      1 + (time - FATIGUE_STARTS_AT) / BASE_TICK_TIME,
+      0,
+    )
+    if (fatigueLevel > 0) {
+      const fatigueDamage = Math.round(1.3 ** (fatigueLevel - 1))
       const fatigueStats = {
-        health: -1 * fatigue,
+        health: -1 * fatigueDamage,
       }
       addStats(target.stats, fatigueStats)
       log({
@@ -321,7 +332,7 @@ export const generateMatch = async ({
     }
 
     let statsForItem = item.statsItem?.healthMax
-      ? item.statsItem ?? {} // creatures only have their own stats
+      ? (item.statsItem ?? {}) // creatures only have their own stats
       : item.statsItem
         ? sumStats2(mySide.stats, item.statsItem) // merge stats of item and hero
         : mySide.stats // fallback to hero stats
@@ -809,6 +820,28 @@ export const generateMatch = async ({
       }
       const dead = sides.some((side) => (side.stats.health ?? 0) <= 0)
       if (dead) {
+        return endOfMatch()
+      }
+
+      const maxMatchMsReached = Date.now() - startedAtMs > MAX_MATCH_MS
+      const maxLogsReached = logs.length > MAX_LOGS
+      if (maxMatchMsReached || maxLogsReached) {
+        const reason = maxMatchMsReached ? 'MAX_MATCH_MS' : 'MAX_LOGS'
+        const seed = first(_seed)
+        if (typeof seed !== 'string') {
+          throw new Error('seed is not a string')
+        }
+        const playground = playgroundHref({
+          loadouts: participants.map((p) => p.loadout),
+          seed,
+          mode: 'edit',
+        })
+        console.warn(
+          `${reason} reached`,
+          { logs: logs.length, ms: Date.now() - startedAtMs },
+          `${process.env.NEXT_PUBLIC_BASE_URL}/${playground}`,
+        )
+        // throw new Error('MAX_MATCH_MS reached')
         return endOfMatch()
       }
     }
