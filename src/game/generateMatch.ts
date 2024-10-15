@@ -270,10 +270,14 @@ export const generateMatch = async ({
     }
 
     // FATIGUE
-    const fatigue = Math.max(1 + (time - FATIGUE_STARTS_AT) / BASE_TICK_TIME, 0)
-    if (fatigue > 0) {
+    const fatigueLevel = Math.max(
+      1 + (time - FATIGUE_STARTS_AT) / BASE_TICK_TIME,
+      0,
+    )
+    if (fatigueLevel > 0) {
+      const fatigueDamage = Math.round(1.3 ** (fatigueLevel - 1))
       const fatigueStats = {
-        health: -1 * fatigue,
+        health: -1 * fatigueDamage,
       }
       addStats(target.stats, fatigueStats)
       log({
