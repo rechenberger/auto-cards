@@ -4,11 +4,18 @@ import { MatchWorkerInput, MatchWorkerOutput } from './matchWorkerManager'
 
 const main = async () => {
   parentPort?.on('message', async (message: MatchWorkerInput) => {
-    const output = await generateMatch(message.input)
-    parentPort?.postMessage({
-      jobId: message.jobId,
-      output,
-    } satisfies MatchWorkerOutput)
+    try {
+      const output = await generateMatch(message.input)
+      parentPort?.postMessage({
+        jobId: message.jobId,
+        output,
+      } satisfies MatchWorkerOutput)
+    } catch (error) {
+      parentPort?.postMessage({
+        jobId: message.jobId,
+        error: error?.toString() ?? 'Unknown error',
+      } satisfies MatchWorkerOutput)
+    }
   })
 }
 

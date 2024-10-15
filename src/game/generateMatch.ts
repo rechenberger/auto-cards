@@ -1,3 +1,4 @@
+import { playgroundHref } from '@/app/(main)/admin/playground/playgroundHref'
 import { LoadoutData } from '@/db/schema-zod'
 import {
   rngFloat,
@@ -6,7 +7,7 @@ import {
   SeedArray,
   SeedRng,
 } from '@/game/seed'
-import { cloneDeep, maxBy, minBy, orderBy, range } from 'lodash-es'
+import { cloneDeep, first, maxBy, minBy, orderBy, range } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { calcCooldown } from './calcCooldown'
 import {
@@ -19,6 +20,7 @@ import {
 import {
   BASE_TICK_TIME,
   FATIGUE_STARTS_AT,
+  MAX_MATCH_MS,
   MAX_MATCH_TIME,
   MAX_THORNS_MULTIPLIER,
 } from './config'
@@ -62,7 +64,7 @@ const generateMatchStateSides = async (input: GenerateMatchInput) => {
           return {
             ...def,
             statsItem: def.statsItem ? { ...def.statsItem } : undefined,
-            count: def.unique ? 1 : i.count ?? 1,
+            count: def.unique ? 1 : (i.count ?? 1),
           }
         }),
       )
@@ -158,6 +160,8 @@ export const generateMatch = async ({
     skipLogs,
   })
   const { sides, futureActions } = state
+
+  const startedAtMs = Date.now()
 
   const seed = rngGenerator({ seed: _seed })
 
@@ -321,7 +325,7 @@ export const generateMatch = async ({
     }
 
     let statsForItem = item.statsItem?.healthMax
-      ? item.statsItem ?? {} // creatures only have their own stats
+      ? (item.statsItem ?? {}) // creatures only have their own stats
       : item.statsItem
         ? sumStats2(mySide.stats, item.statsItem) // merge stats of item and hero
         : mySide.stats // fallback to hero stats
@@ -810,6 +814,24 @@ export const generateMatch = async ({
       const dead = sides.some((side) => (side.stats.health ?? 0) <= 0)
       if (dead) {
         return endOfMatch()
+      }
+
+      if (Date.now() - startedAtMs > MAX_MATCH_MS) {
+        const seed = first(_seed)
+        if (typeof seed !== 'string') {
+          throw new Error('seed is not a string')
+        }
+        const playground = playgroundHref({
+          loadouts: participants.map((p) => p.loadout),
+          seed,
+          mode: 'edit',
+        })
+        console.warn(
+          'MAX_MATCH_MS reached',
+          `${process.env.NEXT_PUBLIC_BASE_URL}/${playground}`,
+        )
+        throw new Error('MAX_MATCH_MS reached')
+        // return endOfMatch()
       }
     }
 
