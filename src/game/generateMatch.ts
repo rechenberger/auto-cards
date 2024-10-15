@@ -817,6 +817,7 @@ export const generateMatch = async ({
       }
 
       if (Date.now() - startedAtMs > MAX_MATCH_MS) {
+        // MAX MATCH MS REACHED
         const seed = first(_seed)
         if (typeof seed !== 'string') {
           throw new Error('seed is not a string')
@@ -828,10 +829,11 @@ export const generateMatch = async ({
         })
         console.warn(
           'MAX_MATCH_MS reached',
+          { logs: logs.length },
           `${process.env.NEXT_PUBLIC_BASE_URL}/${playground}`,
         )
-        throw new Error('MAX_MATCH_MS reached')
-        // return endOfMatch()
+        // throw new Error('MAX_MATCH_MS reached')
+        return endOfMatch()
       }
     }
 

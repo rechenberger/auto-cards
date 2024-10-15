@@ -33,4 +33,4 @@ export const LEADERBOARD_CRON_CYCLES = 1
 
 export const SHOP_EFFECT_BOOST_MULTIPLIER = 2
 
-export const MAX_MATCH_MS = 100
+export const MAX_MATCH_MS = 200
