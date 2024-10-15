@@ -3,22 +3,17 @@
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { ArrowRight, Loader2 } from 'lucide-react'
-import { ComponentPropsWithoutRef, forwardRef, ReactNode } from 'react'
-import { UseSuperActionOptions } from '../action/useSuperAction'
-import { type ActionCommandConfig } from '../command/ActionCommandProvider'
-import { ActionWrapper, ActionWrapperSlotProps } from './ActionWrapper'
+import { ComponentPropsWithoutRef, forwardRef } from 'react'
+import {
+  ActionWrapper,
+  ActionWrapperProps,
+  ActionWrapperSlotProps,
+} from './ActionWrapper'
 
 export type ActionButtonProps = {
-  children?: React.ReactNode
   hideIcon?: boolean
   hideButton?: boolean
-  command?: Omit<
-    ActionCommandConfig,
-    'action' | 'children' | 'askForConfirmation'
-  > & {
-    label?: ReactNode
-  }
-} & UseSuperActionOptions &
+} & ActionWrapperProps &
   ComponentPropsWithoutRef<typeof Button>
 
 export const ActionButton = forwardRef<HTMLButtonElement, ActionButtonProps>(
