@@ -20,6 +20,7 @@ import {
 import {
   BASE_TICK_TIME,
   FATIGUE_STARTS_AT,
+  MAX_LOGS,
   MAX_MATCH_MS,
   MAX_MATCH_TIME,
   MAX_THORNS_MULTIPLIER,
@@ -162,6 +163,7 @@ export const generateMatch = async ({
   const { sides, futureActions } = state
 
   const startedAtMs = Date.now()
+  let logCount = 0
 
   const seed = rngGenerator({ seed: _seed })
 
@@ -169,6 +171,7 @@ export const generateMatch = async ({
   const log = (
     log: Omit<MatchLog, 'time' | 'itemName' | 'stateSnapshot' | 'logIdx'>,
   ) => {
+    logCount++
     if (skipLogs) return
     const itemName =
       log.itemIdx !== undefined
@@ -816,8 +819,10 @@ export const generateMatch = async ({
         return endOfMatch()
       }
 
-      if (Date.now() - startedAtMs > MAX_MATCH_MS) {
-        // MAX MATCH MS REACHED
+      const maxMatchMsReached = Date.now() - startedAtMs > MAX_MATCH_MS
+      const maxLogsReached = logs.length > MAX_LOGS
+      if (maxMatchMsReached || maxLogsReached) {
+        const reason = maxMatchMsReached ? 'MAX_MATCH_MS' : 'MAX_LOGS'
         const seed = first(_seed)
         if (typeof seed !== 'string') {
           throw new Error('seed is not a string')
@@ -828,8 +833,8 @@ export const generateMatch = async ({
           mode: 'edit',
         })
         console.warn(
-          'MAX_MATCH_MS reached',
-          { logs: logs.length },
+          `${reason} reached`,
+          { logs: logs.length, ms: Date.now() - startedAtMs },
           `${process.env.NEXT_PUBLIC_BASE_URL}/${playground}`,
         )
         // throw new Error('MAX_MATCH_MS reached')
