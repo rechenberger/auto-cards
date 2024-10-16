@@ -618,19 +618,22 @@ const allItemsConst = [
     triggers: [
       {
         type: 'interval',
-        cooldown: 1_500,
+        cooldown: 2_000,
         statsRequired: {
           stamina: 7,
         },
         statsSelf: {
           stamina: -7,
         },
-        statsTarget: {
-          blind: 3,
-        },
         attack: {
           damage: 6,
           accuracy: 90,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsTarget: {
+          blind: 3,
         },
       },
     ],
@@ -1733,9 +1736,9 @@ const allItemsConst = [
             arithmetic: 'add',
             targetStats: 'statsSelf',
             targetStat: 'hungry',
-            description: 'Get **+10** *hungry* for every *food*',
+            description: 'Get **+2** *hungry* for every *food*',
             valueAddingTags: ['food'],
-            valueMultiplier: 10,
+            valueMultiplier: 2,
             sourceSide: 'self',
           },
         ],
