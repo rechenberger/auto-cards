@@ -3,7 +3,7 @@ import { schema } from '@/db/schema-export'
 import { Loadout } from '@/db/schema-zod'
 import { and, eq } from 'drizzle-orm'
 import { addToLeaderboardAcc } from './addToLeaderboardAcc'
-import { LEADERBOARD_TYPE } from './config'
+import { GAME_VERSION, LEADERBOARD_TYPE } from './config'
 import { getLeaderboard } from './getLeaderboard'
 import { generateMatchByWorker } from './matchWorkerManager'
 import { revalidateLeaderboard } from './revalidateLeaderboard'
@@ -20,6 +20,10 @@ export const addToLeaderboard = async ({
   roundNo?: number
   dryRun?: boolean
 }) => {
+  if (loadout.version !== GAME_VERSION) {
+    throw new Error('Old loadout version cannot be added to leaderboard')
+  }
+
   let leaderboard = await getLeaderboard({
     roundNo,
     type,
