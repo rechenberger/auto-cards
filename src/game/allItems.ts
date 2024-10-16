@@ -540,7 +540,7 @@ const allItemsConst = [
             targetStat: 'damage',
             targetStats: 'attack',
             valueAddingStats: ['slow'],
-            sourceSide: 'enemy',
+            sourceSide: 'target',
             description: '**+1** *damage* per *slow* on enemy',
           },
         ],
