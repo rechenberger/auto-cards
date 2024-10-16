@@ -625,12 +625,15 @@ const allItemsConst = [
         statsSelf: {
           stamina: -7,
         },
-        statsTarget: {
-          blind: 3,
-        },
         attack: {
           damage: 6,
           accuracy: 90,
+        },
+      },
+      {
+        type: 'onAttackAfterHit',
+        statsTarget: {
+          blind: 3,
         },
       },
     ],
