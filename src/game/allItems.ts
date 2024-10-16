@@ -618,7 +618,7 @@ const allItemsConst = [
     triggers: [
       {
         type: 'interval',
-        cooldown: 1_500,
+        cooldown: 2_000,
         statsRequired: {
           stamina: 7,
         },
