@@ -36,7 +36,7 @@ export type ActionWrapperProps = {
     label?: ReactNode
   }
   triggerOn?: ReactEventHandler[]
-} & UseSuperActionOptions
+} & UseSuperActionOptions<void, undefined>
 
 ActionWrapperSlot.displayName = 'ActionWrapperSlot'
 

@@ -7,7 +7,7 @@ import { useShowDialog } from '../dialog/DialogProvider'
 import { consumeSuperActionResponse } from './consumeSuperActionResponse'
 import { SuperAction, SuperActionDialog } from './createSuperAction'
 
-export type UseSuperActionOptions<Output = void, Input = undefined> = {
+export type UseSuperActionOptions<Output, Input> = {
   action: SuperAction<Output, Input>
   disabled?: boolean
   catchToast?: boolean
