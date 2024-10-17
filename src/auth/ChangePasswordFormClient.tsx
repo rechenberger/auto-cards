@@ -46,9 +46,7 @@ export const ChangePasswordFormClient = ({
   redirectUrl?: string
 }) => {
   const { trigger, isLoading } = useSuperAction({
-    action: async () => {
-      return action(form.getValues())
-    },
+    action,
     catchToast: true,
   })
 
@@ -66,8 +64,8 @@ export const ChangePasswordFormClient = ({
       </div>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(async () => {
-            await trigger(undefined)
+          onSubmit={form.handleSubmit(async (values) => {
+            await trigger(values)
           })}
           className="flex flex-col gap-4"
         >
