@@ -7,15 +7,17 @@ import { useShowDialog } from '../dialog/DialogProvider'
 import { consumeSuperActionResponse } from './consumeSuperActionResponse'
 import { SuperAction, SuperActionDialog } from './createSuperAction'
 
-export type UseSuperActionOptions = {
-  action: SuperAction
+export type UseSuperActionOptions<Output = void, Input = undefined> = {
+  action: SuperAction<Output, Input>
   disabled?: boolean
   catchToast?: boolean
   askForConfirmation?: boolean | SuperActionDialog
   stopPropagation?: boolean
 }
 
-export const useSuperAction = (options: UseSuperActionOptions) => {
+export const useSuperAction = <Output = undefined, Input = undefined>(
+  options: UseSuperActionOptions<Output, Input>,
+) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const { action, disabled, catchToast, askForConfirmation, stopPropagation } =
@@ -25,7 +27,7 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
   const showDialog = useShowDialog()
 
   const trigger = useCallback(
-    async (evt?: MouseEvent) => {
+    async (input: Input, evt?: MouseEvent) => {
       if (isLoading) return
       if (disabled) return
       if (stopPropagation) {
@@ -45,7 +47,7 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
       }
       setIsLoading(true)
 
-      const response = await action()
+      const response = await action(input)
 
       if (response && 'superAction' in response) {
         await consumeSuperActionResponse({

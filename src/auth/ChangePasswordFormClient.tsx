@@ -67,7 +67,7 @@ export const ChangePasswordFormClient = ({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(async () => {
-            await trigger()
+            await trigger(undefined)
           })}
           className="flex flex-col gap-4"
         >

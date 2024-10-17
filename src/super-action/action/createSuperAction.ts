@@ -99,7 +99,10 @@ export const superAction = <T>(action: () => Promise<T>) => {
 export type SuperActionPromise<T = any> = Promise<{
   superAction: SuperActionResponse<T>
 } | void>
-export type SuperAction<T = any> = () => SuperActionPromise<T>
+
+export type SuperAction<Output = any, Input = undefined> = (
+  input: Input,
+) => SuperActionPromise<Output>
 
 export const streamToast = (toast: SuperActionToast) => {
   const ctx = serverContext.getOrThrow()
