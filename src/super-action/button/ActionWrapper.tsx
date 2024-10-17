@@ -3,8 +3,8 @@
 import { Slot } from '@radix-ui/react-slot'
 import { map } from 'lodash-es'
 import { ArrowRight, Loader2 } from 'lucide-react'
-import { DOMAttributes, forwardRef, ReactNode } from 'react'
-import { useSuperAction, UseSuperActionOptions } from '../action/useSuperAction'
+import { DOMAttributes, ReactNode, forwardRef } from 'react'
+import { UseSuperActionOptions, useSuperAction } from '../action/useSuperAction'
 import { ActionCommand } from '../command/ActionCommand'
 import { ActionCommandConfig } from '../command/ActionCommandProvider'
 
@@ -36,7 +36,7 @@ export type ActionWrapperProps = {
     label?: ReactNode
   }
   triggerOn?: ReactEventHandler[]
-} & UseSuperActionOptions
+} & UseSuperActionOptions<void, undefined>
 
 ActionWrapperSlot.displayName = 'ActionWrapperSlot'
 
@@ -70,7 +70,10 @@ export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
           isLoading={isLoading}
           {...buttonProps}
           {...Object.fromEntries(
-            map(triggerOn, (superOn) => [superOn, trigger]),
+            map(triggerOn, (superOn) => [
+              superOn,
+              (evt: MouseEvent) => trigger(undefined, evt),
+            ]),
           )}
         >
           {children}

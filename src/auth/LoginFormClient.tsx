@@ -66,9 +66,7 @@ export const LoginFormClient = ({
   showAlternativesOnRegister?: boolean
 }) => {
   const { trigger, isLoading } = useSuperAction({
-    action: async () => {
-      return action(form.getValues())
-    },
+    action,
     catchToast: true,
   })
 
@@ -116,8 +114,8 @@ export const LoginFormClient = ({
       </div>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(async () => {
-            await trigger()
+          onSubmit={form.handleSubmit(async (values) => {
+            await trigger(values)
           })}
           className="flex flex-col gap-4"
         >
