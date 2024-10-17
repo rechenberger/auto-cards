@@ -37,7 +37,7 @@ export type SuperActionResponse<T> = {
   dialog?: SuperActionDialog
   error?: SuperActionError
   redirect?: SuperActionRedirect
-  action?: SuperAction
+  action?: SuperAction<T, undefined>
 }
 
 type SuperActionContext = {

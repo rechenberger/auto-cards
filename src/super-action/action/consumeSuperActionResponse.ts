@@ -32,7 +32,7 @@ export const consumeSuperActionResponse = async <T>(options: {
     }
   }
   if (r.action) {
-    const response = await r.action()
+    const response = await r.action(undefined)
     if (response && 'superAction' in response) {
       await consumeSuperActionResponse({
         ...options,
