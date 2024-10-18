@@ -14,7 +14,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { createZodForm } from '@/lib/useZodForm'
 import { cn } from '@/lib/utils'
-import { SuperActionPromise } from '@/super-action/action/createSuperAction'
+import { SuperActionWithInput } from '@/super-action/action/createSuperAction'
 import { useSuperAction } from '@/super-action/action/useSuperAction'
 import { ArrowLeft } from 'lucide-react'
 import { ReactNode } from 'react'
@@ -61,7 +61,7 @@ export const LoginFormClient = ({
   alternatives,
   showAlternativesOnRegister = false,
 }: {
-  action: (data: LoginData) => SuperActionPromise
+  action: SuperActionWithInput<LoginData>
   alternatives?: ReactNode
   showAlternativesOnRegister?: boolean
 }) => {

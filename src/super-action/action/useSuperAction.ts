@@ -7,16 +7,16 @@ import { useShowDialog } from '../dialog/DialogProvider'
 import { consumeSuperActionResponse } from './consumeSuperActionResponse'
 import { SuperAction, SuperActionDialog } from './createSuperAction'
 
-export type UseSuperActionOptions<Output, Input> = {
-  action: SuperAction<Output, Input>
+export type UseSuperActionOptions<Result, Input> = {
+  action: SuperAction<Result, Input>
   disabled?: boolean
   catchToast?: boolean
   askForConfirmation?: boolean | SuperActionDialog
   stopPropagation?: boolean
 }
 
-export const useSuperAction = <Output = undefined, Input = undefined>(
-  options: UseSuperActionOptions<Output, Input>,
+export const useSuperAction = <Result = undefined, Input = undefined>(
+  options: UseSuperActionOptions<Result, Input>,
 ) => {
   const [isLoading, setIsLoading] = useState(false)
 
@@ -50,7 +50,7 @@ export const useSuperAction = <Output = undefined, Input = undefined>(
       const response = await action(input)
 
       if (response && 'superAction' in response) {
-        await consumeSuperActionResponse({
+        const result = await consumeSuperActionResponse({
           response: Promise.resolve(response.superAction),
           onToast: (t) => {
             toast({
@@ -77,6 +77,8 @@ export const useSuperAction = <Output = undefined, Input = undefined>(
               }
             : undefined,
         })
+
+        return result
       }
 
       setIsLoading(false)
