@@ -23,6 +23,7 @@ export type ActionCommandConfig<Result> = UseSuperActionOptions<
 > & {
   children: ReactNode
   group?: ActionCommandGroup
+  icon?: ReactNode
   shortcut?: {
     key: string
     cmdCtrl?: true

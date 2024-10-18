@@ -6,7 +6,7 @@ import {
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { createStreamableUI } from 'ai/rsc'
-import { ExternalLink } from 'lucide-react'
+import { ExternalLink, PartyPopper } from 'lucide-react'
 import Link from 'next/link'
 import { Markdown } from './Markdown'
 
@@ -17,11 +17,12 @@ export const PartyButton = () => {
       <ActionButton
         command={{
           // inject this action into the CMD+K menu
-          // label: 'Stream Party!', // optional, defaults to children
+          label: 'Stream Party!', // optional, defaults to children
           shortcut: {
             key: 'p', // Also set a keyboard-shortcut
           },
         }}
+        icon={<PartyPopper />}
         action={async () => {
           'use server'
 

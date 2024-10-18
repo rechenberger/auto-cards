@@ -2,7 +2,6 @@
 
 import { Slot } from '@radix-ui/react-slot'
 import { map } from 'lodash-es'
-import { ArrowRight, Loader2 } from 'lucide-react'
 import { DOMAttributes, ReactNode, forwardRef } from 'react'
 import { UseSuperActionOptions, useSuperAction } from '../action/useSuperAction'
 import { ActionCommand } from '../command/ActionCommand'
@@ -36,6 +35,7 @@ export type ActionWrapperProps = {
     label?: ReactNode
   }
   triggerOn?: ReactEventHandler[]
+  icon?: ReactNode
 } & UseSuperActionOptions<unknown, undefined>
 
 ActionWrapperSlot.displayName = 'ActionWrapperSlot'
@@ -51,6 +51,7 @@ export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
       stopPropagation,
       command,
       triggerOn = ['onClick'],
+      icon,
       ...slotProps
     } = props
     const { isLoading, trigger } = useSuperAction({
@@ -60,8 +61,6 @@ export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
       askForConfirmation,
       stopPropagation,
     })
-    const Icon = isLoading ? Loader2 : ArrowRight
-
     return (
       <>
         <ActionWrapperSlot
@@ -80,7 +79,7 @@ export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
         </ActionWrapperSlot>
         {command && (
           <ActionCommand<unknown>
-            icon={Icon}
+            icon={icon}
             {...command}
             action={action}
             disabled={isLoading || disabled}
