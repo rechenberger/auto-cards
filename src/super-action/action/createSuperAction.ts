@@ -30,36 +30,38 @@ export type SuperActionRedirect = {
   statusCode: number
 }
 
-export type SuperActionResponse<T> = {
-  result?: T
-  next?: Promise<SuperActionResponse<T>>
+export type SuperActionResponse<Result, Input> = {
+  result?: Result
+  next?: Promise<SuperActionResponse<Result, Input>>
   toast?: SuperActionToast
   dialog?: SuperActionDialog
   error?: SuperActionError
   redirect?: SuperActionRedirect
-  action?: SuperAction<T, undefined>
+  action?: SuperAction<Result, undefined>
 }
 
-type SuperActionContext = {
-  chain: (val: SuperActionResponse<any>) => void
+type SuperActionContext<Result, Input> = {
+  chain: (val: SuperActionResponse<Result, Input>) => void
 }
 
-const serverContext = createServerContext<SuperActionContext>()
+const serverContext = createServerContext<SuperActionContext<any, any>>()
 
-export const superAction = <T>(action: () => Promise<T>) => {
-  let next = createResolvablePromise<SuperActionResponse<T>>()
+export const superAction = async <Result, Input>(
+  action: () => Promise<Result>,
+) => {
+  let next = createResolvablePromise<SuperActionResponse<Result, Input>>()
   const firstPromise = next.promise
 
-  const chain = (val: SuperActionResponse<T>) => {
+  const chain = (val: SuperActionResponse<Result, Input>) => {
     const oldNext = next
-    next = createResolvablePromise<SuperActionResponse<T>>()
+    next = createResolvablePromise<SuperActionResponse<Result, Input>>()
     oldNext.resolve({ ...val, next: next.promise })
   }
-  const complete = (val: SuperActionResponse<T>) => {
+  const complete = (val: SuperActionResponse<Result, Input>) => {
     next.resolve(val)
   }
 
-  const ctx: SuperActionContext = {
+  const ctx: SuperActionContext<Result, Input> = {
     chain,
   }
 
@@ -93,16 +95,20 @@ export const superAction = <T>(action: () => Promise<T>) => {
       })
     })
 
-  return firstPromise.then((superAction) => ({ superAction }))
+  const superAction = await firstPromise
+  return { superAction }
 }
 
-export type SuperActionPromise<T = any> = Promise<{
-  superAction: SuperActionResponse<T>
+export type SuperActionPromise<Result, Input> = Promise<{
+  superAction: SuperActionResponse<Result, Input>
 } | void>
 
-export type SuperAction<Output = any, Input = undefined> = (
+export type SuperAction<Result, Input> = (
   input: Input,
-) => SuperActionPromise<Output>
+) => SuperActionPromise<Result, Input>
+
+export type SuperActionWithInput<Input> = SuperAction<unknown, Input>
+export type SuperActionWithResult<Result> = SuperAction<Result, unknown>
 
 export const streamToast = (toast: SuperActionToast) => {
   const ctx = serverContext.getOrThrow()
@@ -114,7 +120,9 @@ export const streamDialog = (dialog: SuperActionDialog) => {
   ctx.chain({ dialog })
 }
 
-export const streamAction = (action: SuperAction) => {
+export const streamAction = <Result>(
+  action: SuperAction<Result, undefined>,
+) => {
   const ctx = serverContext.getOrThrow()
   ctx.chain({ action })
 }

@@ -6,13 +6,13 @@ import {
   SuperActionToast,
 } from './createSuperAction'
 
-export const consumeSuperActionResponse = async <T>(options: {
-  response: Promise<SuperActionResponse<T>>
+export const consumeSuperActionResponse = async <Result, Input>(options: {
+  response: Promise<SuperActionResponse<Result, Input>>
   onToast?: (toast: SuperActionToast) => void
   onDialog?: (toast: SuperActionDialog) => void
   onRedirect?: (redirect: SuperActionRedirect) => void
   catch?: (error: SuperActionError) => void
-}): Promise<T | undefined> => {
+}): Promise<Result | undefined> => {
   const r = await options.response
   if (r.toast && options.onToast) {
     options.onToast(r.toast)
