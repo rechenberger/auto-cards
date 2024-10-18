@@ -96,25 +96,27 @@ export const ItemCard = async (props: ItemCardProps) => {
           // 'overflow-hidden',
           'group',
           size === '80' && [
-            'scale-[25%] -mx-[120px] -my-[187.5px]',
-            onlyTop && '-my-[120px]',
+            'md:scale-[25%] md:-mx-[120px] md:-my-[187.5px]',
+            onlyTop && 'md:-my-[120px]',
           ],
           size === '160' && [
-            'scale-[50%] -mx-[80px] -my-[125px]',
-            onlyTop && '-my-[80px]',
+            'md:scale-[50%] md:-mx-[80px] md:-my-[125px]',
+            onlyTop && 'md:-my-[80px]',
           ],
           size === '200' && [
-            'scale-[62.5%] -mx-[60px] -my-[93.75px]',
-            onlyTop && '-my-[60px]',
+            'md:scale-[62.5%] md:-mx-[60px] md:-my-[93.75px]',
+            onlyTop && 'md:-my-[60px]',
           ], // (500-500/1.6)/2 = 93.75
           size === '240' && [
-            'scale-[75%] -mx-[40px] -my-[62.5px]',
-            onlyTop && '-my-[40px]',
+            'md:scale-[75%] md:-mx-[40px] md:-my-[62.5px]',
+            onlyTop && 'md:-my-[40px]',
           ], // (500-500*0,75)/2 = 62.5
           size === '480' && [
             'lg:scale-[150%] lg:mx-[80px] lg:my-[125px]',
             onlyTop && 'lg:my-[80px]',
           ], // (500-500*1,5)/2 = 15
+          'scale-[25%] -mx-[120px] -my-[187.5px]',
+            onlyTop && '-my-[120px]',
           'select-none',
           className,
         )}
