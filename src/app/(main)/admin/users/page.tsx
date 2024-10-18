@@ -17,6 +17,7 @@ import {
   superAction,
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
+import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { eq } from 'drizzle-orm'
 import { Metadata } from 'next'
 import { revalidatePath } from 'next/cache'
@@ -91,9 +92,7 @@ export default async function Page() {
                   </div>
                   <label className="">
                     <div className="flex-1">Admin</div>
-                    <ActionButton
-                      component={Switch}
-                      checked={isAdmin}
+                    <ActionWrapper
                       askForConfirmation
                       action={async () => {
                         'use server'
@@ -116,7 +115,9 @@ export default async function Page() {
                           user.email
                         }`,
                       }}
-                    />
+                    >
+                      <Switch checked={isAdmin} />
+                    </ActionWrapper>
                   </label>
                   <div className="flex flex-row gap-2 items-center justify-end">
                     <ActionButton
