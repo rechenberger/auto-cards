@@ -21,7 +21,7 @@ export const ReRollButton = ({ game }: { game: Game }) => {
   return (
     <>
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger asChild>
           <ActionButton
             catchToast
             hideIcon
