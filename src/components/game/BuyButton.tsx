@@ -42,7 +42,7 @@ export const BuyButton = async ({
           variant="secondary"
           disabled={!enoughGold}
           className={cn(
-            'flex flex-row gap-1 items-center size-12 md:size-full',
+            'flex flex-row gap-1 items-center size-12 md:w-[66px]',
             !enoughGold && 'grayscale',
             showReserveButton && 'rounded-r-none',
           )}
@@ -139,7 +139,7 @@ export const BuyButton = async ({
                 size="sm"
                 className={cn(
                   shopItem.isReserved && 'text-green-500',
-                  'rounded-l-none size-8 md:size-full',
+                  'rounded-l-none size-8 md:h-9',
                 )}
                 hideIcon
                 action={async () => {
