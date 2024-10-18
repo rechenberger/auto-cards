@@ -83,7 +83,7 @@ export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
             icon={Icon}
             {...command}
             action={action}
-            disabled={isLoading || disabled}
+            disabled={disabled}
             catchToast={catchToast}
             askForConfirmation={askForConfirmation}
             stopPropagation={stopPropagation}
