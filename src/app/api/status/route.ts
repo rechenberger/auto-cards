@@ -1,4 +1,5 @@
 import { db } from '@/db/db'
+import { z } from 'zod'
 
 // CONFIG:
 export const revalidate = 0
@@ -29,11 +30,17 @@ export const GET = async () => {
           ),
         ])
         return { name: check.name, success: true }
-      } catch (e: any) {
+      } catch (e) {
+        const parsed = z
+          .object({
+            message: z.string(),
+          })
+          .safeParse(e)
+
         return {
           name: check.name,
           success: false,
-          error: e?.message || e?.toString() || 'Unknown error',
+          error: parsed.success ? parsed.data?.message : 'Unknown error',
         }
       }
     }),

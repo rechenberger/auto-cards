@@ -6,6 +6,7 @@ import {
   isRedirectError,
 } from 'next/dist/client/components/redirect'
 import { ReactNode } from 'react'
+import { z } from 'zod'
 import { createResolvablePromise } from './createResolvablePromise'
 
 export type SuperActionToast = {
@@ -72,7 +73,7 @@ export const superAction = async <Result, Input>(
     .then((result) => {
       complete({ result })
     })
-    .catch((error: any) => {
+    .catch((error: unknown) => {
       if (isRedirectError(error)) {
         if (firstPromise === next.promise) {
           next.reject(error)
@@ -88,9 +89,16 @@ export const superAction = async <Result, Input>(
         })
         return
       }
+
+      const parsed = z
+        .object({
+          message: z.string(),
+        })
+        .safeParse(error)
+
       complete({
         error: {
-          message: error?.message,
+          message: parsed.success ? parsed.data?.message : 'Unknown error',
         },
       })
     })
