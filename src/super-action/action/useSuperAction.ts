@@ -50,7 +50,7 @@ export const useSuperAction = <Result = undefined, Input = undefined>(
       const response = await action(input)
 
       if (response && 'superAction' in response) {
-        await consumeSuperActionResponse({
+        const result = await consumeSuperActionResponse({
           response: Promise.resolve(response.superAction),
           onToast: (t) => {
             toast({
@@ -77,6 +77,8 @@ export const useSuperAction = <Result = undefined, Input = undefined>(
               }
             : undefined,
         })
+
+        return result
       }
 
       setIsLoading(false)
