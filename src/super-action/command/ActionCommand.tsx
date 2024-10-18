@@ -2,11 +2,11 @@ import { ArrowRight, LucideIcon } from 'lucide-react'
 import { ActionCommandClient } from './ActionCommandClient'
 import { ActionCommandConfig } from './ActionCommandProvider'
 
-export const ActionCommand = <Result,>({
+export const ActionCommand = ({
   icon: Icon = ArrowRight,
   children,
   ...command
-}: ActionCommandConfig<Result> & {
+}: ActionCommandConfig<unknown> & {
   icon?: LucideIcon | null
 }) => {
   return (

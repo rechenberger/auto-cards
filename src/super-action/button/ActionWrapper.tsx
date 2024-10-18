@@ -79,7 +79,7 @@ export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
           {children}
         </ActionWrapperSlot>
         {command && (
-          <ActionCommand<unknown>
+          <ActionCommand
             icon={Icon}
             {...command}
             action={action}
