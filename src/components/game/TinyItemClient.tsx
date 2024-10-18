@@ -18,7 +18,7 @@ export const TinyItemClient = ({
 }: {
   item: ItemDefinition
   count: number
-  action?: SuperAction
+  action?: SuperAction<void, unknown>
 }) => {
   const [hoveredItem, setHoveredItem] = useAtom(itemHoverAtom)
 

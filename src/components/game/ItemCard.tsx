@@ -11,7 +11,7 @@ import {
 } from '@/game/themes'
 import { fontHeading, fontLore } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
-import { ActionButton } from '@/super-action/button/ActionButton'
+import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { capitalCase } from 'change-case'
 import { first } from 'lodash-es'
 import { Fragment } from 'react'
@@ -287,17 +287,14 @@ export const ItemCard = async (props: ItemCardProps) => {
   if (tooltipOnClick) {
     return (
       <>
-        <ActionButton
-          component={'div' as any} // no button, so no invalid html, so no hydration errors
-          className="cursor-pointer flex"
-          hideIcon
+        <ActionWrapper
           action={async () => {
             'use server'
             return streamItemCard({ ...props, onlyTop: false })
           }}
         >
-          {inner}
-        </ActionButton>
+          <div className="cursor-pointer flex">{inner}</div>
+        </ActionWrapper>
       </>
     )
   }
