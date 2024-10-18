@@ -3,7 +3,7 @@ import { Slot } from '@radix-ui/react-slot'
 import { ArrowRight, Loader2 } from 'lucide-react'
 import { ReactNode } from 'react'
 
-export const SuperIcon = ({
+export const SuperLoadingIcon = ({
   icon = <ArrowRight />,
   isLoading = false,
   className,

@@ -2,7 +2,7 @@
 import { CommandItem } from '@/components/ui/command'
 import { ReactNode } from 'react'
 import { useSuperAction } from '../action/useSuperAction'
-import { SuperIcon } from '../button/SuperIcon'
+import { SuperLoadingIcon } from '../button/SuperLoadingIcon'
 import { ActionCommandConfig } from './ActionCommandProvider'
 
 export const ActionCommandItem = ({
@@ -25,7 +25,7 @@ export const ActionCommandItem = ({
       className="flex flex-row"
     >
       <div className="flex-1 flex flex-row">
-        <SuperIcon icon={icon} isLoading={isLoading} className="mr-2" />
+        <SuperLoadingIcon icon={icon} isLoading={isLoading} className="mr-2" />
         {children}
       </div>
       {shortcut && (

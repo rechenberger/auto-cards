@@ -7,7 +7,7 @@ import {
   ActionWrapperProps,
   ActionWrapperSlotProps,
 } from './ActionWrapper'
-import { SuperIcon } from './SuperIcon'
+import { SuperLoadingIcon } from './SuperLoadingIcon'
 
 export type ActionButtonProps = {
   hideIcon?: boolean
@@ -61,7 +61,7 @@ const InnerButton = forwardRef<
     <Button type="button" {...props} ref={ref}>
       {children}
       {!hideIcon && (
-        <SuperIcon icon={icon} className="ml-2" isLoading={isLoading} />
+        <SuperLoadingIcon icon={icon} className="ml-2" isLoading={isLoading} />
       )}
     </Button>
   )
