@@ -2,6 +2,7 @@
 import { CommandItem } from '@/components/ui/command'
 import { ReactNode } from 'react'
 import { useSuperAction } from '../action/useSuperAction'
+import { SuperLoadingIcon } from '../button/SuperLoadingIcon'
 import { ActionCommandConfig } from './ActionCommandProvider'
 
 export const ActionCommandItem = ({
@@ -11,7 +12,7 @@ export const ActionCommandItem = ({
   command: Omit<ActionCommandConfig, 'group'>
   onActionExecuted?: () => void
 }) => {
-  const { children, shortcut, ...superActionOptions } = command
+  const { children, shortcut, icon, ...superActionOptions } = command
   const { isLoading, trigger } = useSuperAction(superActionOptions)
 
   return (
@@ -23,7 +24,10 @@ export const ActionCommandItem = ({
       }}
       className="flex flex-row"
     >
-      <div className="flex-1 flex flex-row">{children}</div>
+      <div className="flex-1 flex flex-row">
+        <SuperLoadingIcon icon={icon} isLoading={isLoading} className="mr-2" />
+        {children}
+      </div>
       {shortcut && (
         <>
           <div className="flex flex-row gap-0.5">

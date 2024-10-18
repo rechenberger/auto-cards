@@ -1,18 +1,34 @@
-import { ArrowRight, LucideIcon } from 'lucide-react'
-import { ActionCommandClient } from './ActionCommandClient'
-import { ActionCommandConfig } from './ActionCommandProvider'
+'use client'
 
-export const ActionCommand = ({
-  icon: Icon = ArrowRight,
-  children,
-  ...command
-}: ActionCommandConfig & {
-  icon?: LucideIcon | null
+import { useSetAtom } from 'jotai'
+import { useId, useLayoutEffect } from 'react'
+import {
+  ActionCommandConfig,
+  actionCommandsAtom,
+} from './ActionCommandProvider'
+
+export const ActionCommand = (props: ActionCommandConfig) => {
+  useRegisterActionCommand({
+    command: props,
+  })
+  return null
+}
+
+const useRegisterActionCommand = ({
+  command,
+}: {
+  command: ActionCommandConfig
 }) => {
-  return (
-    <ActionCommandClient {...command}>
-      {!!Icon && <Icon className="mr-2 h-4 w-4" />}
-      {children}
-    </ActionCommandClient>
-  )
+  const id = useId()
+  const setCommands = useSetAtom(actionCommandsAtom)
+
+  useLayoutEffect(() => {
+    setCommands((prev) => ({ ...prev, [id]: command }))
+    return () => {
+      setCommands((prev) => {
+        const { [id]: _, ...rest } = prev
+        return rest
+      })
+    }
+  })
 }

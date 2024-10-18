@@ -20,6 +20,7 @@ import { ActionCommandKeyboardShortcut } from './ActionCommandKeyboardShortcut'
 export type ActionCommandConfig = UseSuperActionOptions<unknown, undefined> & {
   children: ReactNode
   group?: ActionCommandGroup
+  icon?: ReactNode
   shortcut?: {
     key: string
     cmdCtrl?: true
