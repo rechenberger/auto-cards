@@ -1,7 +1,7 @@
 import { TinyItem } from '@/components/game/TinyItem'
 import { getAllItems } from '@/game/allItems'
 import { allStatsDefinition } from '@/game/stats'
-import { allTagsDefinition } from '@/game/tags'
+import { allTagDefinitions } from '@/game/tags'
 import ReactMarkdown from 'react-markdown'
 import { StatDisplay } from './StatsDisplay'
 import { TagDisplay } from './TagDisplay'
@@ -29,7 +29,7 @@ export const TextKeywordDisplay = async ({
               return <TinyItem name={item.name} />
             }
 
-            const tag = allTagsDefinition.find((tag) => tag.name === text)
+            const tag = allTagDefinitions.find((tag) => tag.name === text)
             if (tag) {
               return <TagDisplay tag={tag.name} />
             }

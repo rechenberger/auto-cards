@@ -8,7 +8,7 @@ type TagDefinitionRaw = {
   isSpecial?: boolean
 }
 
-export const allTagsDefinition = [
+const allTagDefinitionsRaw = [
   {
     name: 'hero',
     bgClass: '',
@@ -83,7 +83,7 @@ export const allTagsDefinition = [
   },
 ] as const satisfies TagDefinitionRaw[]
 
-export const allTags = map(allTagsDefinition, (t) => t.name)
+export const allTags = map(allTagDefinitionsRaw, (t) => t.name)
 
 export const Tag = z.enum(allTags)
 export type Tag = z.infer<typeof Tag>
@@ -92,8 +92,10 @@ export type TagDefinition = Omit<TagDefinitionRaw, 'name'> & {
   name: Tag
 }
 
+export const allTagDefinitions: TagDefinition[] = allTagDefinitionsRaw
+
 export const getTagDefinition = (tag: Tag): TagDefinition => {
-  const def = allTagsDefinition.find((b) => b.name === tag)
+  const def = allTagDefinitionsRaw.find((b) => b.name === tag)
   if (!def) {
     throw new Error(`Unknown tag: ${tag}`)
   }
