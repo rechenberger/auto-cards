@@ -30,13 +30,13 @@ const ActionWrapperSlot = forwardRef<HTMLElement, ActionWrapperSlotProps>(
 export type ActionWrapperProps = {
   children?: React.ReactNode
   command?: Omit<
-    ActionCommandConfig,
+    ActionCommandConfig<unknown>,
     'action' | 'children' | 'askForConfirmation'
   > & {
     label?: ReactNode
   }
   triggerOn?: ReactEventHandler[]
-} & UseSuperActionOptions<void, undefined>
+} & UseSuperActionOptions<unknown, undefined>
 
 ActionWrapperSlot.displayName = 'ActionWrapperSlot'
 
@@ -51,7 +51,7 @@ export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
       stopPropagation,
       command,
       triggerOn = ['onClick'],
-      ...buttonProps
+      ...slotProps
     } = props
     const { isLoading, trigger } = useSuperAction({
       action,
@@ -68,7 +68,7 @@ export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
           ref={ref}
           disabled={isLoading || disabled}
           isLoading={isLoading}
-          {...buttonProps}
+          {...slotProps}
           {...Object.fromEntries(
             map(triggerOn, (superOn) => [
               superOn,
@@ -79,10 +79,14 @@ export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
           {children}
         </ActionWrapperSlot>
         {command && (
-          <ActionCommand
+          <ActionCommand<unknown>
             icon={Icon}
             {...command}
-            action={trigger as any} // TODO: fix type
+            action={action}
+            disabled={isLoading || disabled}
+            catchToast={catchToast}
+            askForConfirmation={askForConfirmation}
+            stopPropagation={stopPropagation}
           >
             {command.label ?? children}
           </ActionCommand>

@@ -7,20 +7,23 @@ import {
   actionCommandsAtom,
 } from './ActionCommandProvider'
 
-export const ActionCommandClient = (command: ActionCommandConfig) => {
+export const ActionCommandClient = <Result,>(
+  props: ActionCommandConfig<Result>,
+) => {
   useRegisterActionCommand({
-    command,
+    command: props,
   })
   return null
 }
 
-const useRegisterActionCommand = ({
+const useRegisterActionCommand = <Result,>({
   command,
 }: {
-  command: ActionCommandConfig
+  command: ActionCommandConfig<Result>
 }) => {
   const id = useId()
   const setCommands = useSetAtom(actionCommandsAtom)
+
   useLayoutEffect(() => {
     setCommands((prev) => ({ ...prev, [id]: command }))
     return () => {

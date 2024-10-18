@@ -1,20 +1,21 @@
 'use client'
 import { useEffect } from 'react'
+import { useSuperAction } from '../action/useSuperAction'
 import { ActionCommandConfig } from './ActionCommandProvider'
 
 export const ActionCommandKeyboardShortcut = ({
   command,
-  disabled,
+  onActionExecuted,
 }: {
-  command: ActionCommandConfig
-  disabled?: boolean
+  command: Omit<ActionCommandConfig<unknown>, 'children' | 'group'>
+  onActionExecuted?: () => void
 }) => {
-  const { action, shortcut } = command
+  const { shortcut, ...superActionOptions } = command
+  const { trigger } = useSuperAction(superActionOptions)
 
   useEffect(() => {
-    if (disabled) return
     if (!shortcut) return
-    const down = (e: KeyboardEvent) => {
+    const down = async (e: KeyboardEvent) => {
       if (e.target !== document.body) return
       if (e.key.toLowerCase() !== shortcut.key.toLowerCase()) return
       if (shortcut.cmdCtrl && (!e.metaKey || !e.ctrlKey)) return
@@ -22,12 +23,13 @@ export const ActionCommandKeyboardShortcut = ({
       // if (shortcut.alt && !e.altKey) return
 
       e.preventDefault()
-      action()
+      await trigger(undefined)
+      onActionExecuted?.()
     }
 
     document.addEventListener('keydown', down)
     return () => document.removeEventListener('keydown', down)
-  }, [action, disabled, shortcut])
+  }, [shortcut, trigger])
 
   return null
 }
