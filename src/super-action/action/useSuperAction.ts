@@ -1,11 +1,11 @@
 'use client'
 
 import { toast } from '@/components/ui/use-toast'
-import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { useShowDialog } from '../dialog/DialogProvider'
 import { consumeSuperActionResponse } from './consumeSuperActionResponse'
 import { SuperAction, SuperActionDialog } from './createSuperAction'
+import { useRouterTryCatch } from './useRouterTryCatch'
 
 export type UseSuperActionOptions<Result, Input> = {
   action: SuperAction<Result, Input>
@@ -30,7 +30,7 @@ export const useSuperAction = <Result = undefined, Input = undefined>(
     forceNeverStopLoading,
   } = options
 
-  const router = useRouter()
+  const router = useRouterTryCatch()
   const showDialog = useShowDialog()
 
   const trigger = useCallback(
