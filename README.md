@@ -38,7 +38,6 @@ Setup your Admin User WITHOUT discord or email:
   - Add Redirects:
   - `http://localhost:3000/api/auth/callback/discord`
   - `https://your-app.com/api/auth/callback/discord`
-    <<<<<<< HEAD
 - Setup Email
   - [Resend](https://resend.com/)
   - `EMAIL_FROM`: your-email@example.com
@@ -46,19 +45,6 @@ Setup your Admin User WITHOUT discord or email:
 - Setup AI
   - `LAUNCHPAD_IMAGES`: [Teampilot Public Launchpad Id](https://docs.teampilot.ai/getting-started/provide-a-public-launchpad)
 - `pnpm db:push` to push schema to DB
-
-=======
-
-- `pnpm db:push` to push schema to DB
-
-## Run
-
-```bash
-pnpm install
-pnpm dev
-```
-
-> > > > > > > template/main
 
 ## Libraries
 
