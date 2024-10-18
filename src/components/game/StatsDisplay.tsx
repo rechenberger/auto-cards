@@ -78,7 +78,7 @@ export const StatDisplay = ({
     >
       <stat.icon
         className={cn(
-          'size-4',
+          'size-4 flex-none',
           size === 'sm' && 'size-3',
           (hideCount || stat.hideCount) && size !== 'sm' && 'm-0.5',
         )}
@@ -86,7 +86,7 @@ export const StatDisplay = ({
       {!hideCount && !stat.hideCount && (
         <div
           className={cn(
-            'text-sm px-1 font-bold',
+            'text-xs md:text-sm px-1 font-bold',
             size === 'sm' && 'text-xs -mb-0.5',
             'flex-1 text-right',
           )}
