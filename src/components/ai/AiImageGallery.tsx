@@ -3,7 +3,7 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { tryGetItemByName } from '@/game/allItems'
 import { cn } from '@/lib/utils'
-import { ActionButton } from '@/super-action/button/ActionButton'
+import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { capitalCase } from 'change-case'
 import { eq } from 'drizzle-orm'
 import { first, orderBy } from 'lodash-es'
@@ -67,10 +67,7 @@ export const AiImageGallery = async (props: AiImageGalleryProps) => {
         >
           {aiImages.map((aiImage) => (
             <Fragment key={aiImage.id}>
-              <ActionButton
-                component="button"
-                hideIcon
-                className="relative"
+              <ActionWrapper
                 action={async () => {
                   'use server'
                   await throwIfNotAdmin({ allowDev: true })
@@ -83,26 +80,28 @@ export const AiImageGallery = async (props: AiImageGalleryProps) => {
                   revalidatePath('/', 'layout')
                 }}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={aiImage.url}
-                  alt={prompt}
-                  className={cn(
-                    active === aiImage && 'ring-4 ring-primary',
-                    className,
-                  )}
-                />
-                {aiImage.prompt !== prompt && (
-                  <div
+                <button className="relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={aiImage.url}
+                    alt={prompt}
                     className={cn(
-                      'absolute top-2 right-2 bg-orange-500 text-white text-xs rounded-md',
-                      tiny ? 'size-3' : 'px-2 py-1',
+                      active === aiImage && 'ring-4 ring-primary',
+                      className,
                     )}
-                  >
-                    {!tiny && <div>Old Prompt</div>}
-                  </div>
-                )}
-              </ActionButton>
+                  />
+                  {aiImage.prompt !== prompt && (
+                    <div
+                      className={cn(
+                        'absolute top-2 right-2 bg-orange-500 text-white text-xs rounded-md',
+                        tiny ? 'size-3' : 'px-2 py-1',
+                      )}
+                    >
+                      {!tiny && <div>Old Prompt</div>}
+                    </div>
+                  )}
+                </button>
+              </ActionWrapper>
             </Fragment>
           ))}
         </div>
