@@ -67,7 +67,7 @@ export const GameMatchBoardSingle = async ({
   const inner = (
     <div
       className={cn(
-        'size-8 rounded-full',
+        'size-6 md:size-8 rounded-full',
         status === 'won'
           ? 'bg-amber-300'
           : status === 'lost'
