@@ -54,7 +54,7 @@ const SuperDialog = ({
           }
         }}
       >
-        <DialogContent className={dialog.className}>
+        <DialogContent>
           {dialog.title && (
             <DialogHeader>
               <DialogTitle>{dialog.title}</DialogTitle>

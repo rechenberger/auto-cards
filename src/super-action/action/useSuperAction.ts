@@ -1,38 +1,33 @@
 'use client'
 
 import { toast } from '@/components/ui/use-toast'
+import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { useShowDialog } from '../dialog/DialogProvider'
 import { consumeSuperActionResponse } from './consumeSuperActionResponse'
 import { SuperAction, SuperActionDialog } from './createSuperAction'
-import { useRouterTryCatch } from './useRouterTryCatch'
 
-export type UseSuperActionOptions = {
-  action: SuperAction
+export type UseSuperActionOptions<Result, Input> = {
+  action: SuperAction<Result, Input>
   disabled?: boolean
   catchToast?: boolean
   askForConfirmation?: boolean | SuperActionDialog
   stopPropagation?: boolean
-  forceNeverStopLoading?: boolean
 }
 
-export const useSuperAction = (options: UseSuperActionOptions) => {
+export const useSuperAction = <Result = undefined, Input = undefined>(
+  options: UseSuperActionOptions<Result, Input>,
+) => {
   const [isLoading, setIsLoading] = useState(false)
 
-  const {
-    action,
-    disabled,
-    catchToast,
-    askForConfirmation,
-    stopPropagation,
-    forceNeverStopLoading,
-  } = options
+  const { action, disabled, catchToast, askForConfirmation, stopPropagation } =
+    options
 
-  const router = useRouterTryCatch()
+  const router = useRouter()
   const showDialog = useShowDialog()
 
   const trigger = useCallback(
-    async (evt?: MouseEvent) => {
+    async (input: Input, evt?: MouseEvent) => {
       if (isLoading) return
       if (disabled) return
       if (stopPropagation) {
@@ -52,10 +47,10 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
       }
       setIsLoading(true)
 
-      const response = await action()
+      const response = await action(input)
 
       if (response && 'superAction' in response) {
-        await consumeSuperActionResponse({
+        const result = await consumeSuperActionResponse({
           response: Promise.resolve(response.superAction),
           onToast: (t) => {
             toast({
@@ -68,9 +63,9 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
           },
           onRedirect: (r) => {
             if (r.type === 'push') {
-              router?.push(r.url)
+              router.push(r.url)
             } else {
-              router?.replace(r.url)
+              router.replace(r.url)
             }
           },
           catch: catchToast
@@ -82,11 +77,11 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
               }
             : undefined,
         })
+
+        return result
       }
 
-      if (!forceNeverStopLoading) {
-        setIsLoading(false)
-      }
+      setIsLoading(false)
     },
     [
       isLoading,
@@ -94,7 +89,6 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
       stopPropagation,
       askForConfirmation,
       action,
-      forceNeverStopLoading,
       showDialog,
       catchToast,
       router,
