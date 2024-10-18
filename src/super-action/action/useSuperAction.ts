@@ -70,9 +70,9 @@ export const useSuperAction = <Result = undefined, Input = undefined>(
           },
           onRedirect: (r) => {
             if (r.type === 'push') {
-              router.push(r.url)
+              router?.push(r.url)
             } else {
-              router.replace(r.url)
+              router?.replace(r.url)
             }
           },
           catch: catchToast
