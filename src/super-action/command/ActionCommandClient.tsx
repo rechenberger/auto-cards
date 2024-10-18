@@ -7,19 +7,17 @@ import {
   actionCommandsAtom,
 } from './ActionCommandProvider'
 
-export const ActionCommandClient = <Result,>(
-  props: ActionCommandConfig<Result>,
-) => {
+export const ActionCommandClient = (props: ActionCommandConfig) => {
   useRegisterActionCommand({
     command: props,
   })
   return null
 }
 
-const useRegisterActionCommand = <Result,>({
+const useRegisterActionCommand = ({
   command,
 }: {
-  command: ActionCommandConfig<Result>
+  command: ActionCommandConfig
 }) => {
   const id = useId()
   const setCommands = useSetAtom(actionCommandsAtom)

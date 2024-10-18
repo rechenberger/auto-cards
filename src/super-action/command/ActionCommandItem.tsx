@@ -9,7 +9,7 @@ export const ActionCommandItem = ({
   command,
   onActionExecuted,
 }: {
-  command: Omit<ActionCommandConfig<unknown>, 'group'>
+  command: Omit<ActionCommandConfig, 'group'>
   onActionExecuted?: () => void
 }) => {
   const { children, shortcut, icon, ...superActionOptions } = command
@@ -17,7 +17,7 @@ export const ActionCommandItem = ({
 
   return (
     <CommandItem
-      disabled={isLoading}
+      disabled={isLoading || command.disabled}
       onSelect={async () => {
         await trigger(undefined)
         onActionExecuted?.()

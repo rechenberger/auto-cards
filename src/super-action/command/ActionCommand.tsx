@@ -1,9 +1,9 @@
 import { ActionCommandClient } from './ActionCommandClient'
 import { ActionCommandConfig } from './ActionCommandProvider'
 
-export const ActionCommand = <Result,>({
+export const ActionCommand = ({
   children,
   ...command
-}: ActionCommandConfig<Result>) => {
+}: ActionCommandConfig) => {
   return <ActionCommandClient {...command}>{children}</ActionCommandClient>
 }
