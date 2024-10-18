@@ -51,6 +51,7 @@ export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
       stopPropagation,
       command,
       triggerOn = ['onClick'],
+      forceNeverStopLoading,
       ...buttonProps
     } = props
     const { isLoading, trigger } = useSuperAction({
@@ -59,6 +60,7 @@ export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
       catchToast,
       askForConfirmation,
       stopPropagation,
+      forceNeverStopLoading,
     })
     const Icon = isLoading ? Loader2 : ArrowRight
 
