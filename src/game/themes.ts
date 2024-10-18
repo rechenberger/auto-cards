@@ -1,4 +1,3 @@
-import { constArrayMap } from '@/lib/constArrayMap'
 import {
   fontCreepy,
   fontFuturistic,
@@ -8,6 +7,7 @@ import {
   fontViking,
 } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
+import { map } from 'remeda'
 import { z } from 'zod'
 
 export const PLACEHOLDER_ITEM_PROMPT = '[ITEM_PROMPT]' as const
@@ -96,7 +96,7 @@ export type ThemeDefinition = ThemeDefinitionRaw & {
 export const nullThemeId: ThemeId = 'legacy' as any // Saved in DB as null
 export const defaultThemeId: ThemeId = 'cozy' // Default theme
 
-const allThemes = constArrayMap(allThemeDefinitions, 'name')
+const allThemes = map(allThemeDefinitions, (theme) => theme.name)
 
 export const ThemeId = z.enum(allThemes)
 export type ThemeId = z.infer<typeof ThemeId>
