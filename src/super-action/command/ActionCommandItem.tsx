@@ -16,7 +16,7 @@ export const ActionCommandItem = ({
 
   return (
     <CommandItem
-      disabled={isLoading}
+      disabled={isLoading || command.disabled}
       onSelect={async () => {
         await trigger(undefined)
         onActionExecuted?.()
