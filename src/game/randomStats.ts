@@ -1,7 +1,7 @@
-import { constArrayMap } from '@/lib/constArrayMap'
 import { capitalCase } from 'change-case'
-import { map } from 'lodash-es'
+import { map as lodashMap } from 'lodash-es'
 import { CircleHelp, ShieldQuestion } from 'lucide-react'
+import { map } from 'remeda'
 import { HeroStat, StatDefinitionPre } from './stats'
 
 type RandomStatDefinitionPre = StatDefinitionPre & {
@@ -45,7 +45,11 @@ const randomDebuffRandomStats = [
 ]
 
 const tooltip = (randomStats: Partial<Record<HeroStat, number>>[]) => {
-  return `${map(randomStats, (r) => map(r, (value, stat) => `${value} ${capitalCase(stat)}`).join(' and ')).join(' or ')}`
+  return `${map(randomStats, (r) =>
+    lodashMap(r, (value, stat) => `${value} ${capitalCase(stat)}`).join(
+      ' and ',
+    ),
+  ).join(' or ')}`
 }
 
 export const randomStatDefinitionsRaw = [
@@ -65,7 +69,7 @@ export const randomStatDefinitionsRaw = [
   },
 ] as const satisfies RandomStatDefinitionPre[]
 
-export const randomStats = constArrayMap(randomStatDefinitionsRaw, 'name')
+export const randomStats = map(randomStatDefinitionsRaw, (def) => def.name)
 export type RandomStat = (typeof randomStats)[number]
 
 type RandomStatDefinitionPost = RandomStatDefinitionPre & {

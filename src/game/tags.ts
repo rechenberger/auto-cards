@@ -1,4 +1,4 @@
-import { constArrayMap } from '@/lib/constArrayMap'
+import { map } from 'remeda'
 import { z } from 'zod'
 
 type TagDefinitionRaw = {
@@ -83,7 +83,7 @@ export const allTagsDefinition = [
   },
 ] as const satisfies TagDefinitionRaw[]
 
-export const allTags = constArrayMap(allTagsDefinition, 'name')
+export const allTags = map(allTagsDefinition, (t) => t.name)
 
 export const Tag = z.enum(allTags)
 export type Tag = z.infer<typeof Tag>

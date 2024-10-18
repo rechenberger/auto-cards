@@ -1,4 +1,3 @@
-import { constArrayMap } from '@/lib/constArrayMap'
 import {
   ArrowBigUp,
   ArrowBigUpDash,
@@ -30,6 +29,7 @@ import {
   Syringe,
   Target,
 } from 'lucide-react'
+import { map } from 'remeda'
 import { z } from 'zod'
 import { IGNORE_SPACE, MAX_THORNS_MULTIPLIER } from './config'
 import { randomStatDefinitionsRaw } from './randomStats'
@@ -228,7 +228,7 @@ const heroStats = [
     tooltip: 'Enemies attack the target with the highest priority first.',
   },
 ] as const satisfies StatDefinitionPre[]
-export const allHeroStats = constArrayMap(heroStats, 'name')
+export const allHeroStats = map(heroStats, (stat) => stat.name)
 export const HeroStat = z.enum(allHeroStats)
 export type HeroStat = z.infer<typeof HeroStat>
 
@@ -273,7 +273,7 @@ export const getStatDefinition = (stat: Stat) => {
   return def as StatDefinitionPost
 }
 
-export const allStats = constArrayMap(allStatsDefinitionConst, 'name')
+export const allStats = map(allStatsDefinitionConst, (def) => def.name)
 
 export const Stat = z.enum(allStats)
 export type Stat = (typeof allStats)[number]

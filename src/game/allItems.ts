@@ -1,5 +1,5 @@
-import { constArrayMap } from '@/lib/constArrayMap'
 import { keyBy } from 'lodash-es'
+import { map } from 'remeda'
 import { z } from 'zod'
 import { GAME_VERSION, IGNORE_SPACE } from './config'
 import { ItemDefinition } from './ItemDefinition'
@@ -2243,7 +2243,7 @@ const allItemsConst = [
   // },
 ] as const satisfies ItemDefinition[]
 
-export const allItemNames = constArrayMap(allItemsConst, 'name')
+export const allItemNames = map(allItemsConst, (item) => item.name)
 export const ItemName = z.enum(allItemNames)
 export type ItemName = z.infer<typeof ItemName>
 

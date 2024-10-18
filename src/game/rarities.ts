@@ -1,4 +1,4 @@
-import { constArrayMap } from '@/lib/constArrayMap'
+import { map } from 'remeda'
 import { z } from 'zod'
 
 export const allRarityDefinitions = [
@@ -34,7 +34,7 @@ export const getRarityDefinition = (rarity: Rarity = 'common') => {
   return def
 }
 
-export const allRarities = constArrayMap(allRarityDefinitions, 'name')
+export const allRarities = map(allRarityDefinitions, (def) => def.name)
 
 export const Rarity = z.enum(allRarities)
 export type Rarity = z.infer<typeof Rarity>

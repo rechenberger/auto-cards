@@ -68,6 +68,7 @@
     "react-hook-form": "^7.51.3",
     "react-markdown": "^9.0.1",
     "recharts": "^2.12.7",
+    "remeda": "^2.15.2",
     "resend": "^3.2.0",
     "seedrandom": "^3.0.5",
     "tailwind-merge": "^1.14.0",
