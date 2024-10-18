@@ -10,11 +10,9 @@ export const ActionCommand = ({
   icon?: LucideIcon | null
 }) => {
   return (
-    <>
-      <ActionCommandClient {...command}>
-        {!!Icon && <Icon className="mr-2 h-4 w-4" />}
-        {children}
-      </ActionCommandClient>
-    </>
+    <ActionCommandClient {...command}>
+      {!!Icon && <Icon className="mr-2 h-4 w-4" />}
+      {children}
+    </ActionCommandClient>
   )
 }

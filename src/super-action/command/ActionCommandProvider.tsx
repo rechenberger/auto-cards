@@ -3,7 +3,8 @@
 import { CommandGroup } from '@/components/ui/command'
 import { atom, useAtomValue } from 'jotai'
 import { groupBy, indexOf, map, orderBy } from 'lodash-es'
-import { Fragment, ReactNode, useState } from 'react'
+import { Fragment, ReactNode } from 'react'
+import { UseSuperActionOptions } from '../action/useSuperAction'
 import {
   ActionCommandDialog,
   useActionCommandDialog,
@@ -16,11 +17,9 @@ import {
 import { ActionCommandItem } from './ActionCommandItem'
 import { ActionCommandKeyboardShortcut } from './ActionCommandKeyboardShortcut'
 
-export type ActionCommandConfig = {
+export type ActionCommandConfig = UseSuperActionOptions<unknown, undefined> & {
   children: ReactNode
   group?: ActionCommandGroup
-  action: () => Promise<void>
-  askForConfirmation?: boolean
   shortcut?: {
     key: string
     cmdCtrl?: true
@@ -50,8 +49,6 @@ export const ActionCommandProvider = () => {
 
   const { open, setOpen } = useActionCommandDialog()
 
-  const [loading, setLoading] = useState(false)
-
   return (
     <>
       <ActionCommandDialog open={open} setOpen={setOpen}>
@@ -62,20 +59,9 @@ export const ActionCommandProvider = () => {
                 {map(commands, (command, id) => (
                   <Fragment key={id}>
                     <ActionCommandItem
-                      disabled={loading}
-                      command={{
-                        ...command,
-                        action: async () => {
-                          setLoading(true)
-                          if (
-                            command.askForConfirmation &&
-                            !confirm('Are you sure?')
-                          )
-                            return
-                          await command.action()
-                          setOpen(false)
-                          setLoading(false)
-                        },
+                      command={command}
+                      onActionExecuted={() => {
+                        setOpen(false)
                       }}
                     />
                   </Fragment>
@@ -88,17 +74,9 @@ export const ActionCommandProvider = () => {
       {map(commands, (command, id) => (
         <Fragment key={id}>
           <ActionCommandKeyboardShortcut
-            disabled={loading}
-            command={{
-              ...command,
-              action: async () => {
-                setLoading(true)
-                if (command.askForConfirmation && !confirm('Are you sure?'))
-                  return
-                await command.action()
-                setOpen(false)
-                setLoading(false)
-              },
+            command={command}
+            onActionExecuted={() => {
+              setOpen(false)
             }}
           />
         </Fragment>
