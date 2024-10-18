@@ -78,6 +78,7 @@ export const useSuperAction = <Result = undefined, Input = undefined>(
             : undefined,
         })
 
+        setIsLoading(false)
         return result
       }
 
