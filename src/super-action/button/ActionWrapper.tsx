@@ -30,7 +30,7 @@ const ActionWrapperSlot = forwardRef<HTMLElement, ActionWrapperSlotProps>(
 export type ActionWrapperProps = {
   children?: React.ReactNode
   command?: Omit<
-    ActionCommandConfig<unknown>,
+    ActionCommandConfig,
     'action' | 'children' | 'askForConfirmation'
   > & {
     label?: ReactNode

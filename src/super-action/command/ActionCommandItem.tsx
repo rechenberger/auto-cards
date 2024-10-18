@@ -8,7 +8,7 @@ export const ActionCommandItem = ({
   command,
   onActionExecuted,
 }: {
-  command: Omit<ActionCommandConfig<unknown>, 'group'>
+  command: Omit<ActionCommandConfig, 'group'>
   onActionExecuted?: () => void
 }) => {
   const { children, shortcut, ...superActionOptions } = command

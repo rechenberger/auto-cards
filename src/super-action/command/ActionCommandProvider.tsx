@@ -3,7 +3,7 @@
 import { CommandGroup } from '@/components/ui/command'
 import { atom, useAtomValue } from 'jotai'
 import { groupBy, indexOf, map, orderBy } from 'lodash-es'
-import { Fragment, ReactNode, useState } from 'react'
+import { Fragment, ReactNode } from 'react'
 import { UseSuperActionOptions } from '../action/useSuperAction'
 import {
   ActionCommandDialog,
@@ -17,10 +17,7 @@ import {
 import { ActionCommandItem } from './ActionCommandItem'
 import { ActionCommandKeyboardShortcut } from './ActionCommandKeyboardShortcut'
 
-export type ActionCommandConfig<Result> = UseSuperActionOptions<
-  Result,
-  undefined
-> & {
+export type ActionCommandConfig = UseSuperActionOptions<unknown, undefined> & {
   children: ReactNode
   group?: ActionCommandGroup
   shortcut?: {
@@ -31,9 +28,9 @@ export type ActionCommandConfig<Result> = UseSuperActionOptions<
   }
 }
 
-type ActionCommandConfigs<Result> = Record<string, ActionCommandConfig<Result>>
+type ActionCommandConfigs = Record<string, ActionCommandConfig>
 
-export const actionCommandsAtom = atom<ActionCommandConfigs<unknown>>({})
+export const actionCommandsAtom = atom<ActionCommandConfigs>({})
 
 export const ActionCommandProvider = () => {
   const commands = useAtomValue(actionCommandsAtom)
@@ -51,8 +48,6 @@ export const ActionCommandProvider = () => {
   )
 
   const { open, setOpen } = useActionCommandDialog()
-
-  const [loading, setLoading] = useState(false)
 
   return (
     <>

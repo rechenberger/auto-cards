@@ -7,7 +7,7 @@ export const ActionCommandKeyboardShortcut = ({
   command,
   onActionExecuted,
 }: {
-  command: Omit<ActionCommandConfig<unknown>, 'children' | 'group'>
+  command: Omit<ActionCommandConfig, 'children' | 'group'>
   onActionExecuted?: () => void
 }) => {
   const { shortcut, ...superActionOptions } = command
@@ -29,7 +29,7 @@ export const ActionCommandKeyboardShortcut = ({
 
     document.addEventListener('keydown', down)
     return () => document.removeEventListener('keydown', down)
-  }, [shortcut, trigger])
+  }, [onActionExecuted, shortcut, trigger])
 
   return null
 }

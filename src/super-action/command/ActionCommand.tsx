@@ -6,7 +6,7 @@ export const ActionCommand = ({
   icon: Icon = ArrowRight,
   children,
   ...command
-}: ActionCommandConfig<unknown> & {
+}: ActionCommandConfig & {
   icon?: LucideIcon | null
 }) => {
   return (
