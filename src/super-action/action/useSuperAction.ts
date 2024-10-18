@@ -101,6 +101,7 @@ export const useSuperAction = <Result = undefined, Input = undefined>(
       showDialog,
       catchToast,
       router,
+      forceNeverStopLoading,
     ],
   )
 
