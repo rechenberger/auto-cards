@@ -1,6 +1,6 @@
 import { filter, floor, some, sumBy } from 'lodash-es'
 import { z } from 'zod'
-import { hasAnyStats } from './calcStats'
+import { addStats, hasAnyStats } from './calcStats'
 import { MatchState } from './generateMatch'
 import { Stat, Stats } from './stats'
 import { Tag } from './tags'
@@ -63,11 +63,12 @@ export const getModifiedStats = (
   const item = side.items[itemIdx]
   const trigger = item.triggers![triggerIdx]
 
-  let result = stats === 'statsForItem' ? statsForItem : trigger[stats]
+  let result: Stats | undefined =
+    stats === 'statsForItem' ? statsForItem : trigger[stats]
   const modifiers = trigger.modifiers?.filter((m) => m.targetStats === stats)
   if (!modifiers?.length) return result
 
-  result = { ...result }
+  result = result ? addStats({}, result) : {}
 
   for (const modifier of modifiers) {
     const sourceSideIdx = modifier.sourceSide === 'self' ? sideIdx : 1 - sideIdx
