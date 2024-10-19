@@ -2,6 +2,7 @@ import { LoadoutData } from '@/db/schema-zod'
 import { capitalCase } from 'change-case'
 import { keys, map, omitBy, range, sumBy, uniq } from 'lodash-es'
 import { getItemByName } from './allItems'
+import { ItemDefinition } from './ItemDefinition'
 import { randomStats } from './randomStats'
 import { Stat, Stats } from './stats'
 
@@ -10,12 +11,20 @@ export const calcStats = async ({ loadout }: { loadout: LoadoutData }) => {
     loadout.items.map(async (i) => {
       return {
         ...i,
-        item: await getItemByName(i.name),
+        ...(await getItemByName(i.name)),
       }
     }),
   )
+  return calcStatsFromItems({ items })
+}
+
+export const calcStatsFromItems = ({
+  items,
+}: {
+  items: (ItemDefinition & { count?: number })[]
+}) => {
   const stats = sumStats(
-    ...items.flatMap((i) => range(i.count ?? 1).map(() => i.item.stats || {})),
+    ...items.flatMap((i) => range(i.count ?? 1).map(() => i.stats || {})),
   )
   return stats
 }

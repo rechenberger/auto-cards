@@ -8,11 +8,11 @@ import {
   SeedRng,
 } from '@/game/seed'
 import { cloneDeep, first, maxBy, minBy, orderBy, range } from 'lodash-es'
-import { getItemByName } from './allItems'
+import { allItemsForPerformance, fallbackItemDef } from './allItems'
 import { calcCooldown } from './calcCooldown'
 import {
   addStats,
-  calcStats,
+  calcStatsFromItems,
   hasStats,
   sumStats2,
   tryAddStats,
@@ -25,9 +25,9 @@ import {
   MAX_MATCH_TIME,
   MAX_THORNS_MULTIPLIER,
 } from './config'
-import { TriggerEventType } from './ItemDefinition'
+import { ItemDefinition, TriggerEventType } from './ItemDefinition'
 import { getAllModifiedStats, getModifiedStats } from './modifiers'
-import { orderItems } from './orderItems'
+import { orderItemsWithoutLookup } from './orderItems'
 import { randomStatsResolve } from './randomStatsResolve'
 import { Stats } from './stats'
 
@@ -54,38 +54,36 @@ export type GenerateMatchInput = {
   }[]
   seed: SeedArray
   skipLogs: boolean
+  allItems?: ItemDefinition[]
 }
 
-const generateMatchStateSides = async (input: GenerateMatchInput) => {
-  const sides = await Promise.all(
-    input.participants.map(async (p, idx) => {
-      let items = await Promise.all(
-        p.loadout.items.map(async (i) => {
-          const def = await getItemByName(i.name)
-          return {
-            ...def,
-            statsItem: def.statsItem ? { ...def.statsItem } : undefined,
-            count: def.unique ? 1 : (i.count ?? 1),
-          }
-        }),
-      )
-      items = await orderItems(items)
-      const stats = await calcStats({ loadout: p.loadout })
-
+const generateMatchStateSides = (input: GenerateMatchInput) => {
+  const allItems = input.allItems ?? allItemsForPerformance
+  const sides = input.participants.map((p, idx) => {
+    let items = p.loadout.items.map((i) => {
+      const def =
+        allItems.find((d) => d.name === i.name) ?? fallbackItemDef(i.name)
       return {
-        items,
-        stats,
-        sideIdx: idx,
+        ...def,
+        statsItem: def.statsItem ? { ...def.statsItem } : undefined,
+        count: def.unique ? 1 : (i.count ?? 1),
       }
-    }),
-  )
+    })
+
+    items = orderItemsWithoutLookup(items)
+    const stats = calcStatsFromItems({ items })
+
+    return {
+      items,
+      stats,
+      sideIdx: idx,
+    }
+  })
   return sides
 }
 
-const generateMatchStateFutureActionsItems = async (
-  input: GenerateMatchInput,
-) => {
-  const sides = await generateMatchStateSides(input)
+const generateMatchStateFutureActionsItems = (input: GenerateMatchInput) => {
+  const sides = generateMatchStateSides(input)
   const futureActionsItems = rngOrder({
     items: sides,
     seed: [...input.seed, 'futureActions'],
@@ -132,9 +130,9 @@ export type FutureActionItem = Awaited<
   ReturnType<typeof generateMatchStateFutureActionsItems>
 >['futureActionsItems'][number]
 
-export const generateMatchState = async (input: GenerateMatchInput) => {
+export const generateMatchState = (input: GenerateMatchInput) => {
   const { sides, futureActionsItems } =
-    await generateMatchStateFutureActionsItems(input)
+    generateMatchStateFutureActionsItems(input)
 
   const futureActionsBase = [
     { type: 'baseTick' as const, time: 0, active: true },
@@ -148,14 +146,14 @@ export type MatchState = Awaited<ReturnType<typeof generateMatchState>>
 
 export const NOT_ENOUGH_MSG = 'Not enough'
 
-export const generateMatch = async ({
+export const generateMatch = ({
   skipLogs,
   participants,
   seed: _seed,
 }: GenerateMatchInput) => {
   let time = 0
 
-  const state = await generateMatchState({
+  const state = generateMatchState({
     participants,
     seed: _seed,
     skipLogs,

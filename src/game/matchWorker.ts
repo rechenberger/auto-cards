@@ -3,9 +3,9 @@ import { parentPort } from 'worker_threads'
 import { MatchWorkerInput, MatchWorkerOutput } from './matchWorkerManager'
 
 const main = async () => {
-  parentPort?.on('message', async (message: MatchWorkerInput) => {
+  parentPort?.on('message', (message: MatchWorkerInput) => {
     try {
-      const output = await generateMatch(message.input)
+      const output = generateMatch(message.input)
       parentPort?.postMessage({
         jobId: message.jobId,
         output,
