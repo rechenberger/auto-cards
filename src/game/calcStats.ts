@@ -40,7 +40,15 @@ export const sumStats = (...allStats: Stats[]) => {
 }
 
 export const sumStats2 = (a: Stats, b: Stats) => {
-  return addStats(addStats({}, a), b)
+  return addStats(cloneStats(a), b)
+}
+
+export const cloneStats = (stats?: Stats) => {
+  const result = {} as Stats
+  for (const key in stats) {
+    result[key as keyof Stats] = stats[key as keyof Stats]
+  }
+  return result
 }
 
 export const addStats = (a: Stats, b: Stats) => {
