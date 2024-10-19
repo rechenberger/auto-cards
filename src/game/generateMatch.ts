@@ -21,6 +21,7 @@ import { calcCooldown } from './calcCooldown'
 import {
   addStats,
   calcStatsFromItems,
+  cloneStats,
   hasStats,
   sumStats2,
   tryAddStats,
@@ -73,7 +74,7 @@ const generateMatchStateSides = (input: GenerateMatchInput) => {
         allItems.find((d) => d.name === i.name) ?? fallbackItemDef(i.name)
       return {
         ...def,
-        statsItem: def.statsItem ? { ...def.statsItem } : undefined,
+        statsItem: def.statsItem ? cloneStats(def.statsItem) : undefined,
         count: def.unique ? 1 : (i.count ?? 1),
       }
     })
