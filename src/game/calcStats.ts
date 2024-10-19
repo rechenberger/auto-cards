@@ -40,7 +40,7 @@ export const sumStats = (...allStats: Stats[]) => {
 }
 
 export const sumStats2 = (a: Stats, b: Stats) => {
-  return addStats({ ...a }, b)
+  return addStats(addStats({}, a), b)
 }
 
 export const addStats = (a: Stats, b: Stats) => {
