@@ -64,8 +64,8 @@ export const getModifiedStats = (
   const trigger = item.triggers![triggerIdx]
 
   let result = stats === 'statsForItem' ? statsForItem : trigger[stats]
-  const modifiers = filter(trigger.modifiers, (m) => m.targetStats === stats)
-  if (!modifiers.length) return result
+  const modifiers = trigger.modifiers?.filter((m) => m.targetStats === stats)
+  if (!modifiers?.length) return result
 
   result = { ...result }
 
