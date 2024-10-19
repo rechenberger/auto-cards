@@ -7,7 +7,15 @@ import {
   SeedArray,
   SeedRng,
 } from '@/game/seed'
-import { cloneDeep, first, maxBy, minBy, orderBy, range } from 'lodash-es'
+import {
+  cloneDeep,
+  first,
+  groupBy,
+  maxBy,
+  minBy,
+  orderBy,
+  range,
+} from 'lodash-es'
 import { allItemsForPerformance, fallbackItemDef } from './allItems'
 import { calcCooldown } from './calcCooldown'
 import {
@@ -732,6 +740,11 @@ export const generateMatch = ({
     // })
   }
 
+  const futureActionsByType = groupBy(futureActions, (a) => a.type) as Record<
+    TriggerEventType,
+    FutureActionItem[]
+  >
+
   const triggerEvents = ({
     eventType,
     parentTrigger,
@@ -746,14 +759,14 @@ export const generateMatch = ({
     itemCounter?: number
   }) => {
     // Find Actions
-    const actions = futureActions.filter(
-      (a) =>
-        a.active &&
-        a.type === eventType &&
-        a.sideIdx === sideIdx &&
-        (itemIdx === undefined ? !a.creature : a.itemIdx === itemIdx) &&
-        (itemCounter === undefined || a.itemCounter === itemCounter),
-    )
+    const actions =
+      futureActionsByType[eventType]?.filter(
+        (a) =>
+          a.active &&
+          a.sideIdx === sideIdx &&
+          (itemIdx === undefined ? !a.creature : a.itemIdx === itemIdx) &&
+          (itemCounter === undefined || a.itemCounter === itemCounter),
+      ) ?? []
 
     // Trigger Actions
     for (const action of actions) {
