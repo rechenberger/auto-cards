@@ -110,7 +110,12 @@ export const hasStats = (a: Stats, b: Stats) => {
 }
 
 export const hasAnyStats = ({ stats }: { stats: Stats }) => {
-  return !!keys(omitBy(stats, (v) => v === undefined || v === 0)).length
+  for (const value of Object.values(stats)) {
+    if (value) {
+      return true
+    }
+  }
+  return false
 }
 
 // export const multiplyStats = ({
