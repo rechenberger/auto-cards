@@ -822,7 +822,7 @@ export const generateMatch = ({
       }
 
       const maxMatchMsReached = Date.now() - startedAtMs > MAX_MATCH_MS
-      const maxLogsReached = logs.length > MAX_LOGS
+      const maxLogsReached = logCount > MAX_LOGS
       if (maxMatchMsReached || maxLogsReached) {
         const reason = maxMatchMsReached ? 'MAX_MATCH_MS' : 'MAX_LOGS'
         const seed = first(_seed)
@@ -836,7 +836,7 @@ export const generateMatch = ({
         })
         console.warn(
           `${reason} reached`,
-          { logs: logs.length, ms: Date.now() - startedAtMs },
+          { logs: logCount, ms: Date.now() - startedAtMs },
           `${process.env.NEXT_PUBLIC_BASE_URL}/${playground}`,
         )
         // throw new Error('MAX_MATCH_MS reached')
