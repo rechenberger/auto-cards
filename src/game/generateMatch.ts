@@ -76,16 +76,23 @@ const generateMatchStateSides = (input: GenerateMatchInput) => {
         ...def,
         statsItem: def.statsItem ? cloneStats(def.statsItem) : undefined,
         count: def.unique ? 1 : (i.count ?? 1),
+        itemIdx: -1,
       }
     })
 
     items = orderItemsWithoutLookup(items)
+    items.forEach((item, itemIdx) => {
+      item.itemIdx = itemIdx
+    })
     const stats = calcStatsFromItems({ items })
+
+    const creatures = items.filter((i) => !!i.statsItem?.healthMax)
 
     return {
       items,
       stats,
       sideIdx: idx,
+      creatures,
     }
   })
   return sides
@@ -326,7 +333,7 @@ export const generateMatch = ({
     const trigger = item.triggers![triggerIdx]
 
     const targetItem = maxBy(
-      otherSide.items.filter((i) => (i.statsItem?.health ?? 0) > 0),
+      otherSide.creatures.filter((i) => (i.statsItem?.health ?? 0) > 0),
       (i) => i.statsItem?.priority ?? 0,
     )
     const target =
@@ -803,17 +810,17 @@ export const generateMatch = ({
           baseTick({
             target: side,
           })
-          side.items.forEach((item, itemIdx) => {
+          for (const item of side.creatures) {
             if ((item.statsItem?.health ?? 0) > 0) {
               baseTick({
                 target: {
                   sideIdx: side.sideIdx,
-                  itemIdx,
+                  itemIdx: item.itemIdx,
                   stats: item.statsItem ?? {},
                 },
               })
             }
-          })
+          }
         }
       } else {
         // TRIGGER ITEM
@@ -825,7 +832,7 @@ export const generateMatch = ({
 
       // END OF ACTION CHECK
       for (const side of sides) {
-        side.items.forEach((item, itemIdx) => {
+        for (const item of side.creatures) {
           if (item.statsItem?.health && item.statsItem.health <= 0) {
             // Deactivate future actions
             // TODO: onDie trigger
@@ -834,14 +841,14 @@ export const generateMatch = ({
               if (
                 action.type !== 'baseTick' &&
                 action.sideIdx === side.sideIdx &&
-                action.itemIdx === itemIdx
+                action.itemIdx === item.itemIdx
               ) {
                 action.active = false
                 action.time = MAX_MATCH_TIME // TODO: find a more elegant solution
               }
             }
           }
-        })
+        }
       }
       const dead = sides.some((side) => (side.stats.health ?? 0) <= 0)
       if (dead) {
