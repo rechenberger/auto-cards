@@ -178,6 +178,19 @@ export const generateMatch = ({
     const stateSnapshot = cloneDeep(state)
     logs.push({ ...log, time, itemName, stateSnapshot, logIdx: logs.length })
   }
+  const logF = (
+    f: () => Omit<MatchLog, 'time' | 'itemName' | 'stateSnapshot' | 'logIdx'>,
+  ) => {
+    logCount++
+    if (skipLogs) return
+    const log = f()
+    const itemName =
+      log.itemIdx !== undefined
+        ? sides[log.sideIdx].items[log.itemIdx].name
+        : undefined
+    const stateSnapshot = cloneDeep(state)
+    logs.push({ ...log, time, itemName, stateSnapshot, logIdx: logs.length })
+  }
 
   const endOfMatch = () => {
     const sidesRandom = rngOrder({ items: sides, seed })
@@ -376,24 +389,24 @@ export const generateMatch = ({
     if (statsRequired) {
       const enough = hasStats(statsForItem, statsRequired)
       if (!enough) {
-        log({
+        logF(() => ({
           ...baseLog,
           msg: NOT_ENOUGH_MSG,
           targetSideIdx: mySide.sideIdx,
           stats: statsRequired,
-        })
+        }))
         hasRequiredStats = false
       }
     }
     if (statsRequiredTarget) {
       const enough = hasStats(target.stats, statsRequiredTarget)
       if (!enough) {
-        log({
+        logF(() => ({
           ...baseLog,
           msg: NOT_ENOUGH_MSG,
           targetSideIdx: target.sideIdx,
           stats: statsRequiredTarget,
-        })
+        }))
         hasRequiredStats = false
       }
     }
@@ -407,21 +420,21 @@ export const generateMatch = ({
 
       if (statsSelf) {
         tryAddStats(mySide.stats, statsSelf)
-        log({
+        logF(() => ({
           ...baseLog,
           stats: statsSelf,
           targetSideIdx: mySide.sideIdx,
-        })
+        }))
         randomStatsResolve({
           stats: mySide.stats,
           seed,
           onRandomStat: ({ stats, randomStat }) => {
-            log({
+            logF(() => ({
               ...baseLog,
               stats,
               msg: randomStat,
               targetSideIdx: mySide.sideIdx,
-            })
+            }))
           },
         })
       }
@@ -430,70 +443,70 @@ export const generateMatch = ({
           item.statsItem = {}
         }
         tryAddStats(item.statsItem, statsItem)
-        log({
+        logF(() => ({
           ...baseLog,
           msg: 'apply to item',
           stats: statsItem,
           targetSideIdx: mySide.sideIdx,
           targetItemIdx: itemIdx,
-        })
+        }))
         randomStatsResolve({
           stats: item.statsItem,
           seed,
           onRandomStat: ({ stats, randomStat }) => {
-            log({
+            logF(() => ({
               ...baseLog,
               stats,
               msg: randomStat,
               targetSideIdx: mySide.sideIdx,
               targetItemIdx: itemIdx,
-            })
+            }))
           },
         })
       }
 
       if (statsTarget) {
         tryAddStats(target.stats, statsTarget)
-        log({
+        logF(() => ({
           ...baseLog,
           stats: statsTarget,
           targetSideIdx: target.sideIdx,
           targetItemIdx: target.itemIdx,
-        })
+        }))
         randomStatsResolve({
           stats: target.stats,
           seed,
           onRandomStat: ({ stats, randomStat }) => {
-            log({
+            logF(() => ({
               ...baseLog,
               stats,
               msg: randomStat,
               targetSideIdx: target.sideIdx,
               targetItemIdx: target.itemIdx,
-            })
+            }))
           },
         })
       }
 
       if (statsEnemy) {
         tryAddStats(otherSide.stats, statsEnemy)
-        log({
+        logF(() => ({
           ...baseLog,
           stats: statsEnemy,
           targetSideIdx: otherSide.sideIdx,
           targetItemIdx: undefined,
-        })
+        }))
         randomStatsResolve({
           stats: otherSide.stats,
           seed,
           onRandomStat: ({ stats, randomStat }) => {
-            log({
+            logF(() => ({
               ...baseLog,
               stats,
               msg: randomStat,
               targetSideIdx: otherSide.sideIdx,
               targetItemIdx: undefined,
-            })
+            }))
           },
         })
       }
@@ -511,12 +524,12 @@ export const generateMatch = ({
           cantReachReason = 'Blocked by barrier'
         }
         if (cantReachReason) {
-          log({
+          logF(() => ({
             ...baseLog,
             targetSideIdx: target.sideIdx,
             targetItemIdx: target.itemIdx,
             msg: cantReachReason,
-          })
+          }))
         } else {
           if (attack) {
             const accuracyRng = rngFloat({
@@ -606,13 +619,13 @@ export const generateMatch = ({
                 block: -1 * blockedDamage,
               }
               addStats(target.stats, targetStats)
-              log({
+              logF(() => ({
                 ...baseLog,
                 msg: doesCrit ? `Critical Hit` : `Hit`,
                 targetSideIdx: target.sideIdx,
                 targetItemIdx: target.itemIdx,
                 stats: targetStats,
-              })
+              }))
               if (doesCrit) {
                 if (statsForItem.aim) {
                   const removeAimStats: Stats = {
@@ -622,12 +635,12 @@ export const generateMatch = ({
                   if (item.statsItem) {
                     tryAddStats(item.statsItem, removeAimStats)
                   }
-                  log({
+                  logF(() => ({
                     ...baseLog,
                     msg: `Reset Aim`,
                     targetSideIdx: mySide.sideIdx,
                     stats: removeAimStats,
-                  })
+                  }))
                 }
               }
 
@@ -640,13 +653,13 @@ export const generateMatch = ({
                   health: lifeStealDamage,
                 }
                 tryAddStats(mySide.stats, lifeStealStats)
-                log({
+                logF(() => ({
                   ...baseLog,
                   sideIdx: mySide.sideIdx,
                   msg: `Life Steal`,
                   targetSideIdx: mySide.sideIdx,
                   stats: lifeStealStats,
-                })
+                }))
               }
 
               // THORNS
@@ -661,14 +674,14 @@ export const generateMatch = ({
                   health: -1 * thornsDamage,
                 }
                 addStats(mySide.stats, thornsStats)
-                log({
+                logF(() => ({
                   ...baseLog,
                   sideIdx: target.sideIdx,
                   itemIdx: target.itemIdx,
                   msg: `Thorns`,
                   targetSideIdx: mySide.sideIdx,
                   stats: thornsStats,
-                })
+                }))
               }
 
               triggerEvents({
@@ -700,12 +713,12 @@ export const generateMatch = ({
                 })
               }
             } else {
-              log({
+              logF(() => ({
                 ...baseLog,
                 msg: 'Miss',
                 targetSideIdx: target.sideIdx,
                 targetItemIdx: target.itemIdx,
-              })
+              }))
             }
           }
         }
