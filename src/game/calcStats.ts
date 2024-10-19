@@ -2,6 +2,7 @@ import { LoadoutData } from '@/db/schema-zod'
 import { capitalCase } from 'change-case'
 import { keys, map, omitBy, range, sumBy, uniq } from 'lodash-es'
 import { getItemByName } from './allItems'
+import { ItemDefinition } from './ItemDefinition'
 import { randomStats } from './randomStats'
 import { Stat, Stats } from './stats'
 
@@ -10,12 +11,20 @@ export const calcStats = async ({ loadout }: { loadout: LoadoutData }) => {
     loadout.items.map(async (i) => {
       return {
         ...i,
-        item: await getItemByName(i.name),
+        ...(await getItemByName(i.name)),
       }
     }),
   )
+  return calcStatsFromItems({ items })
+}
+
+export const calcStatsFromItems = ({
+  items,
+}: {
+  items: (ItemDefinition & { count?: number })[]
+}) => {
   const stats = sumStats(
-    ...items.flatMap((i) => range(i.count ?? 1).map(() => i.item.stats || {})),
+    ...items.flatMap((i) => range(i.count ?? 1).map(() => i.stats || {})),
   )
   return stats
 }
@@ -31,13 +40,21 @@ export const sumStats = (...allStats: Stats[]) => {
 }
 
 export const sumStats2 = (a: Stats, b: Stats) => {
-  return addStats({ ...a }, b)
+  return addStats(cloneStats(a), b)
+}
+
+export const cloneStats = (stats?: Stats) => {
+  const result = {} as Stats
+  for (const key in stats) {
+    result[key as keyof Stats] = stats[key as keyof Stats]
+  }
+  return result
 }
 
 export const addStats = (a: Stats, b: Stats) => {
   for (const key in b) {
     const k = key as keyof Stats
-    a[k] = (a[k] || 0) + (b[k] || 0)
+    a[k] = (a[k] ?? 0) + (b[k] ?? 0)
   }
   return a
 }
@@ -101,7 +118,12 @@ export const hasStats = (a: Stats, b: Stats) => {
 }
 
 export const hasAnyStats = ({ stats }: { stats: Stats }) => {
-  return !!keys(omitBy(stats, (v) => v === undefined || v === 0)).length
+  for (const value of Object.values(stats)) {
+    if (value) {
+      return true
+    }
+  }
+  return false
 }
 
 // export const multiplyStats = ({
