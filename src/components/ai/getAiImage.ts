@@ -23,7 +23,6 @@ const where = ({ prompt, itemId, themeId }: GetAiImageProps) => {
 const orderBy = desc(schema.aiImage.updatedAt)
 
 const getAiImageRaw = async (props: GetAiImageProps) => {
-  console.log('getAiImageRaw', props)
   return await db.query.aiImage.findFirst({
     where: where(props),
     orderBy,
@@ -31,7 +30,7 @@ const getAiImageRaw = async (props: GetAiImageProps) => {
 }
 
 export const getAiImage = unstable_cache(getAiImageRaw, ['getAiImage'], {
-  tags: ['getAiImage'],
+  tags: ['aiImages'],
 })
 
 const getAiImagesRaw = async (props: GetAiImageProps & { limit?: number }) => {
@@ -43,5 +42,5 @@ const getAiImagesRaw = async (props: GetAiImageProps & { limit?: number }) => {
 }
 
 export const getAiImages = unstable_cache(getAiImagesRaw, ['getAiImages'], {
-  tags: ['getAiImages'],
+  tags: ['aiImages'],
 })
