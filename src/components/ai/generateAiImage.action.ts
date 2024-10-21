@@ -4,8 +4,8 @@ import { schema } from '@/db/schema-export'
 import { nullThemeId } from '@/game/themes'
 import { fetchTeampilot } from '@teampilot/sdk'
 import { first } from 'lodash-es'
-import { revalidatePath } from 'next/cache'
 import { AiImageProps } from './AiImage'
+import { revalidateAiImages } from './revalidateAiImages'
 
 export type GenerateAiImageProps = AiImageProps & {
   force?: boolean
@@ -31,7 +31,7 @@ export const generateAiImage = async ({
     createdAt: new Date().toISOString(),
   })
   if (!skipRevalidate) {
-    revalidatePath('/', 'layout')
+    revalidateAiImages()
   }
 }
 
