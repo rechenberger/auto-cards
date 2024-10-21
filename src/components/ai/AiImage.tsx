@@ -9,7 +9,6 @@ export type AiImageProps = {
   className?: string
   itemId?: string
   themeId?: string
-  autoGenerate?: boolean
 }
 
 export const AiImage = ({
@@ -28,10 +27,6 @@ export const AiImage = ({
 export const AiImageRaw = async (props: AiImageProps) => {
   const { prompt, className, itemId } = props
   let aiImage = await getAiImage(props)
-  if (!aiImage && props.autoGenerate) {
-    await generateAiImage({ ...props, skipRevalidate: true })
-    aiImage = await getAiImage(props)
-  }
   if (!aiImage) {
     return (
       <div

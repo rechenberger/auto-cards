@@ -59,7 +59,7 @@ export const MatchView = async ({
           skipLogs: false,
         }}
       >
-        <MatchBackground themeIds={themeIds} autoGenerate={true} />
+        <MatchBackground themeIds={themeIds} />
         <div
           className={cn(
             'flex-1 grid gap-4',
