@@ -4,12 +4,11 @@ import { schema } from '@/db/schema-export'
 import { nullThemeId } from '@/game/themes'
 import { fetchTeampilot } from '@teampilot/sdk'
 import { first } from 'lodash-es'
-import { revalidatePath } from 'next/cache'
 import { AiImageProps } from './AiImage'
+import { revalidateAiImages } from './revalidateAiImages'
 
 export type GenerateAiImageProps = AiImageProps & {
   force?: boolean
-  skipRevalidate?: boolean
 }
 
 export const generateAiImage = async ({
@@ -17,7 +16,6 @@ export const generateAiImage = async ({
   itemId,
   themeId,
   force = true,
-  skipRevalidate,
 }: GenerateAiImageProps) => {
   'use server'
   await throwIfNotAdmin({ allowDev: true })
@@ -30,9 +28,7 @@ export const generateAiImage = async ({
     updatedAt: new Date().toISOString(),
     createdAt: new Date().toISOString(),
   })
-  if (!skipRevalidate) {
-    revalidatePath('/', 'layout')
-  }
+  revalidateAiImages()
 }
 
 const generateImage = async ({

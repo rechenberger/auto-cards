@@ -2,6 +2,7 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { eq } from 'drizzle-orm'
 import { hashPassword } from './password'
+import { revalidateUserCache } from './user-cache'
 
 export const changePassword = async ({
   userId,
@@ -18,4 +19,6 @@ export const changePassword = async ({
     })
     .where(eq(schema.users.id, userId))
     .execute()
+
+  revalidateUserCache()
 }

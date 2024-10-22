@@ -1,5 +1,7 @@
+import { getAllUsersCached } from '@/auth/getAllUsers'
 import { notFoundIfNotAdmin, throwIfNotAdmin } from '@/auth/getIsAdmin'
 import { impersonate } from '@/auth/impersonate'
+import { revalidateUserCache } from '@/auth/user-cache'
 import { LocalDateTime } from '@/components/demo/LocalDateTime'
 import {
   Card,
@@ -20,7 +22,6 @@ import { ActionButton } from '@/super-action/button/ActionButton'
 import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { eq } from 'drizzle-orm'
 import { Metadata } from 'next'
-import { revalidatePath } from 'next/cache'
 import { Fragment } from 'react'
 import { CreateUserButton } from './CreateUserButton'
 
@@ -30,11 +31,7 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   await notFoundIfNotAdmin({ allowDev: true })
-  const users = await db.query.users.findMany({
-    with: {
-      accounts: true,
-    },
-  })
+  const users = await getAllUsersCached()
 
   return (
     <>
@@ -76,7 +73,9 @@ export default async function Page() {
                         <>
                           Verified{' '}
                           <LocalDateTime
-                            datetime={user.emailVerified.toISOString()}
+                            datetime={new Date(
+                              user.emailVerified,
+                            ).toISOString()}
                           />
                         </>
                       ) : (
@@ -101,13 +100,15 @@ export default async function Page() {
                             .update(usersTable)
                             .set({ isAdmin: !isAdmin })
                             .where(eq(usersTable.id, user.id))
+
+                          revalidateUserCache()
+
                           streamToast({
                             title: isAdmin ? 'Removed admin' : 'Made admin',
                             description: `User ${user.email} is now ${
                               isAdmin ? 'not' : ''
                             } an admin`,
                           })
-                          revalidatePath('/users')
                         })
                       }}
                       command={{
@@ -136,11 +137,13 @@ export default async function Page() {
                             .delete(usersTable)
                             .where(eq(usersTable.id, user.id))
                             .execute()
+
+                          revalidateUserCache()
+
                           streamToast({
                             title: 'User deleted',
                             description: `Bye ${user.email} 👋`,
                           })
-                          revalidatePath('/users')
                         })
                       }}
                       command={{

@@ -1,6 +1,6 @@
-import { filter, floor, some, sumBy } from 'lodash-es'
+import { floor } from 'lodash-es'
 import { z } from 'zod'
-import { hasAnyStats } from './calcStats'
+import { cloneStats, hasAnyStats } from './calcStats'
 import { MatchState } from './generateMatch'
 import { Stat, Stats } from './stats'
 import { Tag } from './tags'
@@ -63,11 +63,12 @@ export const getModifiedStats = (
   const item = side.items[itemIdx]
   const trigger = item.triggers![triggerIdx]
 
-  let result = stats === 'statsForItem' ? statsForItem : trigger[stats]
-  const modifiers = filter(trigger.modifiers, (m) => m.targetStats === stats)
-  if (!modifiers.length) return result
+  let result: Stats | undefined =
+    stats === 'statsForItem' ? statsForItem : trigger[stats]
+  const modifiers = trigger.modifiers?.filter((m) => m.targetStats === stats)
+  if (!modifiers?.length) return result
 
-  result = { ...result }
+  result = cloneStats(result)
 
   for (const modifier of modifiers) {
     const sourceSideIdx = modifier.sourceSide === 'self' ? sideIdx : 1 - sideIdx
@@ -88,16 +89,20 @@ export const getModifiedStats = (
       }
     }
     if (modifier.valueAddingTags) {
-      const itemsWithTags = filter(sourceSide.items, (i) =>
-        some(i.tags, (tag) => modifier.valueAddingTags?.includes(tag)),
-      )
-      sourceCount += sumBy(itemsWithTags, (i) => i.count ?? 1)
+      for (const item of sourceSide.items) {
+        for (const tag of modifier.valueAddingTags) {
+          if (item.tags?.includes(tag)) {
+            sourceCount += item.count ?? 1
+          }
+        }
+      }
     }
     if (modifier.valueAddingItems) {
       for (const itemName of modifier.valueAddingItems) {
-        const item = sourceSide.items.find((i) => i.name === itemName)
-        if (item) {
-          sourceCount += item.count ?? 1
+        for (const item of sourceSide.items) {
+          if (item.name === itemName) {
+            sourceCount += item.count ?? 1
+          }
         }
       }
     }

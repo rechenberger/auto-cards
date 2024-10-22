@@ -85,7 +85,7 @@ export const fightLiveMatch = async ({
       assert(red, 'No random red found')
     }
 
-    const matchReport = await generateMatch({
+    const matchReport = generateMatch({
       participants: [
         {
           loadout: cloneDeep(blue.loadout.data),
