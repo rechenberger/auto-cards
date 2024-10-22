@@ -2,8 +2,10 @@ import { db } from '@/db/db'
 import { users } from '@/db/schema-auth'
 import { eq } from 'drizzle-orm'
 import { omit } from 'lodash-es'
+import { unstable_cache } from 'next/cache'
 import { auth } from './auth'
 import { loginWithRedirect } from './loginWithRedirect'
+import { userCacheTag } from './user-cache'
 
 export const getMyUserId = async () => {
   const session = await auth()
@@ -32,15 +34,23 @@ export const getIsLoggedIn = async () => {
   return !!user
 }
 
-export const getMyUser = async () => {
-  const userId = await getMyUserId()
-  if (!userId) return null
+const getUserRaw = async ({ userId }: { userId: string }) => {
   const user = await db.query.users.findFirst({
     where: eq(users.id, userId),
   })
   if (!user) return null
   const parsed = omit(user, ['passwordHash'])
   return parsed
+}
+
+const getUserCached = unstable_cache(getUserRaw, ['getUser'], {
+  tags: [userCacheTag],
+})
+
+export const getMyUser = async () => {
+  const userId = await getMyUserId()
+  if (!userId) return null
+  return getUserCached({ userId })
 }
 
 export const getMyUserOrThrow = async () => {
