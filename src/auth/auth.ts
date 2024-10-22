@@ -7,6 +7,7 @@ import { headers } from 'next/headers'
 import { CredentialsProvider } from './CredentialsProvider'
 import { ImpersonateProvider } from './ImpersonateProvider'
 import { sendVerificationRequestEmail } from './sendVerificationRequestEmail'
+import { revalidateUserCache } from './user-cache'
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db),
@@ -43,6 +44,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.id = token.sub as string
       }
       return session
+    },
+  },
+  events: {
+    createUser: () => {
+      revalidateUserCache()
+    },
+    linkAccount: () => {
+      revalidateUserCache()
+    },
+    updateUser: () => {
+      revalidateUserCache()
     },
   },
 })

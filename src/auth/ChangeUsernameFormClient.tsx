@@ -52,7 +52,7 @@ export const ChangeUsernameFormClient = ({
   return (
     <>
       <div className="mb-2">
-        <CardTitle>Change Password</CardTitle>
+        <CardTitle>Change Username</CardTitle>
       </div>
       <Form {...form}>
         <form
