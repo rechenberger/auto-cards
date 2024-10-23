@@ -15,7 +15,7 @@ type ReactEventHandler = Exclude<
 >
 
 export type ActionWrapperSlotProps = {
-  isLoading?: boolean
+  loading?: 'true' // React 19 wants the key to be all lowercase and the value to be a string (when it's passed to a DOM element)
   disabled?: boolean
   children?: ReactNode
 }
@@ -66,7 +66,7 @@ export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
         <ActionWrapperSlot
           ref={ref}
           disabled={isLoading || disabled}
-          isLoading={isLoading}
+          loading={isLoading ? 'true' : undefined}
           {...slotProps}
           {...Object.fromEntries(
             map(triggerOn, (superOn) => [

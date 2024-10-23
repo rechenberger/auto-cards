@@ -56,12 +56,12 @@ ActionButton.displayName = 'ActionButton'
 const InnerButton = forwardRef<
   HTMLButtonElement,
   { hideIcon?: boolean; icon?: ReactNode } & ActionWrapperSlotProps
->(({ isLoading, children, hideIcon, icon, ...props }, ref) => {
+>(({ loading, children, hideIcon, icon, ...props }, ref) => {
   return (
     <Button type="button" {...props} ref={ref}>
       {children}
       {!hideIcon && (
-        <SuperLoadingIcon icon={icon} className="ml-2" isLoading={isLoading} />
+        <SuperLoadingIcon icon={icon} className="ml-2" isLoading={!!loading} />
       )}
     </Button>
   )
