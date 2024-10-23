@@ -1,4 +1,4 @@
-import { isDevDb } from '@/auth/dev'
+import { isLocalDb } from '@/auth/dev'
 import { notFoundIfNotAdmin } from '@/auth/getIsAdmin'
 import { getMyUserIdOrThrow } from '@/auth/getMyUser'
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
@@ -41,7 +41,7 @@ export default async function Page() {
 
   const userId = await getMyUserIdOrThrow()
 
-  if (!isDevDb()) {
+  if (!isLocalDb()) {
     return <>Only use this with local DB</>
   }
   const games = await Promise.all(
