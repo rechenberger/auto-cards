@@ -38,7 +38,7 @@ export const changePasswordWithRedirect = async () => {
 export const changeUsernameWithRedirect = async () => {
   let url = `/auth/change-username`
 
-  const h = headers()
+  const h = await headers()
   const redirectUrl = h.get('Referer')
 
   // Prevent unnecessary redirects:

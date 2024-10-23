@@ -18,7 +18,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       apiKey: process.env.AUTH_RESEND_KEY,
 
       sendVerificationRequest: async (params) => {
-        const h = headers()
+        const h = await headers()
         const baseUrl = h.get('Origin')
 
         const url = `${baseUrl}/auth/verify-email?redirect=${encodeURIComponent(
