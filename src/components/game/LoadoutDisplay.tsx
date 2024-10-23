@@ -2,13 +2,13 @@ import { Game, LoadoutData } from '@/db/schema-zod'
 import { calcStats } from '@/game/calcStats'
 import { countifyItems } from '@/game/countifyItems'
 import { orderItems } from '@/game/orderItems'
+import ErrorBoundary from '@/lib/ErrorBoundary'
 import { map } from 'lodash-es'
 import { Fragment } from 'react'
 import { CardRow } from './CardRow'
 import { HandDisplay } from './HandDisplay'
 import { ItemCard } from './ItemCard'
 import { StatsDisplay } from './StatsDisplay'
-import ErrorBoundary from '@/lib/ErrorBoundary'
 
 export const LoadoutDisplay = async ({
   game,
@@ -36,6 +36,7 @@ export const LoadoutDisplay = async ({
                 count={item.count}
                 tooltipOnClick
                 canSell={canSell}
+                size="160"
               />
             </Fragment>
           ))}
