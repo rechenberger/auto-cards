@@ -3,7 +3,7 @@ import { getItemByName } from '@/game/allItems'
 import { countifyItems } from '@/game/countifyItems'
 import { Changemakers } from '@/game/generateChangemakers'
 import { orderItems } from '@/game/orderItems'
-import { fallbackThemeId, getThemeDefinition, ThemeId } from '@/game/themes'
+import { ThemeId, fallbackThemeId, getThemeDefinition } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { find, map, take } from 'lodash-es'
 import { Fragment } from 'react'
@@ -63,27 +63,30 @@ export const MatchCards = async ({
                     isBig ? 'm-2 scale-[105%]' : 'm-1',
                     'relative',
                   )}
+                  asChild
                 >
-                  <ItemCard
-                    game={game}
-                    name={item.name}
-                    count={item.count}
-                    size={isBig ? '160' : '80'}
-                    changemaker={changemaker}
-                    tooltipOnClick
-                    themeId={themeId}
-                    itemIdx={itemIdx}
-                    sideIdx={sideIdx}
-                    onlyTop
-                  />
-                  {hasInterval && (
-                    <MatchCardTimer sideIdx={sideIdx} itemIdx={itemIdx} />
-                  )}
-                  <MatchCardOverlay
-                    sideIdx={sideIdx}
-                    itemIdx={itemIdx}
-                    theme={theme}
-                  />
+                  <div>
+                    <ItemCard
+                      game={game}
+                      name={item.name}
+                      count={item.count}
+                      size={isBig ? '160' : '80'}
+                      changemaker={changemaker}
+                      tooltipOnClick
+                      themeId={themeId}
+                      itemIdx={itemIdx}
+                      sideIdx={sideIdx}
+                      onlyTop
+                    />
+                    {hasInterval && (
+                      <MatchCardTimer sideIdx={sideIdx} itemIdx={itemIdx} />
+                    )}
+                    <MatchCardOverlay
+                      sideIdx={sideIdx}
+                      itemIdx={itemIdx}
+                      theme={theme}
+                    />
+                  </div>
                 </TooltipTrigger>
                 <TooltipContent
                   className="p-0 border-none bg-transparent rounded-xl"
