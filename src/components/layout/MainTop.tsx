@@ -4,16 +4,12 @@ import { getIsLoggedIn } from '@/auth/getMyUser'
 import { DarkModeToggle } from '@/components/layout/DarkModeToggle'
 import { DEFAULT_GAME_VERSION, GAME_VERSION } from '@/game/config'
 import { Github } from 'lucide-react'
-import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import { MusicButtonDynamic } from '../game/MusicButtonDynamic'
 import { Button } from '../ui/button'
 import { DevBadges } from './DevBadges'
 import { MainLogo } from './MainLogo'
 import { MainTopNav } from './MainTopNav'
-
-const MusicButton = dynamic(() =>
-  import('../game/MusicButton').then((mod) => mod.MusicButton),
-)
 
 export const MainTop = async () => {
   const isAdminOrDev = await getIsAdmin({ allowDev: true })
@@ -60,7 +56,7 @@ export const MainTop = async () => {
           <UserButton />
         </div>
         <div className="flex flex-row">
-          <MusicButton />
+          <MusicButtonDynamic />
           <Button variant={'ghost'} size="icon" asChild>
             <Link
               href="https://github.com/rechenberger/auto-cards"
