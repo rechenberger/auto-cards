@@ -1,3 +1,4 @@
+import { isDev } from '@/auth/dev'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
 import { Toaster } from '@/components/ui/toaster'
 import { ActionCommandProvider } from '@/super-action/command/ActionCommandProvider'
@@ -5,8 +6,13 @@ import { DialogProvider } from '@/super-action/dialog/DialogProvider'
 import type { Metadata } from 'next'
 import './globals.css'
 
+const titlePrefix = isDev() ? '[DEV] ' : ''
+
 export const metadata: Metadata = {
-  title: 'Party Starter',
+  title: {
+    default: `${titlePrefix}Party Starter`,
+    template: `${titlePrefix}%s | Party Starter`,
+  },
   description: 'by Tristan Rechenberger',
 }
 
