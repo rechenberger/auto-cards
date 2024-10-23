@@ -27,6 +27,7 @@ export const ActionButton = forwardRef<HTMLButtonElement, ActionButtonProps>(
       stopPropagation,
       command,
       icon,
+      forceNeverStopLoading,
       ...buttonProps
     } = props
 
@@ -41,6 +42,7 @@ export const ActionButton = forwardRef<HTMLButtonElement, ActionButtonProps>(
           catchToast={catchToast}
           triggerOn={['onClick']}
           icon={icon}
+          forceNeverStopLoading={forceNeverStopLoading}
         >
           {!hideButton && (
             <InnerButton icon={icon} {...buttonProps} ref={ref} />
