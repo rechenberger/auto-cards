@@ -1,6 +1,5 @@
 'use client'
 
-import ErrorBoundary from '@/lib/ErrorBoundary'
 import dynamic from 'next/dynamic'
 import { ReactNode } from 'react'
 
@@ -16,9 +15,5 @@ export const TitleScreenClientDynamic = ({
 }: {
   children: ReactNode[]
 }) => {
-  return (
-    <ErrorBoundary>
-      <TitleScreenClient>{children}</TitleScreenClient>
-    </ErrorBoundary>
-  )
+  return <TitleScreenClient>{children}</TitleScreenClient>
 }
