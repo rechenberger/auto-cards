@@ -21,7 +21,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             server: process.env.SMTP_URL,
 
             sendVerificationRequest: async (params) => {
-              const h = headers()
+              const h = await headers()
               const baseUrl = h.get('Origin')
 
               const url = `${baseUrl}/auth/verify-email?redirect=${encodeURIComponent(

@@ -3,11 +3,17 @@ import { getIsLoggedIn } from '@/auth/getMyUser'
 import { loginWithRedirect } from '@/auth/loginWithRedirect'
 import { Card, CardContent } from '@/components/ui/card'
 
-export default async function Page({
-  searchParams: { redirect },
-}: {
-  searchParams: { redirect?: string }
-}) {
+export default async function Page(
+  props: {
+    searchParams: Promise<{ redirect?: string }>
+  }
+) {
+  const searchParams = await props.searchParams;
+
+  const {
+    redirect
+  } = searchParams;
+
   const isLoggedIn = await getIsLoggedIn()
   if (!isLoggedIn) {
     await loginWithRedirect()

@@ -3,11 +3,17 @@ import { getIsLoggedIn } from '@/auth/getMyUser'
 import { Card, CardContent } from '@/components/ui/card'
 import { redirect } from 'next/navigation'
 
-export default async function Page({
-  searchParams: { redirect: redirectRaw },
-}: {
-  searchParams: { redirect?: string }
-}) {
+export default async function Page(
+  props: {
+    searchParams: Promise<{ redirect?: string }>
+  }
+) {
+  const searchParams = await props.searchParams;
+
+  const {
+    redirect: redirectRaw
+  } = searchParams;
+
   const redirectUrl = redirectRaw && decodeURIComponent(redirectRaw)
   const isLoggedIn = await getIsLoggedIn()
   if (isLoggedIn) {
