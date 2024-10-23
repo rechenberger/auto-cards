@@ -19,8 +19,8 @@ importers:
         specifier: ^0.9.0
         version: 0.9.0(nodemailer@6.9.14)
       '@hookform/resolvers':
-        specifier: ^3.3.4
-        version: 3.3.4(react-hook-form@7.51.3(react@19.0.0-rc-69d4b800-20241021))
+        specifier: ^3.9.0
+        version: 3.9.0(react-hook-form@7.53.1(react@19.0.0-rc-69d4b800-20241021))
       '@libsql/client':
         specifier: ^0.6.0
         version: 0.6.0
@@ -115,8 +115,8 @@ importers:
         specifier: 19.0.0-rc-69d4b800-20241021
         version: 19.0.0-rc-69d4b800-20241021(react@19.0.0-rc-69d4b800-20241021)
       react-hook-form:
-        specifier: ^7.51.3
-        version: 7.51.3(react@19.0.0-rc-69d4b800-20241021)
+        specifier: ^7.53.1
+        version: 7.53.1(react@19.0.0-rc-69d4b800-20241021)
       react-markdown:
         specifier: ^9.0.1
         version: 9.0.1(react@19.0.0-rc-69d4b800-20241021)(types-react@19.0.0-rc.1)
@@ -555,8 +555,8 @@ packages:
   '@floating-ui/utils@0.2.1':
     resolution: {integrity: sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==}
 
-  '@hookform/resolvers@3.3.4':
-    resolution: {integrity: sha512-o5cgpGOuJYrd+iMKvkttOclgwRW86EsWJZZRC23prf0uU2i48Htq4PuT73AVb9ionFyZrwYEITuOFGF+BydEtQ==}
+  '@hookform/resolvers@3.9.0':
+    resolution: {integrity: sha512-bU0Gr4EepJ/EQsH/IwEzYLsT/PEj5C0ynLQ4m+GSHS+xKH4TfSelhluTgOaoc4kA5s7eCsQbM4wvZLzELmWzUg==}
     peerDependencies:
       react-hook-form: ^7.0.0
 
@@ -3350,11 +3350,11 @@ packages:
     peerDependencies:
       react: 19.0.0-rc-69d4b800-20241021
 
-  react-hook-form@7.51.3:
-    resolution: {integrity: sha512-cvJ/wbHdhYx8aviSWh28w9ImjmVsb5Y05n1+FW786vEZQJV5STNM0pW6ujS+oiBecb0ARBxJFyAnXj9+GHXACQ==}
-    engines: {node: '>=12.22.0'}
+  react-hook-form@7.53.1:
+    resolution: {integrity: sha512-6aiQeBda4zjcuaugWvim9WsGqisoUk+etmFEsSUMm451/Ic8L/UAb7sRtMj3V+Hdzm6mMjU1VhiSzYUZeBm0Vg==}
+    engines: {node: '>=18.0.0'}
     peerDependencies:
-      react: ^16.8.0 || ^17 || ^18
+      react: ^16.8.0 || ^17 || ^18 || ^19
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -4278,9 +4278,9 @@ snapshots:
 
   '@floating-ui/utils@0.2.1': {}
 
-  '@hookform/resolvers@3.3.4(react-hook-form@7.51.3(react@19.0.0-rc-69d4b800-20241021))':
+  '@hookform/resolvers@3.9.0(react-hook-form@7.53.1(react@19.0.0-rc-69d4b800-20241021))':
     dependencies:
-      react-hook-form: 7.51.3(react@19.0.0-rc-69d4b800-20241021)
+      react-hook-form: 7.53.1(react@19.0.0-rc-69d4b800-20241021)
 
   '@humanwhocodes/config-array@0.11.13':
     dependencies:
@@ -7399,7 +7399,7 @@ snapshots:
       react: 19.0.0-rc-69d4b800-20241021
       scheduler: 0.25.0-rc-69d4b800-20241021
 
-  react-hook-form@7.51.3(react@19.0.0-rc-69d4b800-20241021):
+  react-hook-form@7.53.1(react@19.0.0-rc-69d4b800-20241021):
     dependencies:
       react: 19.0.0-rc-69d4b800-20241021
 
