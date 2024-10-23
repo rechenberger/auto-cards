@@ -5,6 +5,7 @@ import { DarkModeToggle } from '@/components/layout/DarkModeToggle'
 import { Button } from '@/components/ui/button'
 import { Github } from 'lucide-react'
 import Link from 'next/link'
+import { DevBadges } from './DevBadges'
 import { MainTopNav } from './MainTopNav'
 
 export const MainTop = async () => {
@@ -38,8 +39,9 @@ export const MainTop = async () => {
             </strong>
           </div>
         </Link>
-        <div className="hidden flex-1 xl:flex">
+        <div className="hidden flex-1 xl:flex items-center gap-2">
           <MainTopNav entries={entries} />
+          <DevBadges />
           <UserButton />
         </div>
         <div className="flex flex-row">
@@ -54,8 +56,9 @@ export const MainTop = async () => {
           <DarkModeToggle />
         </div>
       </div>
-      <div className="container flex pb-6 xl:hidden">
+      <div className="container flex pb-6 xl:hidden items-center gap-2 flex-wrap">
         <MainTopNav entries={entries} />
+        <DevBadges />
         <UserButton />
       </div>
     </>
