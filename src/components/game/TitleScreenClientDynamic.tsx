@@ -14,7 +14,7 @@ const TitleScreenClient = dynamic(
 export const TitleScreenClientDynamic = ({
   children,
 }: {
-  children: ReactNode
+  children: ReactNode[]
 }) => {
   return (
     <ErrorBoundary>
