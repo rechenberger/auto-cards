@@ -2,6 +2,7 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Credentials } from './credentialsSchema'
 import { hashPassword } from './password'
+import { revalidateUserCache } from './user-cache'
 
 export const registerUser = async (credentials: Credentials) => {
   const existingUser = await db.query.users.findFirst({
@@ -18,4 +19,6 @@ export const registerUser = async (credentials: Credentials) => {
     email: credentials.email,
     passwordHash,
   })
+
+  revalidateUserCache()
 }

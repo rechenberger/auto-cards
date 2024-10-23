@@ -65,7 +65,7 @@ export const RoundInfoButton = ({ roundNo }: { roundNo: number }) => {
   return (
     <>
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger asChild>
           <ActionButton
             size="icon"
             variant={'ghost'}

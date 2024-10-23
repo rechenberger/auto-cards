@@ -8,6 +8,7 @@ import { eq } from 'drizzle-orm'
 import { redirect } from 'next/navigation'
 import { ChangeUsernameFormClient } from './ChangeUsernameFormClient'
 import { getMyUser, getMyUserIdOrThrow } from './getMyUser'
+import { revalidateUserCache } from './user-cache'
 
 export const ChangeUsernameForm = async ({
   redirectUrl,
@@ -33,6 +34,8 @@ export const ChangeUsernameForm = async ({
             const description = redirectUrl
               ? 'Redirecting...'
               : 'Your username has been changed'
+
+            revalidateUserCache()
 
             streamToast({
               title: 'Username Changed!',

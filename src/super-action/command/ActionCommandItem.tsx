@@ -1,28 +1,39 @@
 'use client'
 import { CommandItem } from '@/components/ui/command'
 import { ReactNode } from 'react'
+import { useSuperAction } from '../action/useSuperAction'
+import { SuperLoadingIcon } from '../button/SuperLoadingIcon'
 import { ActionCommandConfig } from './ActionCommandProvider'
 
 export const ActionCommandItem = ({
   command,
-  disabled,
+  onActionExecuted,
 }: {
-  command: ActionCommandConfig
-  disabled?: boolean
+  command: Omit<ActionCommandConfig, 'group'>
+  onActionExecuted?: () => void
 }) => {
+  const { children, shortcut, icon, ...superActionOptions } = command
+  const { isLoading, trigger } = useSuperAction(superActionOptions)
+
   return (
     <CommandItem
-      disabled={disabled}
-      onSelect={command.action}
+      disabled={isLoading || command.disabled}
+      onSelect={async () => {
+        await trigger(undefined)
+        onActionExecuted?.()
+      }}
       className="flex flex-row"
     >
-      <div className="flex-1 flex flex-row">{command.children}</div>
-      {command.shortcut && (
+      <div className="flex-1 flex flex-row">
+        <SuperLoadingIcon icon={icon} isLoading={isLoading} className="mr-2" />
+        {children}
+      </div>
+      {shortcut && (
         <>
           <div className="flex flex-row gap-0.5">
-            {command.shortcut.shift && <Key>Shift</Key>}
-            {command.shortcut.cmdCtrl && <Key>{getCmdCtrlKey()}</Key>}
-            <Key>{command.shortcut.key.toUpperCase()}</Key>
+            {shortcut.shift && <Key>Shift</Key>}
+            {shortcut.cmdCtrl && <Key>{getCmdCtrlKey()}</Key>}
+            <Key>{shortcut.key.toUpperCase()}</Key>
           </div>
         </>
       )}

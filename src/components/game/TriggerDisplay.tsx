@@ -12,12 +12,14 @@ export const TriggerDisplay = ({
   itemIdx,
   triggerIdx,
   disableTooltip,
+  disableLinks,
 }: {
   trigger: Trigger
   sideIdx?: number
   itemIdx?: number
   triggerIdx?: number
   disableTooltip?: boolean
+  disableLinks?: boolean
 }) => {
   if (trigger.hidden) {
     return null
@@ -38,6 +40,7 @@ export const TriggerDisplay = ({
           <TextKeywordDisplay
             text={trigger.description}
             disableTooltip={disableTooltip}
+            disableLinks={disableLinks}
           />
         </div>
       </div>
@@ -152,6 +155,7 @@ export const TriggerDisplay = ({
                 key={modifier.description}
                 text={modifier.description}
                 disableTooltip={disableTooltip}
+                disableLinks={disableLinks}
               />
             ))}
           </div>

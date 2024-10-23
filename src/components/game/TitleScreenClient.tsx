@@ -1,3 +1,5 @@
+// @ts-nocheck React Three Fiber types look broken in react 19
+
 'use client'
 
 import { rngFloat, SeedArray } from '@/game/seed'

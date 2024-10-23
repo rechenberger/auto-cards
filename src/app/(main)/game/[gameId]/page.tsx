@@ -16,10 +16,11 @@ export const metadata: Metadata = {
 }
 
 export default async function Page({
-  params: { gameId },
+  params,
 }: {
-  params: { gameId: string }
+  params: Promise<{ gameId: string }>
 }) {
+  const { gameId } = await params
   const userId = await getMyUserIdOrLogin()
 
   const game = await getGameFromDb({ id: gameId })

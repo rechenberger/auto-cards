@@ -11,19 +11,19 @@ import {
 } from '@/game/themes'
 import { fontHeading, fontLore } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
-import { ActionButton } from '@/super-action/button/ActionButton'
+import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { capitalCase } from 'change-case'
 import { first } from 'lodash-es'
 import { Fragment } from 'react'
 import { AiItemImage } from '../ai/AiItemImage'
+import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 import { ItemCardChip } from './ItemCardChip'
 import { ItemSellButton } from './ItemSellButton'
 import { ShopEffectDisplay } from './ShopEffectDisplay'
 import { StatsBars } from './StatsBars'
 import { StatsDisplay } from './StatsDisplay'
-import { TriggerDisplay } from './TriggerDisplay'
-import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 import { streamItemCard } from './streamItemCard'
+import { TriggerDisplay } from './TriggerDisplay'
 
 export type ItemCardProps = {
   game?: Game
@@ -40,6 +40,7 @@ export type ItemCardProps = {
   canSell?: boolean
   onlyTop?: boolean
   disableTooltip?: boolean
+  disableLinks?: boolean
   showPrice?: boolean
 }
 
@@ -59,6 +60,7 @@ export const ItemCard = async (props: ItemCardProps) => {
     canSell,
     onlyTop,
     disableTooltip,
+    disableLinks,
     showPrice,
   } = props
 
@@ -251,12 +253,16 @@ export const ItemCard = async (props: ItemCardProps) => {
                     sideIdx={sideIdx}
                     triggerIdx={idx}
                     disableTooltip={disableTooltip}
+                    disableLinks={disableLinks}
                   />
                 </Fragment>
               ))}
               {item.shopEffects?.map((shopEffect, idx) => (
                 <Fragment key={idx}>
-                  <ShopEffectDisplay shopEffect={shopEffect} />
+                  <ShopEffectDisplay
+                    shopEffect={shopEffect}
+                    disableLinks={disableLinks}
+                  />
                 </Fragment>
               ))}
               {item.description && (
@@ -289,17 +295,14 @@ export const ItemCard = async (props: ItemCardProps) => {
   if (tooltipOnClick) {
     return (
       <>
-        <ActionButton
-          component={'div' as any} // no button, so no invalid html, so no hydration errors
-          className="cursor-pointer flex"
-          hideIcon
+        <ActionWrapper
           action={async () => {
             'use server'
             return streamItemCard({ ...props, onlyTop: false })
           }}
         >
-          {inner}
-        </ActionButton>
+          <div className="cursor-pointer flex">{inner}</div>
+        </ActionWrapper>
       </>
     )
   }

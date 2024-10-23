@@ -2251,6 +2251,8 @@ const allItems: ItemDefinition[] = allItemsConst.filter(
   (i: ItemDefinition) => !i.version || i.version <= GAME_VERSION,
 )
 
+export const allItemsForPerformance = allItems
+
 export const getAllItems = async () => allItems
 
 const itemByName = keyBy(allItems, (i) => i.name)
@@ -2260,18 +2262,20 @@ export const tryGetItemByName = async (name: string) => {
   return item
 }
 
+export const fallbackItemDef = (name: string): ItemDefinition => ({
+  name,
+  tags: ['deprecated'],
+  price: 0,
+  shop: false,
+  description: 'Item was removed from the game',
+})
+
 export const getItemByName = async (name: string): Promise<ItemDefinition> => {
   const item = await tryGetItemByName(name)
   if (!item) {
     // throw new Error(`Item not found: ${name}`)
     // console.warn(`Item not found: ${name}`)
-    return {
-      name,
-      tags: ['deprecated'],
-      price: 0,
-      shop: false,
-      description: 'Item was removed from the game',
-    }
+    return fallbackItemDef(name)
   }
   return item
 }

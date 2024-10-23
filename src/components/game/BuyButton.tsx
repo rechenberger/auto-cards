@@ -133,7 +133,7 @@ export const BuyButton = async ({
         </ActionButton>
         {showReserveButton && (
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <ActionButton
                 variant={'secondary'}
                 size="sm"
@@ -159,12 +159,12 @@ export const BuyButton = async ({
                   <LockOpen className="size-3 flex-none" strokeWidth={3} />
                 )}
               </ActionButton>
-              <TooltipContent>
-                {shopItem.isReserved
-                  ? 'Item is reserved. Click again to un-reserve it'
-                  : 'Reserve item for later purchase'}
-              </TooltipContent>
             </TooltipTrigger>
+            <TooltipContent>
+              {shopItem.isReserved
+                ? 'Item is reserved. Click again to un-reserve it'
+                : 'Reserve item for later purchase'}
+            </TooltipContent>
           </Tooltip>
         )}
       </div>

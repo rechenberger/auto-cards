@@ -11,6 +11,8 @@ import {
   matchPlaybackSpeedAtom,
 } from './matchPlaybackState'
 
+const MotionDiv = motion.div as any // TODO: FIXME: framer-motion types look broken with react 19
+
 export const MatchCardTimer = ({
   sideIdx,
   itemIdx,
@@ -67,7 +69,7 @@ export const MatchCardTimer = ({
   const newHeight = (progress / cooldown) * 100
 
   return (
-    <motion.div
+    <MotionDiv
       className="absolute bottom-0 right-0 left-0 bg-gray-500/40 pointer-events-none"
       initial={{ height: '0%' }}
       animate={{ height: `${Math.min(newHeight, 100)}%` }}

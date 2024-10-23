@@ -28,7 +28,7 @@ export const MusicButton = () => {
     <>
       <audio src="/music/sack-of-secrets.mp3" loop ref={ref} />
       <Popover onOpenChange={setMusicPopoverOpen}>
-        <PopoverTrigger>
+        <PopoverTrigger asChild>
           <Button variant="ghost" size="icon">
             <Music className="w-4 h-4" />
           </Button>

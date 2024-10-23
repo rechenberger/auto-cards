@@ -7,8 +7,8 @@ import { consumeSuperActionResponse } from './consumeSuperActionResponse'
 import { SuperAction, SuperActionDialog } from './createSuperAction'
 import { useRouterTryCatch } from './useRouterTryCatch'
 
-export type UseSuperActionOptions = {
-  action: SuperAction
+export type UseSuperActionOptions<Result, Input> = {
+  action: SuperAction<Result, Input>
   disabled?: boolean
   catchToast?: boolean
   askForConfirmation?: boolean | SuperActionDialog
@@ -16,7 +16,9 @@ export type UseSuperActionOptions = {
   forceNeverStopLoading?: boolean
 }
 
-export const useSuperAction = (options: UseSuperActionOptions) => {
+export const useSuperAction = <Result = undefined, Input = undefined>(
+  options: UseSuperActionOptions<Result, Input>,
+) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const {
@@ -32,7 +34,7 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
   const showDialog = useShowDialog()
 
   const trigger = useCallback(
-    async (evt?: MouseEvent) => {
+    async (input: Input, evt?: MouseEvent) => {
       if (isLoading) return
       if (disabled) return
       if (stopPropagation) {
@@ -52,10 +54,10 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
       }
       setIsLoading(true)
 
-      const response = await action()
+      const response = await action(input)
 
       if (response && 'superAction' in response) {
-        await consumeSuperActionResponse({
+        const result = await consumeSuperActionResponse({
           response: Promise.resolve(response.superAction),
           onToast: (t) => {
             toast({
@@ -82,6 +84,9 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
               }
             : undefined,
         })
+
+        setIsLoading(false)
+        return result
       }
 
       if (!forceNeverStopLoading) {
@@ -94,10 +99,10 @@ export const useSuperAction = (options: UseSuperActionOptions) => {
       stopPropagation,
       askForConfirmation,
       action,
-      forceNeverStopLoading,
       showDialog,
       catchToast,
       router,
+      forceNeverStopLoading,
     ],
   )
 
