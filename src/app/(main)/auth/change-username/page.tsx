@@ -4,10 +4,12 @@ import { loginWithRedirect } from '@/auth/loginWithRedirect'
 import { Card, CardContent } from '@/components/ui/card'
 
 export default async function Page({
-  searchParams: { redirect },
+  searchParams,
 }: {
-  searchParams: { redirect?: string }
+  searchParams: Promise<{ redirect?: string }>
 }) {
+  const { redirect } = await searchParams
+
   const isLoggedIn = await getIsLoggedIn()
   if (!isLoggedIn) {
     await loginWithRedirect()

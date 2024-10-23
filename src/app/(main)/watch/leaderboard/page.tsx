@@ -46,21 +46,18 @@ export const metadata: Metadata = {
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { view?: string; round?: string }
+  searchParams: Promise<{ view?: string; round?: string }>
 }) {
-  const roundNo = searchParams.round
-    ? parseInt(searchParams.round) - 1
-    : NO_OF_ROUNDS - 1
+  const { view = 'all', round } = await searchParams
+  const roundNo = round ? parseInt(round) - 1 : NO_OF_ROUNDS - 1
 
-  const type = searchParams.round ? LEADERBOARD_TYPE : LEADERBOARD_TYPE_ACC
+  const type = round ? LEADERBOARD_TYPE : LEADERBOARD_TYPE_ACC
 
   const entries = await getLeaderboardRanked({
     roundNo,
     type,
   })
   const isAdmin = await getIsAdmin({ allowDev: false })
-
-  const view = searchParams.view ?? 'all'
 
   const entriesShown =
     view === 'user' ? uniqBy(entries, (e) => e.userId) : entries

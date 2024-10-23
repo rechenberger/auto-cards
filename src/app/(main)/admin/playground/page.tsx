@@ -8,9 +8,9 @@ import Link from 'next/link'
 import { PlaygroundEdit } from './PlaygroundEdit'
 import { PlaygroundMatchView } from './PlaygroundMatchView'
 import {
+  PlaygroundParams,
   decodePlaygroundParams,
   playgroundHref,
-  PlaygroundParams,
 } from './playgroundHref'
 
 export const metadata: Metadata = {
@@ -20,11 +20,11 @@ export const metadata: Metadata = {
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: PlaygroundParams
+  searchParams?: Promise<PlaygroundParams>
 }) {
   await notFoundIfNotAdmin({ allowDev: true })
 
-  const options = decodePlaygroundParams(searchParams ?? {})
+  const options = decodePlaygroundParams((await searchParams) ?? {})
 
   return (
     <>
