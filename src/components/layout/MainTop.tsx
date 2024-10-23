@@ -11,11 +11,8 @@ import { DevBadges } from './DevBadges'
 import { MainLogo } from './MainLogo'
 import { MainTopNav } from './MainTopNav'
 
-const MusicButton = dynamic(
-  () => import('../game/MusicButton').then((mod) => mod.MusicButton),
-  {
-    ssr: false,
-  },
+const MusicButton = dynamic(() =>
+  import('../game/MusicButton').then((mod) => mod.MusicButton),
 )
 
 export const MainTop = async () => {
