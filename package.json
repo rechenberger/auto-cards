@@ -41,7 +41,7 @@
     "lucide-react": "^0.279.0",
     "next": "15.0.1",
     "next-auth": "5.0.0-beta.25",
-    "next-themes": "^0.2.1",
+    "next-themes": "^0.3.0",
     "nodemailer": "^6.9.14",
     "postcss": "8.4.30",
     "react": "19.0.0-rc-69d4b800-20241021",
