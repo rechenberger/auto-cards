@@ -104,9 +104,7 @@ export const StatDisplay = ({
   return (
     <>
       <Tooltip>
-        <TooltipTrigger tabIndex={-1} asChild>
-          {inner}
-        </TooltipTrigger>
+        <TooltipTrigger tabIndex={-1}>{inner}</TooltipTrigger>
         <TooltipContent className="bg-none border-none shadow-none p-0">
           <CardTooltip name={stat.name} text={stat.tooltip} />
         </TooltipContent>
