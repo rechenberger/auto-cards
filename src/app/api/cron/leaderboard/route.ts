@@ -13,7 +13,7 @@ export const GET = async () => {
     throw new Error('CRON_SECRET is not set')
   }
 
-  const authHeader = headers().get('authorization')
+  const authHeader = (await headers()).get('authorization')
   if (authHeader !== `Bearer ${cronSecret}`) {
     return new Response('Unauthorized', { status: 401 })
   }

@@ -6,10 +6,11 @@ export const metadata: Metadata = {
 }
 
 export default async function Page({
-  params: { liveMatchId },
+  params,
 }: {
-  params: { liveMatchId: string }
+  params: Promise<{ liveMatchId: string }>
 }) {
+  const { liveMatchId } = await params
   return (
     <>
       <div className="self-center">

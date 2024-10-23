@@ -1,10 +1,22 @@
-import { constArrayMap } from '@/lib/constArrayMap'
+import { map } from 'remeda'
 import { z } from 'zod'
 
-export const allTagsDefinition = [
+type TagDefinitionRaw = {
+  name: string
+  bgClass?: string
+  locked?: boolean
+  isSpecial?: boolean
+}
+
+const allTagDefinitionsRaw = [
   {
     name: 'hero',
     bgClass: '',
+  },
+  {
+    name: 'profession',
+    bgClass: '',
+    isSpecial: true,
   },
   {
     name: 'weapon',
@@ -19,12 +31,20 @@ export const allTagsDefinition = [
     bgClass: 'bg-green-500/50',
   },
   {
+    name: 'friend',
+    bgClass: 'bg-teal-500/50',
+  },
+  {
     name: 'accessory',
     bgClass: 'bg-sky-500/50',
   },
   {
     name: 'crystal',
     bgClass: 'bg-sky-500',
+  },
+  {
+    name: 'spell',
+    bgClass: 'bg-indigo-700',
   },
   {
     name: 'event',
@@ -46,17 +66,38 @@ export const allTagsDefinition = [
     name: 'deprecated',
     bgClass: 'bg-gray-500/20',
   },
-] as const
+  {
+    name: 'farming',
+    bgClass: 'bg-amber-500/50',
+    locked: true,
+  },
+  {
+    name: 'smithing',
+    bgClass: 'bg-amber-500/50',
+    locked: true,
+  },
+  {
+    name: 'hunting',
+    bgClass: 'bg-amber-500/50',
+    locked: true,
+  },
+] as const satisfies TagDefinitionRaw[]
 
-export const getTagDefinition = (stat: Tag) => {
-  const def = allTagsDefinition.find((b) => b.name === stat)
-  if (!def) {
-    throw new Error(`Unknown stat: ${stat}`)
-  }
-  return def
-}
-
-export const allTags = constArrayMap(allTagsDefinition, 'name')
+export const allTags = map(allTagDefinitionsRaw, (t) => t.name)
 
 export const Tag = z.enum(allTags)
 export type Tag = z.infer<typeof Tag>
+
+export type TagDefinition = Omit<TagDefinitionRaw, 'name'> & {
+  name: Tag
+}
+
+export const allTagDefinitions: TagDefinition[] = allTagDefinitionsRaw
+
+export const getTagDefinition = (tag: Tag): TagDefinition => {
+  const def = allTagDefinitionsRaw.find((b) => b.name === tag)
+  if (!def) {
+    throw new Error(`Unknown tag: ${tag}`)
+  }
+  return def
+}

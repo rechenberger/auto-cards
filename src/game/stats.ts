@@ -1,6 +1,6 @@
-import { constArrayMap } from '@/lib/constArrayMap'
 import {
   ArrowBigUp,
+  ArrowBigUpDash,
   Axe,
   Backpack,
   Banana,
@@ -29,6 +29,7 @@ import {
   Syringe,
   Target,
 } from 'lucide-react'
+import { map } from 'remeda'
 import { z } from 'zod'
 import { IGNORE_SPACE, MAX_THORNS_MULTIPLIER } from './config'
 import { randomStatDefinitionsRaw } from './randomStats'
@@ -132,7 +133,8 @@ const heroStats = [
     name: 'flying',
     icon: Bird,
     bgClass: 'bg-sky-500',
-    tooltip: 'Last X seconds. Can only be hit if enemy is also flying',
+    tooltip:
+      'Last X seconds. When only one side is flying, only ranged weapons can hit.',
   },
   {
     name: 'haste',
@@ -219,8 +221,14 @@ const heroStats = [
     bgClass: 'bg-blue-500',
     tooltip: 'Immune to ranged attacks for X seconds.',
   },
+  {
+    name: 'priority',
+    icon: ArrowBigUpDash,
+    bgClass: 'bg-rose-800',
+    tooltip: 'Enemies attack the target with the highest priority first.',
+  },
 ] as const satisfies StatDefinitionPre[]
-export const allHeroStats = constArrayMap(heroStats, 'name')
+export const allHeroStats = map(heroStats, (stat) => stat.name)
 export const HeroStat = z.enum(allHeroStats)
 export type HeroStat = z.infer<typeof HeroStat>
 
@@ -265,7 +273,7 @@ export const getStatDefinition = (stat: Stat) => {
   return def as StatDefinitionPost
 }
 
-export const allStats = constArrayMap(allStatsDefinitionConst, 'name')
+export const allStats = map(allStatsDefinitionConst, (def) => def.name)
 
 export const Stat = z.enum(allStats)
 export type Stat = (typeof allStats)[number]

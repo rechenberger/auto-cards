@@ -1,6 +1,6 @@
-import { filter, floor, some, sumBy } from 'lodash-es'
+import { floor } from 'lodash-es'
 import { z } from 'zod'
-import { hasAnyStats } from './calcStats'
+import { cloneStats, hasAnyStats } from './calcStats'
 import { MatchState } from './generateMatch'
 import { Stat, Stats } from './stats'
 import { Tag } from './tags'
@@ -12,10 +12,12 @@ import { Tag } from './tags'
 export const ModifierTargetStats = z.enum([
   'statsSelf',
   'statsEnemy',
+  'statsTarget',
   'statsItem',
   'statsRequired',
   'attack',
   'statsForItem',
+  'statsRequiredTarget',
 ])
 export type ModifierTargetStats = z.infer<typeof ModifierTargetStats>
 
@@ -24,7 +26,7 @@ export const Modifier = z.object({
   targetStat: Stat,
   targetStats: ModifierTargetStats,
 
-  sourceSide: z.enum(['self', 'enemy']).optional(),
+  sourceSide: z.enum(['self', 'enemy', 'target']),
 
   valueBase: z.number().optional(), // value = base
   valueAddingItems: z.array(z.string()).optional(), // value += count(item)
@@ -44,12 +46,16 @@ export const getModifiedStats = (
     itemIdx,
     triggerIdx,
     statsForItem,
+    statsEnemy,
+    statsTarget,
   }: {
     state: MatchState
     sideIdx: number
     itemIdx: number
     triggerIdx: number
     statsForItem: Stats
+    statsEnemy: Stats
+    statsTarget: Stats
   },
   stats: ModifierTargetStats,
 ) => {
@@ -57,15 +63,15 @@ export const getModifiedStats = (
   const item = side.items[itemIdx]
   const trigger = item.triggers![triggerIdx]
 
-  let result = stats === 'statsForItem' ? statsForItem : trigger[stats]
-  const modifiers = filter(trigger.modifiers, (m) => m.targetStats === stats)
-  if (!modifiers.length) return result
+  let result: Stats | undefined =
+    stats === 'statsForItem' ? statsForItem : trigger[stats]
+  const modifiers = trigger.modifiers?.filter((m) => m.targetStats === stats)
+  if (!modifiers?.length) return result
 
-  result = { ...result }
+  result = cloneStats(result)
 
   for (const modifier of modifiers) {
-    const sourceSideIdx =
-      modifier.sourceSide === 'enemy' ? 1 - sideIdx : sideIdx
+    const sourceSideIdx = modifier.sourceSide === 'self' ? sideIdx : 1 - sideIdx
     const sourceSide = state.sides[sourceSideIdx]
 
     let sourceCount = modifier.valueBase ?? 0
@@ -73,22 +79,30 @@ export const getModifiedStats = (
       for (const stat of modifier.valueAddingStats) {
         if (modifier.sourceSide === 'self') {
           sourceCount += statsForItem[stat] ?? 0
+        } else if (modifier.sourceSide === 'enemy') {
+          sourceCount += statsEnemy[stat] ?? 0
+        } else if (modifier.sourceSide === 'target') {
+          sourceCount += statsTarget[stat] ?? 0
         } else {
-          sourceCount += sourceSide.stats[stat] ?? 0
+          const _exhaustiveCheck: never = modifier.sourceSide
         }
       }
     }
     if (modifier.valueAddingTags) {
-      const itemsWithTags = filter(sourceSide.items, (i) =>
-        some(i.tags, (tag) => modifier.valueAddingTags?.includes(tag)),
-      )
-      sourceCount += sumBy(itemsWithTags, (i) => i.count ?? 1)
+      for (const item of sourceSide.items) {
+        for (const tag of modifier.valueAddingTags) {
+          if (item.tags?.includes(tag)) {
+            sourceCount += item.count ?? 1
+          }
+        }
+      }
     }
     if (modifier.valueAddingItems) {
       for (const itemName of modifier.valueAddingItems) {
-        const item = sourceSide.items.find((i) => i.name === itemName)
-        if (item) {
-          sourceCount += item.count ?? 1
+        for (const item of sourceSide.items) {
+          if (item.name === itemName) {
+            sourceCount += item.count ?? 1
+          }
         }
       }
     }
@@ -128,6 +142,8 @@ export const getAllModifiedStats = (props: {
   itemIdx: number
   triggerIdx: number
   statsForItem: Stats
+  statsEnemy: Stats
+  statsTarget: Stats
 }) => {
   return {
     statsSelf: getModifiedStats(props, 'statsSelf'),
@@ -136,5 +152,7 @@ export const getAllModifiedStats = (props: {
     statsRequired: getModifiedStats(props, 'statsRequired'),
     attack: getModifiedStats(props, 'attack'),
     statsForItem: getModifiedStats(props, 'statsForItem'),
+    statsTarget: getModifiedStats(props, 'statsTarget'),
+    statsRequiredTarget: getModifiedStats(props, 'statsRequiredTarget'),
   }
 }

@@ -18,6 +18,10 @@ export const sendVerificationRequestEmail = async (
     const resend = new Resend(apiKey)
     const host = new URL(url).host
 
+    if (!from) {
+      throw new Error('No from email provided')
+    }
+
     await resend.emails.send({
       from: from,
       to: email,

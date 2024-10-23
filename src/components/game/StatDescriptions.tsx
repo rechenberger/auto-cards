@@ -16,8 +16,8 @@ export const StatDescriptions = ({ stats }: { stats: Stat[] }) => {
                 <StatsDisplay stats={{ [stat]: 1 }} hideCount />
               </div>
               <div className="flex flex-col">
-                <div className="font-bold">{capitalCase(stat)}</div>
-                <div>{def.tooltip}</div>
+                <div className="text-xs md:text-base font-bold">{capitalCase(stat)}</div>
+                <div className='text-xs md:text-base'>{def.tooltip}</div>
               </div>
             </Fragment>
           )

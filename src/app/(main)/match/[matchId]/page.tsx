@@ -10,10 +10,12 @@ export const metadata: Metadata = {
 }
 
 export default async function Page({
-  params: { matchId },
+  params,
 }: {
-  params: { matchId: string }
+  params: Promise<{ matchId: string }>
 }) {
+  const { matchId } = await params
+
   const match = await db.query.match.findFirst({
     where: eq(schema.match.id, matchId),
   })

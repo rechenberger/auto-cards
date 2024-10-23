@@ -30,7 +30,7 @@ export const CraftingList = async ({
         {map(recipes, (recipe, idx) => (
           <Fragment key={idx}>
             <Card className="p-4 bg-border/50">
-              <div className="flex flex-col md:flex-row gap-2 items-center">
+              <div className="flex flex-col lg:flex-row gap-2 items-center">
                 {recipe.input.map((item, idx) => {
                   return (
                     <Fragment key={idx}>
@@ -65,7 +65,7 @@ export const CraftingList = async ({
                   <ActionButton
                     disabled={!recipe.hasAll}
                     variant={recipe.hasAll ? 'default' : 'outline'}
-                    className="md:mb-12"
+                    className="lg:mb-12"
                     action={async () => {
                       'use server'
                       return gameAction({
@@ -86,7 +86,7 @@ export const CraftingList = async ({
                   </ActionButton>
                 ) : (
                   <>
-                    <ArrowDown className="size-8 md:-rotate-90" />
+                    <ArrowDown className="size-8 lg:-rotate-90" />
                   </>
                 )}
                 <div />

@@ -33,8 +33,10 @@ export const Trigger = z
   .object({
     chancePercent: z.number().optional(),
     statsRequired: Stats.optional(),
+    statsRequiredTarget: Stats.optional(),
     statsSelf: Stats.optional(),
     statsEnemy: Stats.optional(),
+    statsTarget: Stats.optional(),
     attack: Stats.optional(),
     statsItem: Stats.optional(),
     maxCount: z.number().optional(),
@@ -45,6 +47,12 @@ export const Trigger = z
   })
   .and(TriggerWithCooldown.or(TriggerWithoutCooldown))
 export type Trigger = z.infer<typeof Trigger>
+
+export const ShopEffect = z.object({
+  type: z.enum(['unlock', 'boost', 'ban']),
+  tags: z.array(Tag),
+})
+export type ShopEffect = z.infer<typeof ShopEffect>
 
 export const ItemDefinition = z.object({
   name: z.string(),
@@ -60,5 +68,6 @@ export const ItemDefinition = z.object({
   version: z.number().optional(),
   unique: z.boolean().optional(),
   description: z.string().optional(),
+  shopEffects: z.array(ShopEffect).optional(),
 })
 export type ItemDefinition = z.infer<typeof ItemDefinition>

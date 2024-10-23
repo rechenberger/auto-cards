@@ -1,4 +1,4 @@
-import { isDev } from '@/auth/getIsAdmin'
+import { isDev } from '@/auth/dev'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
 import { Toaster } from '@/components/ui/toaster'
 import { TooltipProvider } from '@/components/ui/tooltip'
@@ -9,10 +9,12 @@ import { DialogProvider } from '@/super-action/dialog/DialogProvider'
 import type { Metadata } from 'next'
 import './globals.css'
 
+const titlePrefix = isDev() ? '[DEV] ' : ''
+
 export const metadata: Metadata = {
   title: {
-    default: 'Auto Cards',
-    template: isDev() ? '%s | DEV' : '%s | Auto Cards',
+    default: `${titlePrefix}Auto Cards`,
+    template: `${titlePrefix}%s | Auto Cards`,
   },
   description: 'Automatic Card Battle Game',
 }
@@ -24,6 +26,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <link rel="manifest" href="/manifest.json" />
       <body
         className={cn(
           'bg-background min-h-[100svh] flex flex-col',

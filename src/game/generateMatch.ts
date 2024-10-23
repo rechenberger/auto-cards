@@ -1,3 +1,4 @@
+import { playgroundHref } from '@/app/(main)/admin/playground/playgroundHref'
 import { LoadoutData } from '@/db/schema-zod'
 import {
   rngFloat,
@@ -6,12 +7,21 @@ import {
   SeedArray,
   SeedRng,
 } from '@/game/seed'
-import { cloneDeep, minBy, orderBy, range } from 'lodash-es'
-import { getItemByName } from './allItems'
+import {
+  cloneDeep,
+  first,
+  groupBy,
+  maxBy,
+  minBy,
+  orderBy,
+  range,
+} from 'lodash-es'
+import { allItemsForPerformance, fallbackItemDef } from './allItems'
 import { calcCooldown } from './calcCooldown'
 import {
   addStats,
-  calcStats,
+  calcStatsFromItems,
+  cloneStats,
   hasStats,
   sumStats2,
   tryAddStats,
@@ -19,12 +29,14 @@ import {
 import {
   BASE_TICK_TIME,
   FATIGUE_STARTS_AT,
+  MAX_LOGS,
+  MAX_MATCH_MS,
   MAX_MATCH_TIME,
   MAX_THORNS_MULTIPLIER,
 } from './config'
-import { TriggerEventType } from './ItemDefinition'
+import { ItemDefinition, TriggerEventType } from './ItemDefinition'
 import { getAllModifiedStats, getModifiedStats } from './modifiers'
-import { orderItems } from './orderItems'
+import { orderItemsWithoutLookup } from './orderItems'
 import { randomStatsResolve } from './randomStatsResolve'
 import { Stats } from './stats'
 
@@ -51,38 +63,43 @@ export type GenerateMatchInput = {
   }[]
   seed: SeedArray
   skipLogs: boolean
+  allItems?: ItemDefinition[]
 }
 
-const generateMatchStateSides = async (input: GenerateMatchInput) => {
-  const sides = await Promise.all(
-    input.participants.map(async (p, idx) => {
-      let items = await Promise.all(
-        p.loadout.items.map(async (i) => {
-          const def = await getItemByName(i.name)
-          return {
-            ...def,
-            statsItem: def.statsItem ? { ...def.statsItem } : undefined,
-            count: def.unique ? 1 : (i.count ?? 1),
-          }
-        }),
-      )
-      items = await orderItems(items)
-      const stats = await calcStats({ loadout: p.loadout })
-
+const generateMatchStateSides = (input: GenerateMatchInput) => {
+  const allItems = input.allItems ?? allItemsForPerformance
+  const sides = input.participants.map((p, idx) => {
+    let items = p.loadout.items.map((i) => {
+      const def =
+        allItems.find((d) => d.name === i.name) ?? fallbackItemDef(i.name)
       return {
-        items,
-        stats,
-        sideIdx: idx,
+        ...def,
+        statsItem: def.statsItem ? cloneStats(def.statsItem) : undefined,
+        count: def.unique ? 1 : (i.count ?? 1),
+        itemIdx: -1,
       }
-    }),
-  )
+    })
+
+    items = orderItemsWithoutLookup(items)
+    items.forEach((item, itemIdx) => {
+      item.itemIdx = itemIdx
+    })
+    const stats = calcStatsFromItems({ items })
+
+    const creatures = items.filter((i) => !!i.statsItem?.healthMax)
+
+    return {
+      items,
+      stats,
+      sideIdx: idx,
+      creatures,
+    }
+  })
   return sides
 }
 
-const generateMatchStateFutureActionsItems = async (
-  input: GenerateMatchInput,
-) => {
-  const sides = await generateMatchStateSides(input)
+const generateMatchStateFutureActionsItems = (input: GenerateMatchInput) => {
+  const sides = generateMatchStateSides(input)
   const futureActionsItems = rngOrder({
     items: sides,
     seed: [...input.seed, 'futureActions'],
@@ -115,6 +132,8 @@ const generateMatchStateFutureActionsItems = async (
             itemIdx,
             triggerIdx,
             itemCounter, // to have different seed for each item in a stack
+            active: true,
+            creature: !!item.statsItem?.healthMax,
           }))
         }) || []
       )
@@ -123,15 +142,17 @@ const generateMatchStateFutureActionsItems = async (
   return { sides, futureActionsItems }
 }
 
-type FutureActionItem = Awaited<
+export type FutureActionItem = Awaited<
   ReturnType<typeof generateMatchStateFutureActionsItems>
 >['futureActionsItems'][number]
 
-export const generateMatchState = async (input: GenerateMatchInput) => {
+export const generateMatchState = (input: GenerateMatchInput) => {
   const { sides, futureActionsItems } =
-    await generateMatchStateFutureActionsItems(input)
+    generateMatchStateFutureActionsItems(input)
 
-  const futureActionsBase = [{ type: 'baseTick' as const, time: 0 }]
+  const futureActionsBase = [
+    { type: 'baseTick' as const, time: 0, active: true },
+  ]
 
   const futureActions = [...futureActionsBase, ...futureActionsItems]
   return { sides, futureActions }
@@ -141,19 +162,22 @@ export type MatchState = Awaited<ReturnType<typeof generateMatchState>>
 
 export const NOT_ENOUGH_MSG = 'Not enough'
 
-export const generateMatch = async ({
+export const generateMatch = ({
   skipLogs,
   participants,
   seed: _seed,
 }: GenerateMatchInput) => {
   let time = 0
 
-  const state = await generateMatchState({
+  const state = generateMatchState({
     participants,
     seed: _seed,
     skipLogs,
   })
   const { sides, futureActions } = state
+
+  const startedAtMs = Date.now()
+  let logCount = 0
 
   const seed = rngGenerator({ seed: _seed })
 
@@ -161,7 +185,21 @@ export const generateMatch = async ({
   const log = (
     log: Omit<MatchLog, 'time' | 'itemName' | 'stateSnapshot' | 'logIdx'>,
   ) => {
+    logCount++
     if (skipLogs) return
+    const itemName =
+      log.itemIdx !== undefined
+        ? sides[log.sideIdx].items[log.itemIdx].name
+        : undefined
+    const stateSnapshot = cloneDeep(state)
+    logs.push({ ...log, time, itemName, stateSnapshot, logIdx: logs.length })
+  }
+  const logF = (
+    f: () => Omit<MatchLog, 'time' | 'itemName' | 'stateSnapshot' | 'logIdx'>,
+  ) => {
+    logCount++
+    if (skipLogs) return
+    const log = f()
     const itemName =
       log.itemIdx !== undefined
         ? sides[log.sideIdx].items[log.itemIdx].name
@@ -184,79 +222,97 @@ export const generateMatch = async ({
     return { logs, winner, loser, time }
   }
 
-  const baseTick = ({ side }: { side: MatchState['sides'][number] }) => {
+  const baseTick = ({
+    target,
+  }: {
+    target: {
+      stats: Stats
+      sideIdx: number
+      itemIdx?: number
+    }
+  }) => {
     // REGEN
-    const missingHealth = (side.stats.healthMax ?? 0) - (side.stats.health ?? 0)
+    const missingHealth =
+      (target.stats.healthMax ?? 0) - (target.stats.health ?? 0)
     const missingStamina =
-      (side.stats.staminaMax ?? 0) - (side.stats.stamina ?? 0)
+      (target.stats.staminaMax ?? 0) - (target.stats.stamina ?? 0)
     const regenStats = {
-      health: Math.min(missingHealth, side.stats.regen ?? 0),
-      stamina: Math.min(missingStamina, side.stats.staminaRegen ?? 0),
+      health: Math.min(missingHealth, target.stats.regen ?? 0),
+      stamina: Math.min(missingStamina, target.stats.staminaRegen ?? 0),
     }
     if (regenStats.health > 0 || regenStats.stamina > 0) {
-      addStats(side.stats, regenStats)
+      addStats(target.stats, regenStats)
       log({
         msg: 'Regenerate',
-        sideIdx: side.sideIdx,
+        sideIdx: target.sideIdx,
         stats: regenStats,
-        targetSideIdx: side.sideIdx,
+        targetSideIdx: target.sideIdx,
+        targetItemIdx: target.itemIdx,
       })
     }
 
     // POISON
-    if (side.stats.poison) {
+    if (target.stats.poison) {
       const poisonStats = {
-        health: -1 * side.stats.poison ?? 0,
+        health: -1 * target.stats.poison,
       }
-      addStats(side.stats, poisonStats)
+      addStats(target.stats, poisonStats)
       log({
         msg: 'Poison',
-        sideIdx: side.sideIdx,
+        sideIdx: target.sideIdx,
         stats: poisonStats,
-        targetSideIdx: side.sideIdx,
+        targetSideIdx: target.sideIdx,
+        targetItemIdx: target.itemIdx,
       })
     }
 
     // FLYING
-    if (side.stats.flying) {
+    if (target.stats.flying) {
       const flyingStats = {
         flying: -1,
       }
-      addStats(side.stats, flyingStats)
+      addStats(target.stats, flyingStats)
       log({
         msg: 'Flying',
-        sideIdx: side.sideIdx,
+        sideIdx: target.sideIdx,
         stats: flyingStats,
-        targetSideIdx: side.sideIdx,
+        targetSideIdx: target.sideIdx,
+        targetItemIdx: target.itemIdx,
       })
     }
 
     // BARRIER
-    if (side.stats.barrier) {
+    if (target.stats.barrier) {
       const barrierStats = {
         barrier: -1,
       }
-      addStats(side.stats, barrierStats)
+      addStats(target.stats, barrierStats)
       log({
         msg: 'Barrier',
-        sideIdx: side.sideIdx,
+        sideIdx: target.sideIdx,
         stats: barrierStats,
-        targetSideIdx: side.sideIdx,
+        targetSideIdx: target.sideIdx,
+        targetItemIdx: target.itemIdx,
       })
     }
 
     // FATIGUE
-    const fatigue = Math.max(1 + (time - FATIGUE_STARTS_AT) / BASE_TICK_TIME, 0)
-    if (fatigue > 0) {
+    const fatigueLevel = Math.max(
+      1 + (time - FATIGUE_STARTS_AT) / BASE_TICK_TIME,
+      0,
+    )
+    if (fatigueLevel > 0) {
+      const fatigueDamage = Math.round(1.3 ** (fatigueLevel - 1))
       const fatigueStats = {
-        health: -1 * fatigue,
+        health: -1 * fatigueDamage,
       }
-      addStats(side.stats, fatigueStats)
+      addStats(target.stats, fatigueStats)
       log({
         msg: 'Fatigue',
-        sideIdx: side.sideIdx,
+        sideIdx: target.sideIdx,
         stats: fatigueStats,
-        targetSideIdx: side.sideIdx,
+        targetSideIdx: target.sideIdx,
+        targetItemIdx: target.itemIdx,
       })
     }
   }
@@ -276,6 +332,23 @@ export const generateMatch = async ({
     const item = mySide.items[itemIdx]
     const trigger = item.triggers![triggerIdx]
 
+    const targetItem = maxBy(
+      otherSide.creatures.filter((i) => (i.statsItem?.health ?? 0) > 0),
+      (i) => i.statsItem?.priority ?? 0,
+    )
+    const target =
+      !!targetItem && targetItem.statsItem
+        ? {
+            sideIdx: otherSide.sideIdx,
+            itemIdx: otherSide.items.indexOf(targetItem),
+            stats: targetItem.statsItem,
+          }
+        : {
+            sideIdx: otherSide.sideIdx,
+            itemIdx: undefined,
+            stats: otherSide.stats,
+          }
+
     action.lastUsed = time
 
     const baseLog = {
@@ -285,9 +358,11 @@ export const generateMatch = async ({
       msg: input.baseLogMsg,
     }
 
-    let statsForItem = item.statsItem
-      ? sumStats2(mySide.stats, item.statsItem)
-      : mySide.stats
+    let statsForItem = item.statsItem?.healthMax
+      ? (item.statsItem ?? {}) // creatures only have their own stats
+      : item.statsItem
+        ? sumStats2(mySide.stats, item.statsItem) // merge stats of item and hero
+        : mySide.stats // fallback to hero stats
 
     const allStats = trigger.modifiers?.length
       ? getAllModifiedStats({
@@ -296,9 +371,19 @@ export const generateMatch = async ({
           sideIdx,
           triggerIdx,
           statsForItem,
+          statsTarget: target.stats,
+          statsEnemy: otherSide.stats,
         })
       : trigger
-    const { statsRequired, statsSelf, statsEnemy, attack } = allStats
+    const {
+      statsRequired,
+      statsSelf,
+      statsEnemy,
+      attack,
+      statsTarget,
+      statsItem,
+      statsRequiredTarget,
+    } = allStats
     if ('statsForItem' in allStats) {
       statsForItem = allStats.statsForItem ?? statsForItem
     }
@@ -320,105 +405,148 @@ export const generateMatch = async ({
     if (statsRequired) {
       const enough = hasStats(statsForItem, statsRequired)
       if (!enough) {
-        log({
+        logF(() => ({
           ...baseLog,
           msg: NOT_ENOUGH_MSG,
           targetSideIdx: mySide.sideIdx,
           stats: statsRequired,
-        })
+        }))
+        hasRequiredStats = false
+      }
+    }
+    if (statsRequiredTarget) {
+      const enough = hasStats(target.stats, statsRequiredTarget)
+      if (!enough) {
+        logF(() => ({
+          ...baseLog,
+          msg: NOT_ENOUGH_MSG,
+          targetSideIdx: target.sideIdx,
+          stats: statsRequiredTarget,
+        }))
         hasRequiredStats = false
       }
     }
 
     if (hasRequiredStats) {
       action.usedCount++
+      if (trigger.maxCount && action.usedCount >= trigger.maxCount) {
+        action.active = false
+        action.time = MAX_MATCH_TIME
+      }
 
       if (statsSelf) {
         tryAddStats(mySide.stats, statsSelf)
-        log({
+        logF(() => ({
           ...baseLog,
           stats: statsSelf,
           targetSideIdx: mySide.sideIdx,
-        })
+        }))
         randomStatsResolve({
           stats: mySide.stats,
           seed,
           onRandomStat: ({ stats, randomStat }) => {
-            log({
+            logF(() => ({
               ...baseLog,
               stats,
               msg: randomStat,
               targetSideIdx: mySide.sideIdx,
-            })
+            }))
           },
         })
       }
-      if (trigger.statsItem) {
+      if (statsItem) {
         if (!item.statsItem) {
           item.statsItem = {}
         }
-        tryAddStats(item.statsItem, trigger.statsItem)
-        log({
+        tryAddStats(item.statsItem, statsItem)
+        logF(() => ({
           ...baseLog,
           msg: 'apply to item',
-          stats: trigger.statsItem,
+          stats: statsItem,
           targetSideIdx: mySide.sideIdx,
           targetItemIdx: itemIdx,
-        })
+        }))
         randomStatsResolve({
           stats: item.statsItem,
           seed,
           onRandomStat: ({ stats, randomStat }) => {
-            log({
+            logF(() => ({
               ...baseLog,
               stats,
               msg: randomStat,
               targetSideIdx: mySide.sideIdx,
               targetItemIdx: itemIdx,
-            })
+            }))
           },
         })
       }
-      const tryingToReach = !!statsEnemy || !!attack
+
+      if (statsTarget) {
+        tryAddStats(target.stats, statsTarget)
+        logF(() => ({
+          ...baseLog,
+          stats: statsTarget,
+          targetSideIdx: target.sideIdx,
+          targetItemIdx: target.itemIdx,
+        }))
+        randomStatsResolve({
+          stats: target.stats,
+          seed,
+          onRandomStat: ({ stats, randomStat }) => {
+            logF(() => ({
+              ...baseLog,
+              stats,
+              msg: randomStat,
+              targetSideIdx: target.sideIdx,
+              targetItemIdx: target.itemIdx,
+            }))
+          },
+        })
+      }
+
+      if (statsEnemy) {
+        tryAddStats(otherSide.stats, statsEnemy)
+        logF(() => ({
+          ...baseLog,
+          stats: statsEnemy,
+          targetSideIdx: otherSide.sideIdx,
+          targetItemIdx: undefined,
+        }))
+        randomStatsResolve({
+          stats: otherSide.stats,
+          seed,
+          onRandomStat: ({ stats, randomStat }) => {
+            logF(() => ({
+              ...baseLog,
+              stats,
+              msg: randomStat,
+              targetSideIdx: otherSide.sideIdx,
+              targetItemIdx: undefined,
+            }))
+          },
+        })
+      }
+
+      const tryingToReach = !!attack
       if (tryingToReach) {
         let cantReachReason = ''
         if (
-          !!otherSide.stats.flying &&
-          !statsForItem.flying &&
+          !!target.stats.flying !== !!statsForItem.flying &&
           !statsForItem.ranged
         ) {
           cantReachReason = 'Cannot reach flying enemy'
         }
-        if (!!statsForItem.ranged && !!otherSide.stats.barrier) {
+        if (!!statsForItem.ranged && !!target.stats.barrier) {
           cantReachReason = 'Blocked by barrier'
         }
         if (cantReachReason) {
-          log({
+          logF(() => ({
             ...baseLog,
-            targetSideIdx: otherSide.sideIdx,
+            targetSideIdx: target.sideIdx,
+            targetItemIdx: target.itemIdx,
             msg: cantReachReason,
-          })
+          }))
         } else {
-          if (statsEnemy) {
-            tryAddStats(otherSide.stats, statsEnemy)
-            log({
-              ...baseLog,
-              stats: statsEnemy,
-              targetSideIdx: otherSide.sideIdx,
-            })
-            randomStatsResolve({
-              stats: otherSide.stats,
-              seed,
-              onRandomStat: ({ stats, randomStat }) => {
-                log({
-                  ...baseLog,
-                  stats,
-                  msg: randomStat,
-                  targetSideIdx: otherSide.sideIdx,
-                })
-              },
-            })
-          }
           if (attack) {
             const accuracyRng = rngFloat({
               seed,
@@ -446,7 +574,8 @@ export const generateMatch = async ({
               triggerEvents({
                 eventType: 'onDefendBeforeHit',
                 parentTrigger: input,
-                sideIdx: otherSide.sideIdx,
+                sideIdx: target.sideIdx,
+                itemIdx: target.itemIdx,
               })
 
               let critChance = 0
@@ -469,7 +598,8 @@ export const generateMatch = async ({
                 triggerEvents({
                   eventType: 'onDefendCritBeforeHit',
                   parentTrigger: input,
-                  sideIdx: otherSide.sideIdx,
+                  sideIdx: target.sideIdx,
+                  itemIdx: target.itemIdx,
                 })
               }
 
@@ -497,20 +627,21 @@ export const generateMatch = async ({
                   rngFloat({ seed, max: 100 }) <= statsForItem.unblockableChance
               }
               if (!unblockable) {
-                blockedDamage = Math.min(damage, otherSide.stats.block ?? 0)
+                blockedDamage = Math.min(damage, target.stats.block ?? 0)
               }
               damage -= blockedDamage
               const targetStats: Stats = {
                 health: -1 * damage,
                 block: -1 * blockedDamage,
               }
-              addStats(otherSide.stats, targetStats)
-              log({
+              addStats(target.stats, targetStats)
+              logF(() => ({
                 ...baseLog,
                 msg: doesCrit ? `Critical Hit` : `Hit`,
-                targetSideIdx: otherSide.sideIdx,
+                targetSideIdx: target.sideIdx,
+                targetItemIdx: target.itemIdx,
                 stats: targetStats,
-              })
+              }))
               if (doesCrit) {
                 if (statsForItem.aim) {
                   const removeAimStats: Stats = {
@@ -520,12 +651,12 @@ export const generateMatch = async ({
                   if (item.statsItem) {
                     tryAddStats(item.statsItem, removeAimStats)
                   }
-                  log({
+                  logF(() => ({
                     ...baseLog,
                     msg: `Reset Aim`,
                     targetSideIdx: mySide.sideIdx,
                     stats: removeAimStats,
-                  })
+                  }))
                 }
               }
 
@@ -538,22 +669,18 @@ export const generateMatch = async ({
                   health: lifeStealDamage,
                 }
                 tryAddStats(mySide.stats, lifeStealStats)
-                log({
+                logF(() => ({
                   ...baseLog,
                   sideIdx: mySide.sideIdx,
                   msg: `Life Steal`,
                   targetSideIdx: mySide.sideIdx,
                   stats: lifeStealStats,
-                })
+                }))
               }
 
               // THORNS
-              if (
-                otherSide.stats.thorns &&
-                damage > 0 &&
-                !statsForItem.ranged
-              ) {
-                let thornsDamage = otherSide.stats.thorns
+              if (target.stats.thorns && damage > 0 && !statsForItem.ranged) {
+                let thornsDamage = target.stats.thorns
                 const maxThornsDamage = Math.round(
                   damage * MAX_THORNS_MULTIPLIER,
                 )
@@ -563,14 +690,14 @@ export const generateMatch = async ({
                   health: -1 * thornsDamage,
                 }
                 addStats(mySide.stats, thornsStats)
-                log({
+                logF(() => ({
                   ...baseLog,
-                  sideIdx: otherSide.sideIdx,
+                  sideIdx: target.sideIdx,
+                  itemIdx: target.itemIdx,
                   msg: `Thorns`,
                   targetSideIdx: mySide.sideIdx,
                   stats: thornsStats,
-                  itemIdx: undefined,
-                })
+                }))
               }
 
               triggerEvents({
@@ -583,7 +710,8 @@ export const generateMatch = async ({
               triggerEvents({
                 eventType: 'onDefendAfterHit',
                 parentTrigger: input,
-                sideIdx: otherSide.sideIdx,
+                sideIdx: target.sideIdx,
+                itemIdx: target.itemIdx,
               })
               if (doesCrit) {
                 triggerEvents({
@@ -596,15 +724,17 @@ export const generateMatch = async ({
                 triggerEvents({
                   eventType: 'onDefendCritAfterHit',
                   parentTrigger: input,
-                  sideIdx: otherSide.sideIdx,
+                  sideIdx: target.sideIdx,
+                  itemIdx: target.itemIdx,
                 })
               }
             } else {
-              log({
+              logF(() => ({
                 ...baseLog,
                 msg: 'Miss',
-                targetSideIdx: otherSide.sideIdx,
-              })
+                targetSideIdx: target.sideIdx,
+                targetItemIdx: target.itemIdx,
+              }))
             }
           }
         }
@@ -617,6 +747,11 @@ export const generateMatch = async ({
     //   stats: mySide.stats,
     // })
   }
+
+  const futureActionsByType = groupBy(futureActions, (a) => a.type) as Record<
+    TriggerEventType,
+    FutureActionItem[]
+  >
 
   const triggerEvents = ({
     eventType,
@@ -632,13 +767,14 @@ export const generateMatch = async ({
     itemCounter?: number
   }) => {
     // Find Actions
-    const actions = futureActions.filter(
-      (a) =>
-        a.type === eventType &&
-        a.sideIdx === sideIdx &&
-        (itemIdx === undefined || a.itemIdx === itemIdx) &&
-        (itemCounter === undefined || a.itemCounter === itemCounter),
-    )
+    const actions =
+      futureActionsByType[eventType]?.filter(
+        (a) =>
+          a.active &&
+          a.sideIdx === sideIdx &&
+          (itemIdx === undefined ? !a.creature : a.itemIdx === itemIdx) &&
+          (itemCounter === undefined || a.itemCounter === itemCounter),
+      ) ?? []
 
     // Trigger Actions
     for (const action of actions) {
@@ -663,6 +799,7 @@ export const generateMatch = async ({
 
     for (const action of futureActions) {
       if (action.time !== time) continue
+      if (!action.active) continue
 
       if (action.type === 'baseTick') {
         action.time += BASE_TICK_TIME
@@ -671,8 +808,19 @@ export const generateMatch = async ({
           seed,
         })) {
           baseTick({
-            side,
+            target: side,
           })
+          for (const item of side.creatures) {
+            if ((item.statsItem?.health ?? 0) > 0) {
+              baseTick({
+                target: {
+                  sideIdx: side.sideIdx,
+                  itemIdx: item.itemIdx,
+                  stats: item.statsItem ?? {},
+                },
+              })
+            }
+          }
         }
       } else {
         // TRIGGER ITEM
@@ -683,8 +831,49 @@ export const generateMatch = async ({
       }
 
       // END OF ACTION CHECK
+      for (const side of sides) {
+        for (const item of side.creatures) {
+          if (item.statsItem?.health && item.statsItem.health <= 0) {
+            // Deactivate future actions
+            // TODO: onDie trigger
+            item.statsItem.health = 0
+            for (const action of futureActions) {
+              if (
+                action.type !== 'baseTick' &&
+                action.sideIdx === side.sideIdx &&
+                action.itemIdx === item.itemIdx
+              ) {
+                action.active = false
+                action.time = MAX_MATCH_TIME // TODO: find a more elegant solution
+              }
+            }
+          }
+        }
+      }
       const dead = sides.some((side) => (side.stats.health ?? 0) <= 0)
       if (dead) {
+        return endOfMatch()
+      }
+
+      const maxMatchMsReached = Date.now() - startedAtMs > MAX_MATCH_MS
+      const maxLogsReached = logCount > MAX_LOGS
+      if (maxMatchMsReached || maxLogsReached) {
+        const reason = maxMatchMsReached ? 'MAX_MATCH_MS' : 'MAX_LOGS'
+        const seed = first(_seed)
+        if (typeof seed !== 'string') {
+          throw new Error('seed is not a string')
+        }
+        const playground = playgroundHref({
+          loadouts: participants.map((p) => p.loadout),
+          seed,
+          mode: 'edit',
+        })
+        console.warn(
+          `${reason} reached`,
+          { logs: logCount, ms: Date.now() - startedAtMs },
+          `${process.env.NEXT_PUBLIC_BASE_URL}/${playground}`,
+        )
+        // throw new Error('MAX_MATCH_MS reached')
         return endOfMatch()
       }
     }
@@ -693,11 +882,13 @@ export const generateMatch = async ({
     // TODO: merge this with the cooldown set at start
     for (const action of futureActions) {
       if (action.time !== time) continue
+      if (!action.active) continue
       if (action.type !== 'baseTick') {
         const side = sides[action.sideIdx]
         const item = side.items[action.itemIdx]
         const trigger = item.triggers![action.triggerIdx]
         if (trigger.type === 'startOfBattle') {
+          action.active = false
           action.time = MAX_MATCH_TIME // TODO: find a more elegant solution
         } else if (trigger.type === 'interval') {
           let statsForItem = item.statsItem
@@ -710,6 +901,8 @@ export const generateMatch = async ({
               itemIdx: action.itemIdx,
               triggerIdx: action.triggerIdx,
               statsForItem,
+              statsEnemy: sides[1 - action.sideIdx].stats,
+              statsTarget: sides[1 - action.sideIdx].stats, // TODO: this is technically wrong, should be target.stats (but we dont want to calculate target here again)
             },
             'statsForItem',
           )

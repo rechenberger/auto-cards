@@ -30,7 +30,7 @@ export const craftingRecipes: CraftingRecipe[] = [
   {
     input: [
       { name: 'shortBow', count: 1 },
-      { name: 'flyAgaric', count: 1 },
+      { name: 'bottleOfPoison', count: 1 },
     ],
     output: [{ name: 'poisonBow' }],
   },
@@ -40,6 +40,13 @@ export const craftingRecipes: CraftingRecipe[] = [
       { name: 'chiliPepper', count: 1 },
     ],
     output: [{ name: 'fireDagger' }],
+  },
+  {
+    input: [
+      { name: 'dagger', count: 1 },
+      { name: 'bottleOfPoison', count: 1 },
+    ],
+    output: [{ name: 'poisonDagger' }],
   },
   {
     input: [{ name: 'beer', count: 2 }],
@@ -62,6 +69,14 @@ export const craftingRecipes: CraftingRecipe[] = [
     output: [{ name: 'icicle', count: 1 }, { name: 'frostFest' }],
   },
   {
+    input: [
+      { name: 'icicle', count: 1 },
+      { name: 'woodenBuckler', count: 1 },
+    ],
+    output: [{ name: 'icyBuckler', count: 1 }],
+    version: 3,
+  },
+  {
     input: [{ name: 'frostFest', count: 1 }],
     output: [{ name: 'icicle', count: 1 }],
   },
@@ -76,10 +91,21 @@ export const craftingRecipes: CraftingRecipe[] = [
   {
     input: [
       { name: 'woodenSword', count: 1 },
+      { name: 'forgingHammer', count: 1 },
+    ],
+    output: [
+      { name: 'broadSword', count: 1 },
+      { name: 'forgingHammer', count: 1 },
+    ],
+    version: 3,
+  },
+  {
+    input: [
+      { name: 'broadSword', count: 1 },
       { name: 'metalGloves', count: 1 },
     ],
-    output: [{ name: 'longSword' }],
-    version: 2,
+    output: [{ name: 'longSword', count: 1 }],
+    version: 3,
   },
   {
     input: [
@@ -117,6 +143,22 @@ export const craftingRecipes: CraftingRecipe[] = [
     ],
     output: [{ name: 'manaDagger', count: 1 }],
     version: 2,
+  },
+  {
+    input: [
+      { name: 'woodenBuckler', count: 1 },
+      { name: 'forgingHammer', count: 1 },
+    ],
+    output: [
+      { name: 'knightShield', count: 1 },
+      { name: 'forgingHammer', count: 1 },
+    ],
+    version: 3,
+  },
+  {
+    input: [{ name: 'knightShield', count: 2 }],
+    output: [{ name: 'towerShield', count: 1 }],
+    version: 3,
   },
 ]
 

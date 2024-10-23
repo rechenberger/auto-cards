@@ -12,12 +12,14 @@ export const TriggerDisplay = ({
   itemIdx,
   triggerIdx,
   disableTooltip,
+  disableLinks,
 }: {
   trigger: Trigger
   sideIdx?: number
   itemIdx?: number
   triggerIdx?: number
   disableTooltip?: boolean
+  disableLinks?: boolean
 }) => {
   if (trigger.hidden) {
     return null
@@ -38,6 +40,7 @@ export const TriggerDisplay = ({
           <TextKeywordDisplay
             text={trigger.description}
             disableTooltip={disableTooltip}
+            disableLinks={disableLinks}
           />
         </div>
       </div>
@@ -69,6 +72,17 @@ export const TriggerDisplay = ({
             <div className="">({Math.round(trigger.chancePercent)}%)</div>
           )}
         </div>
+        {trigger.statsRequiredTarget && (
+          <div className="flex flex-row gap-2 items-center">
+            <div>If Target has:</div>
+            <StatsDisplay
+              size="sm"
+              relative
+              stats={trigger.statsRequiredTarget}
+              disableTooltip={disableTooltip}
+            />
+          </div>
+        )}
         {trigger.statsRequired && !hideRequiredStats && (
           <div className="flex flex-row gap-2 items-center">
             <div>Required:</div>
@@ -102,6 +116,17 @@ export const TriggerDisplay = ({
             />
           </div>
         )}
+        {trigger.statsTarget && (
+          <div className="flex flex-row gap-2 items-center">
+            <div>Target:</div>
+            <StatsDisplay
+              size="sm"
+              relative
+              stats={trigger.statsTarget}
+              disableTooltip={disableTooltip}
+            />
+          </div>
+        )}
         {trigger.statsEnemy && (
           <div className="flex flex-row gap-2 items-center">
             <div>Enemy:</div>
@@ -130,8 +155,18 @@ export const TriggerDisplay = ({
                 key={modifier.description}
                 text={modifier.description}
                 disableTooltip={disableTooltip}
+                disableLinks={disableLinks}
               />
             ))}
+          </div>
+        )}
+        {trigger.maxCount && (
+          <div className="flex flex-row gap-2 items-center">
+            <div>
+              {trigger.maxCount === 1
+                ? 'max once'
+                : `max ${trigger.maxCount} times`}
+            </div>
           </div>
         )}
       </div>

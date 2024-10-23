@@ -2,7 +2,7 @@ import { getIsAdmin } from '@/auth/getIsAdmin'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { LeaderboardEntry, Loadout } from '@/db/schema-zod'
-import { addToLeaderboard } from '@/game/addToLeaderboard'
+import { addToLeaderboardAllRounds } from '@/game/addToLeaderboardAllRounds'
 import {
   GAME_VERSION,
   GREAT_WIN_RATE,
@@ -75,7 +75,7 @@ export const LeaderboardRankCard = async ({
   //   })
   // }
 
-  const great = entry?.score && entry.score >= GREAT_WIN_RATE
+  const great = !!entry?.score && entry.score >= GREAT_WIN_RATE
 
   const top3 = entry?.rank && entry.rank <= 3
 
@@ -112,7 +112,10 @@ export const LeaderboardRankCard = async ({
             hideIcon
             action={async () => {
               'use server'
-              await addToLeaderboard({ loadout })
+              // await addToLeaderboard({ loadout })
+              if (loadout.gameId) {
+                await addToLeaderboardAllRounds({ gameId: loadout.gameId })
+              }
               revalidateLeaderboard()
             }}
           >
@@ -173,7 +176,10 @@ export const LeaderboardRankCard = async ({
               action={async () => {
                 'use server'
                 return superAction(async () => {
-                  await addToLeaderboard({ loadout })
+                  // await addToLeaderboard({ loadout })
+                  if (loadout.gameId) {
+                    await addToLeaderboardAllRounds({ gameId: loadout.gameId })
+                  }
                   revalidatePath('/', 'layout')
                 })
               }}

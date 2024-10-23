@@ -9,10 +9,15 @@ export type MatchWorkerInput = {
   input: GenerateMatchInput
 }
 
-export type MatchWorkerOutput = {
-  jobId: string
-  output: MatchReport
-}
+export type MatchWorkerOutput =
+  | {
+      jobId: string
+      output: MatchReport
+    }
+  | {
+      jobId: string
+      error: string
+    }
 
 export const createMatchWorkerManager = ({
   noOfWorkers = WORKER_COUNT,
@@ -43,7 +48,11 @@ export const createMatchWorkerManager = ({
     return new Promise<MatchReport>((resolve, reject) => {
       const listener = (message: MatchWorkerOutput) => {
         if (message.jobId === workerInput.jobId) {
-          resolve(message.output)
+          if ('output' in message) {
+            resolve(message.output)
+          } else {
+            reject(message.error)
+          }
           worker.off('message', listener)
         }
       }

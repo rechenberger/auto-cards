@@ -3,10 +3,6 @@
     "@radix-ui/*",
     "next/router"
   ],
-  "cSpell.words": [
-    "cooldown",
-    "countify",
-    "loadout",
-    "loadouts"
-  ]
+  "cSpell.words": ["cooldown", "countify", "loadout", "loadouts", "remeda"],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

@@ -42,7 +42,6 @@ export default async function Page() {
                     themeIds={[t0.name, t1.name]}
                     variant="inline"
                     showGallery
-                    // autoGenerate
                   />
                 </div>
               </Fragment>

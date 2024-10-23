@@ -2,6 +2,7 @@ import { Game, LoadoutData } from '@/db/schema-zod'
 import { calcStats } from '@/game/calcStats'
 import { countifyItems } from '@/game/countifyItems'
 import { orderItems } from '@/game/orderItems'
+import ErrorBoundary from '@/lib/ErrorBoundary'
 import { map } from 'lodash-es'
 import { Fragment } from 'react'
 import { CardRow } from './CardRow'
@@ -35,26 +36,29 @@ export const LoadoutDisplay = async ({
                 count={item.count}
                 tooltipOnClick
                 canSell={canSell}
+                size="160"
               />
             </Fragment>
           ))}
         </CardRow>
       </div>
       <div className="max-xl:hidden">
-        <HandDisplay>
-          {map(items, (item) => (
-            <Fragment key={item.name}>
-              <ItemCard
-                game={game}
-                name={item.name}
-                count={item.count}
-                size="240"
-                tooltipOnClick
-                canSell={canSell}
-              />
-            </Fragment>
-          ))}
-        </HandDisplay>
+        <ErrorBoundary>
+          <HandDisplay>
+            {map(items, (item) => (
+              <Fragment key={item.name}>
+                <ItemCard
+                  game={game}
+                  name={item.name}
+                  count={item.count}
+                  size="240"
+                  tooltipOnClick
+                  canSell={canSell}
+                />
+              </Fragment>
+            ))}
+          </HandDisplay>
+        </ErrorBoundary>
       </div>
 
       <div className="flex flex-col items-center">

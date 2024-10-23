@@ -5,7 +5,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { allStatsDefinition, StatDefinition, Stats } from '@/game/stats'
+import { StatDefinition, Stats, allStatsDefinition } from '@/game/stats'
 import { cn } from '@/lib/utils'
 import { Fragment } from 'react'
 import { CardTooltip } from './CardTooltip'
@@ -67,7 +67,7 @@ export const StatDisplay = ({
   stat,
 }: StatDisplayProps) => {
   const inner = (
-    <div
+    <span
       className={cn(
         'rounded-full border px-1 py-0.5 flex flex-row items-center',
         stat.bgClass,
@@ -84,7 +84,7 @@ export const StatDisplay = ({
         )}
       />
       {!hideCount && !stat.hideCount && (
-        <div
+        <span
           className={cn(
             'text-sm px-1 font-bold',
             size === 'sm' && 'text-xs -mb-0.5',
@@ -92,9 +92,9 @@ export const StatDisplay = ({
           )}
         >
           {value}
-        </div>
+        </span>
       )}
-    </div>
+    </span>
   )
 
   if (disableTooltip) {

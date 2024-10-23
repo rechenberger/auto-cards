@@ -5,7 +5,7 @@ import {
   GenerateMatchInput,
   MatchReport,
 } from '@/game/generateMatch'
-import { createContext, use, useContext } from 'react'
+import { createContext, useContext } from 'react'
 
 export const MatchReportContext = createContext<MatchReport | null>(null)
 
@@ -16,7 +16,8 @@ export const MatchReportProvider = ({
   children: React.ReactNode
   input: GenerateMatchInput
 }) => {
-  const matchReport = use(generateMatch(input))
+  // const matchReport = use(generateMatch(input))
+  const matchReport = generateMatch(input)
   return (
     <MatchReportContext.Provider value={matchReport}>
       {children}

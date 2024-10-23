@@ -2,6 +2,7 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { nullThemeId } from '@/game/themes'
 import { and, desc, eq, isNull } from 'drizzle-orm'
+import { unstable_cache } from 'next/cache'
 import { AiImageProps } from './AiImage'
 
 type GetAiImageProps = Omit<AiImageProps, 'className'>
@@ -21,19 +22,25 @@ const where = ({ prompt, itemId, themeId }: GetAiImageProps) => {
 
 const orderBy = desc(schema.aiImage.updatedAt)
 
-export const getAiImage = async (props: GetAiImageProps) => {
+const getAiImageRaw = async (props: GetAiImageProps) => {
   return await db.query.aiImage.findFirst({
     where: where(props),
     orderBy,
   })
 }
 
-export const getAiImages = async (
-  props: GetAiImageProps & { limit?: number },
-) => {
+export const getAiImage = unstable_cache(getAiImageRaw, ['getAiImage'], {
+  tags: ['aiImages'],
+})
+
+const getAiImagesRaw = async (props: GetAiImageProps & { limit?: number }) => {
   return await db.query.aiImage.findMany({
     where: where(props),
     orderBy,
     limit: props.limit ?? 12,
   })
 }
+
+export const getAiImages = unstable_cache(getAiImagesRaw, ['getAiImages'], {
+  tags: ['aiImages'],
+})

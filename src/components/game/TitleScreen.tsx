@@ -1,14 +1,7 @@
 import { getAllItems } from '@/game/allItems'
-import dynamic from 'next/dynamic'
 import { Fragment } from 'react'
 import { ItemCard } from './ItemCard'
-
-const TitleScreenClient = dynamic(
-  () => import('./TitleScreenClient').then((m) => m.TitleScreenClient),
-  {
-    ssr: false,
-  },
-)
+import { TitleScreenClientDynamic } from './TitleScreenClientDynamic'
 
 export const TitleScreen = async () => {
   const allItems = await getAllItems()
@@ -21,7 +14,7 @@ export const TitleScreen = async () => {
 
   return (
     <>
-      <TitleScreenClient>{cards}</TitleScreenClient>
+      <TitleScreenClientDynamic>{cards}</TitleScreenClientDynamic>
     </>
   )
 }

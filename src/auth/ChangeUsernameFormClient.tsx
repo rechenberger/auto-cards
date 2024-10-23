@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { createZodForm } from '@/lib/useZodForm'
-import { SuperActionPromise } from '@/super-action/action/createSuperAction'
+import { SuperActionWithInput } from '@/super-action/action/createSuperAction'
 import { useSuperAction } from '@/super-action/action/useSuperAction'
 import { z } from 'zod'
 
@@ -29,14 +29,12 @@ export const ChangeUsernameFormClient = ({
   username,
   redirectUrl,
 }: {
-  action: (data: ChangeUsernameSchema) => SuperActionPromise
+  action: SuperActionWithInput<ChangeUsernameSchema>
   username?: string
   redirectUrl?: string
 }) => {
   const { trigger, isLoading } = useSuperAction({
-    action: async () => {
-      return action(form.getValues())
-    },
+    action,
     catchToast: true,
   })
 
@@ -52,12 +50,12 @@ export const ChangeUsernameFormClient = ({
   return (
     <>
       <div className="mb-2">
-        <CardTitle>Change Password</CardTitle>
+        <CardTitle>Change Username</CardTitle>
       </div>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(async () => {
-            await trigger()
+          onSubmit={form.handleSubmit(async (values) => {
+            await trigger(values)
           })}
           className="flex flex-col gap-4"
         >

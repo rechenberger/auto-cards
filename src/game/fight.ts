@@ -31,7 +31,7 @@ export const fight = async ({ game }: { game: Game }) => {
     seed: [...game.data.seed, game.data.roundNo, 'match'],
   })
 
-  const matchReport = await generateMatch({
+  const matchReport = generateMatch({
     participants: [
       {
         loadout: cloneDeep(game.data.currentLoadout),
