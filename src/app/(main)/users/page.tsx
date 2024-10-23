@@ -1,6 +1,7 @@
 import { notFoundIfNotAdmin, throwIfNotAdmin } from '@/auth/getIsAdmin'
 import { impersonate } from '@/auth/impersonate'
 import { LocalDateTime } from '@/components/demo/LocalDateTime'
+import { SimpleParamSelect } from '@/components/simple/SimpleParamSelect'
 import {
   Card,
   CardContent,
@@ -27,18 +28,33 @@ export const metadata: Metadata = {
   title: 'Users',
 }
 
-export default async function Page() {
+export default async function Page({
+  searchParams: { filter },
+}: {
+  searchParams: {
+    filter?: 'admins'
+  }
+}) {
   await notFoundIfNotAdmin({ allowDev: true })
   const users = await db.query.users.findMany({
     with: {
       accounts: true,
     },
+    where: filter === 'admins' ? eq(usersTable.isAdmin, true) : undefined,
   })
 
   return (
     <>
-      <div className="flex flex-row gap-2 items-center">
+      <div className="flex flex-col md:flex-row gap-2 items-center">
         <CardTitle className="flex-1">Users</CardTitle>
+        <SimpleParamSelect
+          paramKey="filter"
+          component="tabs"
+          options={[
+            { value: null, label: 'All Users' },
+            { value: 'admins', label: 'Admins' },
+          ]}
+        />
         <CreateUserButton />
       </div>
       <div className="grid lg:grid-cols-3 gap-4">
