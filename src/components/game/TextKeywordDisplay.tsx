@@ -9,9 +9,11 @@ import { TagDisplay } from './TagDisplay'
 export const TextKeywordDisplay = async ({
   text,
   disableTooltip,
+  disableLinks,
 }: {
   text: string
   disableTooltip?: boolean
+  disableLinks?: boolean
 }) => {
   const items = await getAllItems()
   return (
@@ -31,7 +33,7 @@ export const TextKeywordDisplay = async ({
 
             const tag = allTagDefinitions.find((tag) => tag.name === text)
             if (tag) {
-              return <TagDisplay tag={tag.name} />
+              return <TagDisplay tag={tag.name} disableLinks={disableLinks} />
             }
 
             const stat = allStatsDefinition.find((stat) => stat.name === text)

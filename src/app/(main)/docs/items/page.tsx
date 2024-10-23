@@ -50,7 +50,7 @@ export default async function Page({
         <SimpleParamSelect
           options={allTags.map((tag) => ({
             value: tag,
-            label: <TagDisplay tag={tag} link={false} />,
+            label: <TagDisplay tag={tag} disableLinks />,
           }))}
           paramKey="tag"
           label="Tag"
@@ -72,7 +72,7 @@ export default async function Page({
           <Fragment key={idx}>
             <div className="relative">
               <Link href={`/docs/items/${item.name}`}>
-                <ItemCard name={item.name} size="320" showPrice />
+                <ItemCard name={item.name} size="320" showPrice disableLinks />
               </Link>
               {isAdmin && (
                 <AiImageGalleryItem
