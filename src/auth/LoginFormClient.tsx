@@ -14,7 +14,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { createZodForm } from '@/lib/useZodForm'
 import { cn } from '@/lib/utils'
-import { SuperActionPromise } from '@/super-action/action/createSuperAction'
+import { SuperActionWithInput } from '@/super-action/action/createSuperAction'
 import { useSuperAction } from '@/super-action/action/useSuperAction'
 import { ArrowLeft } from 'lucide-react'
 import { ReactNode } from 'react'
@@ -61,14 +61,12 @@ export const LoginFormClient = ({
   alternatives,
   showAlternativesOnRegister = false,
 }: {
-  action: (data: LoginData) => SuperActionPromise
+  action: SuperActionWithInput<LoginData>
   alternatives?: ReactNode
   showAlternativesOnRegister?: boolean
 }) => {
   const { trigger, isLoading } = useSuperAction({
-    action: async () => {
-      return action(form.getValues())
-    },
+    action,
     catchToast: true,
   })
 
@@ -116,8 +114,8 @@ export const LoginFormClient = ({
       </div>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(async () => {
-            await trigger()
+          onSubmit={form.handleSubmit(async (values) => {
+            await trigger(values)
           })}
           className="flex flex-col gap-4"
         >
