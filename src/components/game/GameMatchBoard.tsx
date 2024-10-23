@@ -74,7 +74,7 @@ export const GameMatchBoardSingle = async ({
             ? 'bg-gray-500'
             : 'bg-gray-500/20',
         'flex items-center justify-center',
-        'font-bold leading-none text-center text-lg',
+        'font-bold leading-none text-center text-sm md:text-lg',
         'text-white',
         isActive && !showScore && 'ring-2 ring-primary',
       )}
@@ -86,9 +86,9 @@ export const GameMatchBoardSingle = async ({
       ) : (
         <>
           {status === 'won' ? (
-            <Crown className="size-6" />
+            <Crown className="size-4 md:size-6" />
           ) : status === 'lost' ? (
-            <Skull className="size-6" />
+            <Skull className="size-4 md:size-6" />
           ) : isActive ? (
             <div className="mt-0.5">{roundNo + 1}</div>
           ) : null}
