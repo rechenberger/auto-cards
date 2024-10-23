@@ -2,7 +2,7 @@ import { createId } from '@paralleldrive/cuid2'
 import { range } from 'lodash-es'
 import { Worker } from 'worker_threads'
 import { WORKER_COUNT, WORKER_MAX_LISTENERS } from './config'
-import { GenerateMatchInput, MatchReport } from './generateMatch'
+import { GenerateMatchInput, MatchReport, generateMatch } from './generateMatch'
 
 export type MatchWorkerInput = {
   jobId: string
@@ -75,9 +75,15 @@ export const createMatchWorkerManager = ({
 
 export type MatchWorkerManager = ReturnType<typeof createMatchWorkerManager>
 
-const manager = createMatchWorkerManager()
+const manager =
+  process.env.DISABLE_WORKERS === 'true'
+    ? undefined
+    : createMatchWorkerManager()
 
 export const generateMatchByWorker = async (input: GenerateMatchInput) => {
-  return manager.run({ input })
-  // return generateMatch(input)
+  if (manager) {
+    return manager.run({ input })
+  } else {
+    return generateMatch(input)
+  }
 }
