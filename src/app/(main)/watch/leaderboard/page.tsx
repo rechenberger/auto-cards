@@ -188,7 +188,10 @@ export default async function Page({
                             <Progress value={(100 * done) / entries.length} />
                           </>,
                         )
-                        await addToLeaderboard({ loadout: entry.loadout })
+                        await addToLeaderboard({
+                          loadout: entry.loadout,
+                          skipRevalidate: true,
+                        })
                         done++
                       }
                       ui.done(
