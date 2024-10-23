@@ -22,20 +22,21 @@ export const metadata: Metadata = {
 export default async function Page({
   searchParams,
 }: {
-  searchParams: {
+  searchParams: Promise<{
     tag?: string
     rarity?: string
-  }
+  }>
 }) {
   let items = await getAllItems()
   items = await orderItems(items)
   const isAdmin = await getIsAdmin({ allowDev: true })
 
-  if (searchParams.tag) {
-    items = items.filter((item) => item.tags?.includes(searchParams.tag as Tag))
+  const { tag, rarity } = await searchParams
+  if (tag) {
+    items = items.filter((item) => item.tags?.includes(tag as Tag))
   }
-  if (searchParams.rarity) {
-    items = items.filter((item) => item.rarity === searchParams.rarity)
+  if (rarity) {
+    items = items.filter((item) => item.rarity === rarity)
   }
 
   const themeId = await getMyUserThemeIdWithFallback()
@@ -50,7 +51,7 @@ export default async function Page({
         <SimpleParamSelect
           options={allTags.map((tag) => ({
             value: tag,
-            label: <TagDisplay tag={tag} link={false} />,
+            label: <TagDisplay tag={tag} disableLinks />,
           }))}
           paramKey="tag"
           label="Tag"
@@ -72,7 +73,7 @@ export default async function Page({
           <Fragment key={idx}>
             <div className="relative">
               <Link href={`/docs/items/${item.name}`}>
-                <ItemCard name={item.name} size="320" showPrice />
+                <ItemCard name={item.name} size="320" showPrice disableLinks />
               </Link>
               {isAdmin && (
                 <AiImageGalleryItem

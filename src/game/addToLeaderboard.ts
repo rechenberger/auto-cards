@@ -14,11 +14,13 @@ export const addToLeaderboard = async ({
   type = LEADERBOARD_TYPE,
   roundNo = loadout.roundNo,
   dryRun,
+  skipRevalidate,
 }: {
   loadout: Loadout
   type?: string
   roundNo?: number
   dryRun?: boolean
+  skipRevalidate?: boolean
 }) => {
   if (loadout.version !== GAME_VERSION) {
     throw new Error('Old loadout version cannot be added to leaderboard')
@@ -127,7 +129,9 @@ export const addToLeaderboard = async ({
     await addToLeaderboardAcc({ gameId: loadout.gameId, roundNo })
   }
 
-  revalidateLeaderboard()
+  if (!skipRevalidate) {
+    revalidateLeaderboard()
+  }
 
   return {
     results,

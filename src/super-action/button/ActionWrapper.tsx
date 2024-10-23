@@ -2,7 +2,6 @@
 
 import { Slot } from '@radix-ui/react-slot'
 import { map } from 'lodash-es'
-import { ArrowRight, Loader2 } from 'lucide-react'
 import { DOMAttributes, ReactNode, forwardRef } from 'react'
 import { UseSuperActionOptions, useSuperAction } from '../action/useSuperAction'
 import { ActionCommand } from '../command/ActionCommand'
@@ -16,7 +15,7 @@ type ReactEventHandler = Exclude<
 >
 
 export type ActionWrapperSlotProps = {
-  isLoading?: boolean
+  loading?: 'true' // React 19 wants the key to be all lowercase and the value to be a string (when it's passed to a DOM element)
   disabled?: boolean
   children?: ReactNode
 }
@@ -36,7 +35,8 @@ export type ActionWrapperProps = {
     label?: ReactNode
   }
   triggerOn?: ReactEventHandler[]
-} & UseSuperActionOptions<void, undefined>
+  icon?: ReactNode
+} & UseSuperActionOptions<unknown, undefined>
 
 ActionWrapperSlot.displayName = 'ActionWrapperSlot'
 
@@ -52,7 +52,8 @@ export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
       command,
       triggerOn = ['onClick'],
       forceNeverStopLoading,
-      ...buttonProps
+      icon,
+      ...slotProps
     } = props
     const { isLoading, trigger } = useSuperAction({
       action,
@@ -62,15 +63,13 @@ export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
       stopPropagation,
       forceNeverStopLoading,
     })
-    const Icon = isLoading ? Loader2 : ArrowRight
-
     return (
       <>
         <ActionWrapperSlot
           ref={ref}
           disabled={isLoading || disabled}
-          isLoading={isLoading}
-          {...buttonProps}
+          loading={isLoading ? 'true' : undefined}
+          {...slotProps}
           {...Object.fromEntries(
             map(triggerOn, (superOn) => [
               superOn,
@@ -82,9 +81,13 @@ export const ActionWrapper = forwardRef<HTMLElement, ActionWrapperProps>(
         </ActionWrapperSlot>
         {command && (
           <ActionCommand
-            icon={Icon}
+            icon={icon}
             {...command}
-            action={trigger as any} // TODO: fix type
+            action={action}
+            disabled={disabled}
+            catchToast={catchToast}
+            askForConfirmation={askForConfirmation}
+            stopPropagation={stopPropagation}
           >
             {command.label ?? children}
           </ActionCommand>

@@ -16,14 +16,14 @@ import { capitalCase } from 'change-case'
 import { first } from 'lodash-es'
 import { Fragment } from 'react'
 import { AiItemImage } from '../ai/AiItemImage'
+import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 import { ItemCardChip } from './ItemCardChip'
 import { ItemSellButton } from './ItemSellButton'
 import { ShopEffectDisplay } from './ShopEffectDisplay'
 import { StatsBars } from './StatsBars'
 import { StatsDisplay } from './StatsDisplay'
-import { TriggerDisplay } from './TriggerDisplay'
-import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 import { streamItemCard } from './streamItemCard'
+import { TriggerDisplay } from './TriggerDisplay'
 
 export type ItemCardProps = {
   game?: Game
@@ -40,6 +40,7 @@ export type ItemCardProps = {
   canSell?: boolean
   onlyTop?: boolean
   disableTooltip?: boolean
+  disableLinks?: boolean
   showPrice?: boolean
 }
 
@@ -59,6 +60,7 @@ export const ItemCard = async (props: ItemCardProps) => {
     canSell,
     onlyTop,
     disableTooltip,
+    disableLinks,
     showPrice,
   } = props
 
@@ -249,12 +251,16 @@ export const ItemCard = async (props: ItemCardProps) => {
                     sideIdx={sideIdx}
                     triggerIdx={idx}
                     disableTooltip={disableTooltip}
+                    disableLinks={disableLinks}
                   />
                 </Fragment>
               ))}
               {item.shopEffects?.map((shopEffect, idx) => (
                 <Fragment key={idx}>
-                  <ShopEffectDisplay shopEffect={shopEffect} />
+                  <ShopEffectDisplay
+                    shopEffect={shopEffect}
+                    disableLinks={disableLinks}
+                  />
                 </Fragment>
               ))}
               {item.description && (

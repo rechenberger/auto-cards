@@ -5,10 +5,10 @@ import Link from 'next/link'
 
 export const TagDisplay = ({
   tag,
-  link = true,
+  disableLinks,
 }: {
   tag: Tag
-  link?: boolean
+  disableLinks?: boolean
 }) => {
   const def = getTagDefinition(tag)
   if (!def) return null
@@ -17,7 +17,7 @@ export const TagDisplay = ({
       {capitalCase(def.name)}
     </span>
   )
-  if (link) {
+  if (!disableLinks) {
     return (
       <Link href={`/docs/items?tag=${tag}`} target="_blank">
         {inner}

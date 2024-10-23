@@ -13,18 +13,22 @@ import { notFound } from 'next/navigation'
 import { Fragment } from 'react'
 
 type PageProps = {
-  params: {
+  params: Promise<{
     itemName: string
-  }
+  }>
 }
 
 export const generateMetadata = async ({
-  params: { itemName },
-}: PageProps): Promise<Metadata> => ({
-  title: capitalCase(itemName),
-})
+  params,
+}: PageProps): Promise<Metadata> => {
+  const { itemName } = await params
+  return {
+    title: capitalCase(itemName),
+  }
+}
 
-export default async function Page({ params: { itemName } }: PageProps) {
+export default async function Page({ params }: PageProps) {
+  const { itemName } = await params
   const isAdmin = await getIsAdmin({ allowDev: true })
   try {
     await getItemByName(itemName)

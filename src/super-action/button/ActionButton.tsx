@@ -1,18 +1,18 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
-import { ArrowRight, Loader2 } from 'lucide-react'
-import { ComponentPropsWithoutRef, forwardRef } from 'react'
+import { ComponentPropsWithoutRef, forwardRef, ReactNode } from 'react'
 import {
   ActionWrapper,
   ActionWrapperProps,
   ActionWrapperSlotProps,
 } from './ActionWrapper'
+import { SuperLoadingIcon } from './SuperLoadingIcon'
 
 export type ActionButtonProps = {
   hideIcon?: boolean
   hideButton?: boolean
+  icon?: ReactNode
 } & ActionWrapperProps &
   ComponentPropsWithoutRef<typeof Button>
 
@@ -26,6 +26,7 @@ export const ActionButton = forwardRef<HTMLButtonElement, ActionButtonProps>(
       askForConfirmation,
       stopPropagation,
       command,
+      icon,
       ...buttonProps
     } = props
 
@@ -39,8 +40,11 @@ export const ActionButton = forwardRef<HTMLButtonElement, ActionButtonProps>(
           command={command}
           catchToast={catchToast}
           triggerOn={['onClick']}
+          icon={icon}
         >
-          {!hideButton && <InnerButton {...buttonProps} ref={ref} />}
+          {!hideButton && (
+            <InnerButton icon={icon} {...buttonProps} ref={ref} />
+          )}
         </ActionWrapper>
       </>
     )
@@ -51,15 +55,13 @@ ActionButton.displayName = 'ActionButton'
 
 const InnerButton = forwardRef<
   HTMLButtonElement,
-  { hideIcon?: boolean } & ActionWrapperSlotProps
->(({ isLoading, children, hideIcon, ...props }, ref) => {
-  const Icon = isLoading ? Loader2 : ArrowRight
-
+  { hideIcon?: boolean; icon?: ReactNode } & ActionWrapperSlotProps
+>(({ loading, children, hideIcon, icon, ...props }, ref) => {
   return (
     <Button type="button" {...props} ref={ref}>
       {children}
       {!hideIcon && (
-        <Icon className={cn('w-4 h-4 ml-2', isLoading && 'animate-spin')} />
+        <SuperLoadingIcon icon={icon} className="ml-2" isLoading={!!loading} />
       )}
     </Button>
   )

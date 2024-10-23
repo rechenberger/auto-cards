@@ -32,7 +32,12 @@ export const DpsReportDisplay = ({ showCards }: { showCards?: boolean }) => {
               value={stat}
               className="flex flex-row px-2 md:px-3 gap-1 md:gap-2 justify-start items-center"
             >
-              <StatDisplay stat={getStatDefinition(stat)} size="sm" hideCount />
+              <StatDisplay
+                stat={getStatDefinition(stat)}
+                size="sm"
+                hideCount
+                disableTooltip
+              />
               <span className="truncate">{capitalCase(stat)}</span>
             </TabsTrigger>
           ))}

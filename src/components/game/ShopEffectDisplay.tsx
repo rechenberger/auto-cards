@@ -1,12 +1,14 @@
-import { SHOP_EFFECT_BOOST_MULTIPLIER } from '@/game/config'
 import { ShopEffect } from '@/game/ItemDefinition'
+import { SHOP_EFFECT_BOOST_MULTIPLIER } from '@/game/config'
 import { Fragment } from 'react'
 import { TagDisplay } from './TagDisplay'
 
 export const ShopEffectDisplay = ({
   shopEffect,
+  disableLinks,
 }: {
   shopEffect: ShopEffect
+  disableLinks?: boolean
 }) => {
   const prefix = {
     unlock: 'Unlocks',
@@ -25,7 +27,7 @@ export const ShopEffectDisplay = ({
         {shopEffect.tags.map((tag, idx) => (
           <Fragment key={tag}>
             {idx > 0 && <span>and</span>}
-            <TagDisplay tag={tag} />
+            <TagDisplay tag={tag} disableLinks={disableLinks} />
           </Fragment>
         ))}
         <div className="text-nowrap">{postfix}</div>
