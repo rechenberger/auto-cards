@@ -42,7 +42,7 @@ export const BuyButton = async ({
           variant="secondary"
           disabled={!enoughGold}
           className={cn(
-            'flex flex-row gap-1 items-center size-12 md:w-[66px]',
+            'flex flex-row gap-1 items-center',
             !enoughGold && 'grayscale',
             showReserveButton && 'rounded-r-none',
           )}
@@ -139,7 +139,7 @@ export const BuyButton = async ({
                 size="sm"
                 className={cn(
                   shopItem.isReserved && 'text-green-500',
-                  'rounded-l-none size-8 md:h-9',
+                  'rounded-l-none',
                 )}
                 hideIcon
                 action={async () => {
@@ -154,9 +154,9 @@ export const BuyButton = async ({
                 }}
               >
                 {shopItem.isReserved ? (
-                  <Lock className="size-3 flex-none" strokeWidth={3} />
+                  <Lock className="size-3" strokeWidth={3} />
                 ) : (
-                  <LockOpen className="size-3 flex-none" strokeWidth={3} />
+                  <LockOpen className="size-3" strokeWidth={3} />
                 )}
               </ActionButton>
             </TooltipTrigger>
