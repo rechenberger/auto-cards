@@ -53,7 +53,10 @@ export const ChangePasswordFormClient = ({
   const disabled = isLoading
 
   const form = useLoginForm({
-    defaultValues: {},
+    defaultValues: {
+      password: '',
+      confirmPassword: '',
+    },
     disabled,
   })
 

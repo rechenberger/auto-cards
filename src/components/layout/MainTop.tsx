@@ -1,5 +1,4 @@
 import { UserButton } from '@/auth/UserButton'
-import { isDevDb } from '@/auth/dev'
 import { getIsAdmin } from '@/auth/getIsAdmin'
 import { getIsLoggedIn } from '@/auth/getMyUser'
 import { DarkModeToggle } from '@/components/layout/DarkModeToggle'
@@ -8,6 +7,7 @@ import { Github } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { Button } from '../ui/button'
+import { DevBadges } from './DevBadges'
 import { MainLogo } from './MainLogo'
 import { MainTopNav } from './MainTopNav'
 
@@ -59,11 +59,7 @@ export const MainTop = async () => {
               v{GAME_VERSION}
             </div>
           )}
-          {isDevDb() && (
-            <div className="text-sm bg-red-500/50 rounded-md px-2 py-1">
-              Local DB
-            </div>
-          )}
+          <DevBadges />
           <UserButton />
         </div>
         <div className="flex flex-row">
@@ -79,8 +75,9 @@ export const MainTop = async () => {
           <DarkModeToggle />
         </div>
       </div>
-      <div className="container max-md:px-4 flex pb-6 xl:hidden">
+      <div className="container max-md:px-4  flex pb-6 xl:hidden items-center gap-2 flex-wrap">
         <MainTopNav entries={entries} />
+        <DevBadges />
         <UserButton />
       </div>
     </>

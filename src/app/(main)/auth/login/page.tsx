@@ -4,10 +4,12 @@ import { Card, CardContent } from '@/components/ui/card'
 import { redirect } from 'next/navigation'
 
 export default async function Page({
-  searchParams: { redirect: redirectRaw },
+  searchParams,
 }: {
-  searchParams: { redirect?: string }
+  searchParams: Promise<{ redirect?: string }>
 }) {
+  const { redirect: redirectRaw } = await searchParams
+
   const redirectUrl = redirectRaw && decodeURIComponent(redirectRaw)
   const isLoggedIn = await getIsLoggedIn()
   if (isLoggedIn) {
