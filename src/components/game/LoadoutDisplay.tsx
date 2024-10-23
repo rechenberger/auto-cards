@@ -8,7 +8,7 @@ import { Fragment } from 'react'
 import { CardRow } from './CardRow'
 import { HandDisplay } from './HandDisplay'
 import { ItemCard } from './ItemCard'
-import { StatsDisplay } from './StatsDisplay'
+import { LoadoutInfoButton } from './LoadoutInfoButton'
 
 export const LoadoutDisplay = async ({
   game,
@@ -62,7 +62,7 @@ export const LoadoutDisplay = async ({
       </div>
 
       <div className="flex flex-col items-center">
-        <StatsDisplay stats={stats} showZero canWrap />
+        <LoadoutInfoButton loadout={loadout} />
       </div>
     </>
   )
