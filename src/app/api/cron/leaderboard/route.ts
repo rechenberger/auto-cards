@@ -5,7 +5,7 @@ import { range } from 'lodash-es'
 import { headers } from 'next/headers'
 
 export const revalidate = 0
-export const maxDuration = 900 // 15 minutes
+export const maxDuration = 60 // 1 minute
 
 export const GET = async () => {
   const cronSecret = process.env.CRON_SECRET
