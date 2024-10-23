@@ -12,7 +12,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@auth/core": "^0.29.0",
+    "@auth/core": "^0.37.2",
     "@auth/drizzle-adapter": "^0.9.0",
     "@hookform/resolvers": "^3.9.0",
     "@libsql/client": "^0.6.0",
