@@ -152,7 +152,7 @@ export const SimpleParamSelect = (
           <TabsList className="flex-wrap h-auto">
             {options.map((option, idx) => (
               <Fragment key={idx}>
-                <TabsTrigger value={option.value ?? ''} onClick={() => {}}>
+                <TabsTrigger value={option.value ?? ''}>
                   {option.label}
                 </TabsTrigger>
               </Fragment>
