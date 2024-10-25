@@ -29,12 +29,13 @@ export const metadata: Metadata = {
 }
 
 export default async function Page({
-  searchParams: { filter },
+  searchParams,
 }: {
-  searchParams: {
+  searchParams: Promise<{
     filter?: 'admins'
-  }
+  }>
 }) {
+  const { filter } = await searchParams
   await notFoundIfNotAdmin({ allowDev: true })
   const users = await db.query.users.findMany({
     with: {
