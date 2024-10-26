@@ -258,28 +258,30 @@ export const ItemCard = async (props: ItemCardProps) => {
                   />
                 </Fragment>
               ))}
-              {aspects?.map((aspect, idx) => {
-                const aspectDef = getAspectDef(aspect.name)
-                const triggers = aspectDef.triggers({
-                  power: aspect.power,
-                })
-                return (
-                  <Fragment key={idx}>
-                    {triggers?.map((trigger, idx) => (
-                      <Fragment key={idx}>
-                        <TriggerDisplay
-                          trigger={trigger}
-                          itemIdx={itemIdx}
-                          sideIdx={sideIdx}
-                          triggerIdx={idx}
-                          disableTooltip={disableTooltip}
-                          disableLinks={disableLinks}
-                        />
-                      </Fragment>
-                    ))}
-                  </Fragment>
-                )
-              })}
+              <div className="flex flex-col gap-0 ring-inset ring-2 ring-black">
+                {aspects?.map((aspect, idx) => {
+                  const aspectDef = getAspectDef(aspect.name)
+                  const triggers = aspectDef.triggers({
+                    power: aspect.power,
+                  })
+                  return (
+                    <Fragment key={idx}>
+                      {triggers?.map((trigger, idx) => (
+                        <Fragment key={idx}>
+                          <TriggerDisplay
+                            trigger={trigger}
+                            itemIdx={itemIdx}
+                            sideIdx={sideIdx}
+                            triggerIdx={idx}
+                            disableTooltip={disableTooltip}
+                            disableLinks={disableLinks}
+                          />
+                        </Fragment>
+                      ))}
+                    </Fragment>
+                  )
+                })}
+              </div>
               {item.shopEffects?.map((shopEffect, idx) => (
                 <Fragment key={idx}>
                   <ShopEffectDisplay
