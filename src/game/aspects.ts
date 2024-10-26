@@ -1,3 +1,5 @@
+import { map } from 'remeda'
+import { z } from 'zod'
 import { Trigger } from './ItemDefinition'
 import { rndInt } from './rndHelpers'
 
@@ -55,3 +57,19 @@ export const allAspectsRaw = [
     ],
   },
 ] as const satisfies AspectDefinitionRaw[]
+
+export const allAspectNames = map(allAspectsRaw, (aspect) => aspect.name)
+export const AspectName = z.enum(allAspectNames)
+export type AspectName = z.infer<typeof AspectName>
+
+export type AspectDefinition = AspectDefinitionRaw & {
+  name: AspectName
+}
+
+export const allAspects: AspectDefinition[] = allAspectsRaw
+
+export const ItemAspect = z.object({
+  name: AspectName,
+  power: z.number(),
+})
+export type ItemAspect = z.infer<typeof ItemAspect>

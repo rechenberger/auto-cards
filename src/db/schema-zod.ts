@@ -1,3 +1,4 @@
+import { ItemAspect } from '@/game/aspects'
 import { GAME_VERSION } from '@/game/config'
 import { createSeed } from '@/game/seed'
 import { createSelectSchema } from 'drizzle-zod'
@@ -14,14 +15,7 @@ export const LoadoutData = z.object({
     z.object({
       name: z.string(),
       count: z.number().optional(),
-      aspects: z
-        .array(
-          z.object({
-            name: z.string(),
-            power: z.number(),
-          }),
-        )
-        .optional(),
+      aspects: z.array(ItemAspect).optional(),
     }),
   ),
 })
@@ -45,6 +39,7 @@ export const GameData = z.object({
       isReserved: z.boolean().optional(),
       isSold: z.boolean().optional(),
       isSpecial: z.boolean().optional(),
+      aspects: z.array(ItemAspect).optional(),
     }),
   ),
   currentLoadout: LoadoutData,
