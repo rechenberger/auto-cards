@@ -14,6 +14,14 @@ export const LoadoutData = z.object({
     z.object({
       name: z.string(),
       count: z.number().optional(),
+      aspects: z
+        .array(
+          z.object({
+            name: z.string(),
+            power: z.number(),
+          }),
+        )
+        .optional(),
     }),
   ),
 })

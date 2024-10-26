@@ -3,42 +3,53 @@ import { rndInt } from './rndHelpers'
 
 type AspectDefinitionRaw = {
   name: string
-  triggers: ({ rnd }: { rnd: number }) => Partial<Trigger[]>
+  triggers: (ctx: { power: number }) => Trigger[]
 }
 
 const scale = ({
-  rnd,
+  power,
   min,
   max = 3 * min,
 }: {
-  rnd: number
+  power: number
   min: number
   max?: number
 }) => {
-  return rndInt({ rnd, min, max })
+  return rndInt({ rnd: power, min, max })
 }
 
 export const allAspectsRaw = [
   {
     name: 'health',
-    triggers: ({ rnd }) => [
+    triggers: ({ power }) => [
       {
         type: 'startOfBattle',
         stats: {
-          health: scale({ rnd, min: 10 }),
-          healthMax: scale({ rnd, min: 10 }),
+          health: scale({ power, min: 10 }),
+          healthMax: scale({ power, min: 10 }),
         },
       },
     ],
   },
   {
     name: 'stamina',
-    triggers: ({ rnd }) => [
+    triggers: ({ power }) => [
       {
         type: 'startOfBattle',
         stats: {
-          stamina: scale({ rnd, min: 10 }),
-          staminaMax: scale({ rnd, min: 10 }),
+          stamina: scale({ power, min: 5 }),
+          staminaMax: scale({ power, min: 5 }),
+        },
+      },
+    ],
+  },
+  {
+    name: 'staminaRegen',
+    triggers: ({ power }) => [
+      {
+        type: 'startOfBattle',
+        stats: {
+          staminaRegen: scale({ power, min: 5 }),
         },
       },
     ],
