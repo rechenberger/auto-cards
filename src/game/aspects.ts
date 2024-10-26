@@ -56,6 +56,105 @@ export const allAspectsRaw = [
       },
     ],
   },
+  {
+    name: 'critChance',
+    triggers: ({ power }) => [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          critChance: scale({ power, min: 1 }),
+        },
+      },
+    ],
+  },
+  {
+    name: 'block',
+    triggers: ({ power }) => [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          block: scale({ power, min: 8 }),
+        },
+      },
+    ],
+  },
+  {
+    name: 'haste',
+    triggers: ({ power }) => [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          haste: scale({ power, min: 1 }),
+        },
+      },
+    ],
+  },
+  {
+    name: 'hungry',
+    triggers: ({ power }) => [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          hungry: scale({ power, min: 2 }),
+        },
+      },
+    ],
+  },
+  {
+    name: 'empower',
+    triggers: ({ power }) => [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          empower: scale({ power, min: 1 }),
+        },
+      },
+    ],
+  },
+  {
+    name: 'thorns',
+    triggers: ({ power }) => [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          thorns: scale({ power, min: 2 }),
+        },
+      },
+    ],
+  },
+  {
+    name: 'luck',
+    triggers: ({ power }) => [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          luck: scale({ power, min: 2 }),
+        },
+      },
+    ],
+  },
+  {
+    name: 'critDamage',
+    triggers: ({ power }) => [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          critDamage: scale({ power, min: 4 }),
+        },
+      },
+    ],
+  },
+  {
+    name: 'lifeSteal',
+    triggers: ({ power }) => [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          lifeSteal: scale({ power, min: 4 }),
+        },
+      },
+    ],
+  },
 ] as const satisfies AspectDefinitionRaw[]
 
 export const allAspectNames = map(allAspectsRaw, (aspect) => aspect.name)
