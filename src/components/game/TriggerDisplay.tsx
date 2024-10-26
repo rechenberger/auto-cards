@@ -1,5 +1,6 @@
 import { Trigger } from '@/game/ItemDefinition'
 import { Stat } from '@/game/stats'
+import { cn } from '@/lib/utils'
 import { capitalCase } from 'change-case'
 import { every } from 'lodash-es'
 import { MatchCardCooldown } from './MatchCardCooldown'
@@ -13,6 +14,7 @@ export const TriggerDisplay = ({
   triggerIdx,
   disableTooltip,
   disableLinks,
+  className,
 }: {
   trigger: Trigger
   sideIdx?: number
@@ -20,6 +22,7 @@ export const TriggerDisplay = ({
   triggerIdx?: number
   disableTooltip?: boolean
   disableLinks?: boolean
+  className?: string
 }) => {
   if (trigger.hidden) {
     return null
@@ -35,7 +38,12 @@ export const TriggerDisplay = ({
 
   if (trigger.description) {
     return (
-      <div className="px-2 py-2 bg-border/40 rounded-md flex flex-col gap-1 items-center min-w-40">
+      <div
+        className={cn(
+          'p-2 bg-border/40 rounded-md flex flex-col gap-1 items-center min-w-40',
+          className,
+        )}
+      >
         <div className="text-center text-xs">
           <TextKeywordDisplay
             text={trigger.description}
@@ -49,7 +57,12 @@ export const TriggerDisplay = ({
 
   return (
     <>
-      <div className="px-2 py-2 bg-border/40 rounded-md flex flex-col gap-1 items-center min-w-40">
+      <div
+        className={cn(
+          'p-2 bg-border/40 rounded-md flex flex-col gap-1 items-center min-w-40',
+          className,
+        )}
+      >
         {trigger.type !== 'startOfBattle' && (
           <div className="flex flex-row gap-1 justify-center">
             <div className="font-bold">

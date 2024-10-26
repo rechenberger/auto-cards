@@ -258,7 +258,7 @@ export const ItemCard = async (props: ItemCardProps) => {
                   />
                 </Fragment>
               ))}
-              <div className="flex flex-col gap-0 ring-inset ring-2 ring-black">
+              <div className="flex flex-row gap-1 p-1 rounded-lg">
                 {aspects?.map((aspect, idx) => {
                   const aspectDef = getAspectDef(aspect.name)
                   const triggers = aspectDef.triggers({
@@ -275,6 +275,7 @@ export const ItemCard = async (props: ItemCardProps) => {
                             triggerIdx={idx}
                             disableTooltip={disableTooltip}
                             disableLinks={disableLinks}
+                            className="min-w-min p-1 rounded-xl"
                           />
                         </Fragment>
                       ))}
