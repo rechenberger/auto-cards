@@ -50,28 +50,30 @@ export const TriggerDisplay = ({
   return (
     <>
       <div className="px-2 py-2 bg-border/40 rounded-md flex flex-col gap-1 items-center min-w-40">
-        <div className="flex flex-row gap-1 justify-center">
-          <div className="font-bold">
-            {trigger.type === 'interval' ? (
-              sideIdx !== undefined &&
-              itemIdx !== undefined &&
-              triggerIdx !== undefined ? (
-                <MatchCardCooldown
-                  sideIdx={sideIdx}
-                  itemIdx={itemIdx}
-                  triggerIdx={triggerIdx}
-                />
+        {trigger.type !== 'startOfBattle' && (
+          <div className="flex flex-row gap-1 justify-center">
+            <div className="font-bold">
+              {trigger.type === 'interval' ? (
+                sideIdx !== undefined &&
+                itemIdx !== undefined &&
+                triggerIdx !== undefined ? (
+                  <MatchCardCooldown
+                    sideIdx={sideIdx}
+                    itemIdx={itemIdx}
+                    triggerIdx={triggerIdx}
+                  />
+                ) : (
+                  `Every ${trigger.cooldown / 1000}s`
+                )
               ) : (
-                `Every ${trigger.cooldown / 1000}s`
-              )
-            ) : (
-              `${capitalCase(trigger.type)}`
+                `${capitalCase(trigger.type)}`
+              )}
+            </div>
+            {trigger.chancePercent && (
+              <div className="">({Math.round(trigger.chancePercent)}%)</div>
             )}
           </div>
-          {trigger.chancePercent && (
-            <div className="">({Math.round(trigger.chancePercent)}%)</div>
-          )}
-        </div>
+        )}
         {trigger.statsRequiredTarget && (
           <div className="flex flex-row gap-2 items-center">
             <div>If Target has:</div>

@@ -136,7 +136,7 @@ export const generateShopItems = async ({
           seed: [...itemSeed, 'isOnSale'],
         }) < SALE_CHANCE
 
-    const noOfAspects = specialBuyRound ? 0 : 1
+    const noOfAspects = specialBuyRound ? 0 : 3
     const aspectDefs = rngItems({
       seed: [...itemSeed, 'aspects'],
       items: allAspects,
