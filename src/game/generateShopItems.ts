@@ -1,6 +1,7 @@
 import { Game, GameData } from '@/db/schema-zod'
-import { range } from 'lodash-es'
+import { floor, range } from 'lodash-es'
 import { getAllItems } from './allItems'
+import { allAspects } from './aspects'
 import {
   NO_OF_SHOP_ITEMS,
   SALE_CHANCE,
@@ -8,7 +9,7 @@ import {
 } from './config'
 import { getSpecialBuyRound } from './getSpecialBuyRound'
 import { roundStats } from './roundStats'
-import { rngFloat, rngItemsWithWeights } from './seed'
+import { rngFloat, rngItems, rngItemsWithWeights } from './seed'
 import { getTagDefinition } from './tags'
 
 export const generateShopItems = async ({
@@ -135,10 +136,29 @@ export const generateShopItems = async ({
           seed: [...itemSeed, 'isOnSale'],
         }) < SALE_CHANCE
 
+    const noOfAspects = specialBuyRound ? 0 : 1
+    const aspectDefs = rngItems({
+      seed: [...itemSeed, 'aspects'],
+      items: allAspects,
+      count: noOfAspects,
+    })
+    const aspects = aspectDefs.map((aspectDef, idx) => ({
+      name: aspectDef.name,
+      power: floor(
+        rngFloat({
+          seed: [...itemSeed, 'aspectPower', idx],
+          min: 0,
+          max: 1,
+        }),
+        3,
+      ),
+    }))
+
     return {
       name: newItem.name,
       isOnSale,
       isSpecial: !!specialBuyRound,
+      aspects,
     }
   })
   shopItems.push(...oldItems)
