@@ -37,6 +37,7 @@ export const LoadoutDisplay = async ({
                 tooltipOnClick
                 canSell={canSell}
                 size="160"
+                aspects={item.aspects}
               />
             </Fragment>
           ))}
@@ -54,6 +55,7 @@ export const LoadoutDisplay = async ({
                   size="240"
                   tooltipOnClick
                   canSell={canSell}
+                  aspects={item.aspects}
                 />
               </Fragment>
             ))}

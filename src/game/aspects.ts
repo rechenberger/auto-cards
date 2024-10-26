@@ -26,7 +26,7 @@ export const allAspectsRaw = [
     triggers: ({ power }) => [
       {
         type: 'startOfBattle',
-        stats: {
+        statsSelf: {
           health: scale({ power, min: 10 }),
           healthMax: scale({ power, min: 10 }),
         },
@@ -38,7 +38,7 @@ export const allAspectsRaw = [
     triggers: ({ power }) => [
       {
         type: 'startOfBattle',
-        stats: {
+        statsSelf: {
           stamina: scale({ power, min: 5 }),
           staminaMax: scale({ power, min: 5 }),
         },
@@ -50,7 +50,7 @@ export const allAspectsRaw = [
     triggers: ({ power }) => [
       {
         type: 'startOfBattle',
-        stats: {
+        statsSelf: {
           staminaRegen: scale({ power, min: 5 }),
         },
       },
@@ -67,6 +67,14 @@ export type AspectDefinition = AspectDefinitionRaw & {
 }
 
 export const allAspects: AspectDefinition[] = allAspectsRaw
+
+export const getAspectDef = (name: AspectName) => {
+  const def = allAspects.find((a) => a.name === name)
+  if (!def) {
+    throw new Error(`Aspect definition not found: ${name}`)
+  }
+  return def
+}
 
 export const ItemAspect = z.object({
   name: AspectName,

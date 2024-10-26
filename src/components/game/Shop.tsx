@@ -83,6 +83,7 @@ export const Shop = async ({ game }: { game: Game }) => {
                   shopItem={shopItem}
                   tooltipOnClick
                   size="160"
+                  aspects={shopItem.aspects}
                 />
 
                 {!!game && !!shopItem && !shopItem.isSold && (
