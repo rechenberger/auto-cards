@@ -1,15 +1,27 @@
 import { getItemByName } from '@/game/allItems'
+import { ItemAspect, itemAspectsToTriggers } from '@/game/aspects'
 import { Stat } from '@/game/stats'
 import { flatMap, keys, map, uniq } from 'lodash-es'
 import { StatDescriptions } from './StatDescriptions'
 
-export const StatDescriptionsItem = async ({ name }: { name: string }) => {
+export const StatDescriptionsItem = async ({
+  name,
+  aspects,
+}: {
+  name: string
+  aspects?: ItemAspect[]
+}) => {
   const item = await getItemByName(name)
+
+  let triggers = item.triggers ?? []
+  if (aspects) {
+    triggers = [...triggers, ...itemAspectsToTriggers(aspects)]
+  }
 
   const allStats = [
     item.stats,
     item.statsItem,
-    ...(item.triggers?.flatMap((t) => [
+    ...(triggers.flatMap((t) => [
       t.statsSelf,
       t.statsRequired,
       t.statsRequiredTarget,

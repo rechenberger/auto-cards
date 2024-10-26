@@ -28,7 +28,7 @@ export const streamItemCard = async (props: ItemCardProps) => {
                 Necessity: {Math.round(props.changemaker.necessity * 100)}%
               </div>
             )}
-            <StatDescriptionsItem name={props.name} />
+            <StatDescriptionsItem name={props.name} aspects={props.aspects} />
           </div>
         </>
       ),
