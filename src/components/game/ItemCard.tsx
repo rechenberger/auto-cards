@@ -1,14 +1,14 @@
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
-import { getAspectDef, ItemAspect } from '@/game/aspects'
+import { ItemAspect, itemAspectsToTriggers } from '@/game/aspects'
 import { Changemaker } from '@/game/generateChangemakers'
 import { getRarityDefinition } from '@/game/rarities'
 import { getTagDefinition } from '@/game/tags'
 import {
+  ThemeId,
   defaultThemeId,
   fallbackThemeId,
   getThemeDefinition,
-  ThemeId,
 } from '@/game/themes'
 import { fontHeading, fontLore } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
@@ -17,14 +17,14 @@ import { capitalCase } from 'change-case'
 import { first } from 'lodash-es'
 import { Fragment } from 'react'
 import { AiItemImage } from '../ai/AiItemImage'
-import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 import { ItemCardChip } from './ItemCardChip'
 import { ItemSellButton } from './ItemSellButton'
 import { ShopEffectDisplay } from './ShopEffectDisplay'
 import { StatsBars } from './StatsBars'
 import { StatsDisplay } from './StatsDisplay'
-import { streamItemCard } from './streamItemCard'
 import { TriggerDisplay } from './TriggerDisplay'
+import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
+import { streamItemCard } from './streamItemCard'
 
 export type ItemCardProps = {
   game?: Game
@@ -81,6 +81,8 @@ export const ItemCard = async (props: ItemCardProps) => {
 
   const rarity = item.rarity ? getRarityDefinition(item.rarity) : undefined
   const gameId = game?.id
+
+  const aspectTriggers = itemAspectsToTriggers(aspects ?? [])
 
   const inner = (
     <>
@@ -258,31 +260,23 @@ export const ItemCard = async (props: ItemCardProps) => {
                   />
                 </Fragment>
               ))}
-              <div className="flex flex-row gap-1 p-1 rounded-lg">
-                {aspects?.map((aspect, idx) => {
-                  const aspectDef = getAspectDef(aspect.name)
-                  const triggers = aspectDef.triggers({
-                    power: aspect.power,
-                  })
-                  return (
+              {!!aspectTriggers.length && (
+                <div className="flex flex-row gap-1 p-1 rounded-lg">
+                  {aspectTriggers?.map((trigger, idx) => (
                     <Fragment key={idx}>
-                      {triggers?.map((trigger, idx) => (
-                        <Fragment key={idx}>
-                          <TriggerDisplay
-                            trigger={trigger}
-                            itemIdx={itemIdx}
-                            sideIdx={sideIdx}
-                            triggerIdx={idx}
-                            disableTooltip={disableTooltip}
-                            disableLinks={disableLinks}
-                            className="min-w-min p-1 rounded-xl"
-                          />
-                        </Fragment>
-                      ))}
+                      <TriggerDisplay
+                        trigger={trigger}
+                        itemIdx={itemIdx}
+                        sideIdx={sideIdx}
+                        triggerIdx={idx}
+                        disableTooltip={disableTooltip}
+                        disableLinks={disableLinks}
+                        className="min-w-min p-1 rounded-xl"
+                      />
                     </Fragment>
-                  )
-                })}
-              </div>
+                  ))}
+                </div>
+              )}
               {item.shopEffects?.map((shopEffect, idx) => (
                 <Fragment key={idx}>
                   <ShopEffectDisplay

@@ -1,4 +1,4 @@
-import { map } from 'remeda'
+import { flatMap, map } from 'remeda'
 import { z } from 'zod'
 import { Trigger } from './ItemDefinition'
 import { rndInt } from './rndHelpers'
@@ -180,3 +180,9 @@ export const ItemAspect = z.object({
   power: z.number(),
 })
 export type ItemAspect = z.infer<typeof ItemAspect>
+
+export const itemAspectsToTriggers = (aspects: ItemAspect[]) => {
+  return flatMap(aspects, (aspect) =>
+    getAspectDef(aspect.name).triggers({ power: aspect.power }),
+  )
+}
