@@ -46,8 +46,8 @@ export const LoadoutDisplay = async ({
       <div className="max-xl:hidden">
         <ErrorBoundary>
           <HandDisplay>
-            {map(items, (item) => (
-              <Fragment key={item.name}>
+            {map(items, (item, idx) => (
+              <Fragment key={idx}>
                 <ItemCard
                   game={game}
                   name={item.name}
