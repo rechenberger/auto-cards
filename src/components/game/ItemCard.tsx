@@ -261,7 +261,7 @@ export const ItemCard = async (props: ItemCardProps) => {
                 </Fragment>
               ))}
               {!!aspects?.length && (
-                <div className="flex flex-row gap-1 p-1 rounded-lg">
+                <div className="flex flex-row gap-2 p-1 rounded-lg">
                   {aspects?.map((aspect, idx) => {
                     const aspectDef = getAspectDef(aspect.name)
                     const { power } = aspect
@@ -284,15 +284,14 @@ export const ItemCard = async (props: ItemCardProps) => {
                               className={cn(
                                 'min-w-min p-1 rounded-xl',
                                 'relative overflow-hidden z-10',
-                                // aspect.power > 0.8
-                                //   ? 'ring ring-yellow-500'
-                                //   : '',
+                                valuePercent === 1
+                                  ? 'ring-2 ring-yellow-500'
+                                  : '',
                               )}
                             >
                               <div
                                 className={cn(
                                   'absolute inset-y-0 left-0 bg-black/50 bg-opacity-100 -z-10',
-                                  valuePercent === 1 && 'bg-amber-500/80',
                                 )}
                                 style={{
                                   width: `${valuePercent * 100}%`,
