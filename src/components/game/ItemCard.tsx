@@ -264,9 +264,12 @@ export const ItemCard = async (props: ItemCardProps) => {
                 <div className="flex flex-row gap-1 p-1 rounded-lg">
                   {aspects?.map((aspect, idx) => {
                     const aspectDef = getAspectDef(aspect.name)
-                    const triggers = aspectDef.triggers({
-                      power: aspect.power,
-                    })
+                    const { power } = aspect
+                    const value = aspectDef.value({ power })
+                    // const valueMin = aspectDef.value({ power: 0 })
+                    const valueMax = aspectDef.value({ power: 1 })
+                    const valuePercent = value / valueMax
+                    const triggers = aspectDef.triggers({ power, value })
                     return (
                       <Fragment key={idx}>
                         {triggers?.map((trigger, idx) => (
@@ -287,9 +290,9 @@ export const ItemCard = async (props: ItemCardProps) => {
                               )}
                             >
                               <div
-                                className="absolute inset-y-0 left-0 bg-black/80 bg-opacity-100 -z-10"
+                                className="absolute inset-y-0 left-0 bg-black/50 bg-opacity-100 -z-10"
                                 style={{
-                                  width: `${aspect.power * 100}%`,
+                                  width: `${valuePercent * 100}%`,
                                 }}
                               />
                             </TriggerDisplay>

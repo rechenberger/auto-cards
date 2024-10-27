@@ -5,7 +5,8 @@ import { rndInt } from './rndHelpers'
 
 type AspectDefinitionRaw = {
   name: string
-  triggers: (ctx: { power: number }) => Trigger[]
+  value: (ctx: { power: number }) => number
+  triggers: (ctx: { power: number; value: number }) => Trigger[]
 }
 
 const scale = ({
@@ -23,134 +24,146 @@ const scale = ({
 export const allAspectsRaw = [
   {
     name: 'health',
-    triggers: ({ power }) => [
+    value: ({ power }) => scale({ power, min: 10 }),
+    triggers: ({ value }) => [
       {
         type: 'startOfBattle',
         statsSelf: {
-          health: scale({ power, min: 10 }),
-          healthMax: scale({ power, min: 10 }),
+          health: value,
+          healthMax: value,
         },
       },
     ],
   },
   {
     name: 'stamina',
-    triggers: ({ power }) => [
+    value: ({ power }) => scale({ power, min: 5 }),
+    triggers: ({ value }) => [
       {
         type: 'startOfBattle',
         statsSelf: {
-          stamina: scale({ power, min: 5 }),
-          staminaMax: scale({ power, min: 5 }),
+          stamina: value,
+          staminaMax: value,
         },
       },
     ],
   },
   {
     name: 'staminaRegen',
-    triggers: ({ power }) => [
+    value: ({ power }) => scale({ power, min: 5 }),
+    triggers: ({ value }) => [
       {
         type: 'startOfBattle',
         statsSelf: {
-          staminaRegen: scale({ power, min: 5 }),
+          staminaRegen: value,
         },
       },
     ],
   },
   {
     name: 'critChance',
-    triggers: ({ power }) => [
+    value: ({ power }) => scale({ power, min: 1 }),
+    triggers: ({ value }) => [
       {
         type: 'startOfBattle',
         statsSelf: {
-          critChance: scale({ power, min: 1 }),
+          critChance: value,
         },
       },
     ],
   },
   {
     name: 'block',
-    triggers: ({ power }) => [
+    value: ({ power }) => scale({ power, min: 8 }),
+    triggers: ({ value }) => [
       {
         type: 'startOfBattle',
         statsSelf: {
-          block: scale({ power, min: 8 }),
+          block: value,
         },
       },
     ],
   },
   {
     name: 'haste',
-    triggers: ({ power }) => [
+    value: ({ power }) => scale({ power, min: 1 }),
+    triggers: ({ value }) => [
       {
         type: 'startOfBattle',
         statsSelf: {
-          haste: scale({ power, min: 1 }),
+          haste: value,
         },
       },
     ],
   },
   {
     name: 'hungry',
-    triggers: ({ power }) => [
+    value: ({ power }) => scale({ power, min: 2 }),
+    triggers: ({ value }) => [
       {
         type: 'startOfBattle',
         statsSelf: {
-          hungry: scale({ power, min: 2 }),
+          hungry: value,
         },
       },
     ],
   },
   {
     name: 'empower',
-    triggers: ({ power }) => [
+    value: ({ power }) => scale({ power, min: 1 }),
+    triggers: ({ value }) => [
       {
         type: 'startOfBattle',
         statsSelf: {
-          empower: scale({ power, min: 1 }),
+          empower: value,
         },
       },
     ],
   },
   {
     name: 'thorns',
-    triggers: ({ power }) => [
+    value: ({ power }) => scale({ power, min: 2 }),
+    triggers: ({ value }) => [
       {
         type: 'startOfBattle',
         statsSelf: {
-          thorns: scale({ power, min: 2 }),
+          thorns: value,
         },
       },
     ],
   },
   {
     name: 'luck',
-    triggers: ({ power }) => [
+    value: ({ power }) => scale({ power, min: 2 }),
+    triggers: ({ value }) => [
       {
         type: 'startOfBattle',
         statsSelf: {
-          luck: scale({ power, min: 2 }),
+          luck: value,
         },
       },
     ],
   },
   {
     name: 'critDamage',
-    triggers: ({ power }) => [
+    value: ({ power }) => scale({ power, min: 4 }),
+    triggers: ({ value }) => [
       {
         type: 'startOfBattle',
         statsSelf: {
-          critDamage: scale({ power, min: 4 }),
+          critDamage: value,
         },
       },
     ],
   },
   {
     name: 'lifeSteal',
-    triggers: ({ power }) => [
+    value: ({ power }) => scale({ power, min: 4 }),
+    triggers: ({ value }) => [
       {
         type: 'startOfBattle',
         statsSelf: {
-          lifeSteal: scale({ power, min: 4 }),
+          lifeSteal: value,
         },
       },
     ],
@@ -182,7 +195,13 @@ export const ItemAspect = z.object({
 export type ItemAspect = z.infer<typeof ItemAspect>
 
 export const itemAspectsToTriggers = (aspects: ItemAspect[]) => {
-  return flatMap(aspects, (aspect) =>
-    getAspectDef(aspect.name).triggers({ power: aspect.power }),
-  )
+  return flatMap(aspects, (aspect) => {
+    const def = getAspectDef(aspect.name)
+    const { power } = aspect
+    const value = def.value({ power })
+    return def.triggers({
+      power,
+      value,
+    })
+  })
 }
