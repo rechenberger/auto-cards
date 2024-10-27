@@ -82,8 +82,10 @@ const generateMatchStateSides = (input: GenerateMatchInput) => {
       }
 
       if (i.aspects) {
-        itemWithDef.triggers = itemWithDef.triggers ?? []
-        itemWithDef.triggers?.push(...itemAspectsToTriggers(i.aspects))
+        itemWithDef.triggers = [
+          ...(itemWithDef.triggers ?? []),
+          ...itemAspectsToTriggers(i.aspects),
+        ]
       }
 
       return itemWithDef
