@@ -280,14 +280,14 @@ export const ItemCard = async (props: ItemCardProps) => {
                               disableLinks={disableLinks}
                               className={cn(
                                 'min-w-min p-1 rounded-xl',
-                                'relative overflow-hidden bg-none',
-                                aspect.power > 0.8
-                                  ? 'ring ring-yellow-500'
-                                  : '',
+                                'relative overflow-hidden z-10',
+                                // aspect.power > 0.8
+                                //   ? 'ring ring-yellow-500'
+                                //   : '',
                               )}
                             >
                               <div
-                                className="absolute inset-y-0 left-0 bg-black bg-opacity-100 -z-10"
+                                className="absolute inset-y-0 left-0 bg-black/80 bg-opacity-100 -z-10"
                                 style={{
                                   width: `${aspect.power * 100}%`,
                                 }}
