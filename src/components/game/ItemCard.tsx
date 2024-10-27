@@ -267,7 +267,7 @@ export const ItemCard = async (props: ItemCardProps) => {
                     const { power } = aspect
                     const value = aspectDef.value({ power })
                     // const valueMin = aspectDef.value({ power: 0 })
-                    const valueMax = aspectDef.value({ power: 1 })
+                    const valueMax = aspectDef.value({ power: 0.999999 })
                     const valuePercent = value / valueMax
                     const triggers = aspectDef.triggers({ power, value })
                     return (
@@ -290,7 +290,10 @@ export const ItemCard = async (props: ItemCardProps) => {
                               )}
                             >
                               <div
-                                className="absolute inset-y-0 left-0 bg-black/50 bg-opacity-100 -z-10"
+                                className={cn(
+                                  'absolute inset-y-0 left-0 bg-black/50 bg-opacity-100 -z-10',
+                                  valuePercent === 1 && 'bg-amber-500/80',
+                                )}
                                 style={{
                                   width: `${valuePercent * 100}%`,
                                 }}
