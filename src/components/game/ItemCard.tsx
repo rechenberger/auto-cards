@@ -1,14 +1,14 @@
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
-import { ItemAspect, itemAspectsToTriggers } from '@/game/aspects'
+import { getAspectDef, ItemAspect, itemAspectsToTriggers } from '@/game/aspects'
 import { Changemaker } from '@/game/generateChangemakers'
 import { getRarityDefinition } from '@/game/rarities'
 import { getTagDefinition } from '@/game/tags'
 import {
-  ThemeId,
   defaultThemeId,
   fallbackThemeId,
   getThemeDefinition,
+  ThemeId,
 } from '@/game/themes'
 import { fontHeading, fontLore } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
@@ -17,14 +17,14 @@ import { capitalCase } from 'change-case'
 import { first } from 'lodash-es'
 import { Fragment } from 'react'
 import { AiItemImage } from '../ai/AiItemImage'
+import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 import { ItemCardChip } from './ItemCardChip'
 import { ItemSellButton } from './ItemSellButton'
 import { ShopEffectDisplay } from './ShopEffectDisplay'
 import { StatsBars } from './StatsBars'
 import { StatsDisplay } from './StatsDisplay'
-import { TriggerDisplay } from './TriggerDisplay'
-import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 import { streamItemCard } from './streamItemCard'
+import { TriggerDisplay } from './TriggerDisplay'
 
 export type ItemCardProps = {
   game?: Game
@@ -82,7 +82,7 @@ export const ItemCard = async (props: ItemCardProps) => {
   const rarity = item.rarity ? getRarityDefinition(item.rarity) : undefined
   const gameId = game?.id
 
-  const aspectTriggers = itemAspectsToTriggers(aspects ?? [])
+  const aspectTriggers = aspects ? itemAspectsToTriggers(aspects) : []
 
   const inner = (
     <>
@@ -260,21 +260,44 @@ export const ItemCard = async (props: ItemCardProps) => {
                   />
                 </Fragment>
               ))}
-              {!!aspectTriggers.length && (
+              {!!aspects?.length && (
                 <div className="flex flex-row gap-1 p-1 rounded-lg">
-                  {aspectTriggers?.map((trigger, idx) => (
-                    <Fragment key={idx}>
-                      <TriggerDisplay
-                        trigger={trigger}
-                        itemIdx={itemIdx}
-                        sideIdx={sideIdx}
-                        triggerIdx={idx}
-                        disableTooltip={disableTooltip}
-                        disableLinks={disableLinks}
-                        className="min-w-min p-1 rounded-xl"
-                      />
-                    </Fragment>
-                  ))}
+                  {aspects?.map((aspect, idx) => {
+                    const aspectDef = getAspectDef(aspect.name)
+                    const triggers = aspectDef.triggers({
+                      power: aspect.power,
+                    })
+                    return (
+                      <Fragment key={idx}>
+                        {triggers?.map((trigger, idx) => (
+                          <Fragment key={idx}>
+                            <TriggerDisplay
+                              trigger={trigger}
+                              itemIdx={itemIdx}
+                              sideIdx={sideIdx}
+                              triggerIdx={idx}
+                              disableTooltip={disableTooltip}
+                              disableLinks={disableLinks}
+                              className={cn(
+                                'min-w-min p-1 rounded-xl',
+                                'relative overflow-hidden bg-none',
+                                aspect.power > 0.8
+                                  ? 'ring ring-yellow-500'
+                                  : '',
+                              )}
+                            >
+                              <div
+                                className="absolute inset-y-0 left-0 bg-black bg-opacity-100 -z-10"
+                                style={{
+                                  width: `${aspect.power * 100}%`,
+                                }}
+                              />
+                            </TriggerDisplay>
+                          </Fragment>
+                        ))}
+                      </Fragment>
+                    )
+                  })}
                 </div>
               )}
               {item.shopEffects?.map((shopEffect, idx) => (

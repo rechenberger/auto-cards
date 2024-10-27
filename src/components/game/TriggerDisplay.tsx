@@ -3,6 +3,7 @@ import { Stat } from '@/game/stats'
 import { cn } from '@/lib/utils'
 import { capitalCase } from 'change-case'
 import { every } from 'lodash-es'
+import { ReactNode } from 'react'
 import { MatchCardCooldown } from './MatchCardCooldown'
 import { StatsDisplay } from './StatsDisplay'
 import { TextKeywordDisplay } from './TextKeywordDisplay'
@@ -15,6 +16,7 @@ export const TriggerDisplay = ({
   disableTooltip,
   disableLinks,
   className,
+  children,
 }: {
   trigger: Trigger
   sideIdx?: number
@@ -23,6 +25,7 @@ export const TriggerDisplay = ({
   disableTooltip?: boolean
   disableLinks?: boolean
   className?: string
+  children?: ReactNode
 }) => {
   if (trigger.hidden) {
     return null
@@ -184,6 +187,7 @@ export const TriggerDisplay = ({
             </div>
           </div>
         )}
+        {children}
       </div>
     </>
   )
