@@ -77,6 +77,7 @@ export const MatchCards = async ({
                       itemIdx={itemIdx}
                       sideIdx={sideIdx}
                       onlyTop
+                      aspects={item.aspects}
                     />
                     {hasInterval && (
                       <MatchCardTimer sideIdx={sideIdx} itemIdx={itemIdx} />
@@ -100,6 +101,7 @@ export const MatchCards = async ({
                     themeId={themeId}
                     itemIdx={itemIdx}
                     sideIdx={sideIdx}
+                    aspects={item.aspects}
                   />
 
                   <div className="absolute -bottom-6 flex flex-col items-center inset-x-0">
