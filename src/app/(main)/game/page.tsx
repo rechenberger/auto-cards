@@ -69,6 +69,7 @@ export default async function Page() {
         <div className="flex flex-row gap-2">
           <NewLiveMatchButton variant={'outline'} />
           <NewGameButton />
+          <NewGameButton gameMode="collector" />
         </div>
       </div>
       <div className="grid lg:grid-cols-3 gap-4">
