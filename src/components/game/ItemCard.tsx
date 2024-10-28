@@ -77,7 +77,8 @@ export const ItemCard = async (props: ItemCardProps) => {
 
   const theme = await getThemeDefinition(themeId)
 
-  const rarity = item.rarity ? getRarityDefinition(item.rarity) : undefined
+  const rarityKey = itemData.rarity ?? item.rarity
+  const rarity = rarityKey ? getRarityDefinition(rarityKey) : undefined
   const gameId = game?.id
 
   const inner = (

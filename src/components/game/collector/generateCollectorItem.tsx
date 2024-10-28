@@ -62,6 +62,7 @@ export const generateCollectorItem = async ({
   const itemData: ItemData = {
     name: item.item.name,
     aspects,
+    rarity,
   }
 
   return itemData
