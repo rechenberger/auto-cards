@@ -1,5 +1,5 @@
+import { ItemData } from '@/components/game/ItemData'
 import { LoadoutData } from '@/db/schema-zod'
-import { range } from 'lodash-es'
 import { ItemName } from './allItems'
 import { SeedArray, rngFloat } from './seed'
 
@@ -14,37 +14,51 @@ type DungeonDefinitionRaw = {
   }
 }
 
+const simpleRoomsToRooms = ({
+  simpleRooms,
+  seed,
+  level,
+}: {
+  simpleRooms: { monsters: ItemName[] }[]
+  seed: SeedArray
+  level: number
+}) => {
+  const rooms: DungeonRoom[] = simpleRooms.map((simpleRoom, roomIdx) => {
+    const monsters: ItemData[] = simpleRoom.monsters.map(
+      (monster, monsterIdx) => ({
+        name: monster,
+        aspects: [
+          {
+            name: 'monsterPower',
+            rnd: rngFloat({
+              seed: [...seed, 'room', roomIdx, 'monster', monsterIdx],
+            }),
+            multiplier: 1.2 ** level,
+          },
+        ],
+      }),
+    )
+
+    return {
+      loadout: {
+        items: [...monsters],
+      },
+    }
+  })
+
+  return rooms
+}
+
 const allDungeonsRaw = [
   {
     name: 'Adventure Trail',
     generate: ({ seed, level }) => {
-      const noOfRooms = 3
-      const rooms: DungeonRoom[] = range(noOfRooms).map((roomIdx) => {
-        const monstersByRoom: ItemName[][] = [
-          ['scarecrow'],
-          ['wilma'],
-          ['scarecrow', 'wilma'],
-        ]
-        const monsters = monstersByRoom[roomIdx]
-
-        return {
-          loadout: {
-            items: monsters.map((monster, monsterIdx) => ({
-              name: monster,
-              aspects: [
-                {
-                  name: 'monsterPower',
-                  rnd: rngFloat({
-                    seed: [...seed, 'room', roomIdx, 'monster', monsterIdx],
-                  }),
-                  multiplier: 1.2 ** level,
-                },
-              ],
-            })),
-          },
-        }
-      })
-
+      const simpleRooms: { monsters: ItemName[] }[] = [
+        { monsters: ['scarecrow'] },
+        { monsters: ['wilma'] },
+        { monsters: ['scarecrow', 'wilma'] },
+      ]
+      const rooms = simpleRoomsToRooms({ simpleRooms, seed, level })
       return {
         rooms,
       }
