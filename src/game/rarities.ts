@@ -5,6 +5,8 @@ export const allRarityDefinitions = [
   {
     name: 'common',
     textClass: '',
+    ringClass: '',
+    bgClass: 'bg-gray-500/50',
     aspects: {
       normal: 0,
     },
@@ -12,6 +14,8 @@ export const allRarityDefinitions = [
   {
     name: 'uncommon',
     textClass: 'text-green-500',
+    ringClass: 'ring-green-500',
+    bgClass: 'bg-green-500/50',
     aspects: {
       normal: 1,
     },
@@ -19,6 +23,8 @@ export const allRarityDefinitions = [
   {
     name: 'rare',
     textClass: 'text-blue-500',
+    ringClass: 'ring-blue-500',
+    bgClass: 'bg-blue-500/50',
     aspects: {
       normal: 2,
     },
@@ -26,13 +32,17 @@ export const allRarityDefinitions = [
   {
     name: 'epic',
     textClass: 'text-purple-500',
+    ringClass: 'ring-purple-500',
+    bgClass: 'bg-purple-500/50',
     aspects: {
       normal: 3,
     },
   },
   {
     name: 'legendary',
-    textClass: 'text-yellow-500',
+    textClass: 'text-amber-500',
+    ringClass: 'ring-amber-500',
+    bgClass: 'bg-amber-500',
     aspects: {
       normal: 4,
     },

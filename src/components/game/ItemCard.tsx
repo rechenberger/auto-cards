@@ -81,6 +81,8 @@ export const ItemCard = async (props: ItemCardProps) => {
   const rarity = rarityKey ? getRarityDefinition(rarityKey) : undefined
   const gameId = game?.id
 
+  const bgShowsRarity = !!itemData.rarity
+
   const inner = (
     <>
       {/* <HoverCard>
@@ -149,12 +151,14 @@ export const ItemCard = async (props: ItemCardProps) => {
             </div>
             <div className="absolute top-6 inset-x-0 flex flex-col items-end gap-1">
               {!!item.tags?.length && (
-                <ItemCardChip>
+                <ItemCardChip className={cn(bgShowsRarity && tag.textClass)}>
                   {item.tags?.map((t) => capitalCase(t)).join(', ')}
                 </ItemCardChip>
               )}
               {!!rarity && (
-                <ItemCardChip className={rarity.textClass}>
+                <ItemCardChip
+                  className={cn(!bgShowsRarity && rarity.textClass)}
+                >
                   {capitalCase(rarity.name)}
                 </ItemCardChip>
               )}
@@ -205,8 +209,9 @@ export const ItemCard = async (props: ItemCardProps) => {
           <div
             className={cn(
               'flex-1 flex flex-col justify-center rounded-lg p-2 text-xs relative',
-              tag.bgClass,
-              tag.bgClass && 'border-2 border-black',
+              bgShowsRarity
+                ? [rarity?.bgClass, rarity?.bgClass && 'border-2 border-black']
+                : [tag.bgClass, tag.bgClass && 'border-2 border-black'],
               theme.classBottom,
             )}
           >
