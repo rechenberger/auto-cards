@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { ComponentPropsWithoutRef, forwardRef, ReactNode } from 'react'
 import {
   ActionWrapper,
@@ -63,7 +64,11 @@ const InnerButton = forwardRef<
     <Button type="button" {...props} ref={ref}>
       {children}
       {!hideIcon && (
-        <SuperLoadingIcon icon={icon} className="ml-2" isLoading={!!loading} />
+        <SuperLoadingIcon
+          icon={icon}
+          className={cn(!!children && 'ml-2')}
+          isLoading={!!loading}
+        />
       )}
     </Button>
   )
