@@ -1,8 +1,9 @@
 import { Game } from '@/db/schema-zod'
 import { gameAction } from '@/game/gameAction'
-import { generateShopItems } from '@/game/generateShopItems'
+import { createSeed } from '@/game/seed'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { Plus, Trash } from 'lucide-react'
+import { generateCollectorItem } from './generateCollectorItem'
 
 export const CollectorAdminButtons = ({ game }: { game: Game }) => {
   return (
@@ -16,8 +17,12 @@ export const CollectorAdminButtons = ({ game }: { game: Game }) => {
             return gameAction({
               gameId: game.id,
               action: async ({ ctx }) => {
-                const shopItems = await generateShopItems({ game })
-                ctx.game.data.currentLoadout.items.push(...shopItems)
+                const item = await generateCollectorItem({
+                  game,
+                  seed: [createSeed()],
+                  rarity: 'rare',
+                })
+                ctx.game.data.currentLoadout.items.push(item)
               },
             })
           }}

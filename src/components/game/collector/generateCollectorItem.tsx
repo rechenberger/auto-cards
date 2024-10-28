@@ -4,6 +4,7 @@ import { generateShopItemsRaw } from '@/game/generateShopItemsRaw'
 import { Rarity } from '@/game/rarities'
 import { SeedArray, rngFloat, rngItem, rngItems } from '@/game/seed'
 import { floor } from 'lodash-es'
+import { ItemData } from '../ItemData'
 
 export const generateCollectorItem = async ({
   game,
@@ -52,10 +53,10 @@ export const generateCollectorItem = async ({
     ),
   }))
 
-  const abc = {
+  const itemData: ItemData = {
     name: item.item.name,
     aspects,
   }
 
-  return abc
+  return itemData
 }

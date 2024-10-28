@@ -1,3 +1,4 @@
+import { ItemData } from '@/components/game/ItemData'
 import { ItemAspect } from '@/game/aspects'
 import { GAME_VERSION } from '@/game/config'
 import { GameMode } from '@/game/gameMode'
@@ -12,13 +13,7 @@ export const User = createSelectSchema(schema.users)
 export type User = z.infer<typeof User>
 
 export const LoadoutData = z.object({
-  items: z.array(
-    z.object({
-      name: z.string(),
-      count: z.number().optional(),
-      aspects: z.array(ItemAspect).optional(),
-    }),
-  ),
+  items: z.array(ItemData),
 })
 export type LoadoutData = z.infer<typeof LoadoutData>
 
