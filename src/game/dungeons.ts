@@ -20,12 +20,12 @@ const allDungeonsRaw = [
     generate: ({ seed, level }) => {
       const noOfRooms = 3
       const rooms: DungeonRoom[] = range(noOfRooms).map((roomIdx) => {
-        const monsters: ItemName[] =
-          roomIdx === 0
-            ? ['scarecrow']
-            : roomIdx === 1
-              ? ['wilma']
-              : ['scarecrow', 'wilma']
+        const monstersByRoom: ItemName[][] = [
+          ['scarecrow'],
+          ['wilma'],
+          ['scarecrow', 'wilma'],
+        ]
+        const monsters = monstersByRoom[roomIdx]
 
         return {
           loadout: {
