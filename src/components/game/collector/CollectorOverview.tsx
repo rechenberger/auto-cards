@@ -1,12 +1,12 @@
 import { CardTitle } from '@/components/ui/card'
 import { Game } from '@/db/schema-zod'
-import { ItemCardGrid } from '../ItemCardGrid'
+import { CollectorItemGrid } from './CollectorItemGrid'
 
 export const CollectorOverview = ({ game }: { game: Game }) => {
   return (
     <>
       <CardTitle>Keep calm and collect</CardTitle>
-      <ItemCardGrid items={game.data.currentLoadout.items} />
+      <CollectorItemGrid game={game} />
     </>
   )
 }
