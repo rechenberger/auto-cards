@@ -170,15 +170,15 @@ export const allAspectsRaw = [
   },
   {
     name: 'monsterPower',
-    value: ({ rnd }) => scale({ rnd, min: 4 }),
+    value: ({ rnd }) => scale({ rnd, min: 2, max: 3 }),
     triggers: ({ value }) => [
       {
         type: 'startOfBattle',
         statsItem: {
           health: value * 2,
           healthMax: value * 2,
-          empower: value,
-          haste: value,
+          empower: Math.round(value / 2),
+          haste: Math.round(value / 2),
         },
       },
     ],
