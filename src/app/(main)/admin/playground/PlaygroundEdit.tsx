@@ -5,12 +5,13 @@ import { Button } from '@/components/ui/button'
 import { getAllItems } from '@/game/allItems'
 import { calcLoadoutPrice } from '@/game/calcLoadoutPrice'
 import { GAME_VERSION, NO_OF_ROUNDS } from '@/game/config'
+import { DefaultGameMode } from '@/game/gameMode'
 import { orderItems } from '@/game/orderItems'
 import { negativeItems, sumItems } from '@/game/sumItems'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { Fragment } from 'react'
-import { playgroundHref, PlaygroundOptions } from './playgroundHref'
+import { PlaygroundOptions, playgroundHref } from './playgroundHref'
 
 export const PlaygroundEdit = async ({
   options,
@@ -43,6 +44,7 @@ export const PlaygroundEdit = async ({
                         roundNo: NO_OF_ROUNDS - 1,
                         primaryMatchParticipationId: null,
                         version: GAME_VERSION,
+                        gameMode: DefaultGameMode,
                       }}
                     />
                   </div>

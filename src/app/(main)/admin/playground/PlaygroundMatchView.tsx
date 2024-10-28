@@ -2,6 +2,7 @@ import { MatchParticipant } from '@/components/game/MatchParticipants'
 import { MatchView } from '@/components/game/MatchView'
 import { Match } from '@/db/schema-zod'
 import { GAME_VERSION } from '@/game/config'
+import { DefaultGameMode } from '@/game/gameMode'
 import { PlaygroundOptions } from './playgroundHref'
 
 export const PlaygroundMatchView = ({
@@ -18,6 +19,7 @@ export const PlaygroundMatchView = ({
     createdAt: now,
     updatedAt: now,
     liveMatchId: null,
+    gameMode: DefaultGameMode,
   }
   const participants: MatchParticipant[] = options.loadouts.map(
     (loadout, sideIdx) => ({
@@ -41,6 +43,7 @@ export const PlaygroundMatchView = ({
         gameId: `g-${sideIdx}`,
         primaryMatchParticipationId: null,
         version: GAME_VERSION,
+        gameMode: DefaultGameMode,
       },
     }),
   )

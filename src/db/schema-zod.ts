@@ -1,5 +1,6 @@
 import { ItemAspect } from '@/game/aspects'
 import { GAME_VERSION } from '@/game/config'
+import { GameMode } from '@/game/gameMode'
 import { createSeed } from '@/game/seed'
 import { createSelectSchema } from 'drizzle-zod'
 import z from 'zod'
@@ -23,6 +24,7 @@ export type LoadoutData = z.infer<typeof LoadoutData>
 
 export const Loadout = createSelectSchema(schema.loadout, {
   data: LoadoutData,
+  gameMode: GameMode,
 })
 export type Loadout = z.infer<typeof Loadout>
 
@@ -48,6 +50,7 @@ export type GameData = z.infer<typeof GameData>
 
 export const Game = createSelectSchema(schema.game, {
   data: GameData,
+  gameMode: GameMode,
 })
 export type Game = z.infer<typeof Game>
 
@@ -58,6 +61,7 @@ export type MatchData = z.infer<typeof MatchData>
 
 export const Match = createSelectSchema(schema.match, {
   data: MatchData,
+  gameMode: GameMode,
 })
 export type Match = z.infer<typeof Match>
 
@@ -102,5 +106,7 @@ export const LiveMatchParticipation = createSelectSchema(
 )
 export type LiveMatchParticipation = z.infer<typeof LiveMatchParticipation>
 
-export const LeaderboardEntry = createSelectSchema(schema.leaderboardEntry)
+export const LeaderboardEntry = createSelectSchema(schema.leaderboardEntry, {
+  gameMode: GameMode,
+})
 export type LeaderboardEntry = z.infer<typeof LeaderboardEntry>

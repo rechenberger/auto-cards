@@ -168,7 +168,9 @@ export const fightLiveMatch = async ({
   // Don't await
   Promise.all(
     gamesAndLoadouts.map(async ({ loadout, game }) => {
-      addToLeaderboard({ loadout })
+      if (game.gameMode === 'shopper') {
+        addToLeaderboard({ loadout })
+      }
     }),
   )
 }

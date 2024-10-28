@@ -111,7 +111,9 @@ export const fight = async ({ game }: { game: Game }) => {
 
   // Add to Leaderboard in the Background
   // Don't await
-  addToLeaderboard({ loadout: myLoadout })
+  if (game.gameMode === 'shopper') {
+    addToLeaderboard({ loadout: myLoadout })
+  }
 
   revalidatePath(`/watch/recent`)
 

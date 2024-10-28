@@ -7,6 +7,7 @@ import { typedParse } from '@/lib/typedParse'
 import { createId } from '@paralleldrive/cuid2'
 import { first } from 'lodash-es'
 import { GAME_VERSION } from './config'
+import { DefaultGameMode } from './gameMode'
 import { generateShopItems } from './generateShopItems'
 import { getUserName } from './getUserName'
 import { roundStats } from './roundStats'
@@ -42,6 +43,7 @@ export const createGame = async ({
     updatedAt: new Date().toISOString(),
     liveMatchId: liveMatch?.id ?? null,
     version: GAME_VERSION,
+    gameMode: DefaultGameMode,
   }
 
   game.data.shopItems = await generateShopItems({ game })
