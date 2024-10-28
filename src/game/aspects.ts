@@ -5,26 +5,26 @@ import { rndInt } from './rndHelpers'
 
 type AspectDefinitionRaw = {
   name: string
-  value: (ctx: { power: number }) => number
-  triggers: (ctx: { power: number; value: number }) => Trigger[]
+  value: (ctx: { rnd: number }) => number
+  triggers: (ctx: { rnd: number; value: number }) => Trigger[]
 }
 
 const scale = ({
-  power,
+  rnd,
   min,
   max = 3 * min,
 }: {
-  power: number
+  rnd: number
   min: number
   max?: number
 }) => {
-  return rndInt({ rnd: power, min, max })
+  return rndInt({ rnd: rnd, min, max })
 }
 
 export const allAspectsRaw = [
   {
     name: 'health',
-    value: ({ power }) => scale({ power, min: 10 }),
+    value: ({ rnd }) => scale({ rnd, min: 10 }),
     triggers: ({ value }) => [
       {
         type: 'startOfBattle',
@@ -37,7 +37,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'stamina',
-    value: ({ power }) => scale({ power, min: 5 }),
+    value: ({ rnd }) => scale({ rnd, min: 5 }),
     triggers: ({ value }) => [
       {
         type: 'startOfBattle',
@@ -50,7 +50,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'staminaRegen',
-    value: ({ power }) => scale({ power, min: 5 }),
+    value: ({ rnd }) => scale({ rnd, min: 5 }),
     triggers: ({ value }) => [
       {
         type: 'startOfBattle',
@@ -62,7 +62,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'critChance',
-    value: ({ power }) => scale({ power, min: 1 }),
+    value: ({ rnd }) => scale({ rnd, min: 1 }),
     triggers: ({ value }) => [
       {
         type: 'startOfBattle',
@@ -74,7 +74,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'block',
-    value: ({ power }) => scale({ power, min: 8 }),
+    value: ({ rnd }) => scale({ rnd, min: 8 }),
     triggers: ({ value }) => [
       {
         type: 'startOfBattle',
@@ -86,7 +86,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'haste',
-    value: ({ power }) => scale({ power, min: 1 }),
+    value: ({ rnd }) => scale({ rnd, min: 1 }),
     triggers: ({ value }) => [
       {
         type: 'startOfBattle',
@@ -98,7 +98,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'hungry',
-    value: ({ power }) => scale({ power, min: 2 }),
+    value: ({ rnd }) => scale({ rnd, min: 2 }),
     triggers: ({ value }) => [
       {
         type: 'startOfBattle',
@@ -110,7 +110,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'empower',
-    value: ({ power }) => scale({ power, min: 1 }),
+    value: ({ rnd }) => scale({ rnd, min: 1 }),
     triggers: ({ value }) => [
       {
         type: 'startOfBattle',
@@ -122,7 +122,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'thorns',
-    value: ({ power }) => scale({ power, min: 2 }),
+    value: ({ rnd }) => scale({ rnd, min: 2 }),
     triggers: ({ value }) => [
       {
         type: 'startOfBattle',
@@ -134,7 +134,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'luck',
-    value: ({ power }) => scale({ power, min: 2 }),
+    value: ({ rnd }) => scale({ rnd, min: 2 }),
     triggers: ({ value }) => [
       {
         type: 'startOfBattle',
@@ -146,7 +146,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'critDamage',
-    value: ({ power }) => scale({ power, min: 4 }),
+    value: ({ rnd }) => scale({ rnd, min: 4 }),
     triggers: ({ value }) => [
       {
         type: 'startOfBattle',
@@ -158,7 +158,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'lifeSteal',
-    value: ({ power }) => scale({ power, min: 4 }),
+    value: ({ rnd }) => scale({ rnd, min: 4 }),
     triggers: ({ value }) => [
       {
         type: 'startOfBattle',
@@ -190,17 +190,17 @@ export const getAspectDef = (name: AspectName) => {
 
 export const ItemAspect = z.object({
   name: AspectName,
-  power: z.number(),
+  rnd: z.number(),
 })
 export type ItemAspect = z.infer<typeof ItemAspect>
 
 export const itemAspectsToTriggers = (aspects: ItemAspect[]) => {
   return flatMap(aspects, (aspect) => {
     const def = getAspectDef(aspect.name)
-    const { power } = aspect
-    const value = def.value({ power })
+    const { rnd } = aspect
+    const value = def.value({ rnd })
     return def.triggers({
-      power,
+      rnd,
       value,
     })
   })

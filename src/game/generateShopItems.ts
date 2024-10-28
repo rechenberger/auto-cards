@@ -144,7 +144,7 @@ export const generateShopItems = async ({
     })
     const aspects = aspectDefs.map((aspectDef, idx) => ({
       name: aspectDef.name,
-      power: floor(
+      rnd: floor(
         rngFloat({
           seed: [...itemSeed, 'aspectPower', idx],
           min: 0,

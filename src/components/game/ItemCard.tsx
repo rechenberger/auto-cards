@@ -264,12 +264,12 @@ export const ItemCard = async (props: ItemCardProps) => {
                 <div className="flex flex-row gap-2 p-1 rounded-lg">
                   {aspects?.map((aspect, idx) => {
                     const aspectDef = getAspectDef(aspect.name)
-                    const { power } = aspect
-                    const value = aspectDef.value({ power })
-                    // const valueMin = aspectDef.value({ power: 0 })
-                    const valueMax = aspectDef.value({ power: 0.999999 })
+                    const { rnd } = aspect
+                    const value = aspectDef.value({ rnd })
+                    // const valueMin = aspectDef.value({ rnd: 0 })
+                    const valueMax = aspectDef.value({ rnd: 0.999999 })
                     const valuePercent = value / valueMax
-                    const triggers = aspectDef.triggers({ power, value })
+                    const triggers = aspectDef.triggers({ rnd, value })
                     return (
                       <Fragment key={idx}>
                         {triggers?.map((trigger, idx) => (
