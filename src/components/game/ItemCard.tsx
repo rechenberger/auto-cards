@@ -1,6 +1,6 @@
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
-import { getAspectDef, ItemAspect, itemAspectsToTriggers } from '@/game/aspects'
+import { getAspectDef, ItemAspect } from '@/game/aspects'
 import { Changemaker } from '@/game/generateChangemakers'
 import { getRarityDefinition } from '@/game/rarities'
 import { getTagDefinition } from '@/game/tags'
@@ -81,8 +81,6 @@ export const ItemCard = async (props: ItemCardProps) => {
 
   const rarity = item.rarity ? getRarityDefinition(item.rarity) : undefined
   const gameId = game?.id
-
-  const aspectTriggers = aspects ? itemAspectsToTriggers(aspects) : []
 
   const inner = (
     <>
