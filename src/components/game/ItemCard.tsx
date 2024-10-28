@@ -122,6 +122,8 @@ export const ItemCard = async (props: ItemCardProps) => {
             onlyTop && 'lg:my-[80px]',
           ], // (500-500*1,5)/2 = 15
           'select-none',
+          bgShowsRarity &&
+            onlyTop && ['ring ring-inset ring-transparent', rarity?.ringClass],
           className,
         )}
       >

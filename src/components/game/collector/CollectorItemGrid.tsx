@@ -22,7 +22,7 @@ export const CollectorItemGrid = async ({ game }: { game: Game }) => {
               <ItemCard
                 itemData={item}
                 size={'160'}
-                // onlyTop
+                onlyTop={false}
                 tooltipOnClick
               />
             </div>
