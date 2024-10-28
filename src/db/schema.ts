@@ -1,4 +1,5 @@
 import { GAME_VERSION } from '@/game/config'
+import { DefaultGameMode, GameMode } from '@/game/gameMode'
 import { createId } from '@paralleldrive/cuid2'
 import { relations } from 'drizzle-orm'
 import { index, int, sqliteTable, text } from 'drizzle-orm/sqlite-core'
@@ -24,6 +25,10 @@ const baseStats = () => ({
 })
 
 const version = int('version').notNull().default(GAME_VERSION)
+const gameMode = text('gameMode')
+  .$type<GameMode>()
+  .notNull()
+  .default(DefaultGameMode)
 
 export const game = sqliteTable(
   'game',
@@ -33,6 +38,7 @@ export const game = sqliteTable(
     data: text('data', { mode: 'json' }).$type<GameData>().notNull(),
     liveMatchId: text('liveMatchId'),
     version,
+    gameMode,
   },
   (table) => ({
     gameLiveMatchIdIdx: index('gameLiveMatchIdIdx').on(table.liveMatchId),
@@ -64,6 +70,7 @@ export const loadout = sqliteTable(
     roundNo: int('roundNo').notNull(),
     primaryMatchParticipationId: text('primaryMatchParticipationId'),
     version,
+    gameMode,
   },
   (table) => ({
     loadoutPrimaryMatchParticipationIdIdx: index(
@@ -100,6 +107,7 @@ export const match = sqliteTable('match', {
   ...baseStats(),
   data: text('data', { mode: 'json' }).$type<MatchData>().notNull(),
   liveMatchId: text('liveMatchId'),
+  gameMode,
 })
 
 export const matchRelations = relations(match, ({ one, many }) => ({
@@ -230,6 +238,7 @@ export const leaderboardEntry = sqliteTable(
     score: int('score').notNull(),
     version,
     gameId: text('gameId'),
+    gameMode,
   },
   (table) => ({
     leaderboardUserIdIdx: index('leaderboardUserIdIdx').on(table.userId),
