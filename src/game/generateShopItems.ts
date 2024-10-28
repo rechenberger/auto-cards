@@ -1,10 +1,8 @@
 import { Game, GameData } from '@/db/schema-zod'
-import { floor } from 'lodash-es'
-import { ItemAspect, allAspects } from './aspects'
 import { NO_OF_SHOP_ITEMS, SALE_CHANCE } from './config'
 import { generateShopItemsRaw } from './generateShopItemsRaw'
 import { getSpecialBuyRound } from './getSpecialBuyRound'
-import { rngFloat, rngItems, rngItemsWithWeights } from './seed'
+import { rngFloat, rngItemsWithWeights } from './seed'
 
 export const generateShopItems = async ({
   game,
@@ -50,32 +48,32 @@ export const generateShopItems = async ({
           seed: [...itemSeed, 'isOnSale'],
         }) < SALE_CHANCE
 
-    let aspects: ItemAspect[] | undefined = undefined
-    if (game.gameMode === 'collector') {
-      const noOfAspects = specialBuyRound ? 0 : 3
-      const aspectDefs = rngItems({
-        seed: [...itemSeed, 'aspects'],
-        items: allAspects,
-        count: noOfAspects,
-      })
-      aspects = aspectDefs.map((aspectDef, idx) => ({
-        name: aspectDef.name,
-        rnd: floor(
-          rngFloat({
-            seed: [...itemSeed, 'aspectPower', idx],
-            min: 0,
-            max: 1,
-          }),
-          3,
-        ),
-      }))
-    }
+    // let aspects: ItemAspect[] | undefined = undefined
+    // if (game.gameMode === 'collector') {
+    //   const noOfAspects = specialBuyRound ? 0 : 3
+    //   const aspectDefs = rngItems({
+    //     seed: [...itemSeed, 'aspects'],
+    //     items: allAspects,
+    //     count: noOfAspects,
+    //   })
+    //   aspects = aspectDefs.map((aspectDef, idx) => ({
+    //     name: aspectDef.name,
+    //     rnd: floor(
+    //       rngFloat({
+    //         seed: [...itemSeed, 'aspectPower', idx],
+    //         min: 0,
+    //         max: 1,
+    //       }),
+    //       3,
+    //     ),
+    //   }))
+    // }
 
     return {
       name: newItem.name,
       isOnSale,
       isSpecial: !!specialBuyRound,
-      aspects,
+      // aspects
     }
   })
   shopItems.push(...oldItems)

@@ -1,7 +1,7 @@
 import { Game } from '@/db/schema-zod'
 import { range } from 'lodash-es'
 import { getAllItems } from './allItems'
-import { NO_OF_SHOP_ITEMS, SHOP_EFFECT_BOOST_MULTIPLIER } from './config'
+import { SHOP_EFFECT_BOOST_MULTIPLIER } from './config'
 import { getSpecialBuyRound } from './getSpecialBuyRound'
 import { roundStats } from './roundStats'
 import { getTagDefinition } from './tags'
@@ -42,23 +42,11 @@ export const generateShopItemsRaw = async ({
     })
   }
 
-  const shopSeed = [
-    game.data.seed,
-    game.data.roundNo,
-    game.data.shopRerolls,
-    'shop',
-  ]
-
   const shopEffects = game.data.currentLoadout.items.flatMap((item) => {
     const def = allItems.find((i) => i.name === item.name)
     if (!def) return []
     return range(item.count ?? 1).flatMap(() => def.shopEffects ?? [])
   })
-
-  const oldItems = game.data.shopItems.filter((item) => item.isReserved)
-  const itemsToGenerate = specialBuyRound
-    ? specialBuyRound.noOfItems
-    : NO_OF_SHOP_ITEMS - oldItems.length
 
   const itemsWeighted = itemsForSale.map((item) => {
     let weight = 1
