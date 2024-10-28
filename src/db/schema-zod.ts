@@ -22,6 +22,7 @@ export type LoadoutData = z.infer<typeof LoadoutData>
 
 export const Loadout = createSelectSchema(schema.loadout, {
   data: LoadoutData,
+  gameMode: GameMode,
 })
 export type Loadout = z.infer<typeof Loadout>
 

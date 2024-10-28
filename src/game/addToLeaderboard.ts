@@ -26,6 +26,10 @@ export const addToLeaderboard = async ({
     throw new Error('Old loadout version cannot be added to leaderboard')
   }
 
+  if (loadout.gameMode !== 'shopper') {
+    throw new Error('Only shopper mode is supported for leaderboard')
+  }
+
   let leaderboard = await getLeaderboard({
     roundNo,
     type,
