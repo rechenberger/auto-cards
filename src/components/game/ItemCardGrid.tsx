@@ -1,3 +1,4 @@
+import { ItemAspect } from '@/game/aspects'
 import { countifyItems } from '@/game/countifyItems'
 import { orderItems } from '@/game/orderItems'
 import { ThemeId } from '@/game/themes'
@@ -12,7 +13,7 @@ export const ItemCardGrid = async ({
   themeId,
   size,
 }: {
-  items: { name: string }[]
+  items: { name: string; count?: number; aspects?: ItemAspect[] }[]
   className?: string
   themeId?: ThemeId
   size?: '80' | 'tiny' | 'responsive'
@@ -56,6 +57,7 @@ export const ItemCardGrid = async ({
                 onlyTop
                 themeId={themeId}
                 tooltipOnClick
+                aspects={item.aspects}
               />
             </div>
           </Fragment>
