@@ -1,4 +1,5 @@
 import { ItemData } from '@/components/game/ItemData'
+import { ItemName } from '@/game/allItems'
 import { ItemAspect } from '@/game/aspects'
 import { GAME_VERSION } from '@/game/config'
 import { GameMode } from '@/game/gameMode'
@@ -31,7 +32,7 @@ export const GameData = z.object({
   shopRerolls: z.number().default(0),
   shopItems: z.array(
     z.object({
-      name: z.string(),
+      name: ItemName,
       isOnSale: z.boolean().optional(),
       isReserved: z.boolean().optional(),
       isSold: z.boolean().optional(),

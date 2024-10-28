@@ -4,7 +4,7 @@ import { GenerateAllImagesButton } from '@/components/ai/GenerateAllImagesButton
 import { getMyUserThemeIdWithFallback } from '@/components/game/getMyUserThemeId'
 import { ItemCard } from '@/components/game/ItemCard'
 import { StatDescriptionsItem } from '@/components/game/StatDescriptionsItem'
-import { getItemByName } from '@/game/allItems'
+import { getItemByName, ItemName } from '@/game/allItems'
 import { getAllThemes } from '@/game/themes'
 import { capitalCase } from 'change-case'
 import { map } from 'lodash-es'
@@ -14,7 +14,7 @@ import { Fragment } from 'react'
 
 type PageProps = {
   params: Promise<{
-    itemName: string
+    itemName: ItemName
   }>
 }
 

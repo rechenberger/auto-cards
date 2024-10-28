@@ -11,7 +11,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { LoadoutData } from '@/db/schema-zod'
-import { ItemDefinition } from '@/game/ItemDefinition'
+import { BetterItemDefinition } from '@/game/allItems'
 import { countifyItems } from '@/game/countifyItems'
 import { cloneDeep, omit, orderBy, sum, sumBy } from 'lodash-es'
 import { Fragment } from 'react'
@@ -25,7 +25,7 @@ export const SimulationDisplay = async ({
 }: {
   input: SimulationInput
   simulationResult: SimulationResult
-  allItems: ItemDefinition[]
+  allItems: BetterItemDefinition[]
   showDraws?: boolean
 }) => {
   const { bots } = simulationResult

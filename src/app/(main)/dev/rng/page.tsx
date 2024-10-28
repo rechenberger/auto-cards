@@ -3,7 +3,7 @@ import { notFoundIfNotAdmin } from '@/auth/getIsAdmin'
 import { getMyUserIdOrThrow } from '@/auth/getMyUser'
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import { SimpleDataTableCard } from '@/components/simple/SimpleDataTable'
-import { getItemByName } from '@/game/allItems'
+import { ItemName, getItemByName } from '@/game/allItems'
 import { NO_OF_SHOP_ITEMS } from '@/game/config'
 import { createGame } from '@/game/createGame'
 import { roundStats } from '@/game/roundStats'
@@ -58,7 +58,7 @@ export default async function Page() {
       ),
       (count, name) => ({
         count,
-        name,
+        name: name as ItemName,
         countRelative: formatPercent(count / noOfShopItems),
       }),
     ),

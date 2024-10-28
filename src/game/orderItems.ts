@@ -1,10 +1,10 @@
 import { first, indexOf, map, orderBy } from 'lodash-es'
-import { getItemByName } from './allItems'
 import { ItemDefinition } from './ItemDefinition'
+import { ItemName, getItemByName } from './allItems'
 import { allRarities } from './rarities'
 import { allTags } from './tags'
 
-export const orderItems = async <T extends { name: string }>(items: T[]) => {
+export const orderItems = async <T extends { name: ItemName }>(items: T[]) => {
   let withItems = await Promise.all(
     items.map(async (item) => ({
       item,

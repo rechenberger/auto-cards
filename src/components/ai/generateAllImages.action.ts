@@ -1,8 +1,8 @@
 'use server'
 
 import { throwIfNotAdmin } from '@/auth/getIsAdmin'
-import { getAllItems, getItemByName } from '@/game/allItems'
-import { getAllThemes, getThemeDefinition, ThemeId } from '@/game/themes'
+import { ItemName, getAllItems, getItemByName } from '@/game/allItems'
+import { ThemeId, getAllThemes, getThemeDefinition } from '@/game/themes'
 import { revalidatePath } from 'next/cache'
 import { getItemAiImagePrompt } from '../game/getItemAiImagePrompt'
 import { generateAiImage } from './generateAiImage.action'
@@ -20,7 +20,9 @@ export const generateAllImages = async ({
   forcePrompt?: boolean
 }) => {
   await throwIfNotAdmin({ allowDev: true })
-  const items = itemId ? [await getItemByName(itemId)] : await getAllItems()
+  const items = itemId
+    ? [await getItemByName(itemId as ItemName)]
+    : await getAllItems()
   const themes = themeId
     ? [await getThemeDefinition(themeId)]
     : await getAllThemes()
