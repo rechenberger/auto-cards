@@ -31,13 +31,11 @@ export const LoadoutDisplay = async ({
           {map(items, (item, idx) => (
             <Fragment key={idx}>
               <ItemCard
+                itemData={item}
                 game={game}
-                name={item.name}
-                count={item.count}
                 tooltipOnClick
                 canSell={canSell}
                 size="160"
-                aspects={item.aspects}
               />
             </Fragment>
           ))}
@@ -49,13 +47,11 @@ export const LoadoutDisplay = async ({
             {map(items, (item, idx) => (
               <Fragment key={idx}>
                 <ItemCard
+                  itemData={item}
                   game={game}
-                  name={item.name}
-                  count={item.count}
                   size="240"
                   tooltipOnClick
                   canSell={canSell}
-                  aspects={item.aspects}
                 />
               </Fragment>
             ))}

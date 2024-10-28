@@ -20,12 +20,10 @@ export const CollectorItemGrid = async ({ game }: { game: Game }) => {
           <Fragment key={idx}>
             <div className="relative">
               <ItemCard
-                name={item.name}
-                count={item.count}
+                itemData={item}
                 size={'160'}
                 // onlyTop
                 tooltipOnClick
-                aspects={item.aspects}
               />
             </div>
           </Fragment>

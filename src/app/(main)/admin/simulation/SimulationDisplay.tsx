@@ -11,8 +11,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { LoadoutData } from '@/db/schema-zod'
-import { countifyItems } from '@/game/countifyItems'
 import { ItemDefinition } from '@/game/ItemDefinition'
+import { countifyItems } from '@/game/countifyItems'
 import { cloneDeep, omit, orderBy, sum, sumBy } from 'lodash-es'
 import { Fragment } from 'react'
 import { SimulationInput, SimulationResult } from './simulate'
@@ -130,7 +130,7 @@ export const SimulationDisplay = async ({
                       withoutStartingItems(bot.game.data.currentLoadout.items),
                     ).map((i) => (
                       <Fragment key={i.name}>
-                        <TinyItem name={i.name} count={i.count} />
+                        <TinyItem itemData={i} />
                       </Fragment>
                     ))}
                   </TableCell>
@@ -171,7 +171,7 @@ export const SimulationDisplay = async ({
                 <Fragment key={item.name}>
                   <TableRow>
                     <TableCell className="flex flex-row">
-                      <TinyItem name={item.name} />
+                      <TinyItem itemData={{ name: item.name }} />
                     </TableCell>
                     <TableCell>
                       {item.botsWithItem.length}&nbsp;(

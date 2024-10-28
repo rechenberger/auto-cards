@@ -1,21 +1,20 @@
 import { getItemByName } from '@/game/allItems'
-import { ItemAspect, itemAspectsToTriggers } from '@/game/aspects'
+import { itemAspectsToTriggers } from '@/game/aspects'
 import { Stat } from '@/game/stats'
 import { flatMap, keys, map, uniq } from 'lodash-es'
+import { ItemData } from './ItemData'
 import { StatDescriptions } from './StatDescriptions'
 
 export const StatDescriptionsItem = async ({
-  name,
-  aspects,
+  itemData,
 }: {
-  name: string
-  aspects?: ItemAspect[]
+  itemData: ItemData
 }) => {
-  const item = await getItemByName(name)
+  const item = await getItemByName(itemData.name)
 
   let triggers = item.triggers ?? []
-  if (aspects) {
-    triggers = [...triggers, ...itemAspectsToTriggers(aspects)]
+  if (itemData.aspects) {
+    triggers = [...triggers, ...itemAspectsToTriggers(itemData.aspects)]
   }
 
   const allStats = [

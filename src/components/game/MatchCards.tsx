@@ -68,8 +68,7 @@ export const MatchCards = async ({
                   <div>
                     <ItemCard
                       game={game}
-                      name={item.name}
-                      count={item.count}
+                      itemData={item}
                       size={isBig ? '160' : '80'}
                       changemaker={changemaker}
                       tooltipOnClick
@@ -77,7 +76,6 @@ export const MatchCards = async ({
                       itemIdx={itemIdx}
                       sideIdx={sideIdx}
                       onlyTop
-                      aspects={item.aspects}
                     />
                     {hasInterval && (
                       <MatchCardTimer sideIdx={sideIdx} itemIdx={itemIdx} />
@@ -95,13 +93,11 @@ export const MatchCards = async ({
                 >
                   <ItemCard
                     game={game}
-                    name={item.name}
-                    count={item.count}
+                    itemData={item}
                     size="320"
                     themeId={themeId}
                     itemIdx={itemIdx}
                     sideIdx={sideIdx}
-                    aspects={item.aspects}
                   />
 
                   <div className="absolute -bottom-6 flex flex-col items-center inset-x-0">

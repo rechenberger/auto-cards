@@ -73,7 +73,12 @@ export default async function Page({
           <Fragment key={idx}>
             <div className="relative">
               <Link href={`/docs/items/${item.name}`}>
-                <ItemCard name={item.name} size="320" showPrice disableLinks />
+                <ItemCard
+                  itemData={{ name: item.name }}
+                  size="320"
+                  showPrice
+                  disableLinks
+                />
               </Link>
               {isAdmin && (
                 <AiImageGalleryItem

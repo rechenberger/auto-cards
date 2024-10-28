@@ -1,6 +1,6 @@
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
-import { getAspectDef, ItemAspect } from '@/game/aspects'
+import { getAspectDef } from '@/game/aspects'
 import { Changemaker } from '@/game/generateChangemakers'
 import { getRarityDefinition } from '@/game/rarities'
 import { getTagDefinition } from '@/game/tags'
@@ -19,6 +19,7 @@ import { Fragment } from 'react'
 import { AiItemImage } from '../ai/AiItemImage'
 import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 import { ItemCardChip } from './ItemCardChip'
+import { ItemData } from './ItemData'
 import { ItemSellButton } from './ItemSellButton'
 import { ShopEffectDisplay } from './ShopEffectDisplay'
 import { StatsBars } from './StatsBars'
@@ -28,11 +29,10 @@ import { TriggerDisplay } from './TriggerDisplay'
 
 export type ItemCardProps = {
   game?: Game
-  name: string
+  itemData: ItemData
   shopItem?: Game['data']['shopItems'][number] & { idx: number }
   size?: '480' | '320' | '240' | '200' | '160' | '80'
   className?: string
-  count?: number
   tooltipOnClick?: boolean
   changemaker?: Changemaker
   themeId?: ThemeId
@@ -43,17 +43,14 @@ export type ItemCardProps = {
   disableTooltip?: boolean
   disableLinks?: boolean
   showPrice?: boolean
-  aspects?: ItemAspect[]
 }
 
 export const ItemCard = async (props: ItemCardProps) => {
   let {
     game,
-    name,
     shopItem,
     size = '200',
     className,
-    count = 1,
     tooltipOnClick,
     changemaker,
     themeId,
@@ -64,12 +61,13 @@ export const ItemCard = async (props: ItemCardProps) => {
     disableTooltip,
     disableLinks,
     showPrice,
-    aspects,
+    itemData,
   } = props
 
-  const item = await getItemByName(name)
-  const title = capitalCase(name)
+  const item = await getItemByName(itemData.name)
+  const title = capitalCase(itemData.name)
   const tag = getTagDefinition(first(item.tags) ?? 'default')
+  const count = itemData.count ?? 1
 
   if (!themeId) {
     themeId = await getMyUserThemeIdWithFallback()
@@ -258,9 +256,9 @@ export const ItemCard = async (props: ItemCardProps) => {
                   />
                 </Fragment>
               ))}
-              {!!aspects?.length && (
+              {!!itemData?.aspects?.length && (
                 <div className="flex flex-row gap-2 p-1 rounded-lg">
-                  {aspects?.map((aspect, idx) => {
+                  {itemData.aspects?.map((aspect, idx) => {
                     const aspectDef = getAspectDef(aspect.name)
                     const { rnd } = aspect
                     const value = aspectDef.value({ rnd })

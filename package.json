@@ -12,7 +12,8 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:copy": "turso db shell auto-cards-2 .dump | sqlite3 db.sqlite",
-    "db:reset": "rm -rf db.sqlite && pnpm run db:copy"
+    "db:reset": "rm -rf db.sqlite && pnpm run db:copy",
+    "ts:check": "tsc --noEmit"
   },
   "dependencies": {
     "@auth/core": "^0.37.2",

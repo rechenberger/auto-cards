@@ -23,8 +23,8 @@ import { ActionButton } from '@/super-action/button/ActionButton'
 import { and, eq, isNull } from 'drizzle-orm'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
-import { simulate, SimulationInput } from '../simulation/simulate'
 import { SimulationDisplay } from '../simulation/SimulationDisplay'
+import { SimulationInput, simulate } from '../simulation/simulate'
 import { startingByRound } from '../simulation/startingByRound'
 
 export const metadata: Metadata = {
@@ -152,7 +152,7 @@ export default async function Page() {
                       <div className="flex flex-row gap-1">
                         {countifyItems(loadout.data.items).map((i) => (
                           <Fragment key={i.name}>
-                            <TinyItem name={i.name} count={i.count} />
+                            <TinyItem itemData={i} />
                           </Fragment>
                         ))}
                       </div>

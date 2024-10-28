@@ -47,8 +47,10 @@ export const RoundInfo = async ({ roundNo }: { roundNo: number }) => {
               <div className="text-center">Next Round Gain</div>
               <StatsDisplay stats={{ gold: nextRoundStat.gold }} />
               <ItemCard
-                name="experience"
-                count={nextRoundStat.experience}
+                itemData={{
+                  name: 'experience',
+                  count: nextRoundStat.experience,
+                }}
                 size="160"
                 tooltipOnClick
                 onlyTop

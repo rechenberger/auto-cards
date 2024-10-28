@@ -102,7 +102,7 @@ export const PlaygroundEdit = async ({
                                 'flex-1',
                               )}
                             >
-                              <TinyItem name={item.name} count={count} />
+                              <TinyItem itemData={{ name: item.name, count }} />
                             </div>
                             <Button size="sm" variant="ghost" asChild>
                               <Link
