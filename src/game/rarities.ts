@@ -5,22 +5,37 @@ export const allRarityDefinitions = [
   {
     name: 'common',
     textClass: '',
+    aspects: {
+      normal: 0,
+    },
   },
   {
     name: 'uncommon',
     textClass: 'text-green-500',
+    aspects: {
+      normal: 1,
+    },
   },
   {
     name: 'rare',
     textClass: 'text-blue-500',
+    aspects: {
+      normal: 2,
+    },
   },
   {
     name: 'epic',
     textClass: 'text-purple-500',
+    aspects: {
+      normal: 3,
+    },
   },
   {
     name: 'legendary',
     textClass: 'text-yellow-500',
+    aspects: {
+      normal: 4,
+    },
   },
 ] as const
 

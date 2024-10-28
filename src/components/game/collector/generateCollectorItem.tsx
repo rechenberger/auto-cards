@@ -1,7 +1,7 @@
 import { Game } from '@/db/schema-zod'
 import { allAspects } from '@/game/aspects'
 import { generateShopItemsRaw } from '@/game/generateShopItemsRaw'
-import { Rarity } from '@/game/rarities'
+import { Rarity, getRarityDefinition } from '@/game/rarities'
 import { SeedArray, rngFloat, rngItem, rngItems } from '@/game/seed'
 import { floor } from 'lodash-es'
 import { ItemData } from '../ItemData'
@@ -24,6 +24,9 @@ export const generateCollectorItem = async ({
 
   items = items.filter((i) => !i.isSpecial)
   items = items.filter((i) => !i.locked)
+
+  const rarityDef = getRarityDefinition(rarity)
+
   items = items.filter((i) => i.item.rarity === rarity)
 
   const item = rngItem({
@@ -35,7 +38,7 @@ export const generateCollectorItem = async ({
     throw new Error('No item found')
   }
 
-  const noOfAspects = 3
+  const noOfAspects = rarityDef.aspects.normal
   const aspectDefs = rngItems({
     seed: [...seed, 'aspects'],
     items: allAspects,
