@@ -168,6 +168,21 @@ export const allAspectsRaw = [
       },
     ],
   },
+  {
+    name: 'monsterPower',
+    value: ({ rnd }) => scale({ rnd, min: 4 }),
+    triggers: ({ value }) => [
+      {
+        type: 'startOfBattle',
+        statsItem: {
+          health: value * 2,
+          healthMax: value * 2,
+          empower: value,
+          haste: value,
+        },
+      },
+    ],
+  },
 ] as const satisfies AspectDefinitionRaw[]
 
 export const allAspectNames = map(allAspectsRaw, (aspect) => aspect.name)
@@ -191,14 +206,15 @@ export const getAspectDef = (name: AspectName) => {
 export const ItemAspect = z.object({
   name: AspectName,
   rnd: z.number(),
+  multiplier: z.number().optional(),
 })
 export type ItemAspect = z.infer<typeof ItemAspect>
 
 export const itemAspectsToTriggers = (aspects: ItemAspect[]) => {
   return flatMap(aspects, (aspect) => {
     const def = getAspectDef(aspect.name)
-    const { rnd } = aspect
-    const value = def.value({ rnd })
+    const { rnd, multiplier } = aspect
+    const value = def.value({ rnd }) * (multiplier ?? 1)
     return def.triggers({
       rnd,
       value,

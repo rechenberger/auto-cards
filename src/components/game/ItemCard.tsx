@@ -278,8 +278,8 @@ export const ItemCard = async (props: ItemCardProps) => {
                 <div className="flex flex-row gap-2 p-1 rounded-lg">
                   {itemData.aspects?.map((aspect, idx) => {
                     const aspectDef = getAspectDef(aspect.name)
-                    const { rnd } = aspect
-                    const value = aspectDef.value({ rnd })
+                    const { rnd, multiplier } = aspect
+                    const value = aspectDef.value({ rnd }) * (multiplier ?? 1)
                     // const valueMin = aspectDef.value({ rnd: 0 })
                     const valueMax = aspectDef.value({ rnd: 0.999999 })
                     const valuePercent = value / valueMax
