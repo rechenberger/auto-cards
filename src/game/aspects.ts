@@ -26,7 +26,15 @@ const scale = ({
 export const allAspectsRaw = [
   {
     name: 'health',
-    tags: ['weapon', 'accessory', 'shield', 'food'],
+    tags: [
+      'weapon',
+      'accessory',
+      'crystal',
+      'potion',
+      'shield',
+      'food',
+      'spell',
+    ],
     value: ({ rnd }) => scale({ rnd, min: 10 }),
     triggers: ({ value }) => [
       {
@@ -45,7 +53,7 @@ export const allAspectsRaw = [
     triggers: ({ value }) => [
       {
         type: 'startOfBattle',
-        statsSelf: {
+        statsItem: {
           health: value,
           healthMax: value,
         },
@@ -53,8 +61,21 @@ export const allAspectsRaw = [
     ],
   },
   {
+    name: 'regenItem',
+    tags: ['friend'],
+    value: ({ rnd }) => scale({ rnd, min: 1 }),
+    triggers: ({ value }) => [
+      {
+        type: 'startOfBattle',
+        statsItem: {
+          regen: value,
+        },
+      },
+    ],
+  },
+  {
     name: 'stamina',
-    tags: ['weapon', 'accessory', 'shield', 'food'],
+    tags: ['weapon', 'accessory', 'crystal', 'potion', 'shield', 'food'],
     value: ({ rnd }) => scale({ rnd, min: 5 }),
     triggers: ({ value }) => [
       {
@@ -68,7 +89,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'staminaRegen',
-    tags: ['weapon', 'accessory', 'shield', 'food'],
+    tags: ['weapon', 'accessory', 'crystal', 'potion', 'shield', 'food'],
     value: ({ rnd }) => scale({ rnd, min: 5 }),
     triggers: ({ value }) => [
       {
@@ -94,7 +115,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'block',
-    tags: ['shield', 'armor'],
+    tags: ['shield', 'armor', 'spell'],
     value: ({ rnd }) => scale({ rnd, min: 8 }),
     triggers: ({ value }) => [
       {
@@ -112,7 +133,7 @@ export const allAspectsRaw = [
     triggers: ({ value }) => [
       {
         type: 'startOfBattle',
-        statsSelf: {
+        statsItem: {
           block: value,
         },
       },
@@ -120,7 +141,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'haste',
-    tags: ['food', 'accessory'],
+    tags: ['food', 'accessory', 'crystal', 'potion', 'spell'],
     value: ({ rnd }) => scale({ rnd, min: 1 }),
     triggers: ({ value }) => [
       {
@@ -146,7 +167,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'empower',
-    tags: ['weapon'],
+    tags: ['weapon', 'spell'],
     value: ({ rnd }) => scale({ rnd, min: 1 }),
     triggers: ({ value }) => [
       {
@@ -185,7 +206,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'luck',
-    tags: ['weapon', 'accessory'],
+    tags: ['weapon', 'accessory', 'crystal', 'potion'],
     value: ({ rnd }) => scale({ rnd, min: 2 }),
     triggers: ({ value }) => [
       {
@@ -198,7 +219,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'critDamage',
-    tags: ['weapon', 'accessory'],
+    tags: ['weapon', 'accessory', 'crystal', 'potion'],
     value: ({ rnd }) => scale({ rnd, min: 4 }),
     triggers: ({ value }) => [
       {
@@ -211,13 +232,26 @@ export const allAspectsRaw = [
   },
   {
     name: 'lifeSteal',
-    tags: ['weapon', 'accessory'],
+    tags: ['weapon', 'accessory', 'crystal', 'potion'],
     value: ({ rnd }) => scale({ rnd, min: 4 }),
     triggers: ({ value }) => [
       {
         type: 'startOfBattle',
         statsSelf: {
           lifeSteal: value,
+        },
+      },
+    ],
+  },
+  {
+    name: 'flying',
+    tags: ['spell'],
+    value: ({ rnd }) => scale({ rnd, min: 1 }),
+    triggers: ({ value }) => [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          flying: value,
         },
       },
     ],

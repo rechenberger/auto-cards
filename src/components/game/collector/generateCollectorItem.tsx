@@ -42,9 +42,22 @@ export const generateCollectorItem = async ({
   }
 
   const noOfAspects = rarityDef.aspects.normal
+
+  const possibleAspects = allAspects.filter(
+    (a) => a.tags?.some((t) => item.item.tags?.includes(t)),
+  )
+
+  if (possibleAspects.length < noOfAspects) {
+    console.warn(
+      `Not enough possible aspects for ${
+        item.item.name
+      } (${item.item.tags?.join(', ')})`,
+    )
+  }
+
   const aspectDefs = rngItems({
     seed: [...seed, 'aspects'],
-    items: allAspects,
+    items: possibleAspects,
     count: noOfAspects,
   })
   const aspects = aspectDefs.map((aspectDef, idx) => ({
