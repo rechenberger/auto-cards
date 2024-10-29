@@ -29,7 +29,7 @@ export const CollectorItemGrid = async ({
   game: Game
   searchParams: Promise<{
     tab?: 'loadout' | 'inventory' | 'favorites'
-    order?: 'rarity' | 'category'
+    order?: 'rarity' | 'category' | 'newest'
     tag?: Tag
   }>
 }) => {
@@ -61,6 +61,10 @@ export const CollectorItemGrid = async ({
     itemsShown = orderBy(itemsShown, (item) =>
       item.rarity ? -1 * allRarities.indexOf(item.rarity) : -Infinity,
     )
+  }
+
+  if (order === 'newest') {
+    itemsShown = orderBy(itemsShown, (item) => item.createdAt, 'desc')
   }
 
   const check = await checkCollectorLoadout({
@@ -103,6 +107,7 @@ export const CollectorItemGrid = async ({
             options={[
               { value: null, label: 'By Rarity' },
               { value: 'category', label: 'By Category' },
+              { value: 'newest', label: 'Newest' },
             ]}
           />
         </div>

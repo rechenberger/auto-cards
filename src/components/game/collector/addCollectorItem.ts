@@ -13,6 +13,7 @@ export const addCollectorItem = async ({
   const itemWithId = {
     ...item,
     id: createId(),
+    createdAt: new Date().toISOString(),
   }
   if (!game.data.inventory) {
     game.data.inventory = {

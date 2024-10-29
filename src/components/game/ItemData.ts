@@ -10,5 +10,6 @@ export const ItemData = z.object({
   aspects: z.array(ItemAspect).optional(),
   rarity: Rarity.optional(),
   favorite: z.boolean().optional(),
+  createdAt: z.string().optional(),
 })
 export type ItemData = z.infer<typeof ItemData>
