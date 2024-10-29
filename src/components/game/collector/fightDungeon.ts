@@ -20,6 +20,7 @@ export const fightDungeon = ({
   const seed = dungeonInput.seed
   const name = dungeonInput.name
   const level = dungeonInput.level
+  let status = game.data.dungeon?.status ?? 'active'
 
   const dungeon = getDungeon(name)
   const generated = dungeon.generate({
@@ -28,13 +29,12 @@ export const fightDungeon = ({
   })
 
   const generatedRoom = generated.rooms[roomIdx]
-  const room = {
+  const room: DungeonData['room'] = {
     ...generatedRoom,
     idx: roomIdx,
     seed: seedToString({
       seed: [seed, 'room', roomIdx],
     }),
-    won: true,
   }
 
   if (room.type === 'fight') {
@@ -50,13 +50,18 @@ export const fightDungeon = ({
       seed: [room.seed],
       skipLogs: true,
     })
-    room.won = matchReport.winner.sideIdx === 0
+    const won = matchReport.winner.sideIdx === 0
+    if (!won) {
+      status = 'failed'
+    }
   }
 
   game.data.dungeon = {
     name,
     level,
     seed,
+
+    status,
     room,
   }
 }

@@ -6,11 +6,12 @@ export const DungeonData = z.object({
   level: z.number(),
   seed: z.string(),
 
+  status: z.enum(['active', 'completed', 'failed']),
+
   room: DungeonRoom.and(
     z.object({
       idx: z.number(),
       seed: z.string(),
-      won: z.boolean(),
     }),
   ),
 })
