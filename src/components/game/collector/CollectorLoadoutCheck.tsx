@@ -40,12 +40,11 @@ export const CollectorLoadoutCheck = async ({ game }: { game: Game }) => {
                 check.countInBudget ? 'text-green-500' : 'bg-red-500',
               )}
             >
-              <div className="flex flex-col text-sm">
-                <div className="flex flex-row gap-2">
-                  <div className="flex-1">Too many {capitalCase(i.name)}</div>
-                  <div>
-                    ({i.count}/{i.countMax})
-                  </div>
+              <div className="flex flex-row gap-2 text-sm">
+                <XCircle className="size-4" />
+                <div className="flex-1">{capitalCase(i.name)}</div>
+                <div>
+                  {i.count}/{i.countMax}
                 </div>
               </div>
             </Card>

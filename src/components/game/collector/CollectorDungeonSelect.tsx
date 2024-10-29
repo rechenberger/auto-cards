@@ -100,6 +100,7 @@ export const CollectorDungeonSelect = async ({ game }: { game: Game }) => {
                   <ActionButton
                     variant="outline"
                     className="self-end"
+                    catchToast
                     action={async () => {
                       'use server'
                       return gameAction({

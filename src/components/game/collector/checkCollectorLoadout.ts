@@ -1,6 +1,7 @@
 import { getItemByName } from '@/game/allItems'
 import { COLLECTOR_PRICE_LIMIT, COLLECTOR_SAME_ITEM_LIMIT } from '@/game/config'
 import { LoadoutData } from '@/game/LoadoutData'
+import { capitalCase } from 'change-case'
 import { countBy, map, sumBy } from 'lodash-es'
 
 export const checkCollectorLoadout = async ({
@@ -44,6 +45,21 @@ export const checkCollectorLoadout = async ({
   // Check all
   const allGood = priceInBudget && countInBudget
 
+  const error = allGood
+    ? undefined
+    : [
+        ...(priceCurrent > priceLimit
+          ? [`Over Weight Limit: ${priceCurrent}/${priceLimit}`]
+          : []),
+        ...(countTooMany.length > 0
+          ? [
+              `Over Item Limit: ${countTooMany
+                .map((i) => capitalCase(i.name))
+                .join(', ')}`,
+            ]
+          : []),
+      ].join(', ')
+
   return {
     priceCurrent,
     priceLimit,
@@ -53,5 +69,6 @@ export const checkCollectorLoadout = async ({
     countInBudget,
 
     allGood,
+    error,
   }
 }

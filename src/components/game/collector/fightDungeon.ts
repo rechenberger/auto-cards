@@ -9,6 +9,7 @@ import { getDungeon } from '@/game/dungeons'
 import { generateMatch } from '@/game/generateMatch'
 import { seedToString } from '@/game/seed'
 import { addCollectorItem } from './addCollectorItem'
+import { checkCollectorLoadout } from './checkCollectorLoadout'
 
 export const fightDungeon = async ({
   game,
@@ -26,6 +27,13 @@ export const fightDungeon = async ({
   const seed = dungeonInput.seed
   const name = dungeonInput.name
   const level = dungeonInput.level
+
+  const check = await checkCollectorLoadout({
+    loadout: game.data.currentLoadout,
+  })
+  if (!check.allGood) {
+    throw new Error(check.error)
+  }
 
   const dungeonAccess = getDungeonAccess({
     game,
