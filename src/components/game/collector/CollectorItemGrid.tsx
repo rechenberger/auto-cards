@@ -23,12 +23,11 @@ export const CollectorItemGrid = async ({
 
   let inventoryItems = game.data.inventory?.items ?? []
 
-  const baseItems = loadoutItems.filter((item) => !item.id)
+  // const baseItems = loadoutItems.filter((item) => !item.id)
 
   const { tab, order = 'rarity' } = await searchParams
 
-  let itemsShown =
-    tab === 'inventory' ? [...baseItems, ...inventoryItems] : loadoutItems
+  let itemsShown = tab === 'inventory' ? inventoryItems : loadoutItems
   itemsShown = orderBy(itemsShown, (item) => item.name)
   itemsShown = countifyItems(await orderItems(itemsShown))
 
