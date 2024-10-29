@@ -3,6 +3,7 @@ import { DungeonData } from '@/game/DungeonData'
 import { getDungeon } from '@/game/dungeons'
 import { generateMatch } from '@/game/generateMatch'
 import { seedToString } from '@/game/seed'
+import { addCollectorItem } from './addCollectorItem'
 
 export const fightDungeon = ({
   game,
@@ -58,7 +59,12 @@ export const fightDungeon = ({
   }
 
   if (room.type === 'reward') {
-    game.data.currentLoadout.items.push(...room.items)
+    for (const item of room.items) {
+      addCollectorItem({
+        game,
+        item,
+      })
+    }
   }
 
   game.data.dungeon = {

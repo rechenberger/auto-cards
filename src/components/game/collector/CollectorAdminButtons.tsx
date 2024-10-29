@@ -4,6 +4,7 @@ import { allRarities } from '@/game/rarities'
 import { createSeed, rngItem } from '@/game/seed'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { DoorOpen, Plus, Swords, Trash } from 'lucide-react'
+import { addCollectorItem } from './addCollectorItem'
 import { fightDungeon } from './fightDungeon'
 import { generateCollectorItem } from './generateCollectorItem'
 
@@ -28,7 +29,10 @@ export const CollectorAdminButtons = ({ game }: { game: Game }) => {
                   seed: [createSeed()],
                   rarity,
                 })
-                ctx.game.data.currentLoadout.items.push(item)
+                addCollectorItem({
+                  game: ctx.game,
+                  item,
+                })
               },
             })
           }}

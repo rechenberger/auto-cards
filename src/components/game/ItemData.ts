@@ -4,6 +4,7 @@ import { Rarity } from '@/game/rarities'
 import { z } from 'zod'
 
 export const ItemData = z.object({
+  id: z.string().optional(),
   name: ItemName,
   count: z.number().optional(),
   aspects: z.array(ItemAspect).optional(),
