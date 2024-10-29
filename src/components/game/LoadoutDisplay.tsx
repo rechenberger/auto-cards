@@ -1,4 +1,5 @@
-import { Game, LoadoutData } from '@/db/schema-zod'
+import { Game } from '@/db/schema-zod'
+import { LoadoutData } from '@/game/LoadoutData'
 import { calcStats } from '@/game/calcStats'
 import { countifyItems } from '@/game/countifyItems'
 import { orderItems } from '@/game/orderItems'

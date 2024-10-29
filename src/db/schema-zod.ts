@@ -1,8 +1,5 @@
-import { ItemData } from '@/components/game/ItemData'
-import { DungeonData } from '@/game/DungeonData'
-import { ItemName } from '@/game/allItems'
-import { ItemAspect } from '@/game/aspects'
-import { GAME_VERSION } from '@/game/config'
+import { GameData } from '@/game/GameData'
+import { LoadoutData } from '@/game/LoadoutData'
 import { GameMode } from '@/game/gameMode'
 import { createSeed } from '@/game/seed'
 import { createSelectSchema } from 'drizzle-zod'
@@ -14,37 +11,11 @@ const seed = z.string().default(() => createSeed())
 export const User = createSelectSchema(schema.users)
 export type User = z.infer<typeof User>
 
-export const LoadoutData = z.object({
-  items: z.array(ItemData),
-})
-export type LoadoutData = z.infer<typeof LoadoutData>
-
 export const Loadout = createSelectSchema(schema.loadout, {
   data: LoadoutData,
   gameMode: GameMode,
 })
 export type Loadout = z.infer<typeof Loadout>
-
-export const GameData = z.object({
-  version: z.number().default(GAME_VERSION),
-  seed,
-  roundNo: z.number().default(0),
-  gold: z.number().default(0),
-  shopRerolls: z.number().default(0),
-  shopItems: z.array(
-    z.object({
-      name: ItemName,
-      isOnSale: z.boolean().optional(),
-      isReserved: z.boolean().optional(),
-      isSold: z.boolean().optional(),
-      isSpecial: z.boolean().optional(),
-      aspects: z.array(ItemAspect).optional(),
-    }),
-  ),
-  currentLoadout: LoadoutData,
-  dungeon: DungeonData.optional(),
-})
-export type GameData = z.infer<typeof GameData>
 
 export const Game = createSelectSchema(schema.game, {
   data: GameData,

@@ -1,5 +1,5 @@
 import { playgroundHref } from '@/app/(main)/admin/playground/playgroundHref'
-import { LoadoutData } from '@/db/schema-zod'
+import { LoadoutData } from '@/game/LoadoutData'
 import {
   rngFloat,
   rngGenerator,

@@ -1,4 +1,4 @@
-import { LoadoutData } from '@/db/schema-zod'
+import { LoadoutData } from '@/game/LoadoutData'
 import { getItemByName } from '@/game/allItems'
 import { calcStats } from '@/game/calcStats'
 import { sumBy } from 'lodash-es'

@@ -1,4 +1,5 @@
-import { Game, GameData } from '@/db/schema-zod'
+import { Game } from '@/db/schema-zod'
+import { GameData } from './GameData'
 import { NO_OF_SHOP_ITEMS, SALE_CHANCE } from './config'
 import { generateShopItemsRaw } from './generateShopItemsRaw'
 import { getSpecialBuyRound } from './getSpecialBuyRound'

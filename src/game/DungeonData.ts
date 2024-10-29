@@ -1,4 +1,4 @@
-import { LoadoutData } from '@/db/schema-zod'
+import { LoadoutData } from '@/game/LoadoutData'
 import { z } from 'zod'
 import { DungeonName } from './dungeons'
 

@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { LoadoutData } from '@/db/schema-zod'
+import { LoadoutData } from '@/game/LoadoutData'
 import { BetterItemDefinition } from '@/game/allItems'
 import { countifyItems } from '@/game/countifyItems'
 import { cloneDeep, omit, orderBy, sum, sumBy } from 'lodash-es'
