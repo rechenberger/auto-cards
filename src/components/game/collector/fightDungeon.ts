@@ -20,7 +20,6 @@ export const fightDungeon = ({
   const seed = dungeonInput.seed
   const name = dungeonInput.name
   const level = dungeonInput.level
-  let status = game.data.dungeon?.status ?? 'active'
 
   const dungeon = getDungeon(name)
   const generated = dungeon.generate({
@@ -36,6 +35,8 @@ export const fightDungeon = ({
       seed: [seed, 'room', roomIdx],
     }),
   }
+  const hasNextRoom = generated.rooms.length > roomIdx + 1
+  let status: DungeonData['status'] = hasNextRoom ? 'active' : 'completed'
 
   if (room.type === 'fight') {
     const matchReport = generateMatch({
@@ -54,6 +55,10 @@ export const fightDungeon = ({
     if (!won) {
       status = 'failed'
     }
+  }
+
+  if (room.type === 'reward') {
+    game.data.currentLoadout.items.push(...room.items)
   }
 
   game.data.dungeon = {
