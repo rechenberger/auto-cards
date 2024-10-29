@@ -176,6 +176,7 @@ export const CollectorItemGrid = async ({
                           !inLoadout && 'grayscale opacity-50',
                           'text-xs',
                           'rounded-r-none',
+                          'h-auto px-2 py-1',
                         )}
                       >
                         <Checkbox checked={inLoadout} />
@@ -203,6 +204,7 @@ export const CollectorItemGrid = async ({
                           item.favorite && 'text-yellow-500',
                           !item.favorite && 'grayscale opacity-50',
                           'rounded-l-none',
+                          'h-auto px-2 py-1',
                         )}
                         icon={
                           <Star
