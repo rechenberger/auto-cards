@@ -1,5 +1,6 @@
 import { ItemData } from '@/components/game/ItemData'
-import { map } from 'remeda'
+import { generateCollectorItem } from '@/components/game/collector/generateCollectorItem'
+import { Game } from '@/db/schema-zod'
 import { z } from 'zod'
 import { LoadoutData } from './LoadoutData'
 import { ItemName } from './allItems'
@@ -17,12 +18,16 @@ export const DungeonRoom = z.discriminatedUnion('type', [
 ])
 type DungeonRoom = z.infer<typeof DungeonRoom>
 
-type DungeonDefinitionRaw = {
-  name: string
+const allDungeonNames = ['trainingGrounds', 'adventureTrail'] as const
+export const DungeonName = z.enum(allDungeonNames)
+export type DungeonName = z.infer<typeof DungeonName>
+
+export type DungeonDefinition = {
+  name: DungeonName
   description: string
   levelMax: number
   levelOnlyOnce?: boolean
-  generate: (ctx: { seed: SeedArray; level: number }) => Promise<{
+  generate: (ctx: { game: Game; seed: SeedArray; level: number }) => Promise<{
     rooms: DungeonRoom[]
   }>
 }
@@ -63,22 +68,27 @@ const simpleRoomsToRooms = ({
   return rooms
 }
 
-const allDungeonsRaw = [
+const allDungeonsRaw: DungeonDefinition[] = [
   {
     name: 'trainingGrounds',
     description:
       'A little training never hurt nobody. Play through this once and get some basic equipment.',
     levelMax: 5,
     levelOnlyOnce: true,
-    generate: async ({ seed, level }) => {
+    generate: async ({ game, seed, level }) => {
       const simpleRooms: { monsters: ItemName[] }[] = [
         { monsters: ['scarecrow'] },
       ]
+      const reward = await generateCollectorItem({
+        game,
+        seed,
+        rarity: level === 5 ? 'uncommon' : 'common',
+      })
       const rooms: DungeonRoom[] = [
         ...simpleRoomsToRooms({ simpleRooms, seed, level }),
         {
           type: 'reward',
-          items: [{ name: 'woodenSword', aspects: [], rarity: 'common' }],
+          items: [reward],
         },
       ]
       return {
@@ -109,15 +119,7 @@ const allDungeonsRaw = [
       }
     },
   },
-] as const satisfies DungeonDefinitionRaw[]
-
-const allDungeonNames = map(allDungeonsRaw, (dungeon) => dungeon.name)
-export const DungeonName = z.enum(allDungeonNames)
-export type DungeonName = z.infer<typeof DungeonName>
-
-export type DungeonDefinition = DungeonDefinitionRaw & {
-  name: DungeonName
-}
+]
 
 export const allDungeons: DungeonDefinition[] = allDungeonsRaw
 
