@@ -6,5 +6,12 @@ export const PlaygroundMatchView = ({
 }: {
   options: PlaygroundOptions
 }) => {
-  return <MatchViewFake seed={options.seed} loadouts={options.loadouts} />
+  return (
+    <MatchViewFake
+      seed={options.seed}
+      sides={options.loadouts.map((loadoutData) => ({
+        loadoutData,
+      }))}
+    />
+  )
 }

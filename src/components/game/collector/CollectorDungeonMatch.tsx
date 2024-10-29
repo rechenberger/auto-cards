@@ -1,3 +1,4 @@
+import { getUserCached } from '@/auth/getMyUser'
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import { Game } from '@/db/schema-zod'
 import { getDungeon } from '@/game/dungeons'
@@ -7,10 +8,11 @@ import { capitalCase } from 'change-case'
 import { MatchViewFake } from '../MatchViewFake'
 import { CollectorAdminButtons } from './CollectorAdminButtons'
 
-export const CollectorDungeonMatch = ({ game }: { game: Game }) => {
+export const CollectorDungeonMatch = async ({ game }: { game: Game }) => {
   if (!game.data.dungeon) {
     return null
   }
+  const user = await getUserCached({ userId: game.userId })
   const dungeon = getDungeon(game.data.dungeon.name)
 
   const roomLoadout = game.data.dungeon.room.loadout
@@ -27,7 +29,15 @@ export const CollectorDungeonMatch = ({ game }: { game: Game }) => {
         <MatchViewFake
           game={game}
           seed={game.data.dungeon.room.seed}
-          loadouts={[game.data.currentLoadout, roomLoadout]}
+          sides={[
+            {
+              loadoutData: game.data.currentLoadout,
+              user,
+            },
+            {
+              loadoutData: roomLoadout,
+            },
+          ]}
         />
       )}
     </>

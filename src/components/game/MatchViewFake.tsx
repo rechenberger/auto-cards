@@ -1,4 +1,4 @@
-import { Game, Match } from '@/db/schema-zod'
+import { Game, Match, User } from '@/db/schema-zod'
 import { LoadoutData } from '@/game/LoadoutData'
 import { GAME_VERSION } from '@/game/config'
 import { DefaultGameMode, GameMode } from '@/game/gameMode'
@@ -9,12 +9,15 @@ export const MatchViewFake = ({
   game,
   seed,
   gameMode = DefaultGameMode,
-  loadouts,
+  sides,
 }: {
   game?: Game
   seed: string
   gameMode?: GameMode
-  loadouts: LoadoutData[]
+  sides: {
+    loadoutData: LoadoutData
+    user?: User
+  }[]
 }) => {
   const now = new Date().toISOString()
   const match: Match = {
@@ -28,22 +31,22 @@ export const MatchViewFake = ({
     gameMode,
   }
 
-  const participants: MatchParticipant[] = loadouts.map((loadout, sideIdx) => ({
+  const participants: MatchParticipant[] = sides.map((side, sideIdx) => ({
     id: `p-${sideIdx}`,
     createdAt: now,
     updatedAt: now,
     status: 'won',
     matchId: 'fake',
-    userId: `u-${sideIdx}`,
+    userId: side.user?.id ?? `u-${sideIdx}`,
     loadoutId: `l-${sideIdx}`,
     sideIdx,
-    user: null,
+    user: side.user ?? null,
     data: {},
     loadout: {
       createdAt: now,
       updatedAt: now,
       id: `l-${sideIdx}`,
-      data: loadout,
+      data: side.loadoutData,
       userId: null,
       roundNo: 1,
       gameId: `g-${sideIdx}`,

@@ -43,7 +43,7 @@ const getUserRaw = async ({ userId }: { userId: string }) => {
   return parsed
 }
 
-const getUserCached = unstable_cache(getUserRaw, ['getUser'], {
+export const getUserCached = unstable_cache(getUserRaw, ['getUser'], {
   tags: [userCacheTag],
 })
 
