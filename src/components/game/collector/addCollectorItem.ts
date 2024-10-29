@@ -9,8 +9,16 @@ export const addCollectorItem = ({
   game: Game
   item: ItemData
 }) => {
-  game.data.currentLoadout.items.push({
+  const itemWithId = {
     ...item,
     id: createId(),
-  })
+  }
+  if (!game.data.inventory) {
+    game.data.inventory = {
+      items: [],
+    }
+  }
+  if (game.data.inventory) {
+    game.data.inventory.items.push(itemWithId)
+  }
 }

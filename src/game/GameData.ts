@@ -1,3 +1,4 @@
+import { ItemData } from '@/components/game/ItemData'
 import { DungeonData } from '@/game/DungeonData'
 import { ItemName } from '@/game/allItems'
 import { ItemAspect } from '@/game/aspects'
@@ -23,6 +24,11 @@ export const GameData = z.object({
     }),
   ),
   currentLoadout: LoadoutData,
+  inventory: z
+    .object({
+      items: z.array(ItemData),
+    })
+    .optional(),
   dungeon: DungeonData.optional(),
 })
 export type GameData = z.infer<typeof GameData>
