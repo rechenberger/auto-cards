@@ -8,6 +8,7 @@ import { countifyItems } from '@/game/countifyItems'
 import { gameAction } from '@/game/gameAction'
 import { orderItems } from '@/game/orderItems'
 import { allRarities } from '@/game/rarities'
+import { allTags, Tag } from '@/game/tags'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { ActionWrapper } from '@/super-action/button/ActionWrapper'
@@ -17,6 +18,7 @@ import { redirect } from 'next/navigation'
 import { Fragment } from 'react'
 import { ItemCard } from '../ItemCard'
 import { StatsDisplay } from '../StatsDisplay'
+import { TagDisplay } from '../TagDisplay'
 import { CollectorLoadoutCheck } from './CollectorLoadoutCheck'
 import { checkCollectorLoadout } from './checkCollectorLoadout'
 
@@ -28,6 +30,7 @@ export const CollectorItemGrid = async ({
   searchParams: Promise<{
     tab?: 'loadout' | 'inventory' | 'favorites'
     order?: 'rarity' | 'category'
+    tag?: Tag
   }>
 }) => {
   let loadoutItems = game.data.currentLoadout.items
@@ -36,7 +39,7 @@ export const CollectorItemGrid = async ({
 
   // const baseItems = loadoutItems.filter((item) => !item.id)
 
-  const { tab = 'loadout', order = 'rarity' } = await searchParams
+  const { tab = 'loadout', order = 'rarity', tag } = await searchParams
 
   let itemsShown = tab === 'loadout' ? loadoutItems : inventoryItems
 
@@ -81,6 +84,16 @@ export const CollectorItemGrid = async ({
           <div className="flex-1" />
           <CollectorLoadoutCheck game={game} />
           <SimpleParamSelect
+            options={allTags.map((tag) => ({
+              value: tag,
+              label: <TagDisplay tag={tag} disableLinks />,
+            }))}
+            paramKey="tag"
+            label="Tag"
+            nullLabel="All Tags"
+            component="dropdown"
+          />
+          <SimpleParamSelect
             paramKey="order"
             component="dropdown"
             label="Order By"
@@ -103,6 +116,10 @@ export const CollectorItemGrid = async ({
             const tooMany =
               inLoadout && check.countTooMany.some((i) => i.name === item.name)
             const itemDef = allItems.find((i) => i.name === item.name)
+
+            if (tag && !itemDef?.tags?.includes(tag)) {
+              return null
+            }
             return (
               <Fragment key={idx}>
                 <div
