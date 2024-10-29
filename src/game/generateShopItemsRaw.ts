@@ -25,6 +25,9 @@ export const generateShopItemsRaw = async ({
 
   const allItems = await getAllItems()
   let itemsForSale = allItems.filter((item) => !!item.shop)
+  itemsForSale = itemsForSale.filter(
+    (item) => !item.gameModes || item.gameModes.includes(game.gameMode),
+  )
 
   // Check for unique items
   if (!skipUniqueCheck) {

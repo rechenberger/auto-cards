@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { GameMode } from './gameMode'
 import { Modifier } from './modifiers'
 import { Rarity } from './rarities'
 import { Stats } from './stats'
@@ -69,5 +70,6 @@ export const ItemDefinition = z.object({
   unique: z.boolean().optional(),
   description: z.string().optional(),
   shopEffects: z.array(ShopEffect).optional(),
+  gameModes: z.array(GameMode).optional(),
 })
 export type ItemDefinition = z.infer<typeof ItemDefinition>
