@@ -1,5 +1,4 @@
 import { getUserCached } from '@/auth/getMyUser'
-import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import { Game, User } from '@/db/schema-zod'
 import { getDungeon } from '@/game/dungeons'
 import { fontLore } from '@/lib/fonts'
@@ -26,7 +25,7 @@ export const CollectorDungeonMatch = async ({ game }: { game: Game }) => {
           {capitalCase(dungeon.name)}
         </div>
         <CollectorAdminButtons game={game} />
-        <SimpleDataCard data={game.data.dungeon} />
+        {/* <SimpleDataCard data={game.data.dungeon} /> */}
         {room.type === 'reward' && (
           <>
             <div>Reward</div>
