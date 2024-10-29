@@ -28,10 +28,15 @@ import {
   Sword,
   Syringe,
   Target,
+  Weight,
 } from 'lucide-react'
 import { map } from 'remeda'
 import { z } from 'zod'
-import { IGNORE_SPACE, MAX_THORNS_MULTIPLIER } from './config'
+import {
+  COLLECTOR_PRICE_LIMIT,
+  IGNORE_SPACE,
+  MAX_THORNS_MULTIPLIER,
+} from './config'
 import { randomStatDefinitionsRaw } from './randomStats'
 
 export type StatDefinitionPre = {
@@ -253,6 +258,12 @@ const otherStats = [
     icon: Coins,
     bgClass: 'bg-yellow-500',
     tooltip: 'Money to buy stuff.',
+  },
+  {
+    name: 'weight',
+    icon: Weight,
+    bgClass: 'bg-yellow-800',
+    tooltip: `Weight of the item. You can only carry a total of ${COLLECTOR_PRICE_LIMIT} weight.`,
   },
 ] as const satisfies StatDefinitionPre[]
 

@@ -43,6 +43,7 @@ export type ItemCardProps = {
   disableTooltip?: boolean
   disableLinks?: boolean
   showPrice?: boolean
+  priceAsWeight?: boolean
 }
 
 export const ItemCard = async (props: ItemCardProps) => {
@@ -62,6 +63,7 @@ export const ItemCard = async (props: ItemCardProps) => {
     disableLinks,
     showPrice,
     itemData,
+    priceAsWeight,
   } = props
 
   const item = await getItemByName(itemData.name)
@@ -233,7 +235,11 @@ export const ItemCard = async (props: ItemCardProps) => {
               {showPrice && !!item.price && (
                 <StatsDisplay
                   size="sm"
-                  stats={{ gold: item.price }}
+                  stats={
+                    priceAsWeight
+                      ? { weight: item.price }
+                      : { gold: item.price }
+                  }
                   className={cn(theme.classBottom)}
                 />
               )}

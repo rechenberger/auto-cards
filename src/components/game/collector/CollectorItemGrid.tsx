@@ -92,6 +92,8 @@ export const CollectorItemGrid = async ({
                     size={'160'}
                     onlyTop={false}
                     tooltipOnClick
+                    showPrice
+                    priceAsWeight
                   />
                   <ActionWrapper
                     catchToast
