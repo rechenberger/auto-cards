@@ -25,7 +25,7 @@ export const CollectorDungeonSelect = async ({ game }: { game: Game }) => {
 
   return (
     <>
-      <div className="grid xl:grid-cols-2 gap-2">
+      <div className="flex flex-col xl:flex-row gap-2 justify-center">
         {accesses.map((access) => {
           const dungeon = getDungeon(access.name)
 
@@ -35,7 +35,7 @@ export const CollectorDungeonSelect = async ({ game }: { game: Game }) => {
 
           return (
             <Fragment key={access.name}>
-              <Card className="p-4 flex flex-col gap-2">
+              <Card className="p-4 flex flex-col gap-2 xl:min-w-96">
                 <div className="flex flex-row gap-2">
                   <CardTitle className="flex-1">
                     {capitalCase(access.name)}
