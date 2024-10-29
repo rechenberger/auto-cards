@@ -388,7 +388,9 @@ export const ItemCard = async (props: ItemCardProps) => {
           <TooltipTrigger asChild>{card}</TooltipTrigger>
           <TooltipContent
             className="p-0 border-none bg-transparent rounded-xl"
-            side={sideIdx === 0 ? 'right' : 'left'}
+            side={
+              sideIdx === undefined ? 'top' : sideIdx === 0 ? 'right' : 'left'
+            }
           >
             <ItemCard
               {...props}

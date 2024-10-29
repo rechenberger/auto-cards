@@ -1,11 +1,7 @@
 import { SimpleParamSelect } from '@/components/simple/SimpleParamSelect'
+import { SimpleTooltip } from '@/components/simple/SimpleTooltip'
 import { buttonVariants } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
 import { Game } from '@/db/schema-zod'
 import { getAllItems } from '@/game/allItems'
 import { countifyItems } from '@/game/countifyItems'
@@ -172,47 +168,46 @@ export const CollectorItemGrid = async ({
                         )}
                       </div>
                     </ActionWrapper>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <ActionButton
-                          variant={'secondary'}
-                          disabled={!selectable}
-                          size="sm"
-                          className={cn(
-                            item.favorite && 'text-yellow-500',
-                            !item.favorite && 'grayscale opacity-50',
-                            'rounded-l-none',
-                          )}
-                          icon={
-                            <Star
-                              fill={item.favorite ? 'currentColor' : undefined}
-                            />
-                          }
-                          action={async () => {
-                            'use server'
-                            return gameAction({
-                              gameId: game.id,
-                              action: async ({ ctx }) => {
-                                const allItems = [
-                                  ...ctx.game.data.currentLoadout.items,
-                                  ...(ctx.game.data.inventory?.items ?? []),
-                                ]
-                                for (const i of allItems) {
-                                  if (i.id === item.id) {
-                                    i.favorite = !item.favorite
-                                  }
-                                }
-                              },
-                            })
-                          }}
-                        />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        {item.favorite
+                    <SimpleTooltip
+                      tooltip={
+                        item.favorite
                           ? 'Remove from favorites'
-                          : 'Add to favorites'}
-                      </TooltipContent>
-                    </Tooltip>
+                          : 'Add to favorites'
+                      }
+                    >
+                      <ActionButton
+                        variant={'secondary'}
+                        disabled={!selectable}
+                        size="sm"
+                        className={cn(
+                          item.favorite && 'text-yellow-500',
+                          !item.favorite && 'grayscale opacity-50',
+                          'rounded-l-none',
+                        )}
+                        icon={
+                          <Star
+                            fill={item.favorite ? 'currentColor' : undefined}
+                          />
+                        }
+                        action={async () => {
+                          'use server'
+                          return gameAction({
+                            gameId: game.id,
+                            action: async ({ ctx }) => {
+                              const allItems = [
+                                ...ctx.game.data.currentLoadout.items,
+                                ...(ctx.game.data.inventory?.items ?? []),
+                              ]
+                              for (const i of allItems) {
+                                if (i.id === item.id) {
+                                  i.favorite = !item.favorite
+                                }
+                              }
+                            },
+                          })
+                        }}
+                      />
+                    </SimpleTooltip>
                   </div>
                 </div>
               </Fragment>
