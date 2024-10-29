@@ -12,7 +12,7 @@ export const CollectorLoadoutCheck = async ({ game }: { game: Game }) => {
   })
   return (
     <>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col xl:flex-row gap-2 flex-wrap">
         <Card
           className={cn(
             'p-2 flex flex-col gap-1',
@@ -31,27 +31,25 @@ export const CollectorLoadoutCheck = async ({ game }: { game: Game }) => {
             </div>
           </div>
         </Card>
-        {!check.countInBudget && (
-          <Card
-            className={cn(
-              'p-2 flex flex-col gap-1',
-              check.countInBudget ? 'text-green-500' : 'bg-red-500',
-            )}
-          >
-            <div className="flex flex-col text-sm">
-              {check.countTooMany.map((i) => (
-                <Fragment key={i.name}>
-                  <div className="flex flex-row gap-2">
-                    <div className="flex-1">Too many {capitalCase(i.name)}</div>
-                    <div>
-                      ({i.count}/{i.countMax})
-                    </div>
+        {check.countTooMany.map((i) => (
+          <Fragment key={i.name}>
+            <Card
+              className={cn(
+                'p-2 flex flex-col gap-1',
+                check.countInBudget ? 'text-green-500' : 'bg-red-500',
+              )}
+            >
+              <div className="flex flex-col text-sm">
+                <div className="flex flex-row gap-2">
+                  <div className="flex-1">Too many {capitalCase(i.name)}</div>
+                  <div>
+                    ({i.count}/{i.countMax})
                   </div>
-                </Fragment>
-              ))}
-            </div>
-          </Card>
-        )}
+                </div>
+              </div>
+            </Card>
+          </Fragment>
+        ))}
       </div>
     </>
   )

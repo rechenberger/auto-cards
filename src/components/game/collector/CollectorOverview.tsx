@@ -5,7 +5,6 @@ import { MatchReportResetter } from '../MatchReportResetter'
 import { CollectorAdminButtons } from './CollectorAdminButtons'
 import { CollectorDungeonSelect } from './CollectorDungeonSelect'
 import { CollectorItemGrid } from './CollectorItemGrid'
-import { CollectorLoadoutCheck } from './CollectorLoadoutCheck'
 
 export const CollectorOverview = ({
   game,
@@ -22,7 +21,6 @@ export const CollectorOverview = ({
         </div>
         <CollectorAdminButtons game={game} />
         <CollectorDungeonSelect game={game} />
-        <CollectorLoadoutCheck game={game} />
         <CollectorItemGrid game={game} searchParams={searchParams} />
         <MatchReportResetter />
       </div>

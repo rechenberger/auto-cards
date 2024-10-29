@@ -11,6 +11,7 @@ import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { orderBy } from 'lodash-es'
 import { Fragment } from 'react'
 import { ItemCard } from '../ItemCard'
+import { CollectorLoadoutCheck } from './CollectorLoadoutCheck'
 
 export const CollectorItemGrid = async ({
   game,
@@ -40,7 +41,7 @@ export const CollectorItemGrid = async ({
   return (
     <>
       <div className="flex flex-col gap-2">
-        <div className="flex flex-row">
+        <div className="flex flex-col xl:flex-row gap-2">
           <SimpleParamSelect
             paramKey="tab"
             component="tabs"
@@ -50,6 +51,7 @@ export const CollectorItemGrid = async ({
             ]}
           />
           <div className="flex-1" />
+          <CollectorLoadoutCheck game={game} />
           <SimpleParamSelect
             paramKey="order"
             component="dropdown"
