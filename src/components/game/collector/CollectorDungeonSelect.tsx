@@ -11,6 +11,8 @@ import { setDungeonAccess } from '@/game/DungeonAccess'
 import { getDungeon } from '@/game/dungeons'
 import { gameAction } from '@/game/gameAction'
 import { createSeed } from '@/game/seed'
+import { fontLore } from '@/lib/fonts'
+import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { capitalCase } from 'change-case'
@@ -36,15 +38,21 @@ export const CollectorDungeonSelect = async ({ game }: { game: Game }) => {
           return (
             <Fragment key={access.name}>
               <Card className="p-4 flex flex-col gap-2 xl:min-w-96">
+                <CardDescription>
+                  Level {access.levelCurrent}{' '}
+                  {dungeon.levelMax ? ` of ${dungeon.levelMax}` : ''}
+                </CardDescription>
                 <div className="flex flex-row gap-2">
                   <CardTitle className="flex-1">
                     {capitalCase(access.name)}
                   </CardTitle>
                 </div>
-                <CardDescription>
-                  Level {access.levelCurrent}{' '}
-                  {dungeon.levelMax ? ` of ${dungeon.levelMax}` : ''}
+                <CardDescription
+                  className={(cn(fontLore.className), 'max-w-80')}
+                >
+                  {dungeon.description}
                 </CardDescription>
+                <div className="flex-1" />
                 <div className="flex flex-row">
                   {selectable && (
                     <DropdownMenu>
