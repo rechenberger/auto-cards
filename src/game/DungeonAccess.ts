@@ -41,6 +41,21 @@ export const setDungeonAccess = ({
   game.data.dungeonAccesses = accesses
 }
 
+export const removeDungeonAccess = ({
+  game,
+  name,
+}: {
+  game: Game
+  name: DungeonName
+}) => {
+  const accesses = game.data.dungeonAccesses ?? []
+  const index = accesses.findIndex((access) => access.name === name)
+  if (index !== -1) {
+    accesses.splice(index, 1)
+  }
+  game.data.dungeonAccesses = accesses
+}
+
 export const startingDungeonAccesses: DungeonAccess[] = [
   { name: 'trainingGrounds', levelMin: 1, levelMax: 1, levelCurrent: 1 },
   { name: 'adventureTrail', levelMin: 1, levelMax: 1, levelCurrent: 1 },

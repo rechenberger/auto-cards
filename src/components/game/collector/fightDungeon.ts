@@ -1,4 +1,9 @@
 import { Game } from '@/db/schema-zod'
+import {
+  getDungeonAccess,
+  removeDungeonAccess,
+  setDungeonAccess,
+} from '@/game/DungeonAccess'
 import { DungeonData } from '@/game/DungeonData'
 import { getDungeon } from '@/game/dungeons'
 import { generateMatch } from '@/game/generateMatch'
@@ -21,6 +26,15 @@ export const fightDungeon = async ({
   const seed = dungeonInput.seed
   const name = dungeonInput.name
   const level = dungeonInput.level
+
+  const dungeonAccess = getDungeonAccess({
+    game,
+    name,
+  })
+
+  if (!dungeonAccess) {
+    throw new Error('No access to dungeon')
+  }
 
   const dungeon = getDungeon(name)
   const generated = dungeon.generate({
@@ -64,6 +78,43 @@ export const fightDungeon = async ({
         game,
         item,
       })
+    }
+  }
+
+  if (status === 'completed') {
+    const didPersonalMaxLevel = level === dungeonAccess.levelMax
+    const didGlobalMaxLevel = level === dungeon.levelMax
+    if (didPersonalMaxLevel) {
+      dungeonAccess.levelMax = Math.min(
+        dungeonAccess.levelMax + 1,
+        dungeon.levelMax,
+      )
+      dungeonAccess.levelCurrent = dungeonAccess.levelMax
+
+      let remove = false
+      if (dungeon.levelOnlyOnce) {
+        dungeonAccess.levelMin = dungeonAccess.levelMax
+        if (didGlobalMaxLevel) {
+          remove = true
+        }
+      }
+
+      dungeonAccess.levelCurrent = Math.max(
+        Math.min(dungeonAccess.levelCurrent, dungeonAccess.levelMax),
+        dungeonAccess.levelMin,
+      )
+
+      if (remove) {
+        removeDungeonAccess({
+          game,
+          name,
+        })
+      } else {
+        setDungeonAccess({
+          game,
+          dungeonAccess,
+        })
+      }
     }
   }
 

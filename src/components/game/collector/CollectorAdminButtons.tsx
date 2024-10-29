@@ -74,7 +74,7 @@ export const CollectorAdminButtons = ({ game }: { game: Game }) => {
                   dungeonInput: {
                     name: 'adventureTrail',
                     level: 1,
-                    seed: ctx.game.data.seed,
+                    seed: createSeed(),
                   },
                 })
               },
