@@ -89,7 +89,7 @@ const allDungeonsRaw = [
   {
     name: 'adventureTrail',
     description:
-      'A infinitely repeatable trail of adventure that leads to the greatest of treasures.',
+      'An infinitely repeatable trail of adventure that leads to the greatest of treasures.',
     levelMax: 100,
     generate: ({ seed, level }) => {
       const simpleRooms: { monsters: ItemName[] }[] = [
