@@ -25,6 +25,13 @@ export const CollectorDungeonMatch = async ({ game }: { game: Game }) => {
         </div>
         <CollectorAdminButtons game={game} />
         <SimpleDataCard data={game.data.dungeon} />
+        {room.type === 'reward' && (
+          <>
+            <div>Reward</div>
+            <SimpleDataCard data={room.items} />
+            <NextRoundButtonCollector game={game} />
+          </>
+        )}
       </div>
       {room.type === 'fight' && (
         <MatchViewFake
@@ -40,13 +47,6 @@ export const CollectorDungeonMatch = async ({ game }: { game: Game }) => {
             },
           ]}
         />
-      )}
-      {room.type === 'reward' && (
-        <>
-          <div>Reward</div>
-          <SimpleDataCard data={room.items} />
-          <NextRoundButtonCollector game={game} />
-        </>
       )}
     </>
   )
