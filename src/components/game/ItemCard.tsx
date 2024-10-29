@@ -277,7 +277,7 @@ export const ItemCard = async (props: ItemCardProps) => {
                 </Fragment>
               ))}
               {!!aspects?.length && (
-                <div className="flex flex-row gap-2 p-1 rounded-lg">
+                <div className="flex flex-row gap-2 flex-wrap items-center justify-center">
                   {aspects?.map((aspect, idx) => {
                     return (
                       <Fragment key={idx}>
