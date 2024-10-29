@@ -32,7 +32,7 @@ export const fightDungeon = ({
     ...generatedRoom,
     idx: roomIdx,
     seed: seedToString({
-      seed: [...seed, 'room', roomIdx],
+      seed: [seed, 'room', roomIdx],
     }),
     won: true,
   }

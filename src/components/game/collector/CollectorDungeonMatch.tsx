@@ -1,3 +1,4 @@
+import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import { Game } from '@/db/schema-zod'
 import { getDungeon } from '@/game/dungeons'
 import { fontLore } from '@/lib/fonts'
@@ -17,6 +18,7 @@ export const CollectorDungeonMatch = ({ game }: { game: Game }) => {
           {capitalCase(dungeon.name)}
         </div>
         <CollectorAdminButtons game={game} />
+        <SimpleDataCard data={game.data.dungeon} />
       </div>
     </>
   )

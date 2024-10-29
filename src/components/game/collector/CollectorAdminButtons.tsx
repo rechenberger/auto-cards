@@ -57,7 +57,16 @@ export const CollectorAdminButtons = ({ game }: { game: Game }) => {
             'use server'
             return gameAction({
               gameId: game.id,
-              action: async ({ ctx }) => {},
+              action: async ({ ctx }) => {
+                fightDungeon({
+                  game: ctx.game,
+                  dungeonInput: {
+                    name: 'adventureTrail',
+                    level: 1,
+                    seed: ctx.game.data.seed,
+                  },
+                })
+              },
             })
           }}
         />
@@ -69,14 +78,7 @@ export const CollectorAdminButtons = ({ game }: { game: Game }) => {
             return gameAction({
               gameId: game.id,
               action: async ({ ctx }) => {
-                fightDungeon({
-                  game: ctx.game,
-                  dungeonInput: {
-                    name: 'adventureTrail',
-                    level: 1,
-                    seed: ctx.game.data.seed,
-                  },
-                })
+                ctx.game.data.dungeon = undefined
               },
             })
           }}
