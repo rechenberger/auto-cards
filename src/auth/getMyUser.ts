@@ -1,7 +1,8 @@
 import { db } from '@/db/db'
 import { users } from '@/db/schema-auth'
+import { User } from '@/db/schema-zod'
+import { typedParse } from '@/lib/typedParse'
 import { eq } from 'drizzle-orm'
-import { omit } from 'lodash-es'
 import { unstable_cache } from 'next/cache'
 import { auth } from './auth'
 import { loginWithRedirect } from './loginWithRedirect'
@@ -39,7 +40,10 @@ const getUserRaw = async ({ userId }: { userId: string }) => {
     where: eq(users.id, userId),
   })
   if (!user) return null
-  const parsed = omit(user, ['passwordHash'])
+  const parsed = typedParse(User, {
+    ...user,
+    passwordHash: null,
+  })
   return parsed
 }
 

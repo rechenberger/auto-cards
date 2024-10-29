@@ -2,13 +2,16 @@ import { GameData } from '@/game/GameData'
 import { LoadoutData } from '@/game/LoadoutData'
 import { GameMode } from '@/game/gameMode'
 import { createSeed } from '@/game/seed'
+import { ThemeId } from '@/game/themes'
 import { createSelectSchema } from 'drizzle-zod'
 import z from 'zod'
 import { schema } from './schema-export'
 
 const seed = z.string().default(() => createSeed())
 
-export const User = createSelectSchema(schema.users)
+export const User = createSelectSchema(schema.users, {
+  themeId: ThemeId.or(z.null()),
+})
 export type User = z.infer<typeof User>
 
 export const Loadout = createSelectSchema(schema.loadout, {

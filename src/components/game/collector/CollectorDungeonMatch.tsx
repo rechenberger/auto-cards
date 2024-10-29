@@ -1,6 +1,6 @@
 import { getUserCached } from '@/auth/getMyUser'
 import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
-import { Game } from '@/db/schema-zod'
+import { Game, User } from '@/db/schema-zod'
 import { getDungeon } from '@/game/dungeons'
 import { fontLore } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
@@ -12,7 +12,7 @@ export const CollectorDungeonMatch = async ({ game }: { game: Game }) => {
   if (!game.data.dungeon) {
     return null
   }
-  const user = await getUserCached({ userId: game.userId })
+  const user: User | null = await getUserCached({ userId: game.userId })
   const dungeon = getDungeon(game.data.dungeon.name)
 
   const roomLoadout = game.data.dungeon.room.loadout
@@ -32,7 +32,7 @@ export const CollectorDungeonMatch = async ({ game }: { game: Game }) => {
           sides={[
             {
               loadoutData: game.data.currentLoadout,
-              user,
+              user: user ?? undefined,
             },
             {
               loadoutData: roomLoadout,
