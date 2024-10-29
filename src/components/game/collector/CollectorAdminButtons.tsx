@@ -53,6 +53,7 @@ export const CollectorAdminButtons = ({ game }: { game: Game }) => {
                 ctx.game.data.inventory = {
                   items: [],
                 }
+                ctx.game.data.dungeon = undefined
               },
             })
           }}
