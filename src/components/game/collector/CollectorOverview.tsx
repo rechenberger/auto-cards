@@ -1,6 +1,7 @@
 import { Game } from '@/db/schema-zod'
 import { fontLore } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
+import { MatchReportResetter } from '../MatchReportResetter'
 import { CollectorAdminButtons } from './CollectorAdminButtons'
 import { CollectorDungeonSelect } from './CollectorDungeonSelect'
 import { CollectorItemGrid } from './CollectorItemGrid'
@@ -23,6 +24,7 @@ export const CollectorOverview = ({
         <CollectorDungeonSelect game={game} />
         <CollectorLoadoutCheck game={game} />
         <CollectorItemGrid game={game} searchParams={searchParams} />
+        <MatchReportResetter />
       </div>
     </>
   )
