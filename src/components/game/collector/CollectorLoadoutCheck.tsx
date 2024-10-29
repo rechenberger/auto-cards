@@ -25,9 +25,10 @@ export const CollectorLoadoutCheck = async ({ game }: { game: Game }) => {
             ) : (
               <XCircle className="size-4" />
             )}
-            <div className="flex-1">Space</div>
+            <div className="flex-1">Weight</div>
             <div>
-              {check.priceLimit - check.priceCurrent}/{check.priceLimit}
+              {/* {check.priceLimit - check.priceCurrent}/{check.priceLimit} */}
+              {check.priceCurrent}/{check.priceLimit}
             </div>
           </div>
         </Card>
