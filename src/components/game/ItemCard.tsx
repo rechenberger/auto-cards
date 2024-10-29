@@ -137,9 +137,10 @@ export const ItemCard = async (props: ItemCardProps) => {
             onlyTop && 'lg:my-[80px]',
           ], // (500-500*1,5)/2 = 15
           'select-none',
-          bgShowsRarity &&
-            onlyTop && ['ring ring-inset ring-transparent', rarity?.ringClass],
+          // bgShowsRarity &&
+          //   onlyTop && ['ring ring-inset ring-transparent', rarity?.ringClass],
           className,
+          bgShowsRarity && rarity?.bgClass,
         )}
       >
         {canSell && <ItemSellButton gameId={gameId} item={item} />}
@@ -161,6 +162,7 @@ export const ItemCard = async (props: ItemCardProps) => {
                   'bg-[#313130] pl-4 pr-6 pb-1.5',
                   'rounded-br-[20px]',
                   'border-b-2 border-r-2 border-black',
+                  bgShowsRarity && rarity?.bgClass,
                 )}
               >
                 {title}

@@ -19,8 +19,8 @@ import { Fragment } from 'react'
 import { ItemCard } from '../ItemCard'
 import { StatsDisplay } from '../StatsDisplay'
 import { TagDisplay } from '../TagDisplay'
-import { CollectorLoadoutCheck } from './CollectorLoadoutCheck'
 import { checkCollectorLoadout } from './checkCollectorLoadout'
+import { CollectorLoadoutCheck } from './CollectorLoadoutCheck'
 
 export const CollectorItemGrid = async ({
   game,
@@ -51,6 +51,9 @@ export const CollectorItemGrid = async ({
     }
   }
 
+  itemsShown = orderBy(itemsShown, (item) =>
+    item.rarity ? -1 * allRarities.indexOf(item.rarity) : -Infinity,
+  )
   itemsShown = orderBy(itemsShown, (item) => item.name)
   itemsShown = countifyItems(await orderItems(itemsShown))
 
