@@ -30,6 +30,11 @@ const allTagDefinitionsRaw = [
     textClass: 'text-amber-500',
   },
   {
+    name: 'armor',
+    bgClass: 'bg-amber-700',
+    textClass: 'text-amber-700',
+  },
+  {
     name: 'food',
     bgClass: 'bg-green-500/50',
     textClass: 'text-green-500',

@@ -1088,7 +1088,7 @@ const allItemsConst = [
   {
     name: 'leatherArmor',
     prompt: 'a leather armor on an armor stand',
-    tags: ['accessory', 'hunting'],
+    tags: ['armor', 'hunting'],
     rarity: 'uncommon',
     price: 7,
     shop: true,

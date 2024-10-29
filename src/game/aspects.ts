@@ -2,11 +2,13 @@ import { flatMap, map } from 'remeda'
 import { z } from 'zod'
 import { Trigger } from './ItemDefinition'
 import { rndInt } from './rndHelpers'
+import { Tag } from './tags'
 
 type AspectDefinitionRaw = {
   name: string
   value: (ctx: { rnd: number }) => number
   triggers: (ctx: { rnd: number; value: number }) => Trigger[]
+  tags?: Tag[]
 }
 
 const scale = ({
@@ -24,6 +26,7 @@ const scale = ({
 export const allAspectsRaw = [
   {
     name: 'health',
+    tags: ['weapon', 'accessory', 'shield', 'food'],
     value: ({ rnd }) => scale({ rnd, min: 10 }),
     triggers: ({ value }) => [
       {
@@ -36,7 +39,22 @@ export const allAspectsRaw = [
     ],
   },
   {
+    name: 'healthItem',
+    tags: ['friend'],
+    value: ({ rnd }) => scale({ rnd, min: 20 }),
+    triggers: ({ value }) => [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          health: value,
+          healthMax: value,
+        },
+      },
+    ],
+  },
+  {
     name: 'stamina',
+    tags: ['weapon', 'accessory', 'shield', 'food'],
     value: ({ rnd }) => scale({ rnd, min: 5 }),
     triggers: ({ value }) => [
       {
@@ -50,6 +68,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'staminaRegen',
+    tags: ['weapon', 'accessory', 'shield', 'food'],
     value: ({ rnd }) => scale({ rnd, min: 5 }),
     triggers: ({ value }) => [
       {
@@ -62,6 +81,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'critChance',
+    tags: ['weapon'],
     value: ({ rnd }) => scale({ rnd, min: 1 }),
     triggers: ({ value }) => [
       {
@@ -74,6 +94,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'block',
+    tags: ['shield', 'armor'],
     value: ({ rnd }) => scale({ rnd, min: 8 }),
     triggers: ({ value }) => [
       {
@@ -85,7 +106,21 @@ export const allAspectsRaw = [
     ],
   },
   {
+    name: 'blockItem',
+    tags: ['friend'],
+    value: ({ rnd }) => scale({ rnd, min: 16 }),
+    triggers: ({ value }) => [
+      {
+        type: 'startOfBattle',
+        statsSelf: {
+          block: value,
+        },
+      },
+    ],
+  },
+  {
     name: 'haste',
+    tags: ['food', 'accessory'],
     value: ({ rnd }) => scale({ rnd, min: 1 }),
     triggers: ({ value }) => [
       {
@@ -98,6 +133,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'hungry',
+    tags: ['farming'],
     value: ({ rnd }) => scale({ rnd, min: 2 }),
     triggers: ({ value }) => [
       {
@@ -110,6 +146,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'empower',
+    tags: ['weapon'],
     value: ({ rnd }) => scale({ rnd, min: 1 }),
     triggers: ({ value }) => [
       {
@@ -122,6 +159,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'thorns',
+    tags: ['shield', 'armor'],
     value: ({ rnd }) => scale({ rnd, min: 2 }),
     triggers: ({ value }) => [
       {
@@ -133,7 +171,21 @@ export const allAspectsRaw = [
     ],
   },
   {
+    name: 'thornsItem',
+    tags: ['friend'],
+    value: ({ rnd }) => scale({ rnd, min: 4 }),
+    triggers: ({ value }) => [
+      {
+        type: 'startOfBattle',
+        statsItem: {
+          thorns: value,
+        },
+      },
+    ],
+  },
+  {
     name: 'luck',
+    tags: ['weapon', 'accessory'],
     value: ({ rnd }) => scale({ rnd, min: 2 }),
     triggers: ({ value }) => [
       {
@@ -146,6 +198,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'critDamage',
+    tags: ['weapon', 'accessory'],
     value: ({ rnd }) => scale({ rnd, min: 4 }),
     triggers: ({ value }) => [
       {
@@ -158,6 +211,7 @@ export const allAspectsRaw = [
   },
   {
     name: 'lifeSteal',
+    tags: ['weapon', 'accessory'],
     value: ({ rnd }) => scale({ rnd, min: 4 }),
     triggers: ({ value }) => [
       {
