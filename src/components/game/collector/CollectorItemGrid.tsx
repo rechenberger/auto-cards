@@ -1,6 +1,11 @@
 import { SimpleParamSelect } from '@/components/simple/SimpleParamSelect'
 import { buttonVariants } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { Game } from '@/db/schema-zod'
 import { getAllItems } from '@/game/allItems'
 import { countifyItems } from '@/game/countifyItems'
@@ -8,8 +13,11 @@ import { gameAction } from '@/game/gameAction'
 import { orderItems } from '@/game/orderItems'
 import { allRarities } from '@/game/rarities'
 import { cn } from '@/lib/utils'
+import { ActionButton } from '@/super-action/button/ActionButton'
 import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { orderBy } from 'lodash-es'
+import { Star } from 'lucide-react'
+import { redirect } from 'next/navigation'
 import { Fragment } from 'react'
 import { ItemCard } from '../ItemCard'
 import { StatsDisplay } from '../StatsDisplay'
@@ -21,7 +29,10 @@ export const CollectorItemGrid = async ({
   searchParams,
 }: {
   game: Game
-  searchParams: Promise<{ tab?: 'inventory'; order?: 'rarity' | 'category' }>
+  searchParams: Promise<{
+    tab?: 'loadout' | 'inventory' | 'favorites'
+    order?: 'rarity' | 'category'
+  }>
 }) => {
   let loadoutItems = game.data.currentLoadout.items
 
@@ -29,9 +40,18 @@ export const CollectorItemGrid = async ({
 
   // const baseItems = loadoutItems.filter((item) => !item.id)
 
-  const { tab, order = 'rarity' } = await searchParams
+  const { tab = 'loadout', order = 'rarity' } = await searchParams
 
-  let itemsShown = tab === 'inventory' ? inventoryItems : loadoutItems
+  let itemsShown = tab === 'loadout' ? loadoutItems : inventoryItems
+
+  const hasAnyFavorite = inventoryItems.some((item) => item.favorite)
+  if (tab === 'favorites') {
+    itemsShown = itemsShown.filter((item) => item.favorite)
+    if (!itemsShown.length) {
+      redirect(`/game/${game.id}`)
+    }
+  }
+
   itemsShown = orderBy(itemsShown, (item) => item.name)
   itemsShown = countifyItems(await orderItems(itemsShown))
 
@@ -56,6 +76,9 @@ export const CollectorItemGrid = async ({
             component="tabs"
             options={[
               { value: null, label: 'Loadout' },
+              ...(hasAnyFavorite
+                ? [{ value: 'favorites', label: 'Favorites' }]
+                : []),
               { value: 'inventory', label: 'Inventory' },
             ]}
           />
@@ -101,48 +124,92 @@ export const CollectorItemGrid = async ({
                     // showPrice
                     priceAsWeight
                   />
-                  <ActionWrapper
-                    catchToast
-                    disabled={!selectable}
-                    action={async () => {
-                      'use server'
-                      return gameAction({
-                        gameId: game.id,
-                        action: async ({ ctx }) => {
-                          if (!selectable) {
-                            throw new Error('Item is not selectable')
-                          }
-                          if (inLoadout) {
-                            ctx.game.data.currentLoadout.items =
-                              ctx.game.data.currentLoadout.items.filter(
-                                (i) => i.id !== item.id,
-                              )
-                          } else {
-                            ctx.game.data.currentLoadout.items.push(item)
-                          }
-                        },
-                      })
-                    }}
+                  <div
+                    className={cn(
+                      'flex flex-row gap-1',
+                      !selectable && 'invisible',
+                    )}
                   >
-                    <div
-                      className={cn(
-                        buttonVariants({ variant: 'secondary', size: 'sm' }),
-                        'flex flex-row gap-2 items-center cursor-pointer',
-                        !selectable && 'invisible',
-                        !inLoadout && 'grayscale opacity-50',
-                        'text-xs',
-                      )}
+                    <ActionWrapper
+                      catchToast
+                      disabled={!selectable}
+                      action={async () => {
+                        'use server'
+                        return gameAction({
+                          gameId: game.id,
+                          action: async ({ ctx }) => {
+                            if (!selectable) {
+                              throw new Error('Item is not selectable')
+                            }
+                            if (inLoadout) {
+                              ctx.game.data.currentLoadout.items =
+                                ctx.game.data.currentLoadout.items.filter(
+                                  (i) => i.id !== item.id,
+                                )
+                            } else {
+                              ctx.game.data.currentLoadout.items.push(item)
+                            }
+                          },
+                        })
+                      }}
                     >
-                      <Checkbox checked={inLoadout} />
-                      {!!itemDef?.price && (
-                        <StatsDisplay
-                          stats={{ weight: itemDef.price }}
-                          showZero
+                      <div
+                        className={cn(
+                          buttonVariants({ variant: 'secondary', size: 'sm' }),
+                          'flex flex-row gap-2 items-center cursor-pointer',
+                          !inLoadout && 'grayscale opacity-50',
+                          'text-xs',
+                          'rounded-r-none',
+                        )}
+                      >
+                        <Checkbox checked={inLoadout} />
+                        {!!itemDef?.price && (
+                          <StatsDisplay
+                            stats={{ weight: itemDef.price }}
+                            showZero
+                            size="sm"
+                          />
+                        )}
+                      </div>
+                    </ActionWrapper>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <ActionButton
+                          variant={'secondary'}
+                          disabled={!selectable}
                           size="sm"
+                          className={cn(
+                            item.favorite && 'text-yellow-500',
+                            !item.favorite && 'grayscale opacity-50',
+                            'rounded-l-none',
+                          )}
+                          icon={<Star />}
+                          action={async () => {
+                            'use server'
+                            return gameAction({
+                              gameId: game.id,
+                              action: async ({ ctx }) => {
+                                const allItems = [
+                                  ...ctx.game.data.currentLoadout.items,
+                                  ...(ctx.game.data.inventory?.items ?? []),
+                                ]
+                                for (const i of allItems) {
+                                  if (i.id === item.id) {
+                                    i.favorite = !item.favorite
+                                  }
+                                }
+                              },
+                            })
+                          }}
                         />
-                      )}
-                    </div>
-                  </ActionWrapper>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {item.favorite
+                          ? 'Remove from favorites'
+                          : 'Add to favorites'}
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                 </div>
               </Fragment>
             )
