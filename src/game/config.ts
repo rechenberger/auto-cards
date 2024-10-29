@@ -35,3 +35,6 @@ export const SHOP_EFFECT_BOOST_MULTIPLIER = 2
 
 export const MAX_MATCH_MS = 1_000
 export const MAX_LOGS = 3_000
+
+export const COLLECTOR_PRICE_LIMIT = 100
+export const COLLECTOR_SAME_ITEM_LIMIT = 2

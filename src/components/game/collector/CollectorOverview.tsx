@@ -3,6 +3,7 @@ import { fontLore } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { CollectorAdminButtons } from './CollectorAdminButtons'
 import { CollectorItemGrid } from './CollectorItemGrid'
+import { CollectorLoadoutCheck } from './CollectorLoadoutCheck'
 
 export const CollectorOverview = ({ game }: { game: Game }) => {
   return (
@@ -12,6 +13,7 @@ export const CollectorOverview = ({ game }: { game: Game }) => {
           keep calm and collect
         </div>
         <CollectorAdminButtons game={game} />
+        <CollectorLoadoutCheck game={game} />
         <CollectorItemGrid game={game} />
       </div>
     </>
