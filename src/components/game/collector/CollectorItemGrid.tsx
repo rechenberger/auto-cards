@@ -1,3 +1,4 @@
+import { SimpleParamSelect } from '@/components/simple/SimpleParamSelect'
 import { buttonVariants } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Game } from '@/db/schema-zod'
@@ -22,9 +23,17 @@ export const CollectorItemGrid = async ({ game }: { game: Game }) => {
 
   return (
     <>
+      <SimpleParamSelect
+        paramKey="tab"
+        label="Tab"
+        options={[
+          { value: 'loadout', label: 'Loadout' },
+          { value: 'inventory', label: 'Inventory' },
+        ]}
+      />
       <div
         className={cn(
-          'flex-1 flex flex-row flex-wrap gap-1 justify-center items-start',
+          'flex-1 flex flex-row flex-wrap gap-2 justify-center items-start',
         )}
       >
         {itemsShown.map((item, idx) => {
