@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { capitalCase } from 'change-case'
 import { MatchViewFake } from '../MatchViewFake'
 import { CollectorAdminButtons } from './CollectorAdminButtons'
+import { NextRoundButtonCollector } from './NextRoundButtonCollector'
 
 export const CollectorDungeonMatch = async ({ game }: { game: Game }) => {
   if (!game.data.dungeon) {
@@ -15,7 +16,7 @@ export const CollectorDungeonMatch = async ({ game }: { game: Game }) => {
   const user: User | null = await getUserCached({ userId: game.userId })
   const dungeon = getDungeon(game.data.dungeon.name)
 
-  const roomLoadout = game.data.dungeon.room.loadout
+  const room = game.data.dungeon.room
   return (
     <>
       <div className="flex flex-col gap-4 items-center">
@@ -25,7 +26,7 @@ export const CollectorDungeonMatch = async ({ game }: { game: Game }) => {
         <CollectorAdminButtons game={game} />
         <SimpleDataCard data={game.data.dungeon} />
       </div>
-      {roomLoadout && (
+      {room.type === 'fight' && (
         <MatchViewFake
           game={game}
           seed={game.data.dungeon.room.seed}
@@ -35,10 +36,17 @@ export const CollectorDungeonMatch = async ({ game }: { game: Game }) => {
               user: user ?? undefined,
             },
             {
-              loadoutData: roomLoadout,
+              loadoutData: room.loadout,
             },
           ]}
         />
+      )}
+      {room.type === 'reward' && (
+        <>
+          <div>Reward</div>
+          <SimpleDataCard data={room.items} />
+          <NextRoundButtonCollector game={game} />
+        </>
       )}
     </>
   )
