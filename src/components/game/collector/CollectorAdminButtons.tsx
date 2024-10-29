@@ -3,7 +3,7 @@ import { gameAction } from '@/game/gameAction'
 import { allRarities } from '@/game/rarities'
 import { createSeed, rngItem } from '@/game/seed'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { Plus, Trash } from 'lucide-react'
+import { Plus, Swords, Trash } from 'lucide-react'
 import { generateCollectorItem } from './generateCollectorItem'
 
 export const CollectorAdminButtons = ({ game }: { game: Game }) => {
@@ -45,6 +45,23 @@ export const CollectorAdminButtons = ({ game }: { game: Game }) => {
                     name: 'hero',
                   },
                 ]
+              },
+            })
+          }}
+        />
+        <ActionButton
+          icon={<Swords />}
+          variant="outline"
+          action={async () => {
+            'use server'
+            return gameAction({
+              gameId: game.id,
+              action: async ({ ctx }) => {
+                ctx.game.data.dungeon = {
+                  name: 'adventureTrail',
+                  level: 1,
+                  room: 0,
+                }
               },
             })
           }}

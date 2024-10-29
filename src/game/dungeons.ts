@@ -1,5 +1,7 @@
 import { ItemData } from '@/components/game/ItemData'
 import { LoadoutData } from '@/db/schema-zod'
+import { map } from 'remeda'
+import { z } from 'zod'
 import { ItemName } from './allItems'
 import { SeedArray, rngFloat } from './seed'
 
@@ -51,7 +53,7 @@ const simpleRoomsToRooms = ({
 
 const allDungeonsRaw = [
   {
-    name: 'Adventure Trail',
+    name: 'adventureTrail',
     generate: ({ seed, level }) => {
       const simpleRooms: { monsters: ItemName[] }[] = [
         { monsters: ['scarecrow'] },
@@ -65,3 +67,21 @@ const allDungeonsRaw = [
     },
   },
 ] as const satisfies DungeonDefinitionRaw[]
+
+const allDungeonNames = map(allDungeonsRaw, (dungeon) => dungeon.name)
+export const DungeonName = z.enum(allDungeonNames)
+export type DungeonName = z.infer<typeof DungeonName>
+
+export type DungeonDefinition = DungeonDefinitionRaw & {
+  name: DungeonName
+}
+
+export const allDungeons: DungeonDefinition[] = allDungeonsRaw
+
+export const getDungeon = (name: DungeonName) => {
+  const dungeon = allDungeons.find((dungeon) => dungeon.name === name)
+  if (!dungeon) {
+    throw new Error(`Dungeon ${name} not found`)
+  }
+  return dungeon
+}
