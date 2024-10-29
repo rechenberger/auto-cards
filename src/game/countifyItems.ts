@@ -8,11 +8,16 @@ export const countifyItems = <
   },
 >(
   items: T[],
+  {
+    ignoreAspects = false,
+  }: {
+    ignoreAspects?: boolean
+  } = {},
 ) => {
   const itemsWithAspects: T[] = []
   let itemCounts: Record<string, number> = {}
   for (const item of items) {
-    if (item.aspects) {
+    if (item.aspects && !ignoreAspects) {
       itemsWithAspects.push(item)
     } else {
       itemCounts[item.name] = (itemCounts[item.name] || 0) + (item.count || 1)
