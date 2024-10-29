@@ -22,13 +22,14 @@ export const CollectorDungeonMatch = ({ game }: { game: Game }) => {
         </div>
         <CollectorAdminButtons game={game} />
         <SimpleDataCard data={game.data.dungeon} />
-        {roomLoadout && (
-          <MatchViewFake
-            seed={game.data.dungeon.room.seed}
-            loadouts={[game.data.currentLoadout, roomLoadout]}
-          />
-        )}
       </div>
+      {roomLoadout && (
+        <MatchViewFake
+          game={game}
+          seed={game.data.dungeon.room.seed}
+          loadouts={[game.data.currentLoadout, roomLoadout]}
+        />
+      )}
     </>
   )
 }

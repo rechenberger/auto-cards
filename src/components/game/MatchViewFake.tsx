@@ -1,4 +1,4 @@
-import { Match } from '@/db/schema-zod'
+import { Game, Match } from '@/db/schema-zod'
 import { LoadoutData } from '@/game/LoadoutData'
 import { GAME_VERSION } from '@/game/config'
 import { DefaultGameMode, GameMode } from '@/game/gameMode'
@@ -6,10 +6,12 @@ import { MatchParticipant } from './MatchParticipants'
 import { MatchView } from './MatchView'
 
 export const MatchViewFake = ({
+  game,
   seed,
   gameMode = DefaultGameMode,
   loadouts,
 }: {
+  game?: Game
   seed: string
   gameMode?: GameMode
   loadouts: LoadoutData[]
@@ -47,12 +49,13 @@ export const MatchViewFake = ({
       gameId: `g-${sideIdx}`,
       primaryMatchParticipationId: null,
       version: GAME_VERSION,
-      gameMode: DefaultGameMode,
+      gameMode,
     },
   }))
 
   return (
     <MatchView
+      game={game}
       match={match}
       forceParticipants={participants}
       // calculateChangemakers
