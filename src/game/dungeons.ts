@@ -22,9 +22,9 @@ type DungeonDefinitionRaw = {
   description: string
   levelMax: number
   levelOnlyOnce?: boolean
-  generate: (ctx: { seed: SeedArray; level: number }) => {
+  generate: (ctx: { seed: SeedArray; level: number }) => Promise<{
     rooms: DungeonRoom[]
-  }
+  }>
 }
 
 const simpleRoomsToRooms = ({
@@ -70,7 +70,7 @@ const allDungeonsRaw = [
       'A little training never hurt nobody. Play through this once and get some basic equipment.',
     levelMax: 5,
     levelOnlyOnce: true,
-    generate: ({ seed, level }) => {
+    generate: async ({ seed, level }) => {
       const simpleRooms: { monsters: ItemName[] }[] = [
         { monsters: ['scarecrow'] },
       ]
@@ -91,7 +91,7 @@ const allDungeonsRaw = [
     description:
       'An infinitely repeatable trail of adventure that leads to the greatest of treasures.',
     levelMax: 100,
-    generate: ({ seed, level }) => {
+    generate: async ({ seed, level }) => {
       const simpleRooms: { monsters: ItemName[] }[] = [
         { monsters: ['scarecrow'] },
         { monsters: ['wilma'] },

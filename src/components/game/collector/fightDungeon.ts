@@ -45,7 +45,7 @@ export const fightDungeon = async ({
   }
 
   const dungeon = getDungeon(name)
-  const generated = dungeon.generate({
+  const generated = await dungeon.generate({
     level,
     seed: [seed],
   })
