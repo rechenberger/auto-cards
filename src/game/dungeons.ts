@@ -1,7 +1,7 @@
 import { ItemData } from '@/components/game/ItemData'
-import { LoadoutData } from '@/db/schema-zod'
 import { map } from 'remeda'
 import { z } from 'zod'
+import { LoadoutData } from './LoadoutData'
 import { ItemName } from './allItems'
 import { SeedArray, rngFloat } from './seed'
 
@@ -43,7 +43,7 @@ const simpleRoomsToRooms = ({
 
     return {
       loadout: {
-        items: [...monsters],
+        items: [{ name: 'hero' }, ...monsters],
       },
     }
   })

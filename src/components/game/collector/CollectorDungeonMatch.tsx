@@ -4,6 +4,7 @@ import { getDungeon } from '@/game/dungeons'
 import { fontLore } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { capitalCase } from 'change-case'
+import { MatchViewFake } from '../MatchViewFake'
 import { CollectorAdminButtons } from './CollectorAdminButtons'
 
 export const CollectorDungeonMatch = ({ game }: { game: Game }) => {
@@ -11,6 +12,8 @@ export const CollectorDungeonMatch = ({ game }: { game: Game }) => {
     return null
   }
   const dungeon = getDungeon(game.data.dungeon.name)
+
+  const roomLoadout = game.data.dungeon.room.loadout
   return (
     <>
       <div className="flex flex-col gap-4 items-center">
@@ -19,6 +22,12 @@ export const CollectorDungeonMatch = ({ game }: { game: Game }) => {
         </div>
         <CollectorAdminButtons game={game} />
         <SimpleDataCard data={game.data.dungeon} />
+        {roomLoadout && (
+          <MatchViewFake
+            seed={game.data.dungeon.room.seed}
+            loadouts={[game.data.currentLoadout, roomLoadout]}
+          />
+        )}
       </div>
     </>
   )
