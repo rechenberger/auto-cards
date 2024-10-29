@@ -36,7 +36,7 @@ export type ItemCardProps = {
   game?: Game
   itemData: ItemData
   shopItem?: Game['data']['shopItems'][number] & { idx: number }
-  size?: '480' | '320' | '240' | '200' | '160' | '80'
+  size?: '480' | '320' | '240' | '200' | '160' | '120' | '80'
   className?: string
   tooltipOnClick?: boolean
   tooltipOnHover?: boolean
@@ -115,6 +115,10 @@ export const ItemCard = async (props: ItemCardProps) => {
           size === '80' && [
             'scale-[25%] -mx-[120px] -my-[187.5px]',
             onlyTop && '-my-[120px]',
+          ],
+          size === '120' && [
+            'scale-[37.5%] -mx-[100px] -my-[150px]',
+            onlyTop && '-my-[100px]',
           ],
           size === '160' && [
             'scale-[50%] -mx-[80px] -my-[125px]',

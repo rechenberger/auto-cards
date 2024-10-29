@@ -94,7 +94,7 @@ export const CollectorItemGrid = async ({
                 >
                   <ItemCard
                     itemData={item}
-                    size={'160'}
+                    size={tab === 'inventory' ? '120' : '160'}
                     onlyTop
                     tooltipOnClick
                     tooltipOnHover
