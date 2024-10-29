@@ -4,6 +4,7 @@ import { allRarities } from '@/game/rarities'
 import { createSeed, rngItem } from '@/game/seed'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { DoorOpen, Plus, Swords, Trash } from 'lucide-react'
+import { fightDungeon } from './fightDungeon'
 import { generateCollectorItem } from './generateCollectorItem'
 
 export const CollectorAdminButtons = ({ game }: { game: Game }) => {
@@ -56,13 +57,7 @@ export const CollectorAdminButtons = ({ game }: { game: Game }) => {
             'use server'
             return gameAction({
               gameId: game.id,
-              action: async ({ ctx }) => {
-                ctx.game.data.dungeon = {
-                  name: 'adventureTrail',
-                  level: 1,
-                  room: 0,
-                }
-              },
+              action: async ({ ctx }) => {},
             })
           }}
         />
@@ -74,7 +69,14 @@ export const CollectorAdminButtons = ({ game }: { game: Game }) => {
             return gameAction({
               gameId: game.id,
               action: async ({ ctx }) => {
-                ctx.game.data.dungeon = undefined
+                fightDungeon({
+                  game: ctx.game,
+                  dungeonInput: {
+                    name: 'adventureTrail',
+                    level: 1,
+                    seed: ctx.game.data.seed,
+                  },
+                })
               },
             })
           }}

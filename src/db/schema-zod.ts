@@ -1,8 +1,8 @@
 import { ItemData } from '@/components/game/ItemData'
+import { DungeonData } from '@/game/DungeonData'
 import { ItemName } from '@/game/allItems'
 import { ItemAspect } from '@/game/aspects'
 import { GAME_VERSION } from '@/game/config'
-import { DungeonName } from '@/game/dungeons'
 import { GameMode } from '@/game/gameMode'
 import { createSeed } from '@/game/seed'
 import { createSelectSchema } from 'drizzle-zod'
@@ -42,13 +42,7 @@ export const GameData = z.object({
     }),
   ),
   currentLoadout: LoadoutData,
-  dungeon: z
-    .object({
-      name: DungeonName,
-      level: z.number(),
-      room: z.number(),
-    })
-    .optional(),
+  dungeon: DungeonData.optional(),
 })
 export type GameData = z.infer<typeof GameData>
 

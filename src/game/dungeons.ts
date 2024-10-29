@@ -6,7 +6,7 @@ import { ItemName } from './allItems'
 import { SeedArray, rngFloat } from './seed'
 
 type DungeonRoom = {
-  loadout: LoadoutData
+  loadout?: LoadoutData
 }
 
 type DungeonDefinitionRaw = {
