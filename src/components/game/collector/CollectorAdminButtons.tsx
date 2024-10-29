@@ -45,11 +45,7 @@ export const CollectorAdminButtons = ({ game }: { game: Game }) => {
             return gameAction({
               gameId: game.id,
               action: async ({ ctx }) => {
-                ctx.game.data.currentLoadout.items = [
-                  {
-                    name: 'hero',
-                  },
-                ]
+                ctx.game.data.currentLoadout.items = []
                 ctx.game.data.inventory = {
                   items: [],
                 }
