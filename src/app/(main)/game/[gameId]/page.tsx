@@ -18,8 +18,10 @@ export const metadata: Metadata = {
 
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: Promise<{ gameId: string }>
+  searchParams: Promise<Record<string, string>>
 }) {
   const { gameId } = await params
   const userId = await getMyUserIdOrLogin()
@@ -37,7 +39,7 @@ export default async function Page({
   }
 
   if (game.gameMode === 'collector') {
-    return <CollectorGamePage game={game} />
+    return <CollectorGamePage game={game} searchParams={searchParams} />
   }
 
   if (game.data.roundNo >= NO_OF_ROUNDS) {

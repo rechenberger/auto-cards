@@ -10,7 +10,13 @@ import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { Fragment } from 'react'
 import { ItemCard } from '../ItemCard'
 
-export const CollectorItemGrid = async ({ game }: { game: Game }) => {
+export const CollectorItemGrid = async ({
+  game,
+  searchParams,
+}: {
+  game: Game
+  searchParams: Promise<{ tab?: 'inventory' }>
+}) => {
   let loadoutItems = game.data.currentLoadout.items
   loadoutItems = countifyItems(await orderItems(loadoutItems))
 
@@ -19,15 +25,17 @@ export const CollectorItemGrid = async ({ game }: { game: Game }) => {
 
   const baseItems = loadoutItems.filter((item) => !item.id)
 
-  const itemsShown = [...baseItems, ...inventoryItems]
+  const { tab } = await searchParams
+  const itemsShown =
+    tab === 'inventory' ? [...baseItems, ...inventoryItems] : loadoutItems
 
   return (
     <>
       <SimpleParamSelect
         paramKey="tab"
-        label="Tab"
+        component="tabs"
         options={[
-          { value: 'loadout', label: 'Loadout' },
+          { value: null, label: 'Loadout' },
           { value: 'inventory', label: 'Inventory' },
         ]}
       />

@@ -5,7 +5,13 @@ import { CollectorAdminButtons } from './CollectorAdminButtons'
 import { CollectorItemGrid } from './CollectorItemGrid'
 import { CollectorLoadoutCheck } from './CollectorLoadoutCheck'
 
-export const CollectorOverview = ({ game }: { game: Game }) => {
+export const CollectorOverview = ({
+  game,
+  searchParams,
+}: {
+  game: Game
+  searchParams: Promise<Record<string, string>>
+}) => {
   return (
     <>
       <div className="flex flex-col gap-4 items-center">
@@ -14,7 +20,7 @@ export const CollectorOverview = ({ game }: { game: Game }) => {
         </div>
         <CollectorAdminButtons game={game} />
         <CollectorLoadoutCheck game={game} />
-        <CollectorItemGrid game={game} />
+        <CollectorItemGrid game={game} searchParams={searchParams} />
       </div>
     </>
   )
