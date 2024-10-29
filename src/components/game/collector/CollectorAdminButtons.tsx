@@ -50,6 +50,9 @@ export const CollectorAdminButtons = ({ game }: { game: Game }) => {
                     name: 'hero',
                   },
                 ]
+                ctx.game.data.inventory = {
+                  items: [],
+                }
               },
             })
           }}
