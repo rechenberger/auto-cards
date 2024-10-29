@@ -169,21 +169,21 @@ export const ItemCard = async (props: ItemCardProps) => {
               </div>
             </div>
             <div className="absolute top-6 inset-x-0 flex flex-col items-end gap-1">
-              {!!item.tags?.length && (
-                <ItemCardChip className="relative z-10">
-                  <div className="">
-                    {item.tags?.map((t) => capitalCase(t)).join(', ')}
-                  </div>
-                  {bgShowsRarity && (
-                    <div
-                      className={cn(
-                        'absolute inset-0 -z-10 border-r-2 border-black rounded-l-full',
-                        tag.bgClass,
-                      )}
-                    />
-                  )}
-                </ItemCardChip>
-              )}
+              {item.tags?.map((tag) => (
+                <Fragment key={tag}>
+                  <ItemCardChip className="relative z-10">
+                    {capitalCase(tag)}
+                    {bgShowsRarity && (
+                      <div
+                        className={cn(
+                          'absolute inset-0 -z-10 border-r-2 border-black rounded-l-full',
+                          getTagDefinition(tag).bgClass,
+                        )}
+                      />
+                    )}
+                  </ItemCardChip>
+                </Fragment>
+              ))}
               {!!rarity && !bgShowsRarity && (
                 <ItemCardChip
                   className={cn(!bgShowsRarity && rarity.textClass)}
