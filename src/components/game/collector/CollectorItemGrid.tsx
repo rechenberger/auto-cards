@@ -2,6 +2,7 @@ import { SimpleParamSelect } from '@/components/simple/SimpleParamSelect'
 import { buttonVariants } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Game } from '@/db/schema-zod'
+import { getAllItems } from '@/game/allItems'
 import { countifyItems } from '@/game/countifyItems'
 import { gameAction } from '@/game/gameAction'
 import { orderItems } from '@/game/orderItems'
@@ -11,6 +12,7 @@ import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { orderBy } from 'lodash-es'
 import { Fragment } from 'react'
 import { ItemCard } from '../ItemCard'
+import { StatsDisplay } from '../StatsDisplay'
 import { CollectorLoadoutCheck } from './CollectorLoadoutCheck'
 import { checkCollectorLoadout } from './checkCollectorLoadout'
 
@@ -43,6 +45,8 @@ export const CollectorItemGrid = async ({
     loadout: game.data.currentLoadout,
   })
 
+  const allItems = await getAllItems()
+
   return (
     <>
       <div className="flex flex-col gap-2">
@@ -69,7 +73,7 @@ export const CollectorItemGrid = async ({
         </div>
         <div
           className={cn(
-            'flex-1 flex flex-row flex-wrap gap-2 justify-center items-start',
+            'flex-1 flex flex-row flex-wrap gap-x-2 gap-y-8 justify-center items-start',
           )}
         >
           {itemsShown.map((item, idx) => {
@@ -79,11 +83,12 @@ export const CollectorItemGrid = async ({
               : true
             const tooMany =
               inLoadout && check.countTooMany.some((i) => i.name === item.name)
+            const itemDef = allItems.find((i) => i.name === item.name)
             return (
               <Fragment key={idx}>
                 <div
                   className={cn(
-                    'flex flex-col items-center gap-1',
+                    'flex flex-col items-center gap-2',
                     tooMany && 'ring ring-red-500 rounded-md',
                   )}
                 >
@@ -92,7 +97,7 @@ export const CollectorItemGrid = async ({
                     size={'160'}
                     onlyTop={false}
                     tooltipOnClick
-                    showPrice
+                    // showPrice
                     priceAsWeight
                   />
                   <ActionWrapper
@@ -120,13 +125,22 @@ export const CollectorItemGrid = async ({
                   >
                     <div
                       className={cn(
-                        buttonVariants({ variant: 'outline', size: 'sm' }),
-                        'flex flex-row gap-1 items-center cursor-pointer',
+                        buttonVariants({ variant: 'secondary', size: 'sm' }),
+                        'flex flex-row gap-2 items-center cursor-pointer',
                         !selectable && 'invisible',
+                        !inLoadout && 'grayscale',
+                        'text-xs',
                       )}
                     >
                       <Checkbox checked={inLoadout} />
-                      {/* {inLoadout ? 'remove' : 'add'} */}
+                      {!!itemDef?.price && (
+                        <StatsDisplay
+                          stats={{ weight: itemDef.price }}
+                          showZero
+                          disableTooltip
+                          size="sm"
+                        />
+                      )}
                     </div>
                   </ActionWrapper>
                 </div>
