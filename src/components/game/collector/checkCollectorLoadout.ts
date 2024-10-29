@@ -1,11 +1,15 @@
-import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
 import { COLLECTOR_PRICE_LIMIT, COLLECTOR_SAME_ITEM_LIMIT } from '@/game/config'
+import { LoadoutData } from '@/game/LoadoutData'
 import { countBy, map, sumBy } from 'lodash-es'
 
-export const checkCollectorLoadout = async ({ game }: { game: Game }) => {
+export const checkCollectorLoadout = async ({
+  loadout,
+}: {
+  loadout: LoadoutData
+}) => {
   const items = await Promise.all(
-    game.data.currentLoadout.items.map(async (item) => ({
+    loadout.items.map(async (item) => ({
       ...item,
       def: await getItemByName(item.name),
     })),

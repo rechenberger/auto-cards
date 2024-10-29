@@ -29,7 +29,7 @@ export const CollectorAdminButtons = ({ game }: { game: Game }) => {
                   seed: [createSeed()],
                   rarity,
                 })
-                addCollectorItem({
+                await addCollectorItem({
                   game: ctx.game,
                   item,
                 })
@@ -65,7 +65,7 @@ export const CollectorAdminButtons = ({ game }: { game: Game }) => {
             return gameAction({
               gameId: game.id,
               action: async ({ ctx }) => {
-                fightDungeon({
+                await fightDungeon({
                   game: ctx.game,
                   dungeonInput: {
                     name: 'adventureTrail',

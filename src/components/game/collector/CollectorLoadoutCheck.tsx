@@ -7,7 +7,9 @@ import { Fragment } from 'react'
 import { checkCollectorLoadout } from './checkCollectorLoadout'
 
 export const CollectorLoadoutCheck = async ({ game }: { game: Game }) => {
-  const check = await checkCollectorLoadout({ game })
+  const check = await checkCollectorLoadout({
+    loadout: game.data.currentLoadout,
+  })
   return (
     <>
       <div className="flex flex-col gap-2">

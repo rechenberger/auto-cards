@@ -24,7 +24,7 @@ export const NextRoundButtonCollector = ({ game }: { game: Game }) => {
             checkUpdatedAt: game.updatedAt,
             action: async ({ ctx }) => {
               if (status === 'active') {
-                fightDungeon({
+                await fightDungeon({
                   game: ctx.game,
                   roomIdx: dungeonData.room.idx + 1,
                 })

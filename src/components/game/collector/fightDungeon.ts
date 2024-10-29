@@ -5,7 +5,7 @@ import { generateMatch } from '@/game/generateMatch'
 import { seedToString } from '@/game/seed'
 import { addCollectorItem } from './addCollectorItem'
 
-export const fightDungeon = ({
+export const fightDungeon = async ({
   game,
   dungeonInput = game.data.dungeon,
   roomIdx = 0,
@@ -60,7 +60,7 @@ export const fightDungeon = ({
 
   if (room.type === 'reward') {
     for (const item of room.items) {
-      addCollectorItem({
+      await addCollectorItem({
         game,
         item,
       })
