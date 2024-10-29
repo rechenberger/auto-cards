@@ -3,7 +3,7 @@ import { getMyUserIdOrLogin } from '@/auth/getMyUser'
 import { EndOfGameView } from '@/components/game/EndOfGameView'
 import { MatchView } from '@/components/game/MatchView'
 import { ShopView } from '@/components/game/ShopView'
-import { CollectorOverview } from '@/components/game/collector/CollectorOverview'
+import { CollectorGamePage } from '@/components/game/collector/CollectorGamePage'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { GAME_VERSION, NO_OF_ROUNDS } from '@/game/config'
@@ -36,6 +36,10 @@ export default async function Page({
     return <EndOfGameView game={game} oldVersion />
   }
 
+  if (game.gameMode === 'collector') {
+    return <CollectorGamePage game={game} />
+  }
+
   if (game.data.roundNo >= NO_OF_ROUNDS) {
     return <EndOfGameView game={game} />
   }
@@ -57,10 +61,6 @@ export default async function Page({
 
   if (currentMatch) {
     return <MatchView game={game} match={currentMatch} />
-  }
-
-  if (game.gameMode === 'collector') {
-    return <CollectorOverview game={game} />
   }
 
   return (
