@@ -11,7 +11,7 @@ import {
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { getUserName } from '@/game/getUserName'
-import { desc } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
 
@@ -26,6 +26,7 @@ const getGames = async () => {
     with: {
       user: true,
     },
+    where: eq(schema.game.gameMode, 'shopper'), // TODO: index
   })
 }
 type Game = Awaited<ReturnType<typeof getGames>>[number]
