@@ -6,6 +6,7 @@ import { sendDiscordMessage } from '@/lib/discord'
 import { typedParse } from '@/lib/typedParse'
 import { createId } from '@paralleldrive/cuid2'
 import { first } from 'lodash-es'
+import { startingDungeonAccesses } from './DungeonAccess'
 import { GameData } from './GameData'
 import { GAME_VERSION } from './config'
 import { DefaultGameMode, GameMode } from './gameMode'
@@ -44,6 +45,8 @@ export const createGame = async ({
               ]
             : [],
       },
+      dungeonAccesses:
+        gameMode === 'collector' ? startingDungeonAccesses : undefined,
     }),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),

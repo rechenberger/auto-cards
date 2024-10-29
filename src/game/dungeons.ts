@@ -19,6 +19,8 @@ type DungeonRoom = z.infer<typeof DungeonRoom>
 
 type DungeonDefinitionRaw = {
   name: string
+  levelMax?: number
+  levelAutoIncrement?: boolean
   generate: (ctx: { seed: SeedArray; level: number }) => {
     rooms: DungeonRoom[]
   }
@@ -61,6 +63,26 @@ const simpleRoomsToRooms = ({
 }
 
 const allDungeonsRaw = [
+  {
+    name: 'trainingGrounds',
+    levelMax: 5,
+    levelAutoIncrement: true,
+    generate: ({ seed, level }) => {
+      const simpleRooms: { monsters: ItemName[] }[] = [
+        { monsters: ['scarecrow'] },
+      ]
+      const rooms: DungeonRoom[] = [
+        ...simpleRoomsToRooms({ simpleRooms, seed, level }),
+        {
+          type: 'reward',
+          items: [{ name: 'woodenSword', aspects: [], rarity: 'common' }],
+        },
+      ]
+      return {
+        rooms,
+      }
+    },
+  },
   {
     name: 'adventureTrail',
     generate: ({ seed, level }) => {

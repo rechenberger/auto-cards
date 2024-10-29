@@ -4,6 +4,7 @@ import { ItemName } from '@/game/allItems'
 import { ItemAspect } from '@/game/aspects'
 import { GAME_VERSION } from '@/game/config'
 import z from 'zod'
+import { DungeonAccess } from './DungeonAccess'
 import { LoadoutData } from './LoadoutData'
 import { createSeed } from './seed'
 
@@ -30,5 +31,6 @@ export const GameData = z.object({
     })
     .optional(),
   dungeon: DungeonData.optional(),
+  dungeonAccesses: z.array(DungeonAccess).optional(),
 })
 export type GameData = z.infer<typeof GameData>
