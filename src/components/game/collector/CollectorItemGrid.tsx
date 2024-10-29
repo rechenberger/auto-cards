@@ -137,7 +137,6 @@ export const CollectorItemGrid = async ({
                         <StatsDisplay
                           stats={{ weight: itemDef.price }}
                           showZero
-                          disableTooltip
                           size="sm"
                         />
                       )}

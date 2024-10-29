@@ -262,7 +262,7 @@ const otherStats = [
   {
     name: 'weight',
     icon: Weight,
-    bgClass: 'bg-yellow-800',
+    bgClass: 'bg-amber-600',
     tooltip: `Weight of the item. You can only carry a total of ${COLLECTOR_PRICE_LIMIT} weight.`,
   },
 ] as const satisfies StatDefinitionPre[]
