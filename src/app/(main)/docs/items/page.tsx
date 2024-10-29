@@ -56,6 +56,7 @@ export default async function Page({
           paramKey="tag"
           label="Tag"
           nullLabel="All Tags"
+          component="dropdown"
         />
         <SimpleParamSelect
           options={allRarities.map((rarity) => ({
@@ -65,6 +66,7 @@ export default async function Page({
           paramKey="rarity"
           label="Rarity"
           nullLabel="All Rarities"
+          component="dropdown"
         />
         <ThemeSwitchButton />
       </div>
