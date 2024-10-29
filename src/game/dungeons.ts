@@ -76,16 +76,47 @@ const allDungeonsRaw: DungeonDefinition[] = [
     levelMax: 5,
     levelOnlyOnce: true,
     generate: async ({ game, seed, level }) => {
-      const simpleRooms: { monsters: ItemName[] }[] = [
-        { monsters: ['scarecrow'] },
-      ]
+      const loadout: LoadoutData = {
+        items: [{ name: 'hero' }],
+      }
+      if (level >= 2) {
+        loadout.items.push({
+          name: 'woodenSword',
+          rarity: 'common',
+          aspects: [],
+        })
+      }
+      if (level >= 3) {
+        loadout.items.push({
+          name: 'woodenBuckler',
+          rarity: 'common',
+          aspects: [],
+        })
+      }
+      if (level >= 4) {
+        loadout.items.push({
+          name: 'leatherArmor',
+          rarity: 'common',
+          aspects: [],
+        })
+      }
+      if (level >= 5) {
+        loadout.items.push(
+          { name: 'beer', rarity: 'common', aspects: [] },
+          { name: 'beerFest', rarity: 'common', aspects: [] },
+        )
+      }
+
       const reward = await generateCollectorItem({
         game,
         seed,
         rarity: level === 5 ? 'uncommon' : 'common',
       })
       const rooms: DungeonRoom[] = [
-        ...simpleRoomsToRooms({ simpleRooms, seed, level }),
+        {
+          type: 'fight',
+          loadout,
+        },
         {
           type: 'reward',
           items: [reward],
