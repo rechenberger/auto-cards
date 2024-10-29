@@ -128,7 +128,7 @@ export const CollectorItemGrid = async ({
                         buttonVariants({ variant: 'secondary', size: 'sm' }),
                         'flex flex-row gap-2 items-center cursor-pointer',
                         !selectable && 'invisible',
-                        !inLoadout && 'grayscale',
+                        !inLoadout && 'grayscale opacity-50',
                         'text-xs',
                       )}
                     >
