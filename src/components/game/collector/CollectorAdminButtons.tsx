@@ -20,19 +20,22 @@ export const CollectorAdminButtons = ({ game }: { game: Game }) => {
             return gameAction({
               gameId: game.id,
               action: async ({ ctx }) => {
-                const rarity = rngItem({
-                  seed: [createSeed()],
-                  items: allRarities,
-                })
-                const item = await generateCollectorItem({
-                  game,
-                  seed: [createSeed()],
-                  rarity,
-                })
-                await addCollectorItem({
-                  game: ctx.game,
-                  item,
-                })
+                const noOfItems = 10
+                for (let i = 0; i < noOfItems; i++) {
+                  const rarity = rngItem({
+                    seed: [createSeed()],
+                    items: allRarities,
+                  })
+                  const item = await generateCollectorItem({
+                    game,
+                    seed: [createSeed()],
+                    rarity,
+                  })
+                  await addCollectorItem({
+                    game: ctx.game,
+                    item,
+                  })
+                }
               },
             })
           }}
