@@ -37,7 +37,7 @@ export const fightDungeon = ({
     won: true,
   }
 
-  if (room.loadout) {
+  if (room.type === 'fight') {
     const matchReport = generateMatch({
       participants: [
         {

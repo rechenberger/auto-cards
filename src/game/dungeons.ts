@@ -5,9 +5,17 @@ import { LoadoutData } from './LoadoutData'
 import { ItemName } from './allItems'
 import { SeedArray, rngFloat } from './seed'
 
-type DungeonRoom = {
-  loadout?: LoadoutData
-}
+export const DungeonRoom = z.discriminatedUnion('type', [
+  z.object({
+    type: z.literal('fight'),
+    loadout: LoadoutData,
+  }),
+  z.object({
+    type: z.literal('reward'),
+    items: z.array(ItemData),
+  }),
+])
+type DungeonRoom = z.infer<typeof DungeonRoom>
 
 type DungeonDefinitionRaw = {
   name: string
@@ -42,6 +50,7 @@ const simpleRoomsToRooms = ({
     )
 
     return {
+      type: 'fight',
       loadout: {
         items: [{ name: 'hero' }, ...monsters],
       },
@@ -60,7 +69,13 @@ const allDungeonsRaw = [
         { monsters: ['wilma'] },
         { monsters: ['scarecrow', 'wilma'] },
       ]
-      const rooms = simpleRoomsToRooms({ simpleRooms, seed, level })
+      const rooms: DungeonRoom[] = [
+        ...simpleRoomsToRooms({ simpleRooms, seed, level }),
+        {
+          type: 'reward',
+          items: [{ name: 'banana', aspects: [], rarity: 'common' }],
+        },
+      ]
       return {
         rooms,
       }
