@@ -5,8 +5,10 @@ import { Game } from '@/db/schema-zod'
 import { countifyItems } from '@/game/countifyItems'
 import { gameAction } from '@/game/gameAction'
 import { orderItems } from '@/game/orderItems'
+import { allRarities } from '@/game/rarities'
 import { cn } from '@/lib/utils'
 import { ActionWrapper } from '@/super-action/button/ActionWrapper'
+import { orderBy } from 'lodash-es'
 import { Fragment } from 'react'
 import { ItemCard } from '../ItemCard'
 
@@ -15,19 +17,26 @@ export const CollectorItemGrid = async ({
   searchParams,
 }: {
   game: Game
-  searchParams: Promise<{ tab?: 'inventory' }>
+  searchParams: Promise<{ tab?: 'inventory'; order?: 'rarity' | 'category' }>
 }) => {
   let loadoutItems = game.data.currentLoadout.items
-  loadoutItems = countifyItems(await orderItems(loadoutItems))
 
   let inventoryItems = game.data.inventory?.items ?? []
-  inventoryItems = countifyItems(await orderItems(inventoryItems))
 
   const baseItems = loadoutItems.filter((item) => !item.id)
 
-  const { tab } = await searchParams
-  const itemsShown =
+  const { tab, order = 'rarity' } = await searchParams
+
+  let itemsShown =
     tab === 'inventory' ? [...baseItems, ...inventoryItems] : loadoutItems
+  itemsShown = orderBy(itemsShown, (item) => item.name)
+  itemsShown = countifyItems(await orderItems(itemsShown))
+
+  if (order === 'rarity') {
+    itemsShown = orderBy(itemsShown, (item) =>
+      item.rarity ? -1 * allRarities.indexOf(item.rarity) : -Infinity,
+    )
+  }
 
   return (
     <>
@@ -39,6 +48,16 @@ export const CollectorItemGrid = async ({
             options={[
               { value: null, label: 'Loadout' },
               { value: 'inventory', label: 'Inventory' },
+            ]}
+          />
+          <div className="flex-1" />
+          <SimpleParamSelect
+            paramKey="order"
+            component="dropdown"
+            label="Order By"
+            options={[
+              { value: null, label: 'By Rarity' },
+              { value: 'category', label: 'By Category' },
             ]}
           />
         </div>
