@@ -12,6 +12,7 @@ import { orderBy } from 'lodash-es'
 import { Fragment } from 'react'
 import { ItemCard } from '../ItemCard'
 import { CollectorLoadoutCheck } from './CollectorLoadoutCheck'
+import { checkCollectorLoadout } from './checkCollectorLoadout'
 
 export const CollectorItemGrid = async ({
   game,
@@ -37,6 +38,10 @@ export const CollectorItemGrid = async ({
       item.rarity ? -1 * allRarities.indexOf(item.rarity) : -Infinity,
     )
   }
+
+  const check = await checkCollectorLoadout({
+    loadout: game.data.currentLoadout,
+  })
 
   return (
     <>
@@ -72,9 +77,16 @@ export const CollectorItemGrid = async ({
             const inLoadout = selectable
               ? loadoutItems.some((i) => i.id === item.id)
               : true
+            const tooMany =
+              inLoadout && check.countTooMany.some((i) => i.name === item.name)
             return (
               <Fragment key={idx}>
-                <div className="flex flex-col items-center gap-1">
+                <div
+                  className={cn(
+                    'flex flex-col items-center gap-1',
+                    tooMany && 'ring ring-red-500 rounded-md',
+                  )}
+                >
                   <ItemCard
                     itemData={item}
                     size={'160'}
