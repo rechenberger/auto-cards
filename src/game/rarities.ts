@@ -33,7 +33,7 @@ export const allRarityDefinitions = [
     name: 'epic',
     textClass: 'text-purple-500',
     ringClass: 'ring-purple-500',
-    bgClass: 'bg-gradient-to-br from-pink-600/80 to-purple-600/80',
+    bgClass: 'bg-gradient-to-br from-red-600/80 to-purple-600/80',
     aspects: {
       normal: 3,
     },
