@@ -40,6 +40,10 @@ export const CollectorAdminButtons = ({ game }: { game: Game }) => {
         <ActionButton
           icon={<Trash />}
           variant="outline"
+          askForConfirmation={{
+            title: 'Reset Game?',
+            content: 'Loose all items and start over?',
+          }}
           action={async () => {
             'use server'
             return gameAction({
