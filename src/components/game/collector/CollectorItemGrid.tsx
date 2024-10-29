@@ -1,9 +1,11 @@
+import { buttonVariants } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Game } from '@/db/schema-zod'
 import { countifyItems } from '@/game/countifyItems'
 import { gameAction } from '@/game/gameAction'
 import { orderItems } from '@/game/orderItems'
 import { cn } from '@/lib/utils'
-import { ActionButton } from '@/super-action/button/ActionButton'
+import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { Fragment } from 'react'
 import { ItemCard } from '../ItemCard'
 
@@ -39,9 +41,7 @@ export const CollectorItemGrid = async ({ game }: { game: Game }) => {
                   onlyTop={false}
                   tooltipOnClick
                 />
-                <ActionButton
-                  variant="outline"
-                  hideIcon
+                <ActionWrapper
                   catchToast
                   disabled={!selectable}
                   action={async () => {
@@ -64,8 +64,17 @@ export const CollectorItemGrid = async ({ game }: { game: Game }) => {
                     })
                   }}
                 >
-                  {inLoadout ? 'remove' : 'add'}
-                </ActionButton>
+                  <div
+                    className={cn(
+                      buttonVariants({ variant: 'outline', size: 'sm' }),
+                      'flex flex-row gap-1 items-center cursor-pointer',
+                      !selectable && 'invisible',
+                    )}
+                  >
+                    <Checkbox checked={inLoadout} />
+                    {/* {inLoadout ? 'remove' : 'add'} */}
+                  </div>
+                </ActionWrapper>
               </div>
             </Fragment>
           )
