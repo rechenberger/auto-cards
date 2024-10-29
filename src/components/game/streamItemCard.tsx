@@ -20,6 +20,7 @@ export const streamItemCard = async (props: ItemCardProps) => {
                 {...props}
                 size="320"
                 tooltipOnClick={false}
+                tooltipOnHover={false}
                 showPrice
               />
             </div>
