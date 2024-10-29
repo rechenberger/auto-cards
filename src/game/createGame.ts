@@ -35,11 +35,14 @@ export const createGame = async ({
       seed: liveMatch?.data.seed,
       shopItems: [],
       currentLoadout: {
-        items: [
-          {
-            name: 'hero',
-          },
-        ],
+        items:
+          gameMode === 'shopper'
+            ? [
+                {
+                  name: 'hero',
+                },
+              ]
+            : [],
       },
     }),
     createdAt: new Date().toISOString(),
