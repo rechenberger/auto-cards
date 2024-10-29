@@ -183,7 +183,11 @@ export const CollectorItemGrid = async ({
                             !item.favorite && 'grayscale opacity-50',
                             'rounded-l-none',
                           )}
-                          icon={<Star />}
+                          icon={
+                            <Star
+                              fill={item.favorite ? 'currentColor' : undefined}
+                            />
+                          }
                           action={async () => {
                             'use server'
                             return gameAction({
