@@ -8,7 +8,6 @@ import { ThemeId, fallbackThemeId, getThemeDefinition } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { find, map, take } from 'lodash-es'
 import { Fragment } from 'react'
-import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 import { ItemCard } from './ItemCard'
 import { MatchCardOverlay } from './MatchCardOverlay'
 import { MatchCardTimer } from './MatchCardTimer'
@@ -57,59 +56,34 @@ export const MatchCards = async ({
 
           return (
             <Fragment key={item.name}>
-              <Tooltip>
-                <TooltipTrigger
-                  className={cn(
-                    isBig && 'col-span-2 row-span-2',
-                    isBig ? 'm-2 scale-[105%]' : 'm-1',
-                    'relative',
-                  )}
-                  asChild
-                >
-                  <div>
-                    <ItemCard
-                      game={game}
-                      itemData={item}
-                      size={isBig ? '160' : '80'}
-                      changemaker={changemaker}
-                      tooltipOnClick
-                      themeId={themeId}
-                      itemIdx={itemIdx}
-                      sideIdx={sideIdx}
-                      onlyTop
-                    />
-                    {hasInterval && (
-                      <MatchCardTimer sideIdx={sideIdx} itemIdx={itemIdx} />
-                    )}
-                    <MatchCardOverlay
-                      sideIdx={sideIdx}
-                      itemIdx={itemIdx}
-                      theme={theme}
-                    />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent
-                  className="p-0 border-none bg-transparent rounded-xl"
-                  side={sideIdx === 0 ? 'right' : 'left'}
-                >
-                  <ItemCard
-                    game={game}
-                    itemData={item}
-                    size="320"
-                    themeId={themeId}
-                    itemIdx={itemIdx}
-                    sideIdx={sideIdx}
-                  />
-
-                  <div className="absolute -bottom-6 flex flex-col items-center inset-x-0">
-                    {changemaker && (
-                      <div className="bg-[#313130] text-white px-4 py-1 rounded-b-md">
-                        Necessity: {Math.round(changemaker.necessity * 100)}%
-                      </div>
-                    )}
-                  </div>
-                </TooltipContent>
-              </Tooltip>
+              <div
+                className={cn(
+                  isBig && 'col-span-2 row-span-2',
+                  isBig ? 'm-2 scale-[105%]' : 'm-1',
+                  'relative',
+                )}
+              >
+                <ItemCard
+                  game={game}
+                  itemData={item}
+                  size={isBig ? '160' : '80'}
+                  changemaker={changemaker}
+                  tooltipOnClick
+                  tooltipOnHover
+                  themeId={themeId}
+                  itemIdx={itemIdx}
+                  sideIdx={sideIdx}
+                  onlyTop
+                />
+                {hasInterval && (
+                  <MatchCardTimer sideIdx={sideIdx} itemIdx={itemIdx} />
+                )}
+                <MatchCardOverlay
+                  sideIdx={sideIdx}
+                  itemIdx={itemIdx}
+                  theme={theme}
+                />
+              </div>
             </Fragment>
           )
         })}

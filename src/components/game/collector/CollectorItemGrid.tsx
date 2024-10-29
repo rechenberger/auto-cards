@@ -73,7 +73,7 @@ export const CollectorItemGrid = async ({
         </div>
         <div
           className={cn(
-            'flex-1 flex flex-row flex-wrap gap-x-2 gap-y-8 justify-center items-start',
+            'flex-1 flex flex-row flex-wrap gap-x-2 gap-y-6 justify-center items-start',
           )}
         >
           {itemsShown.map((item, idx) => {
@@ -95,8 +95,9 @@ export const CollectorItemGrid = async ({
                   <ItemCard
                     itemData={item}
                     size={'160'}
-                    onlyTop={false}
+                    onlyTop
                     tooltipOnClick
+                    tooltipOnHover
                     // showPrice
                     priceAsWeight
                   />

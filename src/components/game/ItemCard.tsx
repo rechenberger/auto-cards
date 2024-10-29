@@ -1,3 +1,8 @@
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
 import { calcAspects } from '@/game/aspects'
@@ -34,6 +39,7 @@ export type ItemCardProps = {
   size?: '480' | '320' | '240' | '200' | '160' | '80'
   className?: string
   tooltipOnClick?: boolean
+  tooltipOnHover?: boolean
   changemaker?: Changemaker
   themeId?: ThemeId
   sideIdx?: number
@@ -53,6 +59,7 @@ export const ItemCard = async (props: ItemCardProps) => {
     size = '200',
     className,
     tooltipOnClick,
+    tooltipOnHover,
     changemaker,
     themeId,
     sideIdx,
@@ -87,7 +94,7 @@ export const ItemCard = async (props: ItemCardProps) => {
 
   const aspects = itemData.aspects ? calcAspects(itemData.aspects) : []
 
-  const inner = (
+  let card = (
     <>
       {/* <HoverCard>
         <HoverCardTrigger> */}
@@ -356,7 +363,7 @@ export const ItemCard = async (props: ItemCardProps) => {
   )
 
   if (tooltipOnClick) {
-    return (
+    card = (
       <>
         <ActionWrapper
           action={async () => {
@@ -364,11 +371,40 @@ export const ItemCard = async (props: ItemCardProps) => {
             return streamItemCard({ ...props, onlyTop: false })
           }}
         >
-          <div className="cursor-pointer flex">{inner}</div>
+          <div className="flex">{card}</div>
         </ActionWrapper>
       </>
     )
   }
 
-  return inner
+  if (tooltipOnHover) {
+    card = (
+      <>
+        <Tooltip>
+          <TooltipTrigger asChild>{card}</TooltipTrigger>
+          <TooltipContent
+            className="p-0 border-none bg-transparent rounded-xl"
+            side={sideIdx === 0 ? 'right' : 'left'}
+          >
+            <ItemCard
+              {...props}
+              size="320"
+              tooltipOnHover={false}
+              tooltipOnClick={false}
+              onlyTop={false}
+            />
+            {changemaker && (
+              <div className="absolute -bottom-6 flex flex-col items-center inset-x-0">
+                <div className="bg-[#313130] text-white px-4 py-1 rounded-b-md">
+                  Necessity: {Math.round(changemaker.necessity * 100)}%
+                </div>
+              </div>
+            )}
+          </TooltipContent>
+        </Tooltip>
+      </>
+    )
+  }
+
+  return card
 }
