@@ -31,71 +31,75 @@ export const CollectorItemGrid = async ({
 
   return (
     <>
-      <SimpleParamSelect
-        paramKey="tab"
-        component="tabs"
-        options={[
-          { value: null, label: 'Loadout' },
-          { value: 'inventory', label: 'Inventory' },
-        ]}
-      />
-      <div
-        className={cn(
-          'flex-1 flex flex-row flex-wrap gap-2 justify-center items-start',
-        )}
-      >
-        {itemsShown.map((item, idx) => {
-          const selectable = item.id
-          const inLoadout = selectable
-            ? loadoutItems.some((i) => i.id === item.id)
-            : true
-          return (
-            <Fragment key={idx}>
-              <div className="flex flex-col items-center gap-1">
-                <ItemCard
-                  itemData={item}
-                  size={'160'}
-                  onlyTop={false}
-                  tooltipOnClick
-                />
-                <ActionWrapper
-                  catchToast
-                  disabled={!selectable}
-                  action={async () => {
-                    'use server'
-                    return gameAction({
-                      gameId: game.id,
-                      action: async ({ ctx }) => {
-                        if (!selectable) {
-                          throw new Error('Item is not selectable')
-                        }
-                        if (inLoadout) {
-                          ctx.game.data.currentLoadout.items =
-                            ctx.game.data.currentLoadout.items.filter(
-                              (i) => i.id !== item.id,
-                            )
-                        } else {
-                          ctx.game.data.currentLoadout.items.push(item)
-                        }
-                      },
-                    })
-                  }}
-                >
-                  <div
-                    className={cn(
-                      buttonVariants({ variant: 'outline', size: 'sm' }),
-                      'flex flex-row gap-1 items-center cursor-pointer',
-                      !selectable && 'invisible',
-                    )}
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-row">
+          <SimpleParamSelect
+            paramKey="tab"
+            component="tabs"
+            options={[
+              { value: null, label: 'Loadout' },
+              { value: 'inventory', label: 'Inventory' },
+            ]}
+          />
+        </div>
+        <div
+          className={cn(
+            'flex-1 flex flex-row flex-wrap gap-2 justify-center items-start',
+          )}
+        >
+          {itemsShown.map((item, idx) => {
+            const selectable = item.id
+            const inLoadout = selectable
+              ? loadoutItems.some((i) => i.id === item.id)
+              : true
+            return (
+              <Fragment key={idx}>
+                <div className="flex flex-col items-center gap-1">
+                  <ItemCard
+                    itemData={item}
+                    size={'160'}
+                    onlyTop={false}
+                    tooltipOnClick
+                  />
+                  <ActionWrapper
+                    catchToast
+                    disabled={!selectable}
+                    action={async () => {
+                      'use server'
+                      return gameAction({
+                        gameId: game.id,
+                        action: async ({ ctx }) => {
+                          if (!selectable) {
+                            throw new Error('Item is not selectable')
+                          }
+                          if (inLoadout) {
+                            ctx.game.data.currentLoadout.items =
+                              ctx.game.data.currentLoadout.items.filter(
+                                (i) => i.id !== item.id,
+                              )
+                          } else {
+                            ctx.game.data.currentLoadout.items.push(item)
+                          }
+                        },
+                      })
+                    }}
                   >
-                    <Checkbox checked={inLoadout} />
-                    {/* {inLoadout ? 'remove' : 'add'} */}
-                  </div>
-                </ActionWrapper>
-              </div>
-            </Fragment>
-          )
-        })}
+                    <div
+                      className={cn(
+                        buttonVariants({ variant: 'outline', size: 'sm' }),
+                        'flex flex-row gap-1 items-center cursor-pointer',
+                        !selectable && 'invisible',
+                      )}
+                    >
+                      <Checkbox checked={inLoadout} />
+                      {/* {inLoadout ? 'remove' : 'add'} */}
+                    </div>
+                  </ActionWrapper>
+                </div>
+              </Fragment>
+            )
+          })}
+        </div>
       </div>
     </>
   )
