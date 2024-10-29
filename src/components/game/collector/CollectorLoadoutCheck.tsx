@@ -12,10 +12,10 @@ export const CollectorLoadoutCheck = async ({ game }: { game: Game }) => {
   })
   return (
     <>
-      <div className="flex flex-col xl:flex-row gap-2 flex-wrap">
+      <div className="flex flex-col xl:flex-row gap-2 flex-wrap xl:items-center">
         <Card
           className={cn(
-            'p-2 flex flex-col gap-1',
+            'px-2 py-1.5 flex flex-col gap-1',
             check.priceInBudget ? 'text-green-500' : 'bg-red-500',
           )}
         >
@@ -35,7 +35,7 @@ export const CollectorLoadoutCheck = async ({ game }: { game: Game }) => {
           <Fragment key={i.name}>
             <Card
               className={cn(
-                'p-2 flex flex-col gap-1',
+                'px-2 py-1.5 flex flex-col gap-1',
                 check.countInBudget ? 'text-green-500' : 'bg-red-500',
               )}
             >
