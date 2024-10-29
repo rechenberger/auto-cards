@@ -210,14 +210,31 @@ export const ItemAspect = z.object({
 })
 export type ItemAspect = z.infer<typeof ItemAspect>
 
-export const itemAspectsToTriggers = (aspects: ItemAspect[]) => {
-  return flatMap(aspects, (aspect) => {
+export const calcAspects = (aspects: ItemAspect[]) => {
+  return map(aspects, (aspect) => {
     const def = getAspectDef(aspect.name)
     const { rnd, multiplier } = aspect
-    const value = def.value({ rnd }) * (multiplier ?? 1)
-    return def.triggers({
+    const value = Math.round(def.value({ rnd }) * (multiplier ?? 1))
+    const valueMax = Math.round(
+      def.value({ rnd: 0.999999 }) * (multiplier ?? 1),
+    )
+    const valuePercent = value / valueMax
+
+    const triggers = def.triggers({
       rnd,
       value,
     })
+
+    return {
+      triggers,
+      value,
+      valueMax,
+      valuePercent,
+    }
   })
+}
+
+export const itemAspectsToTriggers = (aspects: ItemAspect[]) => {
+  const calc = calcAspects(aspects)
+  return flatMap(calc, (c) => c.triggers)
 }

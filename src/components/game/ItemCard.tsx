@@ -1,14 +1,14 @@
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
-import { getAspectDef } from '@/game/aspects'
+import { calcAspects } from '@/game/aspects'
 import { Changemaker } from '@/game/generateChangemakers'
 import { getRarityDefinition } from '@/game/rarities'
 import { getTagDefinition } from '@/game/tags'
 import {
+  ThemeId,
   defaultThemeId,
   fallbackThemeId,
   getThemeDefinition,
-  ThemeId,
 } from '@/game/themes'
 import { fontHeading, fontLore } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
@@ -17,15 +17,15 @@ import { capitalCase } from 'change-case'
 import { first } from 'lodash-es'
 import { Fragment } from 'react'
 import { AiItemImage } from '../ai/AiItemImage'
-import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 import { ItemCardChip } from './ItemCardChip'
 import { ItemData } from './ItemData'
 import { ItemSellButton } from './ItemSellButton'
 import { ShopEffectDisplay } from './ShopEffectDisplay'
 import { StatsBars } from './StatsBars'
 import { StatsDisplay } from './StatsDisplay'
-import { streamItemCard } from './streamItemCard'
 import { TriggerDisplay } from './TriggerDisplay'
+import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
+import { streamItemCard } from './streamItemCard'
 
 export type ItemCardProps = {
   game?: Game
@@ -82,6 +82,8 @@ export const ItemCard = async (props: ItemCardProps) => {
   const gameId = game?.id
 
   const bgShowsRarity = !!itemData.rarity
+
+  const aspects = itemData.aspects ? calcAspects(itemData.aspects) : []
 
   const inner = (
     <>
@@ -274,19 +276,12 @@ export const ItemCard = async (props: ItemCardProps) => {
                   />
                 </Fragment>
               ))}
-              {!!itemData?.aspects?.length && (
+              {!!aspects?.length && (
                 <div className="flex flex-row gap-2 p-1 rounded-lg">
-                  {itemData.aspects?.map((aspect, idx) => {
-                    const aspectDef = getAspectDef(aspect.name)
-                    const { rnd, multiplier } = aspect
-                    const value = aspectDef.value({ rnd }) * (multiplier ?? 1)
-                    // const valueMin = aspectDef.value({ rnd: 0 })
-                    const valueMax = aspectDef.value({ rnd: 0.999999 })
-                    const valuePercent = value / valueMax
-                    const triggers = aspectDef.triggers({ rnd, value })
+                  {aspects?.map((aspect, idx) => {
                     return (
                       <Fragment key={idx}>
-                        {triggers?.map((trigger, idx) => (
+                        {aspect.triggers?.map((trigger, idx) => (
                           <Fragment key={idx}>
                             <TriggerDisplay
                               trigger={trigger}
@@ -298,7 +293,7 @@ export const ItemCard = async (props: ItemCardProps) => {
                               className={cn(
                                 'min-w-min p-1 rounded-xl',
                                 'relative overflow-hidden z-10',
-                                valuePercent === 1
+                                aspect.valuePercent === 1
                                   ? 'ring-2 ring-yellow-500'
                                   : '',
                               )}
@@ -308,7 +303,7 @@ export const ItemCard = async (props: ItemCardProps) => {
                                   'absolute inset-y-0 left-0 bg-black/50 bg-opacity-100 -z-10',
                                 )}
                                 style={{
-                                  width: `${valuePercent * 100}%`,
+                                  width: `${aspect.valuePercent * 100}%`,
                                 }}
                               />
                             </TriggerDisplay>
