@@ -1,20 +1,21 @@
 import { range } from 'lodash-es'
 import { RarityWeights, allRarities } from './rarities'
-import { Seed, rngItemWithWeights } from './seed'
+import { Seed, rngGenerator, rngItemWithWeights } from './seed'
 
 export const rarityCountsByWeights = ({
   rarityWeights,
-  seed,
+  seed: _seed,
   count,
 }: {
   rarityWeights: RarityWeights
   seed: Seed
   count: number
-}) => {
+}): RarityWeights => {
+  const seed = rngGenerator({ seed: _seed })
   const result: RarityWeights = {}
-  range(count).forEach((idx) => {
+  range(count).forEach(() => {
     const randomRarity = rngItemWithWeights({
-      seed: [seed, idx],
+      seed,
       items: allRarities.map((rarity) => ({
         item: rarity,
         weight: rarityWeights[rarity] || 0,
