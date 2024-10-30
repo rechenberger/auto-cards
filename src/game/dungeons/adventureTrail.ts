@@ -44,9 +44,18 @@ export const adventureTrail: DungeonDefinition = {
     })
     assert(monsterParty, 'No monster party found')
 
-    const heros = monsterParty.itemsHero.map((item) =>
-      giveAspect({ item, aspect: 'heroPower', multiplier: 1.2 ** (level - 1) }),
-    )
+    const heroAspectMinLevel = 2
+    let heros = monsterParty.itemsHero
+
+    if (level >= heroAspectMinLevel) {
+      heros = monsterParty.itemsHero.map((item) =>
+        giveAspect({
+          item,
+          aspect: 'heroPower',
+          multiplier: 1.2 ** (level - 1 - heroAspectMinLevel),
+        }),
+      )
+    }
 
     const noOfAddedItems = monsterParty.minLevel - level
     let itemsWithAspects = [
