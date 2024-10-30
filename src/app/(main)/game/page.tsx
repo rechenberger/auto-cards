@@ -85,7 +85,7 @@ export default async function Page() {
                 </div>
               )}
               {game.gameMode === 'collector' && (
-                <div className="">Collector</div>
+                <div className="">Endless Mode</div>
               )}
               <ItemCardGrid items={game.data.currentLoadout.items} />
               {game.liveMatchId && (
