@@ -4,8 +4,9 @@ import { ItemData } from '@/components/game/ItemData'
 import { promiseSeqMap } from '@/lib/promiseSeqMap'
 import assert from 'assert'
 import { range } from 'lodash-es'
+import { AspectName } from '../aspects'
 import { randomRarityByWeight } from '../randomRarityByWeight'
-import { rngGenerator, rngItem } from '../seed'
+import { rngFloat, rngGenerator, rngItem } from '../seed'
 import { DungeonDefinition, DungeonRoom } from './DungeonDefinition'
 import { allMonsterParties } from './monsterParties'
 
@@ -17,18 +18,23 @@ export const adventureTrail: DungeonDefinition = {
   generate: async ({ game, seed: _seed, level }) => {
     const seed = rngGenerator({ seed: _seed })
 
-    // const giveMonsterPower = (monster: ItemData) => {
-    //   const rnd = rngFloat({
-    //     seed,
-    //   })
-    //   return {
-    //     ...monster,
-    //     aspects: [
-    //       ...(monster.aspects ?? []),
-    //       { name: 'monsterPower', rnd, multiplier: 1.2 ** level },
-    //     ],
-    //   } satisfies ItemData
-    // }
+    const giveAspect = ({
+      item,
+      aspect,
+      multiplier,
+    }: {
+      item: ItemData
+      aspect: AspectName
+      multiplier?: number
+    }) => {
+      const rnd = rngFloat({
+        seed,
+      })
+      return {
+        ...item,
+        aspects: [...(item.aspects ?? []), { name: aspect, rnd, multiplier }],
+      } satisfies ItemData
+    }
 
     let monsterParties = allMonsterParties
     monsterParties = monsterParties.filter((party) => party.minLevel <= level)
@@ -37,6 +43,10 @@ export const adventureTrail: DungeonDefinition = {
       items: monsterParties,
     })
     assert(monsterParty, 'No monster party found')
+
+    const heros = monsterParty.itemsHero.map((item) =>
+      giveAspect({ item, aspect: 'heroPower', multiplier: 1.2 ** (level - 1) }),
+    )
 
     const noOfAddedItems = monsterParty.minLevel - level
     let itemsWithAspects = [
@@ -65,7 +75,7 @@ export const adventureTrail: DungeonDefinition = {
       })
     })
 
-    const items: ItemData[] = [...monsterParty.itemsHero, ...itemsWithAspects]
+    const items: ItemData[] = [...heros, ...itemsWithAspects]
 
     const fightRoom: DungeonRoom = {
       type: 'fight',
