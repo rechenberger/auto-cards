@@ -10,13 +10,39 @@ import { rngFloat, rngGenerator, rngItem } from '../seed'
 import { DungeonDefinition, DungeonRoom } from './DungeonDefinition'
 import { allMonsterParties } from './monsterParties'
 
+const scaleByLevel = ({
+  minLevel,
+  maxLevel,
+  level,
+}: {
+  minLevel: number
+  maxLevel: number
+  level: number
+}) => {
+  if (level < minLevel) return 0
+  if (level >= maxLevel) return 1
+  // Add 1 to both numerator and denominator to start scaling from minLevel
+  // Example: if minLevel=5, maxLevel=10:
+  // At level 5: (5-5+1)/(10-5+1) = 1/6 (scaling starts)
+  // At level 6: (6-5+1)/(10-5+1) = 2/6
+  // At level 10: (10-5+1)/(10-5+1) = 6/6 = 1
+  return (level - minLevel + 1) / (maxLevel - minLevel + 1)
+}
+
 export const adventureTrail: DungeonDefinition = {
   name: 'adventureTrail',
   description:
     'An infinitely repeatable trail of adventure that leads to the greatest of treasures.',
   levelMax: 100,
   rewards: ({ level }) => ({
-    rarityWeights: { common: 1, uncommon: 0.5 },
+    rarityWeights: {
+      common: 1,
+      uncommon: scaleByLevel({ minLevel: 2, maxLevel: 20, level }),
+      rare: scaleByLevel({ minLevel: 20, maxLevel: 40, level }),
+      epic: scaleByLevel({ minLevel: 40, maxLevel: 60, level }),
+      legendary: scaleByLevel({ minLevel: 60, maxLevel: 80, level }),
+      mythic: scaleByLevel({ minLevel: 80, maxLevel: 100, level }),
+    },
   }),
   generate: async ({ game, seed: _seed, level, rewards }) => {
     const seed = rngGenerator({ seed: _seed })
