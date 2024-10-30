@@ -21,7 +21,9 @@ export const CollectorStartingOptionsSelect = ({ game }: { game: Game }) => {
       <div className="flex flex-col gap-12">
         <div className="flex flex-col items-center mt-20">
           <AlphaTag />
-          <h1 className={(cn(fontHeading.className), 'text-3xl self-center')}>
+          <h1
+            className={(cn(fontHeading.className), 'text-3xl self-center mt-2')}
+          >
             Welcome Collector
           </h1>
           <div className={cn(fontLore.className, 'text-sm opacity-80')}>

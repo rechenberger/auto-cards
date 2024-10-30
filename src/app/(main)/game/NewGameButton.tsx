@@ -27,7 +27,7 @@ export const NewGameButton = ({
         })
       }}
     >
-      {gameMode === 'collector' ? 'New Collector Game' : 'New Game'}
+      {gameMode === 'collector' ? 'New Endless Game' : 'New Game'}
     </ActionButton>
   )
 }
