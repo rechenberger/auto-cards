@@ -66,7 +66,7 @@ export default async function Page() {
             Delete All
           </ActionButton>
         )} */}
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-col md:flex-row gap-2">
           <NewLiveMatchButton variant={'outline'} />
           {isAdmin && (
             <NewGameButton gameMode="collector" variant={'outline'} />
