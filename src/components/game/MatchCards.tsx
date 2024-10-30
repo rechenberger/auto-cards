@@ -55,7 +55,7 @@ export const MatchCards = async ({
           )
 
           return (
-            <Fragment key={item.name}>
+            <Fragment key={itemIdx}>
               <div
                 className={cn(
                   isBig && 'col-span-2 row-span-2',
