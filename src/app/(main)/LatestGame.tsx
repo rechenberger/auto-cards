@@ -37,7 +37,7 @@ export const LatestGame = async ({ gameMode }: { gameMode?: GameMode }) => {
   } else {
     return (
       <>
-        <NewGameButton />
+        <NewGameButton gameMode={gameMode} />
       </>
     )
   }
