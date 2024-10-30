@@ -43,9 +43,10 @@ export const CollectorItemGrid = async ({
 
   let itemsShown = tab === 'loadout' ? loadoutItems : inventoryItems
 
-  const hasAnyFavorite = inventoryItems.some((item) => item.favorite)
+  const favoriteItems = inventoryItems.filter((item) => item.favorite)
+  const hasAnyFavorite = favoriteItems.length > 0
   if (tab === 'favorites') {
-    itemsShown = itemsShown.filter((item) => item.favorite)
+    itemsShown = favoriteItems
     if (!itemsShown.length) {
       redirect(`/game/${game.id}`)
     }
@@ -81,11 +82,19 @@ export const CollectorItemGrid = async ({
             paramKey="tab"
             component="tabs"
             options={[
-              { value: null, label: 'Loadout' },
+              { value: null, label: `Loadout (${loadoutItems.length})` },
               ...(hasAnyFavorite
-                ? [{ value: 'favorites', label: 'Favorites' }]
+                ? [
+                    {
+                      value: 'favorites',
+                      label: `Favorites (${favoriteItems.length})`,
+                    },
+                  ]
                 : []),
-              { value: 'inventory', label: 'Inventory' },
+              {
+                value: 'inventory',
+                label: `Inventory (${inventoryItems.length})`,
+              },
             ]}
           />
           <div className="flex-1" />
