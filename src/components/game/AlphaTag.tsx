@@ -24,7 +24,7 @@ export const AlphaTag = () => {
         <div
           className={cn(
             'rounded-full px-2.5 py-0.5 text-xs font-semibold inline-flex items-center',
-            'bg-green-400/30 text-green-300',
+            'bg-green-700 text-green-300',
             'font-mono',
           )}
         >
