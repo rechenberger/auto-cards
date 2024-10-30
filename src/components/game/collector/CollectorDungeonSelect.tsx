@@ -1,3 +1,4 @@
+import { SimpleTooltip } from '@/components/simple/SimpleTooltip'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import {
@@ -19,6 +20,7 @@ import { capitalCase } from 'change-case'
 import { range } from 'lodash-es'
 import { ChevronDown } from 'lucide-react'
 import { Fragment } from 'react'
+import { RarityWeightsDisplay } from '../RarityWeightsDisplay'
 import { fightDungeon } from './fightDungeon'
 
 export const CollectorDungeonSelect = async ({ game }: { game: Game }) => {
@@ -35,13 +37,23 @@ export const CollectorDungeonSelect = async ({ game }: { game: Game }) => {
           const selectableMax = Math.min(access.levelMax, dungeon.levelMax)
           const selectable = selectableMin < selectableMax
 
+          const rewards = dungeon.rewards({ level: access.levelCurrent })
+
           return (
             <Fragment key={access.name}>
               <Card className="p-4 flex flex-col gap-2 xl:min-w-96">
-                <CardDescription>
-                  Level {access.levelCurrent}{' '}
-                  {dungeon.levelMax ? ` of ${dungeon.levelMax}` : ''}
-                </CardDescription>
+                <SimpleTooltip
+                  tooltip={
+                    <RarityWeightsDisplay
+                      rarityWeights={rewards.rarityWeights}
+                    />
+                  }
+                >
+                  <CardDescription>
+                    Level {access.levelCurrent}{' '}
+                    {dungeon.levelMax ? ` of ${dungeon.levelMax}` : ''}
+                  </CardDescription>
+                </SimpleTooltip>
                 <div className="flex flex-row gap-2">
                   <CardTitle className="flex-1">
                     {capitalCase(access.name)}
