@@ -3,9 +3,9 @@ import {
   getDungeonAccess,
   removeDungeonAccess,
   setDungeonAccess,
-} from '@/game/DungeonAccess'
-import { DungeonData } from '@/game/DungeonData'
-import { getDungeon } from '@/game/dungeons'
+} from '@/game/dungeons/DungeonAccess'
+import { DungeonData } from '@/game/dungeons/DungeonData'
+import { getDungeon } from '@/game/dungeons/dungeons'
 import { generateMatch } from '@/game/generateMatch'
 import { seedToString } from '@/game/seed'
 import { addCollectorItem } from './addCollectorItem'

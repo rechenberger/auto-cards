@@ -2,9 +2,9 @@ import { ItemData } from '@/components/game/ItemData'
 import { generateCollectorItem } from '@/components/game/collector/generateCollectorItem'
 import { Game } from '@/db/schema-zod'
 import { z } from 'zod'
-import { LoadoutData } from './LoadoutData'
-import { ItemName } from './allItems'
-import { SeedArray, rngFloat } from './seed'
+import { LoadoutData } from '../LoadoutData'
+import { ItemName } from '../allItems'
+import { SeedArray, rngFloat } from '../seed'
 
 export const DungeonRoom = z.discriminatedUnion('type', [
   z.object({

@@ -1,6 +1,6 @@
 import { getUserCached } from '@/auth/getMyUser'
 import { Game, User } from '@/db/schema-zod'
-import { getDungeon } from '@/game/dungeons'
+import { getDungeon } from '@/game/dungeons/dungeons'
 import { fontLore } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { capitalCase } from 'change-case'

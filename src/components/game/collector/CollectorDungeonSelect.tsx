@@ -7,8 +7,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Game } from '@/db/schema-zod'
-import { setDungeonAccess } from '@/game/DungeonAccess'
-import { getDungeon } from '@/game/dungeons'
+import { setDungeonAccess } from '@/game/dungeons/DungeonAccess'
+import { getDungeon } from '@/game/dungeons/dungeons'
 import { gameAction } from '@/game/gameAction'
 import { createSeed } from '@/game/seed'
 import { fontLore } from '@/lib/fonts'

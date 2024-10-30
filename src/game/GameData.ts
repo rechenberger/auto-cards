@@ -1,10 +1,10 @@
 import { ItemData } from '@/components/game/ItemData'
-import { DungeonData } from '@/game/DungeonData'
 import { ItemName } from '@/game/allItems'
 import { ItemAspect } from '@/game/aspects'
 import { GAME_VERSION } from '@/game/config'
+import { DungeonAccess } from '@/game/dungeons/DungeonAccess'
+import { DungeonData } from '@/game/dungeons/DungeonData'
 import z from 'zod'
-import { DungeonAccess } from './DungeonAccess'
 import { LoadoutData } from './LoadoutData'
 import { createSeed } from './seed'
 
