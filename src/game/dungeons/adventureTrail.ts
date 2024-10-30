@@ -67,60 +67,70 @@ export const adventureTrail: DungeonDefinition = {
 
     let monsterParties = allMonsterParties
     monsterParties = monsterParties.filter((party) => party.minLevel <= level)
-    const monsterParty = rngItem({
-      seed,
-      items: monsterParties,
-    })
-    assert(monsterParty, 'No monster party found')
 
-    const heroAspectMinLevel = 2
-    let heros = monsterParty.itemsHero
+    const noOfFights = Math.ceil((level + 1) / 10)
 
-    if (level >= heroAspectMinLevel) {
-      heros = monsterParty.itemsHero.map((item) =>
-        giveAspect({
-          item,
-          aspect: 'heroPower',
-          multiplier: 1.2 ** (level - 1 - heroAspectMinLevel),
-        }),
-      )
-    }
-
-    const noOfAddedItems = monsterParty.minLevel - level
-    let itemsWithAspects = [
-      ...monsterParty.itemsBase,
-      ...range(noOfAddedItems).map(() => {
-        return rngItem({
+    const fightRooms: DungeonRoom[] = await promiseSeqMap(
+      range(noOfFights),
+      async () => {
+        const monsterParty = rngItem({
           seed,
-          items: monsterParty.itemsAdded,
+          items: monsterParties,
         })
-      }),
-    ]
-    itemsWithAspects = await promiseSeqMap(itemsWithAspects, (item) => {
-      const rarity = randomRarityByWeight({
-        rarityWeights: {
-          common: 1,
-          uncommon: 0.5,
-        },
-        seed,
-      })
+        assert(monsterParty, 'No monster party found')
 
-      return generateCollectorItemAspects({
-        item: item,
-        seed,
-        rarity,
-        // multiplier: 1.2 ** level,
-      })
-    })
+        const heroAspectMinLevel = 2
+        let heros = monsterParty.itemsHero
 
-    const items: ItemData[] = [...heros, ...itemsWithAspects]
+        if (level >= heroAspectMinLevel) {
+          heros = monsterParty.itemsHero.map((item) =>
+            giveAspect({
+              item,
+              aspect: 'heroPower',
+              multiplier: 1.2 ** (level - 1 - heroAspectMinLevel),
+            }),
+          )
+        }
 
-    const fightRoom: DungeonRoom = {
-      type: 'fight',
-      loadout: {
-        items,
+        const noOfAddedItems = monsterParty.minLevel - level
+        let itemsWithAspects = [
+          ...monsterParty.itemsBase,
+          ...range(noOfAddedItems).map(() => {
+            return rngItem({
+              seed,
+              items: monsterParty.itemsAdded,
+            })
+          }),
+        ]
+        itemsWithAspects = await promiseSeqMap(itemsWithAspects, (item) => {
+          const rarity = randomRarityByWeight({
+            rarityWeights: {
+              common: 1,
+              uncommon: 0.5,
+            },
+            seed,
+          })
+
+          return generateCollectorItemAspects({
+            item: item,
+            seed,
+            rarity,
+            // multiplier: 1.2 ** level,
+          })
+        })
+
+        const items: ItemData[] = [...heros, ...itemsWithAspects]
+
+        const fightRoom: DungeonRoom = {
+          type: 'fight',
+          loadout: {
+            items,
+          },
+        }
+
+        return fightRoom
       },
-    }
+    )
 
     const reward = await generateCollectorItemByRarityWeight({
       game,
@@ -133,7 +143,7 @@ export const adventureTrail: DungeonDefinition = {
       items: [reward],
     }
 
-    const rooms: DungeonRoom[] = [fightRoom, rewardRoom]
+    const rooms: DungeonRoom[] = [...fightRooms, rewardRoom]
     return {
       rooms,
     }
