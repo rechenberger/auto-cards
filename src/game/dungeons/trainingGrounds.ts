@@ -1,4 +1,4 @@
-import { generateCollectorItem } from '@/components/game/collector/generateCollectorItem'
+import { generateCollectorItemByRarityWeight } from '@/components/game/collector/generateCollectorItemByRarityWeight'
 import { LoadoutData } from '../LoadoutData'
 import { DungeonDefinition, DungeonRoom } from './DungeonDefinition'
 
@@ -8,7 +8,15 @@ export const trainingGrounds: DungeonDefinition = {
     'A little training never hurt nobody. Play through this once and get some basic equipment.',
   levelMax: 5,
   levelOnlyOnce: true,
-  generate: async ({ game, seed, level }) => {
+  rewards: ({ level }) => ({
+    rarityWeights:
+      level >= 5
+        ? { uncommon: 1 }
+        : {
+            common: 1,
+          },
+  }),
+  generate: async ({ game, seed, level, rewards }) => {
     const loadout: LoadoutData = {
       items: [{ name: 'hero' }],
     }
@@ -40,10 +48,10 @@ export const trainingGrounds: DungeonDefinition = {
       )
     }
 
-    const reward = await generateCollectorItem({
+    const reward = await generateCollectorItemByRarityWeight({
       game,
       seed,
-      rarity: level === 5 ? 'uncommon' : 'common',
+      rarityWeights: rewards.rarityWeights,
     })
     const rooms: DungeonRoom[] = [
       {

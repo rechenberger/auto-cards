@@ -15,7 +15,10 @@ export const adventureTrail: DungeonDefinition = {
   description:
     'An infinitely repeatable trail of adventure that leads to the greatest of treasures.',
   levelMax: 100,
-  generate: async ({ game, seed: _seed, level }) => {
+  rewards: ({ level }) => ({
+    rarityWeights: { common: 1, uncommon: 0.5 },
+  }),
+  generate: async ({ game, seed: _seed, level, rewards }) => {
     const seed = rngGenerator({ seed: _seed })
 
     const giveAspect = ({
@@ -96,10 +99,7 @@ export const adventureTrail: DungeonDefinition = {
     const reward = await generateCollectorItemByRarityWeight({
       game,
       seed,
-      rarityWeights: {
-        common: 1,
-        uncommon: 0.5,
-      },
+      rarityWeights: rewards.rarityWeights,
     })
 
     const rewardRoom: DungeonRoom = {

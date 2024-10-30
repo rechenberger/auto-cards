@@ -45,10 +45,12 @@ export const fightDungeon = async ({
   }
 
   const dungeon = getDungeon(name)
+  const rewards = dungeon.rewards({ level })
   const generated = await dungeon.generate({
     game,
     level,
     seed: [seed],
+    rewards,
   })
 
   const generatedRoom = generated.rooms[roomIdx]
