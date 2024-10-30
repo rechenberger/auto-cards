@@ -1,6 +1,6 @@
+import { ItemData } from '@/components/game/ItemData'
 import { generateCollectorItemAspects } from '@/components/game/collector/generateCollectorItemAspects'
 import { generateCollectorItemByRarityWeight } from '@/components/game/collector/generateCollectorItemByRarityWeight'
-import { ItemData } from '@/components/game/ItemData'
 import { promiseSeqMap } from '@/lib/promiseSeqMap'
 import assert from 'assert'
 import { range } from 'lodash-es'
@@ -108,23 +108,28 @@ export const adventureTrail: DungeonDefinition = {
         ]
 
         const maxLevelForCommon = 9
-        itemsWithAspects = await promiseSeqMap(itemsWithAspects, (item) => {
-          const rarity = randomRarityByWeight({
-            rarityWeights: {
-              ...rewards.rarityWeights,
-              common:
-                level > maxLevelForCommon ? 0 : rewards.rarityWeights.common,
-            },
-            seed,
-          })
+        itemsWithAspects = await promiseSeqMap(
+          itemsWithAspects,
+          async (item) => {
+            const rarity = randomRarityByWeight({
+              rarityWeights: {
+                ...rewards.rarityWeights,
+                common:
+                  level > maxLevelForCommon ? 0 : rewards.rarityWeights.common,
+              },
+              seed,
+            })
 
-          return generateCollectorItemAspects({
-            item: item,
-            seed,
-            rarity,
-            // multiplier: 1.2 ** level,
-          })
-        })
+            const itemData = await generateCollectorItemAspects({
+              item,
+              seed,
+              rarity,
+              // multiplier: 1.2 ** level,
+            })
+
+            return itemData
+          },
+        )
 
         const items: ItemData[] = [...heros, ...itemsWithAspects]
 
