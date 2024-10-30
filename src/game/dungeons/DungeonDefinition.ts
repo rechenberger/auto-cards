@@ -3,7 +3,7 @@ import { Game } from '@/db/schema-zod'
 import { z } from 'zod'
 import { LoadoutData } from '../LoadoutData'
 import { SeedArray } from '../seed'
-import { DungeonName } from './dungeons'
+import { DungeonName } from './allDungeons'
 
 export const DungeonRoom = z.discriminatedUnion('type', [
   z.object({

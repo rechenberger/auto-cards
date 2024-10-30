@@ -5,7 +5,7 @@ import {
   setDungeonAccess,
 } from '@/game/dungeons/DungeonAccess'
 import { DungeonData } from '@/game/dungeons/DungeonData'
-import { getDungeon } from '@/game/dungeons/dungeons'
+import { getDungeon } from '@/game/dungeons/allDungeons'
 import { generateMatch } from '@/game/generateMatch'
 import { seedToString } from '@/game/seed'
 import { addCollectorItem } from './addCollectorItem'

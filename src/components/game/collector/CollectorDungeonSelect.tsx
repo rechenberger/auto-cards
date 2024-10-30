@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Game } from '@/db/schema-zod'
 import { setDungeonAccess } from '@/game/dungeons/DungeonAccess'
-import { getDungeon } from '@/game/dungeons/dungeons'
+import { getDungeon } from '@/game/dungeons/allDungeons'
 import { gameAction } from '@/game/gameAction'
 import { createSeed } from '@/game/seed'
 import { fontLore } from '@/lib/fonts'
