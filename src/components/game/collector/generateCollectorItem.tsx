@@ -1,18 +1,20 @@
 import { Game } from '@/db/schema-zod'
 import { generateShopItemsRaw } from '@/game/generateShopItemsRaw'
 import { Rarity, allRarities } from '@/game/rarities'
-import { SeedArray, rngItem } from '@/game/seed'
+import { Seed, rngGenerator, rngItem } from '@/game/seed'
 import { generateCollectorItemAspects } from './generateCollectorItemAspects'
 
 export const generateCollectorItem = async ({
   game,
-  seed,
+  seed: _seed,
   rarity,
 }: {
   game: Game
-  seed: SeedArray
+  seed: Seed
   rarity: Rarity
 }) => {
+  const seed = rngGenerator({ seed: _seed })
+
   let items = await generateShopItemsRaw({
     game,
     skipRarityWeights: true,

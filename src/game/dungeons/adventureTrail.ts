@@ -1,4 +1,5 @@
 import { generateCollectorItemAspects } from '@/components/game/collector/generateCollectorItemAspects'
+import { generateCollectorItemByRarityWeight } from '@/components/game/collector/generateCollectorItemByRarityWeight'
 import { ItemData } from '@/components/game/ItemData'
 import { promiseSeqMap } from '@/lib/promiseSeqMap'
 import assert from 'assert'
@@ -13,7 +14,7 @@ export const adventureTrail: DungeonDefinition = {
   description:
     'An infinitely repeatable trail of adventure that leads to the greatest of treasures.',
   levelMax: 100,
-  generate: async ({ seed: _seed, level }) => {
+  generate: async ({ game, seed: _seed, level }) => {
     const seed = rngGenerator({ seed: _seed })
 
     // const giveMonsterPower = (monster: ItemData) => {
@@ -66,18 +67,28 @@ export const adventureTrail: DungeonDefinition = {
 
     const items: ItemData[] = [...monsterParty.itemsHero, ...itemsWithAspects]
 
-    const rooms: DungeonRoom[] = [
-      {
-        type: 'fight',
-        loadout: {
-          items,
-        },
+    const fightRoom: DungeonRoom = {
+      type: 'fight',
+      loadout: {
+        items,
       },
-      {
-        type: 'reward',
-        items: [{ name: 'banana', aspects: [], rarity: 'common' }],
+    }
+
+    const reward = await generateCollectorItemByRarityWeight({
+      game,
+      seed,
+      rarityWeights: {
+        common: 1,
+        uncommon: 0.5,
       },
-    ]
+    })
+
+    const rewardRoom: DungeonRoom = {
+      type: 'reward',
+      items: [reward],
+    }
+
+    const rooms: DungeonRoom[] = [fightRoom, rewardRoom]
     return {
       rooms,
     }
