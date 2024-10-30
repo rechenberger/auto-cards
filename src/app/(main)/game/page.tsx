@@ -68,20 +68,25 @@ export default async function Page() {
         )} */}
         <div className="flex flex-row gap-2">
           <NewLiveMatchButton variant={'outline'} />
+          <NewGameButton gameMode="collector" variant={'outline'} />
           <NewGameButton />
-          <NewGameButton gameMode="collector" />
         </div>
       </div>
       <div className="grid lg:grid-cols-3 gap-4">
         {games.map((game) => (
           <Fragment key={game.id}>
             <Card className="flex flex-col gap-4 p-4 items-center">
-              <div className="flex flex-row gap-4 justify-center items-center">
-                <GameMatchBoard game={game} />
-                {game.data.roundNo >= NO_OF_ROUNDS - 1 && (
-                  <LeaderboardRankCardByGame gameId={game.id} tiny />
-                )}
-              </div>
+              {game.gameMode === 'shopper' && (
+                <div className="flex flex-row gap-4 justify-center items-center">
+                  <GameMatchBoard game={game} />
+                  {game.data.roundNo >= NO_OF_ROUNDS - 1 && (
+                    <LeaderboardRankCardByGame gameId={game.id} tiny />
+                  )}
+                </div>
+              )}
+              {game.gameMode === 'collector' && (
+                <div className="">Collector</div>
+              )}
               <ItemCardGrid items={game.data.currentLoadout.items} />
               {game.liveMatchId && (
                 <div className="text-sm opacity-60 flex flex-row items-center gap-1">
