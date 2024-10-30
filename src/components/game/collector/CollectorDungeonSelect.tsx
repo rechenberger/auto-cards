@@ -1,4 +1,4 @@
-import { SimpleTooltip } from '@/components/simple/SimpleTooltip'
+import { SimpleTooltipButton } from '@/components/simple/SimpleTooltipButton'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import {
@@ -18,7 +18,7 @@ import { ActionButton } from '@/super-action/button/ActionButton'
 import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { capitalCase } from 'change-case'
 import { range } from 'lodash-es'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Info } from 'lucide-react'
 import { Fragment } from 'react'
 import { RarityWeightsDisplay } from '../RarityWeightsDisplay'
 import { fightDungeon } from './fightDungeon'
@@ -42,18 +42,10 @@ export const CollectorDungeonSelect = async ({ game }: { game: Game }) => {
           return (
             <Fragment key={access.name}>
               <Card className="p-4 flex flex-col gap-2 xl:min-w-96">
-                <SimpleTooltip
-                  tooltip={
-                    <RarityWeightsDisplay
-                      rarityWeights={rewards.rarityWeights}
-                    />
-                  }
-                >
-                  <CardDescription>
-                    Level {access.levelCurrent}{' '}
-                    {dungeon.levelMax ? ` of ${dungeon.levelMax}` : ''}
-                  </CardDescription>
-                </SimpleTooltip>
+                <CardDescription className="flex-1">
+                  Level {access.levelCurrent}{' '}
+                  {dungeon.levelMax ? ` of ${dungeon.levelMax}` : ''}
+                </CardDescription>
                 <div className="flex flex-row gap-2">
                   <CardTitle className="flex-1">
                     {capitalCase(access.name)}
@@ -65,7 +57,7 @@ export const CollectorDungeonSelect = async ({ game }: { game: Game }) => {
                   {dungeon.description}
                 </CardDescription>
                 <div className="flex-1" />
-                <div className="flex flex-row">
+                <div className="flex flex-row gap-1">
                   {selectable && (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -108,6 +100,16 @@ export const CollectorDungeonSelect = async ({ game }: { game: Game }) => {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   )}
+                  <SimpleTooltipButton
+                    variant="ghost"
+                    size="icon"
+                    icon={<Info />}
+                    tooltip={
+                      <RarityWeightsDisplay
+                        rarityWeights={rewards.rarityWeights}
+                      />
+                    }
+                  />
                   <div className="flex-1" />
                   <ActionButton
                     variant="outline"
