@@ -92,7 +92,11 @@ export const adventureTrail: DungeonDefinition = {
           )
         }
 
-        const noOfAddedItems = monsterParty.minLevel - level
+        const maxNoOfAddedItems = 20
+        const noOfAddedItems = Math.min(
+          monsterParty.minLevel - level,
+          maxNoOfAddedItems,
+        )
         let itemsWithAspects = [
           ...monsterParty.itemsBase,
           ...range(noOfAddedItems).map(() => {
@@ -102,9 +106,15 @@ export const adventureTrail: DungeonDefinition = {
             })
           }),
         ]
+
+        const maxLevelForCommon = 9
         itemsWithAspects = await promiseSeqMap(itemsWithAspects, (item) => {
           const rarity = randomRarityByWeight({
-            rarityWeights: rewards.rarityWeights,
+            rarityWeights: {
+              ...rewards.rarityWeights,
+              common:
+                level > maxLevelForCommon ? 0 : rewards.rarityWeights.common,
+            },
             seed,
           })
 
