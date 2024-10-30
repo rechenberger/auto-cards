@@ -66,7 +66,7 @@ export const rngItem = <T>({
 }
 
 export const rngItems = <T>({
-  seed,
+  seed: _seed,
   items,
   count,
 }: {
@@ -74,13 +74,14 @@ export const rngItems = <T>({
   items: T[]
   count: number
 }): T[] => {
+  const seed = rngGenerator({ seed: _seed })
   const itemsCopy = [...items]
   const results: T[] = []
   for (let i = 0; i < count; i++) {
     if (!itemsCopy.length) {
       break
     }
-    const idx = rngInt({ seed: [seed, i], max: itemsCopy.length - 1 })
+    const idx = rngInt({ seed, max: itemsCopy.length - 1 })
     const item = itemsCopy.splice(idx, 1)[0]!
     results.push(item)
   }
@@ -117,7 +118,7 @@ export const rngItemWithWeights = <T>({
 }
 
 export const rngItemsWithWeights = <T>({
-  seed,
+  seed: _seed,
   items,
   count,
 }: {
@@ -125,10 +126,11 @@ export const rngItemsWithWeights = <T>({
   items: { item: T; weight: number }[]
   count: number
 }): T[] => {
+  const seed = rngGenerator({ seed: _seed })
   let itemsCopy = [...items]
   const results: T[] = []
   for (let i = 0; i < count; i++) {
-    const item = rngItemWithWeightsRaw({ seed: [seed, i], items: itemsCopy })
+    const item = rngItemWithWeightsRaw({ seed, items: itemsCopy })
     itemsCopy = itemsCopy.filter((i) => i !== item)
     if (item) {
       results.push(item.item)
@@ -146,21 +148,22 @@ export const seedToString = ({ seed }: { seed: SeedStringable }) => {
 }
 
 export const rngOrder = <T>({
-  seed,
+  seed: _seed,
   items,
 }: {
   seed: Seed
   items: T[]
 }): T[] => {
+  const seed = rngGenerator({ seed: _seed })
   // tiny optimizations for n<=2
   if (items.length < 2) return items
   if (items.length === 2) {
     return rng({ seed }) < 0.5 ? [items[0], items[1]] : [items[1], items[0]]
   }
 
-  const itemsWithRng = items.map((item, idx) => ({
+  const itemsWithRng = items.map((item) => ({
     item,
-    rng: rngFloat({ seed: [seed, idx] }),
+    rng: rngFloat({ seed }),
   }))
   const ordered = orderBy(itemsWithRng, 'rng', 'asc')
   return ordered.map((item) => item.item)
