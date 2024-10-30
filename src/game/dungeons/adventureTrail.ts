@@ -94,7 +94,7 @@ export const adventureTrail: DungeonDefinition = {
 
         const maxNoOfAddedItems = 20
         const noOfAddedItems = Math.min(
-          monsterParty.minLevel - level,
+          level - monsterParty.minLevel,
           maxNoOfAddedItems,
         )
         let itemsWithAspects = [

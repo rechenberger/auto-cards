@@ -31,6 +31,7 @@ export const allAspectsRaw = [
       'accessory',
       'crystal',
       'potion',
+      'armor',
       'shield',
       'food',
       'spell',

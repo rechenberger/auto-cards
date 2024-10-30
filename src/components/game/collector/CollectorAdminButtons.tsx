@@ -1,10 +1,11 @@
 import { isDev } from '@/auth/dev'
 import { Game } from '@/db/schema-zod'
+import { setDungeonAccess } from '@/game/dungeons/DungeonAccess'
 import { gameAction } from '@/game/gameAction'
 import { allRarities } from '@/game/rarities'
 import { createSeed, rngItem } from '@/game/seed'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { DoorOpen, Plus, Swords, Trash } from 'lucide-react'
+import { DoorOpen, Plus, Swords, Trash, Unlock } from 'lucide-react'
 import { addCollectorItem } from './addCollectorItem'
 import { fightDungeon } from './fightDungeon'
 import { generateCollectorItem } from './generateCollectorItem'
@@ -95,6 +96,27 @@ export const CollectorAdminButtons = async ({ game }: { game: Game }) => {
               gameId: game.id,
               action: async ({ ctx }) => {
                 ctx.game.data.dungeon = undefined
+              },
+            })
+          }}
+        />
+        <ActionButton
+          icon={<Unlock />}
+          variant="outline"
+          action={async () => {
+            'use server'
+            return gameAction({
+              gameId: game.id,
+              action: async ({ ctx }) => {
+                setDungeonAccess({
+                  game: ctx.game,
+                  dungeonAccess: {
+                    name: 'adventureTrail',
+                    levelMin: 1,
+                    levelMax: 100,
+                    levelCurrent: 100,
+                  },
+                })
               },
             })
           }}
