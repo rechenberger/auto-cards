@@ -1,6 +1,7 @@
 import { Game } from '@/db/schema-zod'
 import { fontLore } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
+import { AlphaTag } from '../AlphaTag'
 import { MatchReportResetter } from '../MatchReportResetter'
 import { CollectorAdminButtons } from './CollectorAdminButtons'
 import { CollectorDungeonSelect } from './CollectorDungeonSelect'
@@ -16,8 +17,11 @@ export const CollectorOverview = ({
   return (
     <>
       <div className="flex flex-col gap-4 items-center">
-        <div className={cn(fontLore.className, 'text-xl')}>
-          keep calm and collect
+        <div className="flex flex-col items-center">
+          <AlphaTag />
+          <div className={cn(fontLore.className, 'text-xl')}>
+            keep calm and collect
+          </div>
         </div>
         <CollectorAdminButtons game={game} />
         <CollectorDungeonSelect game={game} />

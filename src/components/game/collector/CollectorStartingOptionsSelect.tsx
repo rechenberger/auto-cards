@@ -11,6 +11,7 @@ import { fontHeading, fontLore } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { Fragment } from 'react'
+import { AlphaTag } from '../AlphaTag'
 import { ItemCard } from '../ItemCard'
 import { collectorStartingOptions } from './collectorStatingOptions'
 
@@ -19,6 +20,7 @@ export const CollectorStartingOptionsSelect = ({ game }: { game: Game }) => {
     <>
       <div className="flex flex-col gap-12">
         <div className="flex flex-col items-center mt-20">
+          <AlphaTag />
           <h1 className={(cn(fontHeading.className), 'text-3xl self-center')}>
             Welcome Collector
           </h1>
