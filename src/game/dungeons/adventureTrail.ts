@@ -41,7 +41,6 @@ export const adventureTrail: DungeonDefinition = {
       rare: scaleByLevel({ minLevel: 20, maxLevel: 40, level }),
       epic: scaleByLevel({ minLevel: 40, maxLevel: 60, level }),
       legendary: scaleByLevel({ minLevel: 60, maxLevel: 80, level }),
-      mythic: scaleByLevel({ minLevel: 80, maxLevel: 100, level }),
     },
   }),
   generate: async ({ game, seed: _seed, level, rewards }) => {

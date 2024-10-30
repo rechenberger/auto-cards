@@ -1,5 +1,6 @@
 import { getItemByName } from '@/game/allItems'
 import { allAspects, ItemAspect } from '@/game/aspects'
+import { COLLECTOR_ASPECT_PRECISION } from '@/game/config'
 import { getRarityDefinition, Rarity } from '@/game/rarities'
 import { rngFloat, rngGenerator, rngItems, Seed } from '@/game/seed'
 import { floor } from 'lodash-es'
@@ -45,7 +46,7 @@ export const generateCollectorItemAspects = async ({
       rngFloat({
         seed,
       }),
-      3,
+      COLLECTOR_ASPECT_PRECISION,
     ),
     multiplier,
   }))
