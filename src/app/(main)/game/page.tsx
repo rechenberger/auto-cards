@@ -38,7 +38,7 @@ export default async function Page() {
     limit: LIMIT_GAME_OVERVIEW,
   })
   const games = z.array(Game).parse(gamesRaw)
-  const isAdmin = await getIsAdmin()
+  const isAdmin = await getIsAdmin({ allowDev: true })
 
   return (
     <>
@@ -68,7 +68,9 @@ export default async function Page() {
         )} */}
         <div className="flex flex-row gap-2">
           <NewLiveMatchButton variant={'outline'} />
-          <NewGameButton gameMode="collector" variant={'outline'} />
+          {isAdmin && (
+            <NewGameButton gameMode="collector" variant={'outline'} />
+          )}
           <NewGameButton />
         </div>
       </div>
