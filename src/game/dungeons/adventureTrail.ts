@@ -1,7 +1,7 @@
 import { ItemData } from '@/components/game/ItemData'
 import { ItemName } from '../allItems'
 import { SeedArray, rngFloat } from '../seed'
-import { DungeonDefinition, DungeonRoom } from './dungeons'
+import { DungeonDefinition, DungeonRoom } from './DungeonDefinition'
 
 const simpleRoomsToRooms = ({
   simpleRooms,

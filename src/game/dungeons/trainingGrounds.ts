@@ -1,6 +1,6 @@
 import { generateCollectorItem } from '@/components/game/collector/generateCollectorItem'
 import { LoadoutData } from '../LoadoutData'
-import { DungeonDefinition, DungeonRoom } from './dungeons'
+import { DungeonDefinition, DungeonRoom } from './DungeonDefinition'
 
 export const trainingGrounds: DungeonDefinition = {
   name: 'trainingGrounds',

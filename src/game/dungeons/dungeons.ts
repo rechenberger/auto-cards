@@ -1,36 +1,11 @@
-import { ItemData } from '@/components/game/ItemData'
-import { Game } from '@/db/schema-zod'
 import { z } from 'zod'
-import { LoadoutData } from '../LoadoutData'
-import { SeedArray } from '../seed'
 import { adventureTrail } from './adventureTrail'
+import { DungeonDefinition } from './DungeonDefinition'
 import { trainingGrounds } from './trainingGrounds'
-
-export const DungeonRoom = z.discriminatedUnion('type', [
-  z.object({
-    type: z.literal('fight'),
-    loadout: LoadoutData,
-  }),
-  z.object({
-    type: z.literal('reward'),
-    items: z.array(ItemData),
-  }),
-])
-export type DungeonRoom = z.infer<typeof DungeonRoom>
 
 const allDungeonNames = ['trainingGrounds', 'adventureTrail'] as const
 export const DungeonName = z.enum(allDungeonNames)
 export type DungeonName = z.infer<typeof DungeonName>
-
-export type DungeonDefinition = {
-  name: DungeonName
-  description: string
-  levelMax: number
-  levelOnlyOnce?: boolean
-  generate: (ctx: { game: Game; seed: SeedArray; level: number }) => Promise<{
-    rooms: DungeonRoom[]
-  }>
-}
 
 export const allDungeons: DungeonDefinition[] = [
   trainingGrounds,
