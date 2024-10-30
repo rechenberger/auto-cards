@@ -1,4 +1,4 @@
-import { getIsAdmin } from '@/auth/getIsAdmin'
+import { isDev } from '@/auth/dev'
 import { Game } from '@/db/schema-zod'
 import { gameAction } from '@/game/gameAction'
 import { allRarities } from '@/game/rarities'
@@ -10,8 +10,9 @@ import { fightDungeon } from './fightDungeon'
 import { generateCollectorItem } from './generateCollectorItem'
 
 export const CollectorAdminButtons = async ({ game }: { game: Game }) => {
-  const isAdmin = await getIsAdmin({ allowDev: true })
-  if (!isAdmin) return null
+  // const isAdmin = await getIsAdmin({ allowDev: true })
+  // if (!isAdmin) return null
+  if (!isDev()) return null
 
   return (
     <>
