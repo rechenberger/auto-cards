@@ -1,6 +1,12 @@
+import { generateCollectorItemAspects } from '@/components/game/collector/generateCollectorItemAspects'
 import { ItemData } from '@/components/game/ItemData'
-import { rngFloat, rngGenerator } from '../seed'
+import { promiseSeqMap } from '@/lib/promiseSeqMap'
+import assert from 'assert'
+import { range } from 'lodash-es'
+import { randomRarityByWeight } from '../randomRarityByWeight'
+import { rngGenerator, rngItem } from '../seed'
 import { DungeonDefinition, DungeonRoom } from './DungeonDefinition'
+import { allMonsterParties } from './monsterParties'
 
 export const adventureTrail: DungeonDefinition = {
   name: 'adventureTrail',
@@ -10,24 +16,61 @@ export const adventureTrail: DungeonDefinition = {
   generate: async ({ seed: _seed, level }) => {
     const seed = rngGenerator({ seed: _seed })
 
-    const giveMonsterPower = (monster: ItemData) => {
-      const rnd = rngFloat({
+    // const giveMonsterPower = (monster: ItemData) => {
+    //   const rnd = rngFloat({
+    //     seed,
+    //   })
+    //   return {
+    //     ...monster,
+    //     aspects: [
+    //       ...(monster.aspects ?? []),
+    //       { name: 'monsterPower', rnd, multiplier: 1.2 ** level },
+    //     ],
+    //   } satisfies ItemData
+    // }
+
+    let monsterParties = allMonsterParties
+    monsterParties = monsterParties.filter((party) => party.minLevel <= level)
+    const monsterParty = rngItem({
+      seed,
+      items: monsterParties,
+    })
+    assert(monsterParty, 'No monster party found')
+
+    const noOfAddedItems = monsterParty.minLevel - level
+    let itemsWithAspects = [
+      ...monsterParty.itemsBase,
+      ...range(noOfAddedItems).map(() => {
+        return rngItem({
+          seed,
+          items: monsterParty.itemsAdded,
+        })
+      }),
+    ]
+    itemsWithAspects = await promiseSeqMap(itemsWithAspects, (item) => {
+      const rarity = randomRarityByWeight({
+        rarityWeights: {
+          common: 1,
+          uncommon: 0.5,
+        },
         seed,
       })
-      return {
-        ...monster,
-        aspects: [
-          ...(monster.aspects ?? []),
-          { name: 'monsterPower', rnd, multiplier: 1.2 ** level },
-        ],
-      } satisfies ItemData
-    }
+
+      return generateCollectorItemAspects({
+        item: item,
+        seed,
+        rarity,
+        // multiplier: 1.2 ** level,
+      })
+    })
+
+    const items: ItemData[] = [...monsterParty.itemsHero, ...itemsWithAspects]
 
     const rooms: DungeonRoom[] = [
       {
         type: 'fight',
         loadout: {
-          items: [{ name: 'hero' }, giveMonsterPower({ name: 'scarecrow' })],
+          items,
         },
       },
       {

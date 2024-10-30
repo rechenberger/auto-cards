@@ -1,5 +1,5 @@
 import { getItemByName } from '@/game/allItems'
-import { allAspects } from '@/game/aspects'
+import { allAspects, ItemAspect } from '@/game/aspects'
 import { getRarityDefinition, Rarity } from '@/game/rarities'
 import { rngFloat, rngGenerator, rngItems, Seed } from '@/game/seed'
 import { floor } from 'lodash-es'
@@ -9,10 +9,12 @@ export const generateCollectorItemAspects = async ({
   item,
   seed: _seed,
   rarity,
+  multiplier,
 }: {
   item: ItemData
   seed: Seed
   rarity: Rarity
+  multiplier?: number
 }) => {
   const seed = rngGenerator({ seed: _seed })
   const itemDef = await getItemByName(item.name)
@@ -36,7 +38,8 @@ export const generateCollectorItemAspects = async ({
     items: possibleAspects,
     count: noOfAspects,
   })
-  const aspects = aspectDefs.map((aspectDef, idx) => ({
+
+  const aspects: ItemAspect[] = aspectDefs.map((aspectDef) => ({
     name: aspectDef.name,
     rnd: floor(
       rngFloat({
@@ -44,6 +47,7 @@ export const generateCollectorItemAspects = async ({
       }),
       3,
     ),
+    multiplier,
   }))
 
   const itemData: ItemData = {
