@@ -21,6 +21,7 @@ export const rngGenerator = ({ seed }: { seed: Seed }) => {
   const generator = seedrandom(seedString)
   return generator
 }
+export type SeedGenerator = ReturnType<typeof rngGenerator>
 
 export const rng = ({ seed }: { seed: Seed }) => {
   const generator = rngGenerator({ seed })
@@ -76,6 +77,9 @@ export const rngItems = <T>({
   const itemsCopy = [...items]
   const results: T[] = []
   for (let i = 0; i < count; i++) {
+    if (!itemsCopy.length) {
+      break
+    }
     const idx = rngInt({ seed: [seed, i], max: itemsCopy.length - 1 })
     const item = itemsCopy.splice(idx, 1)[0]!
     results.push(item)

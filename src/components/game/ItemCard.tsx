@@ -1,13 +1,19 @@
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
+import { calcAspects } from '@/game/aspects'
 import { Changemaker } from '@/game/generateChangemakers'
 import { getRarityDefinition } from '@/game/rarities'
 import { getTagDefinition } from '@/game/tags'
 import {
+  ThemeId,
   defaultThemeId,
   fallbackThemeId,
   getThemeDefinition,
-  ThemeId,
 } from '@/game/themes'
 import { fontHeading, fontLore } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
@@ -16,23 +22,24 @@ import { capitalCase } from 'change-case'
 import { first } from 'lodash-es'
 import { Fragment } from 'react'
 import { AiItemImage } from '../ai/AiItemImage'
-import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
 import { ItemCardChip } from './ItemCardChip'
+import { ItemData } from './ItemData'
 import { ItemSellButton } from './ItemSellButton'
 import { ShopEffectDisplay } from './ShopEffectDisplay'
 import { StatsBars } from './StatsBars'
 import { StatsDisplay } from './StatsDisplay'
-import { streamItemCard } from './streamItemCard'
 import { TriggerDisplay } from './TriggerDisplay'
+import { getMyUserThemeIdWithFallback } from './getMyUserThemeId'
+import { streamItemCard } from './streamItemCard'
 
 export type ItemCardProps = {
   game?: Game
-  name: string
+  itemData: ItemData
   shopItem?: Game['data']['shopItems'][number] & { idx: number }
-  size?: '480' | '320' | '240' | '200' | '160' | '80'
+  size?: '480' | '320' | '240' | '200' | '160' | '120' | '80'
   className?: string
-  count?: number
   tooltipOnClick?: boolean
+  tooltipOnHover?: boolean
   changemaker?: Changemaker
   themeId?: ThemeId
   sideIdx?: number
@@ -42,17 +49,17 @@ export type ItemCardProps = {
   disableTooltip?: boolean
   disableLinks?: boolean
   showPrice?: boolean
+  priceAsWeight?: boolean
 }
 
 export const ItemCard = async (props: ItemCardProps) => {
   let {
     game,
-    name,
     shopItem,
     size = '200',
     className,
-    count = 1,
     tooltipOnClick,
+    tooltipOnHover,
     changemaker,
     themeId,
     sideIdx,
@@ -62,11 +69,14 @@ export const ItemCard = async (props: ItemCardProps) => {
     disableTooltip,
     disableLinks,
     showPrice,
+    itemData,
+    priceAsWeight,
   } = props
 
-  const item = await getItemByName(name)
-  const title = capitalCase(name)
+  const item = await getItemByName(itemData.name)
+  const title = capitalCase(itemData.name)
   const tag = getTagDefinition(first(item.tags) ?? 'default')
+  const count = itemData.count ?? 1
 
   if (!themeId) {
     themeId = await getMyUserThemeIdWithFallback()
@@ -76,10 +86,15 @@ export const ItemCard = async (props: ItemCardProps) => {
 
   const theme = await getThemeDefinition(themeId)
 
-  const rarity = item.rarity ? getRarityDefinition(item.rarity) : undefined
+  const rarityKey = itemData.rarity ?? item.rarity
+  const rarity = rarityKey ? getRarityDefinition(rarityKey) : undefined
   const gameId = game?.id
 
-  const inner = (
+  const bgShowsRarity = !!itemData.rarity
+
+  const aspects = itemData.aspects ? calcAspects(itemData.aspects) : []
+
+  let card = (
     <>
       {/* <HoverCard>
         <HoverCardTrigger> */}
@@ -101,6 +116,10 @@ export const ItemCard = async (props: ItemCardProps) => {
             'scale-[25%] -mx-[120px] -my-[187.5px]',
             onlyTop && '-my-[120px]',
           ],
+          size === '120' && [
+            'scale-[37.5%] -mx-[100px] -my-[150px]',
+            onlyTop && '-my-[100px]',
+          ],
           size === '160' && [
             'scale-[50%] -mx-[80px] -my-[125px]',
             onlyTop && '-my-[80px]',
@@ -118,7 +137,10 @@ export const ItemCard = async (props: ItemCardProps) => {
             onlyTop && 'lg:my-[80px]',
           ], // (500-500*1,5)/2 = 15
           'select-none',
+          // bgShowsRarity &&
+          //   onlyTop && ['ring ring-inset ring-transparent', rarity?.ringClass],
           className,
+          bgShowsRarity && rarity?.bgClass,
         )}
       >
         {canSell && <ItemSellButton gameId={gameId} item={item} />}
@@ -140,19 +162,32 @@ export const ItemCard = async (props: ItemCardProps) => {
                   'bg-[#313130] pl-4 pr-6 pb-1.5',
                   'rounded-br-[20px]',
                   'border-b-2 border-r-2 border-black',
+                  bgShowsRarity && rarity?.bgClass,
                 )}
               >
                 {title}
               </div>
             </div>
             <div className="absolute top-6 inset-x-0 flex flex-col items-end gap-1">
-              {!!item.tags?.length && (
-                <ItemCardChip>
-                  {item.tags?.map((t) => capitalCase(t)).join(', ')}
-                </ItemCardChip>
-              )}
-              {!!rarity && (
-                <ItemCardChip className={rarity.textClass}>
+              {item.tags?.map((tag) => (
+                <Fragment key={tag}>
+                  <ItemCardChip className="relative z-10">
+                    {capitalCase(tag)}
+                    {bgShowsRarity && (
+                      <div
+                        className={cn(
+                          'absolute inset-0 -z-10 border-r-2 border-black rounded-l-full',
+                          getTagDefinition(tag).bgClass,
+                        )}
+                      />
+                    )}
+                  </ItemCardChip>
+                </Fragment>
+              ))}
+              {!!rarity && !bgShowsRarity && (
+                <ItemCardChip
+                  className={cn(!bgShowsRarity && rarity.textClass)}
+                >
                   {capitalCase(rarity.name)}
                 </ItemCardChip>
               )}
@@ -203,8 +238,9 @@ export const ItemCard = async (props: ItemCardProps) => {
           <div
             className={cn(
               'flex-1 flex flex-col justify-center rounded-lg p-2 text-xs relative',
-              tag.bgClass,
-              tag.bgClass && 'border-2 border-black',
+              bgShowsRarity
+                ? [rarity?.bgClass, rarity?.bgClass && 'border-2 border-black']
+                : [tag.bgClass, tag.bgClass && 'border-2 border-black'],
               theme.classBottom,
             )}
           >
@@ -212,7 +248,11 @@ export const ItemCard = async (props: ItemCardProps) => {
               {showPrice && !!item.price && (
                 <StatsDisplay
                   size="sm"
-                  stats={{ gold: item.price }}
+                  stats={
+                    priceAsWeight
+                      ? { weight: item.price }
+                      : { gold: item.price }
+                  }
                   className={cn(theme.classBottom)}
                 />
               )}
@@ -255,6 +295,44 @@ export const ItemCard = async (props: ItemCardProps) => {
                   />
                 </Fragment>
               ))}
+              {!!aspects?.length && (
+                <div className="flex flex-row gap-2 flex-wrap items-center justify-center">
+                  {aspects?.map((aspect, idx) => {
+                    return (
+                      <Fragment key={idx}>
+                        {aspect.triggers?.map((trigger, idx) => (
+                          <Fragment key={idx}>
+                            <TriggerDisplay
+                              trigger={trigger}
+                              itemIdx={itemIdx}
+                              sideIdx={sideIdx}
+                              triggerIdx={idx}
+                              disableTooltip={disableTooltip}
+                              disableLinks={disableLinks}
+                              className={cn(
+                                'min-w-min p-1 rounded-xl',
+                                'relative overflow-hidden z-10',
+                                aspect.valuePercent === 1
+                                  ? 'ring-2 ring-yellow-500'
+                                  : '',
+                              )}
+                            >
+                              <div
+                                className={cn(
+                                  'absolute inset-y-0 left-0 bg-black/50 bg-opacity-100 -z-10',
+                                )}
+                                style={{
+                                  width: `${aspect.valuePercent * 100}%`,
+                                }}
+                              />
+                            </TriggerDisplay>
+                          </Fragment>
+                        ))}
+                      </Fragment>
+                    )
+                  })}
+                </div>
+              )}
               {item.shopEffects?.map((shopEffect, idx) => (
                 <Fragment key={idx}>
                   <ShopEffectDisplay
@@ -291,7 +369,7 @@ export const ItemCard = async (props: ItemCardProps) => {
   )
 
   if (tooltipOnClick) {
-    return (
+    card = (
       <>
         <ActionWrapper
           action={async () => {
@@ -299,11 +377,42 @@ export const ItemCard = async (props: ItemCardProps) => {
             return streamItemCard({ ...props, onlyTop: false })
           }}
         >
-          <div className="cursor-pointer flex">{inner}</div>
+          <div className="flex">{card}</div>
         </ActionWrapper>
       </>
     )
   }
 
-  return inner
+  if (tooltipOnHover) {
+    card = (
+      <>
+        <Tooltip>
+          <TooltipTrigger asChild>{card}</TooltipTrigger>
+          <TooltipContent
+            className="p-0 border-none bg-transparent rounded-xl"
+            side={
+              sideIdx === undefined ? 'top' : sideIdx === 0 ? 'right' : 'left'
+            }
+          >
+            <ItemCard
+              {...props}
+              size="320"
+              tooltipOnHover={false}
+              tooltipOnClick={false}
+              onlyTop={false}
+            />
+            {changemaker && (
+              <div className="absolute -bottom-6 flex flex-col items-center inset-x-0">
+                <div className="bg-[#313130] text-white px-4 py-1 rounded-b-md">
+                  Necessity: {Math.round(changemaker.necessity * 100)}%
+                </div>
+              </div>
+            )}
+          </TooltipContent>
+        </Tooltip>
+      </>
+    )
+  }
+
+  return card
 }

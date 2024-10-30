@@ -4,6 +4,7 @@ import { ThemeId } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { Fragment } from 'react'
 import { ItemCard } from './ItemCard'
+import { ItemData } from './ItemData'
 import { TinyItem } from './TinyItem'
 
 export const ItemCardGrid = async ({
@@ -12,7 +13,7 @@ export const ItemCardGrid = async ({
   themeId,
   size,
 }: {
-  items: { name: string }[]
+  items: ItemData[]
   className?: string
   themeId?: ThemeId
   size?: '80' | 'tiny' | 'responsive'
@@ -28,7 +29,7 @@ export const ItemCardGrid = async ({
     >
       {betterItems.map((item, idx) => (
         <Fragment key={idx}>
-          <TinyItem name={item.name} count={item.count} />
+          <TinyItem itemData={item} />
         </Fragment>
       ))}
     </div>
@@ -50,8 +51,7 @@ export const ItemCardGrid = async ({
           <Fragment key={idx}>
             <div className="relative">
               <ItemCard
-                name={item.name}
-                count={item.count}
+                itemData={item}
                 size={'80'}
                 onlyTop
                 themeId={themeId}

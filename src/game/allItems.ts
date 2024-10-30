@@ -1,8 +1,8 @@
 import { keyBy } from 'lodash-es'
 import { map } from 'remeda'
 import { z } from 'zod'
-import { GAME_VERSION, IGNORE_SPACE } from './config'
 import { ItemDefinition } from './ItemDefinition'
+import { GAME_VERSION, IGNORE_SPACE } from './config'
 
 const space = (space: number) => {
   return IGNORE_SPACE ? undefined : space
@@ -1088,7 +1088,7 @@ const allItemsConst = [
   {
     name: 'leatherArmor',
     prompt: 'a leather armor on an armor stand',
-    tags: ['accessory', 'hunting'],
+    tags: ['armor', 'hunting'],
     rarity: 'uncommon',
     price: 7,
     shop: true,
@@ -1196,6 +1196,7 @@ const allItemsConst = [
   {
     name: 'cursedPiggyBank',
     prompt: 'a bright pink piggy bank but with evil red eyes',
+    gameModes: ['shopper'],
     tags: ['accessory'],
     rarity: 'common',
     price: 3,
@@ -2247,7 +2248,11 @@ export const allItemNames = map(allItemsConst, (item) => item.name)
 export const ItemName = z.enum(allItemNames)
 export type ItemName = z.infer<typeof ItemName>
 
-const allItems: ItemDefinition[] = allItemsConst.filter(
+export type BetterItemDefinition = ItemDefinition & {
+  name: ItemName
+}
+
+const allItems: BetterItemDefinition[] = allItemsConst.filter(
   (i: ItemDefinition) => !i.version || i.version <= GAME_VERSION,
 )
 
@@ -2262,7 +2267,7 @@ export const tryGetItemByName = async (name: string) => {
   return item
 }
 
-export const fallbackItemDef = (name: string): ItemDefinition => ({
+export const fallbackItemDef = (name: ItemName): BetterItemDefinition => ({
   name,
   tags: ['deprecated'],
   price: 0,
@@ -2270,7 +2275,9 @@ export const fallbackItemDef = (name: string): ItemDefinition => ({
   description: 'Item was removed from the game',
 })
 
-export const getItemByName = async (name: string): Promise<ItemDefinition> => {
+export const getItemByName = async (
+  name: ItemName,
+): Promise<BetterItemDefinition> => {
   const item = await tryGetItemByName(name)
   if (!item) {
     // throw new Error(`Item not found: ${name}`)

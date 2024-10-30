@@ -11,7 +11,7 @@ import { StatDescriptionsItem } from './StatDescriptionsItem'
 export const streamItemCard = async (props: ItemCardProps) => {
   return superAction(async () => {
     streamToast({
-      title: capitalCase(props.name),
+      title: capitalCase(props.itemData.name),
       description: (
         <>
           <div className="flex flex-col gap-4 max-h-[calc(100svh-160px)] overflow-auto max-md:-mx-4 items-center">
@@ -20,6 +20,7 @@ export const streamItemCard = async (props: ItemCardProps) => {
                 {...props}
                 size="320"
                 tooltipOnClick={false}
+                tooltipOnHover={false}
                 showPrice
               />
             </div>
@@ -28,7 +29,7 @@ export const streamItemCard = async (props: ItemCardProps) => {
                 Necessity: {Math.round(props.changemaker.necessity * 100)}%
               </div>
             )}
-            <StatDescriptionsItem name={props.name} />
+            <StatDescriptionsItem itemData={props.itemData} />
           </div>
         </>
       ),

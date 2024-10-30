@@ -1,7 +1,9 @@
 import { Trigger } from '@/game/ItemDefinition'
 import { Stat } from '@/game/stats'
+import { cn } from '@/lib/utils'
 import { capitalCase } from 'change-case'
 import { every } from 'lodash-es'
+import { ReactNode } from 'react'
 import { MatchCardCooldown } from './MatchCardCooldown'
 import { StatsDisplay } from './StatsDisplay'
 import { TextKeywordDisplay } from './TextKeywordDisplay'
@@ -13,6 +15,8 @@ export const TriggerDisplay = ({
   triggerIdx,
   disableTooltip,
   disableLinks,
+  className,
+  children,
 }: {
   trigger: Trigger
   sideIdx?: number
@@ -20,6 +24,8 @@ export const TriggerDisplay = ({
   triggerIdx?: number
   disableTooltip?: boolean
   disableLinks?: boolean
+  className?: string
+  children?: ReactNode
 }) => {
   if (trigger.hidden) {
     return null
@@ -35,7 +41,12 @@ export const TriggerDisplay = ({
 
   if (trigger.description) {
     return (
-      <div className="px-2 py-2 bg-border/40 rounded-md flex flex-col gap-1 items-center min-w-40">
+      <div
+        className={cn(
+          'p-2 bg-border/40 rounded-md flex flex-col gap-1 items-center min-w-40',
+          className,
+        )}
+      >
         <div className="text-center text-xs">
           <TextKeywordDisplay
             text={trigger.description}
@@ -49,29 +60,36 @@ export const TriggerDisplay = ({
 
   return (
     <>
-      <div className="px-2 py-2 bg-border/40 rounded-md flex flex-col gap-1 items-center min-w-40">
-        <div className="flex flex-row gap-1 justify-center">
-          <div className="font-bold">
-            {trigger.type === 'interval' ? (
-              sideIdx !== undefined &&
-              itemIdx !== undefined &&
-              triggerIdx !== undefined ? (
-                <MatchCardCooldown
-                  sideIdx={sideIdx}
-                  itemIdx={itemIdx}
-                  triggerIdx={triggerIdx}
-                />
+      <div
+        className={cn(
+          'p-2 bg-border/40 rounded-md flex flex-col gap-1 items-center min-w-40',
+          className,
+        )}
+      >
+        {trigger.type !== 'startOfBattle' && (
+          <div className="flex flex-row gap-1 justify-center">
+            <div className="font-bold">
+              {trigger.type === 'interval' ? (
+                sideIdx !== undefined &&
+                itemIdx !== undefined &&
+                triggerIdx !== undefined ? (
+                  <MatchCardCooldown
+                    sideIdx={sideIdx}
+                    itemIdx={itemIdx}
+                    triggerIdx={triggerIdx}
+                  />
+                ) : (
+                  `Every ${trigger.cooldown / 1000}s`
+                )
               ) : (
-                `Every ${trigger.cooldown / 1000}s`
-              )
-            ) : (
-              `${capitalCase(trigger.type)}`
+                `${capitalCase(trigger.type)}`
+              )}
+            </div>
+            {trigger.chancePercent && (
+              <div className="">({Math.round(trigger.chancePercent)}%)</div>
             )}
           </div>
-          {trigger.chancePercent && (
-            <div className="">({Math.round(trigger.chancePercent)}%)</div>
-          )}
-        </div>
+        )}
         {trigger.statsRequiredTarget && (
           <div className="flex flex-row gap-2 items-center">
             <div>If Target has:</div>
@@ -169,6 +187,7 @@ export const TriggerDisplay = ({
             </div>
           </div>
         )}
+        {children}
       </div>
     </>
   )

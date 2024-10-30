@@ -227,6 +227,7 @@ export default async function Page({
           paramKey="round"
           label="Round"
           nullLabel="All Rounds"
+          component="dropdown"
         />
         <Tabs value={view}>
           <TabsList>

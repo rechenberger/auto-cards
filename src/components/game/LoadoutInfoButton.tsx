@@ -1,4 +1,4 @@
-import { LoadoutData } from '@/db/schema-zod'
+import { LoadoutData } from '@/game/LoadoutData'
 import { calcStats } from '@/game/calcStats'
 import {
   streamDialog,

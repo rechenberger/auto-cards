@@ -37,8 +37,7 @@ export const CraftingList = async ({
                       {idx > 0 && <Plus className="size-8" />}
                       <div className="flex flex-col gap-2 items-center self-start">
                         <ItemCard
-                          name={item.name}
-                          count={item.count}
+                          itemData={item}
                           tooltipOnClick
                           size="160"
                           onlyTop
@@ -96,8 +95,7 @@ export const CraftingList = async ({
                       {idx > 0 && <Plus className="size-8" />}
                       <div className="flex flex-col gap-2 items-center self-start">
                         <ItemCard
-                          name={item.name}
-                          count={item.count}
+                          itemData={item}
                           tooltipOnClick
                           size="160"
                           onlyTop

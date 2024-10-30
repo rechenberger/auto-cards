@@ -6,7 +6,7 @@ import {
   encodeLoadout,
   playgroundHref,
 } from '@/app/(main)/admin/playground/playgroundHref'
-import { LoadoutData } from '@/db/schema-zod'
+import { LoadoutData } from '@/game/LoadoutData'
 import { createSeed } from '@/game/seed'
 import { cn } from '@/lib/utils'
 import { atom, useAtom } from 'jotai'

@@ -38,7 +38,7 @@ export default async function Page() {
     limit: LIMIT_GAME_OVERVIEW,
   })
   const games = z.array(Game).parse(gamesRaw)
-  const isAdmin = await getIsAdmin()
+  const isAdmin = await getIsAdmin({ allowDev: true })
 
   return (
     <>
@@ -68,6 +68,9 @@ export default async function Page() {
         )} */}
         <div className="flex flex-row gap-2">
           <NewLiveMatchButton variant={'outline'} />
+          {isAdmin && (
+            <NewGameButton gameMode="collector" variant={'outline'} />
+          )}
           <NewGameButton />
         </div>
       </div>
@@ -75,12 +78,17 @@ export default async function Page() {
         {games.map((game) => (
           <Fragment key={game.id}>
             <Card className="flex flex-col gap-4 p-4 items-center">
-              <div className="flex flex-row gap-4 justify-center items-center">
-                <GameMatchBoard game={game} />
-                {game.data.roundNo >= NO_OF_ROUNDS - 1 && (
-                  <LeaderboardRankCardByGame gameId={game.id} tiny />
-                )}
-              </div>
+              {game.gameMode === 'shopper' && (
+                <div className="flex flex-row gap-4 justify-center items-center">
+                  <GameMatchBoard game={game} />
+                  {game.data.roundNo >= NO_OF_ROUNDS - 1 && (
+                    <LeaderboardRankCardByGame gameId={game.id} tiny />
+                  )}
+                </div>
+              )}
+              {game.gameMode === 'collector' && (
+                <div className="">Endless Mode</div>
+              )}
               <ItemCardGrid items={game.data.currentLoadout.items} />
               {game.liveMatchId && (
                 <div className="text-sm opacity-60 flex flex-row items-center gap-1">

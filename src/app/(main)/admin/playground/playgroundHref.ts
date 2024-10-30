@@ -1,4 +1,5 @@
-import { LoadoutData } from '@/db/schema-zod'
+import { LoadoutData } from '@/game/LoadoutData'
+import { ItemName } from '@/game/allItems'
 
 export const encodeLoadout = (loadout: LoadoutData) => {
   return loadout.items
@@ -15,7 +16,7 @@ export const decodeLoadout = (encoded: string): LoadoutData => {
   const items = encoded.split(',').map((item) => {
     const [count, name] = item.split(':')
     return {
-      name,
+      name: name as ItemName,
       count: Number(count),
     }
   })

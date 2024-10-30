@@ -3,6 +3,7 @@ import { getMyUserIdOrLogin } from '@/auth/getMyUser'
 import { EndOfGameView } from '@/components/game/EndOfGameView'
 import { MatchView } from '@/components/game/MatchView'
 import { ShopView } from '@/components/game/ShopView'
+import { CollectorGamePage } from '@/components/game/collector/CollectorGamePage'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { GAME_VERSION, NO_OF_ROUNDS } from '@/game/config'
@@ -17,8 +18,10 @@ export const metadata: Metadata = {
 
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: Promise<{ gameId: string }>
+  searchParams: Promise<Record<string, string>>
 }) {
   const { gameId } = await params
   const userId = await getMyUserIdOrLogin()
@@ -33,6 +36,10 @@ export default async function Page({
 
   if (game.version < GAME_VERSION) {
     return <EndOfGameView game={game} oldVersion />
+  }
+
+  if (game.gameMode === 'collector') {
+    return <CollectorGamePage game={game} searchParams={searchParams} />
   }
 
   if (game.data.roundNo >= NO_OF_ROUNDS) {

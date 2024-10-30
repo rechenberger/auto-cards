@@ -56,6 +56,7 @@ export default async function Page({
           paramKey="tag"
           label="Tag"
           nullLabel="All Tags"
+          component="dropdown"
         />
         <SimpleParamSelect
           options={allRarities.map((rarity) => ({
@@ -65,6 +66,7 @@ export default async function Page({
           paramKey="rarity"
           label="Rarity"
           nullLabel="All Rarities"
+          component="dropdown"
         />
         <ThemeSwitchButton />
       </div>
@@ -73,7 +75,12 @@ export default async function Page({
           <Fragment key={idx}>
             <div className="relative">
               <Link href={`/docs/items/${item.name}`}>
-                <ItemCard name={item.name} size="320" showPrice disableLinks />
+                <ItemCard
+                  itemData={{ name: item.name }}
+                  size="320"
+                  showPrice
+                  disableLinks
+                />
               </Link>
               {isAdmin && (
                 <AiImageGalleryItem

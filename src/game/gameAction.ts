@@ -5,7 +5,6 @@ import {
   streamToast,
   superAction,
 } from '@/super-action/action/createSuperAction'
-import { streamRevalidatePath } from '@/super-action/action/streamRevalidatePath'
 import { cloneDeep } from 'lodash-es'
 import { revalidatePath } from 'next/cache'
 
@@ -38,7 +37,10 @@ export const gameAction = async ({
     await action({ ctx })
     await updateGame({ game: ctx.game })
 
-    streamRevalidatePath('/game')
-    streamRevalidatePath(`/game/${gameId}`)
+    revalidatePath('/game')
+    revalidatePath(`/game/${gameId}`)
+
+    // streamRevalidatePath('/game')
+    // streamRevalidatePath(`/game/${gameId}`)
   })
 }

@@ -5,22 +5,47 @@ export const allRarityDefinitions = [
   {
     name: 'common',
     textClass: '',
+    ringClass: '',
+    bgClass: 'bg-gradient-to-br from-gray-500 to-neutral-500',
+    aspects: {
+      normal: 0,
+    },
   },
   {
     name: 'uncommon',
     textClass: 'text-green-500',
+    ringClass: 'ring-green-500',
+    bgClass: 'bg-gradient-to-br from-lime-500/50 to-green-600/50',
+    aspects: {
+      normal: 1,
+    },
   },
   {
     name: 'rare',
     textClass: 'text-blue-500',
+    ringClass: 'ring-blue-500',
+    bgClass: 'bg-gradient-to-br from-blue-500/50 to-indigo-600/50',
+    aspects: {
+      normal: 2,
+    },
   },
   {
     name: 'epic',
     textClass: 'text-purple-500',
+    ringClass: 'ring-purple-500',
+    bgClass: 'bg-gradient-to-br from-red-600/80 to-purple-600/80',
+    aspects: {
+      normal: 3,
+    },
   },
   {
     name: 'legendary',
-    textClass: 'text-yellow-500',
+    textClass: 'text-amber-500',
+    ringClass: 'ring-amber-500',
+    bgClass: 'bg-gradient-to-br from-amber-500/80 to-orange-600/80',
+    aspects: {
+      normal: 4,
+    },
   },
 ] as const
 

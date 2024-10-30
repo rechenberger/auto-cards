@@ -1,5 +1,5 @@
+import { BetterItemDefinition } from '@/game/allItems'
 import { gameAction } from '@/game/gameAction'
-import { ItemDefinition } from '@/game/ItemDefinition'
 import { negativeItems, sumItems } from '@/game/sumItems'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
@@ -10,7 +10,7 @@ export const ItemSellButton = ({
   item,
 }: {
   gameId?: string
-  item: ItemDefinition
+  item: BetterItemDefinition
 }) => {
   const sellPrice = item.sellPrice ?? Math.ceil(item.price / 2)
   if (!gameId || sellPrice <= 0) {

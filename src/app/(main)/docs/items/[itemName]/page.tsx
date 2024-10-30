@@ -4,7 +4,7 @@ import { GenerateAllImagesButton } from '@/components/ai/GenerateAllImagesButton
 import { getMyUserThemeIdWithFallback } from '@/components/game/getMyUserThemeId'
 import { ItemCard } from '@/components/game/ItemCard'
 import { StatDescriptionsItem } from '@/components/game/StatDescriptionsItem'
-import { getItemByName } from '@/game/allItems'
+import { getItemByName, ItemName } from '@/game/allItems'
 import { getAllThemes } from '@/game/themes'
 import { capitalCase } from 'change-case'
 import { map } from 'lodash-es'
@@ -14,7 +14,7 @@ import { Fragment } from 'react'
 
 type PageProps = {
   params: Promise<{
-    itemName: string
+    itemName: ItemName
   }>
 }
 
@@ -39,10 +39,10 @@ export default async function Page({ params }: PageProps) {
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-4">
-        <ItemCard name={itemName} size="480" showPrice />
+        <ItemCard itemData={{ name: itemName }} size="480" showPrice />
         <div className="flex-1 flex flex-col gap-4">
           <div className="p-4 bg-border rounded-lg">
-            <StatDescriptionsItem name={itemName} />
+            <StatDescriptionsItem itemData={{ name: itemName }} />
           </div>
           {isAdmin && (
             <div className="flex-1 p-4 bg-border rounded-lg">
@@ -64,7 +64,7 @@ export default async function Page({ params }: PageProps) {
                 <Fragment key={theme.name}>
                   <div className="relative">
                     <ItemCard
-                      name={itemName}
+                      itemData={{ name: itemName }}
                       themeId={theme.name}
                       size="320"
                       showPrice

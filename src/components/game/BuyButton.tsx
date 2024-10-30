@@ -1,6 +1,7 @@
 import { Game } from '@/db/schema-zod'
 import { getItemByName } from '@/game/allItems'
 import { calcStats, throwIfNegativeStats } from '@/game/calcStats'
+import { countifyItems } from '@/game/countifyItems'
 import { gameAction } from '@/game/gameAction'
 import { generateShopItems } from '@/game/generateShopItems'
 import { cn } from '@/lib/utils'
@@ -73,11 +74,12 @@ export const BuyButton = async ({
                   throw new Error('You can only have a unique item once')
                 }
 
-                if (itemInLoadout) {
-                  itemInLoadout.count = (itemInLoadout.count ?? 1) + 1
-                } else {
-                  loadout.items = [...loadout.items, { name: shopItem.name }]
-                }
+                loadout.items = [
+                  ...loadout.items,
+                  { name: shopItem.name, aspects: shopItem.aspects },
+                ]
+                loadout.items = countifyItems(loadout.items)
+
                 const stats = await calcStats({
                   loadout: loadout,
                 })

@@ -1,8 +1,8 @@
-import { LoadoutData } from '@/db/schema-zod'
 import { capitalCase } from 'change-case'
 import { keys, map, omitBy, range, sumBy, uniq } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { ItemDefinition } from './ItemDefinition'
+import { LoadoutData } from './LoadoutData'
 import { randomStats } from './randomStats'
 import { Stat, Stats } from './stats'
 

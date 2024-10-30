@@ -1,13 +1,15 @@
 import { getMyUser } from '@/auth/getMyUser'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
-import { Game, GameData, LiveMatch } from '@/db/schema-zod'
+import { Game, LiveMatch } from '@/db/schema-zod'
 import { sendDiscordMessage } from '@/lib/discord'
 import { typedParse } from '@/lib/typedParse'
 import { createId } from '@paralleldrive/cuid2'
 import { first } from 'lodash-es'
 import { GAME_VERSION } from './config'
-import { DefaultGameMode } from './gameMode'
+import { startingDungeonAccesses } from './dungeons/DungeonAccess'
+import { GameData } from './GameData'
+import { DefaultGameMode, GameMode } from './gameMode'
 import { generateShopItems } from './generateShopItems'
 import { getUserName } from './getUserName'
 import { roundStats } from './roundStats'
@@ -16,10 +18,12 @@ export const createGame = async ({
   userId,
   liveMatch,
   skipSave,
+  gameMode = DefaultGameMode,
 }: {
   userId: string
   liveMatch?: LiveMatch
   skipSave?: boolean
+  gameMode?: GameMode
 }): Promise<Game> => {
   const id = createId()
 
@@ -32,18 +36,23 @@ export const createGame = async ({
       seed: liveMatch?.data.seed,
       shopItems: [],
       currentLoadout: {
-        items: [
-          {
-            name: 'hero',
-          },
-        ],
+        items:
+          gameMode === 'shopper'
+            ? [
+                {
+                  name: 'hero',
+                },
+              ]
+            : [],
       },
+      dungeonAccesses:
+        gameMode === 'collector' ? startingDungeonAccesses : undefined,
     }),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     liveMatchId: liveMatch?.id ?? null,
     version: GAME_VERSION,
-    gameMode: DefaultGameMode,
+    gameMode,
   }
 
   game.data.shopItems = await generateShopItems({ game })

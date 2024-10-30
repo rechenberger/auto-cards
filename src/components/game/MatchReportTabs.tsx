@@ -1,6 +1,7 @@
 import { playgroundHref } from '@/app/(main)/admin/playground/playgroundHref'
 import { getIsAdmin } from '@/auth/getIsAdmin'
-import { Game, LoadoutData } from '@/db/schema-zod'
+import { Game } from '@/db/schema-zod'
+import { LoadoutData } from '@/game/LoadoutData'
 import { Palette } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '../ui/button'

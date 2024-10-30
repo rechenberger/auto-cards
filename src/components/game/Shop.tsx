@@ -78,8 +78,8 @@ export const Shop = async ({ game }: { game: Game }) => {
                 )}
               >
                 <ItemCard
+                  itemData={shopItem}
                   game={game}
-                  name={shopItem.name}
                   shopItem={shopItem}
                   tooltipOnClick
                   size="160"

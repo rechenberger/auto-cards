@@ -30,7 +30,7 @@ export const TextKeywordDisplay = async ({
 
               const item = items.find((item) => item.name === text)
               if (item) {
-                return <TinyItem name={item.name} />
+                return <TinyItem itemData={{ name: item.name }} />
               }
 
               const tag = allTagDefinitions.find((tag) => tag.name === text)

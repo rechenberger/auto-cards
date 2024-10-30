@@ -13,6 +13,7 @@ import { MatchReportProvider } from './MatchReportProvider'
 import { MatchReportTabs } from './MatchReportTabs'
 import { MatchSide } from './MatchSide'
 import { NextRoundButton } from './NextRoundButton'
+import { NextRoundButtonCollector } from './collector/NextRoundButtonCollector'
 
 export const MatchView = async ({
   game,
@@ -110,7 +111,12 @@ export const MatchView = async ({
               seed={match.data.seed}
             />
             <div className="flex-1" />
-            {!!game && <NextRoundButton game={game} />}
+            {!!game &&
+              (game.gameMode === 'collector' ? (
+                <NextRoundButtonCollector game={game} />
+              ) : (
+                <NextRoundButton game={game} />
+              ))}
           </div>
           <div
             style={{

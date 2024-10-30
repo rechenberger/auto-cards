@@ -1,7 +1,8 @@
+import { ItemName } from './allItems'
 import { countifyItems } from './countifyItems'
 
 type Items = {
-  name: string
+  name: ItemName
   count?: number
 }[]
 

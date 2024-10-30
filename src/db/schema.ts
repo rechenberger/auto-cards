@@ -1,3 +1,5 @@
+import { GameData } from '@/game/GameData'
+import { LoadoutData } from '@/game/LoadoutData'
 import { GAME_VERSION } from '@/game/config'
 import { DefaultGameMode, GameMode } from '@/game/gameMode'
 import { createId } from '@paralleldrive/cuid2'
@@ -5,11 +7,9 @@ import { relations } from 'drizzle-orm'
 import { index, int, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 import { users } from './schema-auth'
 import {
-  GameData,
   LiveMatchData,
   LiveMatchParticipationData,
   LiveMatchStatus,
-  LoadoutData,
   MatchData,
 } from './schema-zod'
 

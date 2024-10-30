@@ -1,14 +1,17 @@
 import { getMyUserIdOrLogin } from '@/auth/getMyUser'
 import { ButtonProps } from '@/components/ui/button'
 import { createGame } from '@/game/createGame'
+import { GameMode } from '@/game/gameMode'
 import { superAction } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { redirect } from 'next/navigation'
 
 export const NewGameButton = ({
   variant,
+  gameMode,
 }: {
   variant?: ButtonProps['variant']
+  gameMode?: GameMode
 }) => {
   return (
     <ActionButton
@@ -19,12 +22,12 @@ export const NewGameButton = ({
 
         return superAction(async () => {
           const userId = await getMyUserIdOrLogin()
-          const game = await createGame({ userId })
+          const game = await createGame({ userId, gameMode })
           redirect(`/game/${game.id}`)
         })
       }}
     >
-      New Game
+      {gameMode === 'collector' ? 'New Endless Game' : 'New Game'}
     </ActionButton>
   )
 }

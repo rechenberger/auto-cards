@@ -1,6 +1,6 @@
-import { LoadoutData } from '@/db/schema-zod'
 import { sum } from 'lodash-es'
 import { getItemByName } from './allItems'
+import { LoadoutData } from './LoadoutData'
 
 export const calcLoadoutPrice = async (loadout: LoadoutData) => {
   const prices = await Promise.all(

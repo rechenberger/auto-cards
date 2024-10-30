@@ -1,5 +1,5 @@
 import { playgroundHref } from '@/app/(main)/admin/playground/playgroundHref'
-import { LoadoutData } from '@/db/schema-zod'
+import { LoadoutData } from '@/game/LoadoutData'
 import {
   rngFloat,
   rngGenerator,
@@ -17,6 +17,7 @@ import {
   range,
 } from 'lodash-es'
 import { allItemsForPerformance, fallbackItemDef } from './allItems'
+import { itemAspectsToTriggers } from './aspects'
 import { calcCooldown } from './calcCooldown'
 import {
   addStats,
@@ -72,12 +73,22 @@ const generateMatchStateSides = (input: GenerateMatchInput) => {
     let items = p.loadout.items.map((i) => {
       const def =
         allItems.find((d) => d.name === i.name) ?? fallbackItemDef(i.name)
-      return {
+
+      const itemWithDef = {
         ...def,
         statsItem: def.statsItem ? cloneStats(def.statsItem) : undefined,
-        count: def.unique ? 1 : (i.count ?? 1),
+        count: def.unique ? 1 : i.count ?? 1,
         itemIdx: -1,
       }
+
+      if (i.aspects) {
+        itemWithDef.triggers = [
+          ...(itemWithDef.triggers ?? []),
+          ...itemAspectsToTriggers(i.aspects),
+        ]
+      }
+
+      return itemWithDef
     })
 
     items = orderItemsWithoutLookup(items)
@@ -359,7 +370,7 @@ export const generateMatch = ({
     }
 
     let statsForItem = item.statsItem?.healthMax
-      ? (item.statsItem ?? {}) // creatures only have their own stats
+      ? item.statsItem ?? {} // creatures only have their own stats
       : item.statsItem
         ? sumStats2(mySide.stats, item.statsItem) // merge stats of item and hero
         : mySide.stats // fallback to hero stats

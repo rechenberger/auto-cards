@@ -1,4 +1,5 @@
-import { Game, LoadoutData } from '@/db/schema-zod'
+import { Game } from '@/db/schema-zod'
+import { LoadoutData } from '@/game/LoadoutData'
 import { calcStats } from '@/game/calcStats'
 import { countifyItems } from '@/game/countifyItems'
 import { orderItems } from '@/game/orderItems'
@@ -28,12 +29,11 @@ export const LoadoutDisplay = async ({
     <>
       <div className="xl:hidden">
         <CardRow>
-          {map(items, (item) => (
-            <Fragment key={item.name}>
+          {map(items, (item, idx) => (
+            <Fragment key={idx}>
               <ItemCard
+                itemData={item}
                 game={game}
-                name={item.name}
-                count={item.count}
                 tooltipOnClick
                 canSell={canSell}
                 size="160"
@@ -45,12 +45,11 @@ export const LoadoutDisplay = async ({
       <div className="max-xl:hidden">
         <ErrorBoundary>
           <HandDisplay>
-            {map(items, (item) => (
-              <Fragment key={item.name}>
+            {map(items, (item, idx) => (
+              <Fragment key={idx}>
                 <ItemCard
+                  itemData={item}
                   game={game}
-                  name={item.name}
-                  count={item.count}
                   size="240"
                   tooltipOnClick
                   canSell={canSell}

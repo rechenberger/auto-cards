@@ -8,7 +8,12 @@ export const TitleScreen = async () => {
 
   const cards = allItems.map((item) => (
     <Fragment key={item.name}>
-      <ItemCard key={item.name} name={item.name} size="80" disableTooltip />
+      <ItemCard
+        key={item.name}
+        itemData={{ name: item.name }}
+        size="80"
+        disableTooltip
+      />
     </Fragment>
   ))
 
