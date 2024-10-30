@@ -21,6 +21,7 @@ export const rngGenerator = ({ seed }: { seed: Seed }) => {
   const generator = seedrandom(seedString)
   return generator
 }
+export type SeedGenerator = ReturnType<typeof rngGenerator>
 
 export const rng = ({ seed }: { seed: Seed }) => {
   const generator = rngGenerator({ seed })
