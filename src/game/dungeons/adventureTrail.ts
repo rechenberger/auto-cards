@@ -104,10 +104,7 @@ export const adventureTrail: DungeonDefinition = {
         ]
         itemsWithAspects = await promiseSeqMap(itemsWithAspects, (item) => {
           const rarity = randomRarityByWeight({
-            rarityWeights: {
-              common: 1,
-              uncommon: 0.5,
-            },
+            rarityWeights: rewards.rarityWeights,
             seed,
           })
 
