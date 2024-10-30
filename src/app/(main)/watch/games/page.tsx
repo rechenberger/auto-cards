@@ -1,3 +1,4 @@
+import { getIsAdmin } from '@/auth/getIsAdmin'
 import { GameMatchBoard } from '@/components/game/GameMatchBoard'
 import { LeaderboardRankCardByGame } from '@/components/game/LeaderboardRankCardByGame'
 import { TimeAgo } from '@/components/simple/TimeAgo'
@@ -11,6 +12,7 @@ import {
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { getUserName } from '@/game/getUserName'
+import { capitalCase } from 'change-case'
 import { desc, eq } from 'drizzle-orm'
 import { Metadata } from 'next'
 import { Fragment } from 'react'
@@ -20,13 +22,14 @@ export const metadata: Metadata = {
 }
 
 const getGames = async () => {
+  const isAdmin = await getIsAdmin({ allowDev: true })
   return await db.query.game.findMany({
     orderBy: desc(schema.game.updatedAt),
     limit: 24,
     with: {
       user: true,
     },
-    where: eq(schema.game.gameMode, 'shopper'), // TODO: index
+    where: isAdmin ? undefined : eq(schema.game.gameMode, 'shopper'), // TODO: index
   })
 }
 type Game = Awaited<ReturnType<typeof getGames>>[number]
@@ -57,10 +60,26 @@ const GameEntry = async ({ game }: { game: Game }) => {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col gap-4 items-center">
-          <div className="flex flex-row gap-4 justify-center items-center">
-            <GameMatchBoard game={game} />
-            <LeaderboardRankCardByGame gameId={game.id} tiny />
-          </div>
+          {game.gameMode === 'shopper' && (
+            <div className="flex flex-row gap-4 justify-center items-center">
+              <GameMatchBoard game={game} />
+              <LeaderboardRankCardByGame gameId={game.id} tiny />
+            </div>
+          )}
+          {game.gameMode === 'collector' && (
+            <div className="flex flex-col gap-2 text-left">
+              {game.data.dungeonAccesses?.map((dungeonAccess) => (
+                <Fragment key={dungeonAccess.name}>
+                  <div className="flex flex-row gap-2">
+                    <div className="flex-1">
+                      {capitalCase(dungeonAccess.name)}
+                    </div>
+                    <div>{dungeonAccess.levelMax}</div>
+                  </div>
+                </Fragment>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </>
