@@ -421,6 +421,15 @@ export const CollectorItemGrid = async ({
                                   throw new Error('Cannot salvage this item')
                                 }
 
+                                const itemInInventory =
+                                  ctx.game.data.inventory?.items.find(
+                                    (i) => i.id === id,
+                                  )
+
+                                if (!itemInInventory) {
+                                  throw new Error('Item already salvaged')
+                                }
+
                                 if (ctx.game.data.inventory) {
                                   ctx.game.data.inventory.items =
                                     ctx.game.data.inventory.items.filter(
@@ -438,10 +447,10 @@ export const CollectorItemGrid = async ({
                                   (salvagedParts[rarity] ?? 0) + 1
                                 ctx.game.data.salvagedParts = salvagedParts
 
-                                streamToast({
-                                  title: `Salvaged ${rarity} item`,
-                                  description: `You got 1 ${rarity} parts.`,
-                                })
+                                // streamToast({
+                                //   title: `Salvaged ${rarity} item`,
+                                //   description: `You got 1 ${rarity} parts.`,
+                                // })
                               },
                             })
                           }}
