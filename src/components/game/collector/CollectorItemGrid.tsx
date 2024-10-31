@@ -15,7 +15,7 @@ import { streamToast } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { capitalCase } from 'change-case'
-import { orderBy, reverse } from 'lodash-es'
+import { filter, find, orderBy, reverse } from 'lodash-es'
 import { Recycle, Star } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { Fragment } from 'react'
@@ -131,22 +131,81 @@ export const CollectorItemGrid = async ({
           {tab === 'workshop' && (
             <>
               <div className="grid lg:grid-cols-5 gap-2 text-sm">
-                {reverse([...allRarityDefinitions]).map((rarity) => (
-                  <Fragment key={rarity.name}>
-                    <Card className="px-2 py-1">
-                      <div
-                        className={cn('flex flex-row gap-4', rarity.textClass)}
-                      >
-                        <div className="flex-1">
-                          {capitalCase(rarity.name)} Parts
+                {reverse([...allRarityDefinitions]).map((rarity) => {
+                  const itemIdsToSalvage = filter(
+                    itemsShown,
+                    (i) =>
+                      i.rarity === rarity.name &&
+                      !!i.id &&
+                      !i.favorite &&
+                      !find(loadoutItems, (li) => li.id === i.id),
+                  ).flatMap((i) => (i.id ? [i.id] : []))
+                  return (
+                    <Fragment key={rarity.name}>
+                      <Card className="px-2 py-1">
+                        <div
+                          className={cn(
+                            'flex flex-row gap-1 items-center',
+                            rarity.textClass,
+                          )}
+                        >
+                          <div className="flex-1 truncate">
+                            {capitalCase(rarity.name)} Parts
+                          </div>
+                          <div className="text-right">
+                            {game.data.salvagedParts?.[rarity.name] ?? 0}
+                          </div>
+                          <ActionButton
+                            variant={'ghost'}
+                            disabled={!itemIdsToSalvage.length}
+                            size="sm"
+                            className={cn('rounded-l-none', 'h-auto px-2 py-1')}
+                            icon={<Recycle />}
+                            catchToast
+                            askForConfirmation={{
+                              title: `Salvage ${itemIdsToSalvage.length} ${rarity.name} items?`,
+                              content: `This will only salvage items that are not equipped and not favorites.`,
+                            }}
+                            action={async () => {
+                              'use server'
+                              return gameAction({
+                                gameId: game.id,
+                                action: async ({ ctx }) => {
+                                  const ids = itemIdsToSalvage
+
+                                  if (ctx.game.data.inventory) {
+                                    ctx.game.data.inventory.items =
+                                      ctx.game.data.inventory.items.filter(
+                                        (i) => i.id && !ids.includes(i.id),
+                                      )
+                                  }
+                                  ctx.game.data.currentLoadout.items =
+                                    ctx.game.data.currentLoadout.items.filter(
+                                      (i) => i.id && !ids.includes(i.id),
+                                    )
+
+                                  const salvagedParts =
+                                    ctx.game.data.salvagedParts ?? {}
+                                  salvagedParts[rarity.name] =
+                                    (salvagedParts[rarity.name] ?? 0) +
+                                    ids.length
+                                  ctx.game.data.salvagedParts = salvagedParts
+
+                                  streamToast({
+                                    title: `Salvaged ${ids.length} ${rarity.name} items`,
+                                    description: `You got ${ids.length} ${rarity.name} parts.`,
+                                  })
+                                },
+                              })
+                            }}
+                          >
+                            + {itemIdsToSalvage.length}
+                          </ActionButton>
                         </div>
-                        <div className="text-right">
-                          {game.data.salvagedParts?.[rarity.name] ?? 0}
-                        </div>
-                      </div>
-                    </Card>
-                  </Fragment>
-                ))}
+                      </Card>
+                    </Fragment>
+                  )
+                })}
               </div>
             </>
           )}
@@ -288,7 +347,7 @@ export const CollectorItemGrid = async ({
                       >
                         <ActionButton
                           variant={'secondary'}
-                          disabled={!selectable}
+                          disabled={!selectable || !!item.favorite}
                           size="sm"
                           className={cn('rounded-l-none', 'h-auto px-2 py-1')}
                           icon={<Recycle />}
@@ -298,8 +357,8 @@ export const CollectorItemGrid = async ({
                             return gameAction({
                               gameId: game.id,
                               action: async ({ ctx }) => {
-                                const { id, rarity } = item
-                                if (!id || !rarity) {
+                                const { id, rarity, favorite } = item
+                                if (!id || !rarity || favorite) {
                                   throw new Error('Cannot salvage this item')
                                 }
 
