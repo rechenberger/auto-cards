@@ -181,12 +181,12 @@ export const CollectorItemGrid = async ({
                                   if (ctx.game.data.inventory) {
                                     ctx.game.data.inventory.items =
                                       ctx.game.data.inventory.items.filter(
-                                        (i) => i.id && !ids.includes(i.id),
+                                        (i) => !i.id || !ids.includes(i.id),
                                       )
                                   }
                                   ctx.game.data.currentLoadout.items =
                                     ctx.game.data.currentLoadout.items.filter(
-                                      (i) => i.id && !ids.includes(i.id),
+                                      (i) => !i.id || !ids.includes(i.id),
                                     )
 
                                   const salvagedParts =
