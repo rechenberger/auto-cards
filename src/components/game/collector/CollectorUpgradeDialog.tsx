@@ -112,9 +112,20 @@ export const CollectorUpgradeDialog = async (
           catchToast
           action={async () => {
             'use server'
+            const { id } = item
             return gameAction({
               gameId: game.id,
               action: async ({ ctx }) => {
+                const item = ctx.game.data.inventory?.items.find(
+                  (i) => i.id === id,
+                )
+                if (!item) {
+                  throw new Error('Item not found')
+                }
+                if (item.rarity !== rarity) {
+                  throw new Error('Item already upgraded')
+                }
+
                 const seed = createSeed()
                 const aspectName = rngItem({
                   seed,
