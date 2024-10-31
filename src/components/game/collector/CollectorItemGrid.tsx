@@ -130,7 +130,7 @@ export const CollectorItemGrid = async ({
           </div>
           {tab === 'workshop' && (
             <>
-              <div className="grid lg:grid-cols-5 gap-2">
+              <div className="grid lg:grid-cols-5 gap-2 text-sm">
                 {reverse([...allRarityDefinitions]).map((rarity) => (
                   <Fragment key={rarity.name}>
                     <Card className="px-2 py-1">
