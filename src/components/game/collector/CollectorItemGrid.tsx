@@ -1,27 +1,29 @@
 import { SimpleParamSelect } from '@/components/simple/SimpleParamSelect'
 import { SimpleTooltip } from '@/components/simple/SimpleTooltip'
 import { buttonVariants } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Game } from '@/db/schema-zod'
 import { getAllItems } from '@/game/allItems'
 import { countifyItems } from '@/game/countifyItems'
 import { gameAction } from '@/game/gameAction'
 import { orderItems } from '@/game/orderItems'
-import { allRarities } from '@/game/rarities'
-import { allTags, Tag } from '@/game/tags'
+import { allRarities, allRarityDefinitions } from '@/game/rarities'
+import { Tag, allTags } from '@/game/tags'
 import { cn } from '@/lib/utils'
 import { streamToast } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { ActionWrapper } from '@/super-action/button/ActionWrapper'
-import { orderBy } from 'lodash-es'
+import { capitalCase } from 'change-case'
+import { orderBy, reverse } from 'lodash-es'
 import { Recycle, Star } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { Fragment } from 'react'
 import { ItemCard } from '../ItemCard'
 import { StatsDisplay } from '../StatsDisplay'
 import { TagDisplay } from '../TagDisplay'
-import { checkCollectorLoadout } from './checkCollectorLoadout'
 import { CollectorLoadoutCheck } from './CollectorLoadoutCheck'
+import { checkCollectorLoadout } from './checkCollectorLoadout'
 
 export const CollectorItemGrid = async ({
   game,
@@ -125,6 +127,28 @@ export const CollectorItemGrid = async ({
             ]}
           />
         </div>
+        {tab === 'workshop' && (
+          <>
+            <div className="grid lg:grid-cols-5 gap-2">
+              {reverse([...allRarityDefinitions]).map((rarity) => (
+                <Fragment key={rarity.name}>
+                  <Card className="px-2 py-1">
+                    <div
+                      className={cn('flex flex-row gap-4', rarity.textClass)}
+                    >
+                      <div className="flex-1">
+                        {capitalCase(rarity.name)} Parts
+                      </div>
+                      <div className="text-right">
+                        {game.data.salvagedParts?.[rarity.name] ?? 0}
+                      </div>
+                    </div>
+                  </Card>
+                </Fragment>
+              ))}
+            </div>
+          </>
+        )}
         <div
           className={cn(
             'flex-1 flex flex-row flex-wrap gap-x-2 gap-y-6 justify-center items-start',
