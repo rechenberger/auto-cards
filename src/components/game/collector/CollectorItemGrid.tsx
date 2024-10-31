@@ -264,12 +264,7 @@ export const CollectorItemGrid = async ({
                           variant={'secondary'}
                           disabled={!selectable}
                           size="sm"
-                          className={cn(
-                            item.favorite && 'text-yellow-500',
-                            !item.favorite && 'grayscale opacity-50',
-                            'rounded-l-none',
-                            'h-auto px-2 py-1',
-                          )}
+                          className={cn('rounded-l-none', 'h-auto px-2 py-1')}
                           icon={<Recycle />}
                           action={async () => {
                             'use server'
