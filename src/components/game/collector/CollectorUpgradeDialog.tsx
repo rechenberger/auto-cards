@@ -1,7 +1,12 @@
 import { SimpleTooltipButton } from '@/components/simple/SimpleTooltipButton'
+import { getAspectDef } from '@/game/aspects'
 import { gameAction } from '@/game/gameAction'
 import { allRarities, allRarityDefinitions } from '@/game/rarities'
-import { streamDialog } from '@/super-action/action/createSuperAction'
+import { createSeed, rngItem } from '@/game/seed'
+import {
+  streamDialog,
+  streamToast,
+} from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
 import { ArrowDown, Info } from 'lucide-react'
@@ -37,6 +42,7 @@ export const CollectorUpgradeDialog = async (
   possibleAspects = possibleAspects.filter(
     (aspect) => !item.aspects?.some((a) => a.name === aspect.name),
   )
+  const possibleAspectNames = possibleAspects.map((a) => a.name)
   return (
     <>
       <div className="flex flex-col gap-4 items-center">
@@ -64,6 +70,7 @@ export const CollectorUpgradeDialog = async (
               variant="vanilla"
               size="vanilla"
               icon={<Info />}
+              tabIndex={-1}
             >
               <div>
                 {possibleAspects.length > 1
@@ -79,6 +86,19 @@ export const CollectorUpgradeDialog = async (
             return gameAction({
               gameId,
               action: async ({ ctx }) => {
+                const seed = createSeed()
+                const aspectName = rngItem({
+                  seed,
+                  items: possibleAspectNames,
+                })
+                if (!aspectName) {
+                  throw new Error('No aspect found')
+                }
+                const aspect = getAspectDef(aspectName)
+                streamToast({
+                  title: `Upgraded ${capitalCase(item.name)}`,
+                  description: `${capitalCase(aspect.name)} added`,
+                })
                 streamCollectorUpgradeDialog(props)
               },
             })
