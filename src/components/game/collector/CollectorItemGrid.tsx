@@ -10,10 +10,11 @@ import { orderItems } from '@/game/orderItems'
 import { allRarities } from '@/game/rarities'
 import { allTags, Tag } from '@/game/tags'
 import { cn } from '@/lib/utils'
+import { streamToast } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { orderBy } from 'lodash-es'
-import { Star } from 'lucide-react'
+import { Recycle, Star } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { Fragment } from 'react'
 import { ItemCard } from '../ItemCard'
@@ -28,7 +29,7 @@ export const CollectorItemGrid = async ({
 }: {
   game: Game
   searchParams: Promise<{
-    tab?: 'loadout' | 'inventory' | 'favorites'
+    tab?: 'loadout' | 'inventory' | 'favorites' | 'workshop'
     order?: 'rarity' | 'category' | 'newest'
     tag?: Tag
   }>
@@ -94,6 +95,10 @@ export const CollectorItemGrid = async ({
               {
                 value: 'inventory',
                 label: `Inventory (${inventoryItems.length})`,
+              },
+              {
+                value: 'workshop',
+                label: `Workshop`,
               },
             ]}
           />
@@ -245,6 +250,43 @@ export const CollectorItemGrid = async ({
                       />
                     </SimpleTooltip>
                   </div>
+                  {tab === 'workshop' && (
+                    <div
+                      className={cn(
+                        'flex flex-row gap-1',
+                        !selectable && 'invisible',
+                      )}
+                    >
+                      <SimpleTooltip
+                        tooltip={'Salvage this item to get some dust.'}
+                      >
+                        <ActionButton
+                          variant={'secondary'}
+                          disabled={!selectable}
+                          size="sm"
+                          className={cn(
+                            item.favorite && 'text-yellow-500',
+                            !item.favorite && 'grayscale opacity-50',
+                            'rounded-l-none',
+                            'h-auto px-2 py-1',
+                          )}
+                          icon={<Recycle />}
+                          action={async () => {
+                            'use server'
+                            return gameAction({
+                              gameId: game.id,
+                              action: async ({ ctx }) => {
+                                streamToast({
+                                  title: 'Salvaging item',
+                                  description: 'This may take a while...',
+                                })
+                              },
+                            })
+                          }}
+                        />
+                      </SimpleTooltip>
+                    </div>
+                  )}
                 </div>
               </Fragment>
             )
