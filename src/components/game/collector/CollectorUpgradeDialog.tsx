@@ -1,18 +1,22 @@
+import { SimpleTooltipButton } from '@/components/simple/SimpleTooltipButton'
 import { gameAction } from '@/game/gameAction'
 import { allRarities, allRarityDefinitions } from '@/game/rarities'
 import { streamDialog } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
-import { ArrowDown } from 'lucide-react'
+import { ArrowDown, Info } from 'lucide-react'
 import { ItemCard } from '../ItemCard'
 import { ItemData } from '../ItemData'
+import { getPossibleAspects } from './generateCollectorItemAspects'
 
 type CollectorUpgradeDialogProps = {
   item: ItemData
   gameId: string
 }
 
-export const CollectorUpgradeDialog = (props: CollectorUpgradeDialogProps) => {
+export const CollectorUpgradeDialog = async (
+  props: CollectorUpgradeDialogProps,
+) => {
   const { item, gameId } = props
   const rarity = item.rarity
   if (!rarity) {
@@ -22,6 +26,10 @@ export const CollectorUpgradeDialog = (props: CollectorUpgradeDialogProps) => {
   if (!nextRarity) {
     throw new Error('Item has max rarity')
   }
+  let possibleAspects = await getPossibleAspects(item)
+  possibleAspects = possibleAspects.filter(
+    (aspect) => !item.aspects?.some((a) => a.name === aspect.name),
+  )
   return (
     <>
       <div className="flex flex-col gap-4 items-center">
@@ -33,7 +41,29 @@ export const CollectorUpgradeDialog = (props: CollectorUpgradeDialogProps) => {
               itemData={{ ...item, rarity: nextRarity.name }}
               size="200"
             />
-            <div>+1 random aspect</div>
+            <SimpleTooltipButton
+              tooltip={
+                <>
+                  <div className="flex flex-col gap-1">
+                    <div>Possible aspects:</div>
+                    {possibleAspects.map((aspect) => (
+                      <div key={aspect.name} className="text-sm opacity-80">
+                        {capitalCase(aspect.name)}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              }
+              variant="vanilla"
+              size="vanilla"
+              icon={<Info />}
+            >
+              <div>
+                {possibleAspects.length > 1
+                  ? `+1 of ${possibleAspects.length} random aspects`
+                  : `+1 random aspect`}
+              </div>
+            </SimpleTooltipButton>
           </div>
         </div>
         <ActionButton
