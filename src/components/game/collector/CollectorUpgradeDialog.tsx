@@ -1,15 +1,18 @@
 import { SimpleTooltipButton } from '@/components/simple/SimpleTooltipButton'
 import { Card } from '@/components/ui/card'
 import { Game } from '@/db/schema-zod'
-import { getAspectDef } from '@/game/aspects'
-import { COLLECTOR_UPGRADE_COSTS } from '@/game/config'
+import { ItemAspect } from '@/game/aspects'
+import {
+  COLLECTOR_ASPECT_PRECISION,
+  COLLECTOR_UPGRADE_COSTS,
+} from '@/game/config'
 import { gameAction } from '@/game/gameAction'
 import {
   allRarities,
   allRarityDefinitions,
   getRarityDefinition,
 } from '@/game/rarities'
-import { createSeed, rngItem } from '@/game/seed'
+import { createSeed, rngFloat, rngItem } from '@/game/seed'
 import { cn } from '@/lib/utils'
 import {
   streamDialog,
@@ -17,6 +20,7 @@ import {
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
+import { floor } from 'lodash-es'
 import { ArrowDown, Info } from 'lucide-react'
 import { ItemCard } from '../ItemCard'
 import { ItemData } from '../ItemData'
@@ -41,8 +45,8 @@ export const CollectorUpgradeDialog = async (
     return (
       <>
         <div className="flex flex-col gap-4 items-center">
-          <div>Fully upgraded!</div>
           <ItemCard itemData={item} size="200" />
+          <div>Fully upgraded!</div>
         </div>
       </>
     )
@@ -125,6 +129,16 @@ export const CollectorUpgradeDialog = async (
                 if (item.rarity !== rarity) {
                   throw new Error('Item already upgraded')
                 }
+                const { salvagedParts } = ctx.game.data
+                if (!salvagedParts) {
+                  throw new Error('No salvaged parts')
+                }
+
+                const currentParts = salvagedParts[rarity]
+                if (!currentParts || currentParts < partsCosts) {
+                  throw new Error('Not enough parts')
+                }
+                salvagedParts[rarity] = currentParts - partsCosts
 
                 const seed = createSeed()
                 const aspectName = rngItem({
@@ -134,12 +148,35 @@ export const CollectorUpgradeDialog = async (
                 if (!aspectName) {
                   throw new Error('No aspect found')
                 }
-                const aspect = getAspectDef(aspectName)
+
+                const newAspect: ItemAspect = {
+                  name: aspectName,
+                  rnd: floor(
+                    rngFloat({
+                      seed,
+                    }),
+                    COLLECTOR_ASPECT_PRECISION,
+                  ),
+                }
+                const aspects = [...(item.aspects ?? []), newAspect]
+
+                // Update item
+                item.aspects = aspects
+                item.rarity = nextRarity.name
+                const itemInLoadout = ctx.game.data.currentLoadout.items.find(
+                  (i) => i.id === id,
+                )
+                if (itemInLoadout) {
+                  itemInLoadout.aspects = aspects
+                  itemInLoadout.rarity = nextRarity.name
+                }
+
+                // const aspectDef = getAspectDef(aspectName)
                 streamToast({
                   title: `Upgraded ${capitalCase(item.name)}`,
-                  description: `${capitalCase(aspect.name)} added`,
+                  description: `${capitalCase(aspectName)} added`,
                 })
-                streamCollectorUpgradeDialog(props)
+                streamCollectorUpgradeDialog({ item, game: ctx.game })
               },
             })
           }}
