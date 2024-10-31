@@ -258,7 +258,7 @@ export const CollectorItemGrid = async ({
                       )}
                     >
                       <SimpleTooltip
-                        tooltip={'Salvage this item to get some dust.'}
+                        tooltip={'Salvage this item to get some parts.'}
                       >
                         <ActionButton
                           variant={'secondary'}
@@ -266,14 +266,37 @@ export const CollectorItemGrid = async ({
                           size="sm"
                           className={cn('rounded-l-none', 'h-auto px-2 py-1')}
                           icon={<Recycle />}
+                          catchToast
                           action={async () => {
                             'use server'
                             return gameAction({
                               gameId: game.id,
                               action: async ({ ctx }) => {
+                                const { id, rarity } = item
+                                if (!id || !rarity) {
+                                  throw new Error('Cannot salvage this item')
+                                }
+
+                                if (ctx.game.data.inventory) {
+                                  ctx.game.data.inventory.items =
+                                    ctx.game.data.inventory.items.filter(
+                                      (i) => i.id !== id,
+                                    )
+                                }
+                                ctx.game.data.currentLoadout.items =
+                                  ctx.game.data.currentLoadout.items.filter(
+                                    (i) => i.id !== id,
+                                  )
+
+                                const salvagedParts =
+                                  ctx.game.data.salvagedParts ?? {}
+                                salvagedParts[rarity] =
+                                  (salvagedParts[rarity] ?? 0) + 1
+                                ctx.game.data.salvagedParts = salvagedParts
+
                                 streamToast({
-                                  title: 'Salvaging item',
-                                  description: 'This may take a while...',
+                                  title: `Salvaged ${rarity} item`,
+                                  description: `You got 1 ${rarity} parts.`,
                                 })
                               },
                             })

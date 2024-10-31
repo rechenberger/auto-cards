@@ -6,8 +6,8 @@ import { DungeonAccess } from '@/game/dungeons/DungeonAccess'
 import { DungeonData } from '@/game/dungeons/DungeonData'
 import z from 'zod'
 import { LoadoutData } from './LoadoutData'
+import { RarityWeights } from './rarities'
 import { createSeed } from './seed'
-import { Stats } from './stats'
 
 export const GameData = z.object({
   version: z.number().default(GAME_VERSION),
@@ -33,6 +33,6 @@ export const GameData = z.object({
     .optional(),
   dungeon: DungeonData.optional(),
   dungeonAccesses: z.array(DungeonAccess).optional(),
-  currencies: Stats.optional(),
+  salvagedParts: RarityWeights.optional(),
 })
 export type GameData = z.infer<typeof GameData>
