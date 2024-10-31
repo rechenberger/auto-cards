@@ -79,76 +79,78 @@ export const CollectorItemGrid = async ({
 
   return (
     <>
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-col xl:flex-row gap-2">
-          <SimpleParamSelect
-            paramKey="tab"
-            component="tabs"
-            options={[
-              { value: null, label: `Loadout (${loadoutItems.length})` },
-              ...(hasAnyFavorite
-                ? [
-                    {
-                      value: 'favorites',
-                      label: `Favorites (${favoriteItems.length})`,
-                    },
-                  ]
-                : []),
-              {
-                value: 'inventory',
-                label: `Inventory (${inventoryItems.length})`,
-              },
-              {
-                value: 'workshop',
-                label: `Workshop`,
-              },
-            ]}
-          />
-          <div className="flex-1" />
-          <CollectorLoadoutCheck game={game} />
-          <SimpleParamSelect
-            options={allTags.map((tag) => ({
-              value: tag,
-              label: <TagDisplay tag={tag} disableLinks />,
-            }))}
-            paramKey="tag"
-            label="Tag"
-            nullLabel="All Tags"
-            component="dropdown"
-          />
-          <SimpleParamSelect
-            paramKey="order"
-            component="dropdown"
-            label="Order By"
-            options={[
-              { value: null, label: 'By Rarity' },
-              { value: 'category', label: 'By Category' },
-              { value: 'newest', label: 'Newest' },
-            ]}
-          />
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2 xl:sticky top-0 z-10 bg-background py-2 -my-2">
+          <div className="flex flex-col xl:flex-row gap-2 ">
+            <SimpleParamSelect
+              paramKey="tab"
+              component="tabs"
+              options={[
+                { value: null, label: `Loadout (${loadoutItems.length})` },
+                ...(hasAnyFavorite
+                  ? [
+                      {
+                        value: 'favorites',
+                        label: `Favorites (${favoriteItems.length})`,
+                      },
+                    ]
+                  : []),
+                {
+                  value: 'inventory',
+                  label: `Inventory (${inventoryItems.length})`,
+                },
+                {
+                  value: 'workshop',
+                  label: `Workshop`,
+                },
+              ]}
+            />
+            <div className="flex-1" />
+            <CollectorLoadoutCheck game={game} />
+            <SimpleParamSelect
+              options={allTags.map((tag) => ({
+                value: tag,
+                label: <TagDisplay tag={tag} disableLinks />,
+              }))}
+              paramKey="tag"
+              label="Tag"
+              nullLabel="All Tags"
+              component="dropdown"
+            />
+            <SimpleParamSelect
+              paramKey="order"
+              component="dropdown"
+              label="Order By"
+              options={[
+                { value: null, label: 'By Rarity' },
+                { value: 'category', label: 'By Category' },
+                { value: 'newest', label: 'Newest' },
+              ]}
+            />
+          </div>
+          {tab === 'workshop' && (
+            <>
+              <div className="grid lg:grid-cols-5 gap-2">
+                {reverse([...allRarityDefinitions]).map((rarity) => (
+                  <Fragment key={rarity.name}>
+                    <Card className="px-2 py-1">
+                      <div
+                        className={cn('flex flex-row gap-4', rarity.textClass)}
+                      >
+                        <div className="flex-1">
+                          {capitalCase(rarity.name)} Parts
+                        </div>
+                        <div className="text-right">
+                          {game.data.salvagedParts?.[rarity.name] ?? 0}
+                        </div>
+                      </div>
+                    </Card>
+                  </Fragment>
+                ))}
+              </div>
+            </>
+          )}
         </div>
-        {tab === 'workshop' && (
-          <>
-            <div className="grid lg:grid-cols-5 gap-2">
-              {reverse([...allRarityDefinitions]).map((rarity) => (
-                <Fragment key={rarity.name}>
-                  <Card className="px-2 py-1">
-                    <div
-                      className={cn('flex flex-row gap-4', rarity.textClass)}
-                    >
-                      <div className="flex-1">
-                        {capitalCase(rarity.name)} Parts
-                      </div>
-                      <div className="text-right">
-                        {game.data.salvagedParts?.[rarity.name] ?? 0}
-                      </div>
-                    </div>
-                  </Card>
-                </Fragment>
-              ))}
-            </div>
-          </>
-        )}
         <div
           className={cn(
             'flex-1 flex flex-row flex-wrap gap-x-2 gap-y-6 justify-center items-start',
