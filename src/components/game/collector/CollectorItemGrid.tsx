@@ -11,10 +11,7 @@ import { orderItems } from '@/game/orderItems'
 import { allRarities, allRarityDefinitions } from '@/game/rarities'
 import { Tag, allTags } from '@/game/tags'
 import { cn } from '@/lib/utils'
-import {
-  streamDialog,
-  streamToast,
-} from '@/super-action/action/createSuperAction'
+import { streamToast } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { capitalCase } from 'change-case'
@@ -26,6 +23,7 @@ import { ItemCard } from '../ItemCard'
 import { StatsDisplay } from '../StatsDisplay'
 import { TagDisplay } from '../TagDisplay'
 import { CollectorLoadoutCheck } from './CollectorLoadoutCheck'
+import { streamCollectorUpgradeDialog } from './CollectorUpgradeDialog'
 import { checkCollectorLoadout } from './checkCollectorLoadout'
 
 export const CollectorItemGrid = async ({
@@ -367,13 +365,9 @@ export const CollectorItemGrid = async ({
                               return gameAction({
                                 gameId: game.id,
                                 action: async ({ ctx }) => {
-                                  streamDialog({
-                                    title: `Upgrade ${capitalCase(item.name)}`,
-                                    content: (
-                                      <>
-                                        <ItemCard itemData={item} size="200" />
-                                      </>
-                                    ),
+                                  streamCollectorUpgradeDialog({
+                                    item,
+                                    gameId: game.id,
                                   })
                                 },
                               })
