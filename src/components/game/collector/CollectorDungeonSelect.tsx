@@ -30,7 +30,7 @@ export const CollectorDungeonSelect = async ({ game }: { game: Game }) => {
   return (
     <>
       <div className="flex flex-col xl:flex-row gap-2 justify-center">
-        {accesses.map((access) => {
+        {accesses.map((access, idx) => {
           const dungeon = getDungeon(access.name)
 
           const selectableMin = access.levelMin
@@ -38,6 +38,7 @@ export const CollectorDungeonSelect = async ({ game }: { game: Game }) => {
           const selectable = selectableMin < selectableMax
 
           const rewards = dungeon.rewards({ level: access.levelCurrent })
+          const isLast = idx === accesses.length - 1
 
           return (
             <Fragment key={access.name}>
@@ -115,6 +116,15 @@ export const CollectorDungeonSelect = async ({ game }: { game: Game }) => {
                     variant="outline"
                     className="self-end"
                     catchToast
+                    command={
+                      isLast
+                        ? {
+                            shortcut: {
+                              key: 'n',
+                            },
+                          }
+                        : undefined
+                    }
                     action={async () => {
                       'use server'
                       return gameAction({

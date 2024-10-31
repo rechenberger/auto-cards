@@ -34,6 +34,11 @@ export const NextRoundButtonCollector = ({ game }: { game: Game }) => {
             },
           })
         }}
+        command={{
+          shortcut: {
+            key: 'n',
+          },
+        }}
       >
         {status === 'active' ? 'Next Room' : 'Exit Dungeon'}
       </ActionButton>
