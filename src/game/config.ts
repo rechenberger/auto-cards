@@ -39,3 +39,4 @@ export const MAX_LOGS = 3_000
 export const COLLECTOR_PRICE_LIMIT = 100
 export const COLLECTOR_SAME_ITEM_LIMIT = 3
 export const COLLECTOR_ASPECT_PRECISION = 3
+export const COLLECTOR_UPGRADE_COSTS = 5

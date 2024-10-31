@@ -1,8 +1,16 @@
 import { SimpleTooltipButton } from '@/components/simple/SimpleTooltipButton'
+import { Card } from '@/components/ui/card'
+import { Game } from '@/db/schema-zod'
 import { getAspectDef } from '@/game/aspects'
+import { COLLECTOR_UPGRADE_COSTS } from '@/game/config'
 import { gameAction } from '@/game/gameAction'
-import { allRarities, allRarityDefinitions } from '@/game/rarities'
+import {
+  allRarities,
+  allRarityDefinitions,
+  getRarityDefinition,
+} from '@/game/rarities'
 import { createSeed, rngItem } from '@/game/seed'
+import { cn } from '@/lib/utils'
 import {
   streamDialog,
   streamToast,
@@ -16,17 +24,18 @@ import { getPossibleAspects } from './generateCollectorItemAspects'
 
 type CollectorUpgradeDialogProps = {
   item: ItemData
-  gameId: string
+  game: Game
 }
 
 export const CollectorUpgradeDialog = async (
   props: CollectorUpgradeDialogProps,
 ) => {
-  const { item, gameId } = props
+  const { item, game } = props
   const rarity = item.rarity
   if (!rarity) {
     throw new Error('Item has no rarity')
   }
+  const rarityDef = getRarityDefinition(rarity)
   const nextRarity = allRarityDefinitions[allRarities.indexOf(rarity) + 1]
   if (!nextRarity) {
     return (
@@ -43,6 +52,11 @@ export const CollectorUpgradeDialog = async (
     (aspect) => !item.aspects?.some((a) => a.name === aspect.name),
   )
   const possibleAspectNames = possibleAspects.map((a) => a.name)
+
+  const partsCosts = COLLECTOR_UPGRADE_COSTS
+  const partsCurrent = game.data.salvagedParts?.[rarity] ?? 0
+  const partsEnough = partsCurrent >= partsCosts
+
   return (
     <>
       <div className="flex flex-col gap-4 items-center">
@@ -80,11 +94,26 @@ export const CollectorUpgradeDialog = async (
             </SimpleTooltipButton>
           </div>
         </div>
+        <Card className="px-2 py-1 text-sm">
+          <div
+            className={cn(
+              'flex flex-row gap-1 items-center',
+              rarityDef.textClass,
+            )}
+          >
+            <div className="flex-1 truncate">{capitalCase(rarity)} Parts</div>
+            <div className="text-right">
+              {partsCosts} / {partsCurrent}
+            </div>
+          </div>
+        </Card>
         <ActionButton
+          disabled={!partsEnough}
+          catchToast
           action={async () => {
             'use server'
             return gameAction({
-              gameId,
+              gameId: game.id,
               action: async ({ ctx }) => {
                 const seed = createSeed()
                 const aspectName = rngItem({
@@ -104,7 +133,7 @@ export const CollectorUpgradeDialog = async (
             })
           }}
         >
-          Upgrade
+          {partsEnough ? 'Upgrade' : 'Not enough parts'}
         </ActionButton>
       </div>
     </>

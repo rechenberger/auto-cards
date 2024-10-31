@@ -131,7 +131,7 @@ export const CollectorItemGrid = async ({
           </div>
           {tab === 'workshop' && (
             <>
-              <div className="grid lg:grid-cols-5 gap-2 text-sm">
+              <div className="grid lg:grid-cols-5 gap-2">
                 {reverse([...allRarityDefinitions]).map((rarity) => {
                   const itemIdsToSalvage = filter(
                     itemsShown,
@@ -143,7 +143,7 @@ export const CollectorItemGrid = async ({
                   ).flatMap((i) => (i.id ? [i.id] : []))
                   return (
                     <Fragment key={rarity.name}>
-                      <Card className="px-2 py-1">
+                      <Card className="px-2 py-1 text-sm">
                         <div
                           className={cn(
                             'flex flex-row gap-1 items-center',
@@ -367,7 +367,7 @@ export const CollectorItemGrid = async ({
                                 action: async ({ ctx }) => {
                                   streamCollectorUpgradeDialog({
                                     item,
-                                    gameId: game.id,
+                                    game: ctx.game,
                                   })
                                 },
                               })
