@@ -26,8 +26,10 @@ export const CollectorUpgradeDialog = async (
   if (!nextRarity) {
     return (
       <>
-        <div>Fully upgraded!</div>
-        <ItemCard itemData={item} size="200" />
+        <div className="flex flex-col gap-4 items-center">
+          <div>Fully upgraded!</div>
+          <ItemCard itemData={item} size="200" />
+        </div>
       </>
     )
   }
