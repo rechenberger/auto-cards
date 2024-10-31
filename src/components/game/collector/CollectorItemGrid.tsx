@@ -352,7 +352,7 @@ export const CollectorItemGrid = async ({
                         >
                           <ActionButton
                             variant={'secondary'}
-                            disabled={!selectable || !!item.favorite}
+                            disabled={!selectable}
                             size="sm"
                             className={cn(
                               'rounded-none first:rounded-l-md last:rounded-r-md',
