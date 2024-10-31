@@ -24,7 +24,12 @@ export const CollectorUpgradeDialog = async (
   }
   const nextRarity = allRarityDefinitions[allRarities.indexOf(rarity) + 1]
   if (!nextRarity) {
-    throw new Error('Item has max rarity')
+    return (
+      <>
+        <div>Fully upgraded!</div>
+        <ItemCard itemData={item} size="200" />
+      </>
+    )
   }
   let possibleAspects = await getPossibleAspects(item)
   possibleAspects = possibleAspects.filter(
