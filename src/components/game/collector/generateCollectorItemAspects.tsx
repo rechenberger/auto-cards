@@ -6,6 +6,14 @@ import { rngFloat, rngGenerator, rngItems, Seed } from '@/game/seed'
 import { floor } from 'lodash-es'
 import { ItemData } from '../ItemData'
 
+export const getPossibleAspects = async (item: ItemData) => {
+  const itemDef = await getItemByName(item.name)
+  const possibleAspects = allAspects.filter(
+    (a) => a.tags?.some((t) => itemDef.tags?.includes(t)),
+  )
+  return possibleAspects
+}
+
 export const generateCollectorItemAspects = async ({
   item,
   seed: _seed,
@@ -22,9 +30,7 @@ export const generateCollectorItemAspects = async ({
   const rarityDef = getRarityDefinition(rarity)
   const noOfAspects = rarityDef.aspects.normal
 
-  const possibleAspects = allAspects.filter(
-    (a) => a.tags?.some((t) => itemDef.tags?.includes(t)),
-  )
+  const possibleAspects = await getPossibleAspects(item)
 
   if (possibleAspects.length < noOfAspects) {
     console.warn(

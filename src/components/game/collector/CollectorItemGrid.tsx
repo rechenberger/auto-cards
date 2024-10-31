@@ -1,26 +1,30 @@
 import { SimpleParamSelect } from '@/components/simple/SimpleParamSelect'
 import { SimpleTooltip } from '@/components/simple/SimpleTooltip'
 import { buttonVariants } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Game } from '@/db/schema-zod'
 import { getAllItems } from '@/game/allItems'
 import { countifyItems } from '@/game/countifyItems'
 import { gameAction } from '@/game/gameAction'
 import { orderItems } from '@/game/orderItems'
-import { allRarities } from '@/game/rarities'
-import { allTags, Tag } from '@/game/tags'
+import { allRarities, allRarityDefinitions } from '@/game/rarities'
+import { Tag, allTags } from '@/game/tags'
 import { cn } from '@/lib/utils'
+import { streamToast } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { ActionWrapper } from '@/super-action/button/ActionWrapper'
-import { orderBy } from 'lodash-es'
-import { Star } from 'lucide-react'
+import { capitalCase } from 'change-case'
+import { filter, find, last, orderBy, reverse } from 'lodash-es'
+import { ArrowUp, Recycle, Star } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { Fragment } from 'react'
 import { ItemCard } from '../ItemCard'
 import { StatsDisplay } from '../StatsDisplay'
 import { TagDisplay } from '../TagDisplay'
-import { checkCollectorLoadout } from './checkCollectorLoadout'
 import { CollectorLoadoutCheck } from './CollectorLoadoutCheck'
+import { streamCollectorUpgradeDialog } from './CollectorUpgradeDialog'
+import { checkCollectorLoadout } from './checkCollectorLoadout'
 
 export const CollectorItemGrid = async ({
   game,
@@ -28,7 +32,7 @@ export const CollectorItemGrid = async ({
 }: {
   game: Game
   searchParams: Promise<{
-    tab?: 'loadout' | 'inventory' | 'favorites'
+    tab?: 'loadout' | 'inventory' | 'favorites' | 'workshop'
     order?: 'rarity' | 'category' | 'newest'
     tag?: Tag
   }>
@@ -76,49 +80,139 @@ export const CollectorItemGrid = async ({
 
   return (
     <>
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-col xl:flex-row gap-2">
-          <SimpleParamSelect
-            paramKey="tab"
-            component="tabs"
-            options={[
-              { value: null, label: `Loadout (${loadoutItems.length})` },
-              ...(hasAnyFavorite
-                ? [
-                    {
-                      value: 'favorites',
-                      label: `Favorites (${favoriteItems.length})`,
-                    },
-                  ]
-                : []),
-              {
-                value: 'inventory',
-                label: `Inventory (${inventoryItems.length})`,
-              },
-            ]}
-          />
-          <div className="flex-1" />
-          <CollectorLoadoutCheck game={game} />
-          <SimpleParamSelect
-            options={allTags.map((tag) => ({
-              value: tag,
-              label: <TagDisplay tag={tag} disableLinks />,
-            }))}
-            paramKey="tag"
-            label="Tag"
-            nullLabel="All Tags"
-            component="dropdown"
-          />
-          <SimpleParamSelect
-            paramKey="order"
-            component="dropdown"
-            label="Order By"
-            options={[
-              { value: null, label: 'By Rarity' },
-              { value: 'category', label: 'By Category' },
-              { value: 'newest', label: 'Newest' },
-            ]}
-          />
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2 xl:sticky top-0 z-10 bg-background py-2 -my-2">
+          <div className="flex flex-col xl:flex-row gap-2 ">
+            <SimpleParamSelect
+              paramKey="tab"
+              component="tabs"
+              options={[
+                { value: null, label: `Loadout (${loadoutItems.length})` },
+                ...(hasAnyFavorite
+                  ? [
+                      {
+                        value: 'favorites',
+                        label: `Favorites (${favoriteItems.length})`,
+                      },
+                    ]
+                  : []),
+                {
+                  value: 'inventory',
+                  label: `Inventory (${inventoryItems.length})`,
+                },
+                {
+                  value: 'workshop',
+                  label: `Workshop`,
+                },
+              ]}
+            />
+            <div className="flex-1" />
+            <CollectorLoadoutCheck game={game} />
+            <SimpleParamSelect
+              options={allTags.map((tag) => ({
+                value: tag,
+                label: <TagDisplay tag={tag} disableLinks />,
+              }))}
+              paramKey="tag"
+              label="Tag"
+              nullLabel="All Tags"
+              component="dropdown"
+            />
+            <SimpleParamSelect
+              paramKey="order"
+              component="dropdown"
+              label="Order By"
+              options={[
+                { value: null, label: 'By Rarity' },
+                { value: 'category', label: 'By Category' },
+                { value: 'newest', label: 'Newest' },
+              ]}
+            />
+          </div>
+          {tab === 'workshop' && (
+            <>
+              <div className="grid lg:grid-cols-5 gap-2">
+                {reverse([...allRarityDefinitions]).map((rarity) => {
+                  const itemIdsToSalvage = filter(
+                    itemsShown,
+                    (i) =>
+                      i.rarity === rarity.name &&
+                      !!i.id &&
+                      !i.favorite &&
+                      !find(loadoutItems, (li) => li.id === i.id),
+                  ).flatMap((i) => (i.id ? [i.id] : []))
+                  return (
+                    <Fragment key={rarity.name}>
+                      <Card className="px-2 py-1 text-sm">
+                        <div
+                          className={cn(
+                            'flex flex-row gap-1 items-center',
+                            rarity.textClass,
+                          )}
+                        >
+                          <div className="flex-1 truncate">
+                            {capitalCase(rarity.name)} Parts
+                          </div>
+                          <div className="text-right">
+                            {game.data.salvagedParts?.[rarity.name] ?? 0}
+                          </div>
+                          <ActionButton
+                            variant={'ghost'}
+                            disabled={!itemIdsToSalvage.length}
+                            size="sm"
+                            className={cn(
+                              'rounded-none first:rounded-l-md last:rounded-r-md',
+                              'h-auto px-2 py-1',
+                            )}
+                            icon={<Recycle />}
+                            catchToast
+                            askForConfirmation={{
+                              title: `Salvage ${itemIdsToSalvage.length} ${rarity.name} items?`,
+                              content: `This will only salvage items that are not equipped and not favorites.`,
+                            }}
+                            action={async () => {
+                              'use server'
+                              return gameAction({
+                                gameId: game.id,
+                                action: async ({ ctx }) => {
+                                  const ids = itemIdsToSalvage
+
+                                  if (ctx.game.data.inventory) {
+                                    ctx.game.data.inventory.items =
+                                      ctx.game.data.inventory.items.filter(
+                                        (i) => i.id && !ids.includes(i.id),
+                                      )
+                                  }
+                                  ctx.game.data.currentLoadout.items =
+                                    ctx.game.data.currentLoadout.items.filter(
+                                      (i) => i.id && !ids.includes(i.id),
+                                    )
+
+                                  const salvagedParts =
+                                    ctx.game.data.salvagedParts ?? {}
+                                  salvagedParts[rarity.name] =
+                                    (salvagedParts[rarity.name] ?? 0) +
+                                    ids.length
+                                  ctx.game.data.salvagedParts = salvagedParts
+
+                                  streamToast({
+                                    title: `Salvaged ${ids.length} ${rarity.name} items`,
+                                    description: `You got ${ids.length} ${rarity.name} parts.`,
+                                  })
+                                },
+                              })
+                            }}
+                          >
+                            + {itemIdsToSalvage.length}
+                          </ActionButton>
+                        </div>
+                      </Card>
+                    </Fragment>
+                  )
+                })}
+              </div>
+            </>
+          )}
         </div>
         <div
           className={cn(
@@ -189,7 +283,7 @@ export const CollectorItemGrid = async ({
                           'flex flex-row gap-2 items-center cursor-pointer',
                           !inLoadout && 'grayscale opacity-50',
                           'text-xs',
-                          'rounded-r-none',
+                          'rounded-none first:rounded-l-md last:rounded-r-md',
                           'h-auto px-2 py-1',
                         )}
                       >
@@ -217,7 +311,7 @@ export const CollectorItemGrid = async ({
                         className={cn(
                           item.favorite && 'text-yellow-500',
                           !item.favorite && 'grayscale opacity-50',
-                          'rounded-l-none',
+                          'rounded-none first:rounded-l-md last:rounded-r-md',
                           'h-auto px-2 py-1',
                         )}
                         icon={
@@ -245,6 +339,116 @@ export const CollectorItemGrid = async ({
                       />
                     </SimpleTooltip>
                   </div>
+                  {tab === 'workshop' && (
+                    <div
+                      className={cn(
+                        'flex flex-row gap-1',
+                        !selectable && 'invisible',
+                      )}
+                    >
+                      {item.rarity !== last(allRarities) && (
+                        <SimpleTooltip
+                          tooltip={`Upgrade this item to increase its rarity and add a new random aspect. Costs 5 ${item.rarity} parts.`}
+                        >
+                          <ActionButton
+                            variant={'secondary'}
+                            disabled={!selectable}
+                            size="sm"
+                            className={cn(
+                              'rounded-none first:rounded-l-md last:rounded-r-md',
+                              'h-auto px-2 py-1',
+                            )}
+                            icon={<ArrowUp />}
+                            catchToast
+                            action={async () => {
+                              'use server'
+                              return gameAction({
+                                gameId: game.id,
+                                action: async ({ ctx }) => {
+                                  streamCollectorUpgradeDialog({
+                                    item,
+                                    game: ctx.game,
+                                  })
+                                },
+                              })
+                            }}
+                          />
+                        </SimpleTooltip>
+                      )}
+                      <SimpleTooltip
+                        tooltip={'Salvage this item to get some parts.'}
+                      >
+                        <ActionButton
+                          variant={'secondary'}
+                          disabled={!selectable}
+                          size="sm"
+                          className={cn(
+                            'rounded-none first:rounded-l-md last:rounded-r-md',
+                            'h-auto px-2 py-1',
+                          )}
+                          icon={<Recycle />}
+                          askForConfirmation={
+                            inLoadout
+                              ? {
+                                  title: `Salvage ${capitalCase(item.name)}?`,
+                                  content: (
+                                    <div className="text-amber-500">
+                                      It&apos;s currently in your loadout.
+                                    </div>
+                                  ),
+                                }
+                              : item.favorite
+                                ? {
+                                    title: `Salvage ${capitalCase(item.name)}?`,
+                                    content: (
+                                      <div className="text-amber-500">
+                                        It&apos;s currently in your favorites.
+                                      </div>
+                                    ),
+                                  }
+                                : {
+                                    title: `Salvage ${capitalCase(item.name)}?`,
+                                  }
+                          }
+                          catchToast
+                          action={async () => {
+                            'use server'
+                            return gameAction({
+                              gameId: game.id,
+                              action: async ({ ctx }) => {
+                                const { id, rarity } = item
+                                if (!id || !rarity) {
+                                  throw new Error('Cannot salvage this item')
+                                }
+
+                                if (ctx.game.data.inventory) {
+                                  ctx.game.data.inventory.items =
+                                    ctx.game.data.inventory.items.filter(
+                                      (i) => i.id !== id,
+                                    )
+                                }
+                                ctx.game.data.currentLoadout.items =
+                                  ctx.game.data.currentLoadout.items.filter(
+                                    (i) => i.id !== id,
+                                  )
+
+                                const salvagedParts =
+                                  ctx.game.data.salvagedParts ?? {}
+                                salvagedParts[rarity] =
+                                  (salvagedParts[rarity] ?? 0) + 1
+                                ctx.game.data.salvagedParts = salvagedParts
+
+                                streamToast({
+                                  title: `Salvaged ${rarity} item`,
+                                  description: `You got 1 ${rarity} parts.`,
+                                })
+                              },
+                            })
+                          }}
+                        />
+                      </SimpleTooltip>
+                    </div>
+                  )}
                 </div>
               </Fragment>
             )
