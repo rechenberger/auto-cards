@@ -18,7 +18,7 @@ import {
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { capitalCase } from 'change-case'
-import { filter, find, orderBy, reverse } from 'lodash-es'
+import { filter, find, last, orderBy, reverse } from 'lodash-es'
 import { ArrowUp, Recycle, Star } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { Fragment } from 'react'
@@ -162,7 +162,10 @@ export const CollectorItemGrid = async ({
                             variant={'ghost'}
                             disabled={!itemIdsToSalvage.length}
                             size="sm"
-                            className={cn('rounded-l-none', 'h-auto px-2 py-1')}
+                            className={cn(
+                              'rounded-none first:rounded-l-md last:rounded-r-md',
+                              'h-auto px-2 py-1',
+                            )}
                             icon={<Recycle />}
                             catchToast
                             askForConfirmation={{
@@ -282,7 +285,7 @@ export const CollectorItemGrid = async ({
                           'flex flex-row gap-2 items-center cursor-pointer',
                           !inLoadout && 'grayscale opacity-50',
                           'text-xs',
-                          'rounded-r-none',
+                          'rounded-none first:rounded-l-md last:rounded-r-md',
                           'h-auto px-2 py-1',
                         )}
                       >
@@ -310,7 +313,7 @@ export const CollectorItemGrid = async ({
                         className={cn(
                           item.favorite && 'text-yellow-500',
                           !item.favorite && 'grayscale opacity-50',
-                          'rounded-l-none',
+                          'rounded-none first:rounded-l-md last:rounded-r-md',
                           'h-auto px-2 py-1',
                         )}
                         icon={
@@ -345,34 +348,39 @@ export const CollectorItemGrid = async ({
                         !selectable && 'invisible',
                       )}
                     >
-                      <SimpleTooltip
-                        tooltip={`Upgrade this item to increase its rarity and add a new random aspect. Costs 5 ${item.rarity} parts.`}
-                      >
-                        <ActionButton
-                          variant={'secondary'}
-                          disabled={!selectable || !!item.favorite}
-                          size="sm"
-                          className={cn('rounded-r-none', 'h-auto px-2 py-1')}
-                          icon={<ArrowUp />}
-                          catchToast
-                          action={async () => {
-                            'use server'
-                            return gameAction({
-                              gameId: game.id,
-                              action: async ({ ctx }) => {
-                                streamDialog({
-                                  title: `Upgrade ${capitalCase(item.name)}`,
-                                  content: (
-                                    <>
-                                      <ItemCard itemData={item} size="200" />
-                                    </>
-                                  ),
-                                })
-                              },
-                            })
-                          }}
-                        />
-                      </SimpleTooltip>
+                      {item.rarity !== last(allRarities) && (
+                        <SimpleTooltip
+                          tooltip={`Upgrade this item to increase its rarity and add a new random aspect. Costs 5 ${item.rarity} parts.`}
+                        >
+                          <ActionButton
+                            variant={'secondary'}
+                            disabled={!selectable || !!item.favorite}
+                            size="sm"
+                            className={cn(
+                              'rounded-none first:rounded-l-md last:rounded-r-md',
+                              'h-auto px-2 py-1',
+                            )}
+                            icon={<ArrowUp />}
+                            catchToast
+                            action={async () => {
+                              'use server'
+                              return gameAction({
+                                gameId: game.id,
+                                action: async ({ ctx }) => {
+                                  streamDialog({
+                                    title: `Upgrade ${capitalCase(item.name)}`,
+                                    content: (
+                                      <>
+                                        <ItemCard itemData={item} size="200" />
+                                      </>
+                                    ),
+                                  })
+                                },
+                              })
+                            }}
+                          />
+                        </SimpleTooltip>
+                      )}
                       <SimpleTooltip
                         tooltip={'Salvage this item to get some parts.'}
                       >
@@ -380,7 +388,10 @@ export const CollectorItemGrid = async ({
                           variant={'secondary'}
                           disabled={!selectable}
                           size="sm"
-                          className={cn('rounded-l-none', 'h-auto px-2 py-1')}
+                          className={cn(
+                            'rounded-none first:rounded-l-md last:rounded-r-md',
+                            'h-auto px-2 py-1',
+                          )}
                           icon={<Recycle />}
                           askForConfirmation={
                             inLoadout
