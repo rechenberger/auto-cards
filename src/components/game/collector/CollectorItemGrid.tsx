@@ -391,14 +391,24 @@ export const CollectorItemGrid = async ({
                             inLoadout
                               ? {
                                   title: `Salvage ${capitalCase(item.name)}?`,
-                                  content: `It's currently in your loadout.`,
+                                  content: (
+                                    <div className="text-amber-500">
+                                      It&apos;s currently in your loadout.
+                                    </div>
+                                  ),
                                 }
                               : item.favorite
                                 ? {
                                     title: `Salvage ${capitalCase(item.name)}?`,
-                                    content: `It's currently in your favorites.`,
+                                    content: (
+                                      <div className="text-amber-500">
+                                        It&apos;s currently in your favorites.
+                                      </div>
+                                    ),
                                   }
-                                : undefined
+                                : {
+                                    title: `Salvage ${capitalCase(item.name)}?`,
+                                  }
                           }
                           catchToast
                           action={async () => {
