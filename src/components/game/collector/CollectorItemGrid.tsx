@@ -174,6 +174,7 @@ export const CollectorItemGrid = async ({
                               'use server'
                               return gameAction({
                                 gameId: game.id,
+                                streamRevalidate: true,
                                 action: async ({ ctx }) => {
                                   const ids = itemIdsToSalvage
 
@@ -364,6 +365,7 @@ export const CollectorItemGrid = async ({
                               'use server'
                               return gameAction({
                                 gameId: game.id,
+                                streamRevalidate: true,
                                 action: async ({ ctx }) => {
                                   streamCollectorUpgradeDialog({
                                     item,
@@ -415,6 +417,7 @@ export const CollectorItemGrid = async ({
                             'use server'
                             return gameAction({
                               gameId: game.id,
+                              streamRevalidate: true,
                               action: async ({ ctx }) => {
                                 const { id, rarity } = item
                                 if (!id || !rarity) {
@@ -447,10 +450,10 @@ export const CollectorItemGrid = async ({
                                   (salvagedParts[rarity] ?? 0) + 1
                                 ctx.game.data.salvagedParts = salvagedParts
 
-                                // streamToast({
-                                //   title: `Salvaged ${rarity} item`,
-                                //   description: `You got 1 ${rarity} parts.`,
-                                // })
+                                streamToast({
+                                  title: `Salvaged ${rarity} item`,
+                                  description: `You got 1 ${rarity} parts.`,
+                                })
                               },
                             })
                           }}

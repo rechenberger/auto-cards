@@ -119,6 +119,7 @@ export const CollectorUpgradeDialog = async (
             const { id } = item
             return gameAction({
               gameId: game.id,
+              streamRevalidate: true,
               action: async ({ ctx }) => {
                 const item = ctx.game.data.inventory?.items.find(
                   (i) => i.id === id,
