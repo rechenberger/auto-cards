@@ -11,12 +11,15 @@ import { orderItems } from '@/game/orderItems'
 import { allRarities, allRarityDefinitions } from '@/game/rarities'
 import { Tag, allTags } from '@/game/tags'
 import { cn } from '@/lib/utils'
-import { streamToast } from '@/super-action/action/createSuperAction'
+import {
+  streamDialog,
+  streamToast,
+} from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { capitalCase } from 'change-case'
 import { filter, find, orderBy, reverse } from 'lodash-es'
-import { Recycle, Star } from 'lucide-react'
+import { ArrowUp, Recycle, Star } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { Fragment } from 'react'
 import { ItemCard } from '../ItemCard'
@@ -343,22 +346,63 @@ export const CollectorItemGrid = async ({
                       )}
                     >
                       <SimpleTooltip
-                        tooltip={'Salvage this item to get some parts.'}
+                        tooltip={`Upgrade this item to increase its rarity and add a new random aspect. Costs 5 ${item.rarity} parts.`}
                       >
                         <ActionButton
                           variant={'secondary'}
                           disabled={!selectable || !!item.favorite}
                           size="sm"
-                          className={cn('rounded-l-none', 'h-auto px-2 py-1')}
-                          icon={<Recycle />}
+                          className={cn('rounded-r-none', 'h-auto px-2 py-1')}
+                          icon={<ArrowUp />}
                           catchToast
                           action={async () => {
                             'use server'
                             return gameAction({
                               gameId: game.id,
                               action: async ({ ctx }) => {
-                                const { id, rarity, favorite } = item
-                                if (!id || !rarity || favorite) {
+                                streamDialog({
+                                  title: `Upgrade ${capitalCase(item.name)}`,
+                                  content: (
+                                    <>
+                                      <ItemCard itemData={item} size="200" />
+                                    </>
+                                  ),
+                                })
+                              },
+                            })
+                          }}
+                        />
+                      </SimpleTooltip>
+                      <SimpleTooltip
+                        tooltip={'Salvage this item to get some parts.'}
+                      >
+                        <ActionButton
+                          variant={'secondary'}
+                          disabled={!selectable}
+                          size="sm"
+                          className={cn('rounded-l-none', 'h-auto px-2 py-1')}
+                          icon={<Recycle />}
+                          askForConfirmation={
+                            inLoadout
+                              ? {
+                                  title: `Salvage ${capitalCase(item.name)}?`,
+                                  content: `It's currently in your loadout.`,
+                                }
+                              : item.favorite
+                                ? {
+                                    title: `Salvage ${capitalCase(item.name)}?`,
+                                    content: `It's currently in your favorites.`,
+                                  }
+                                : undefined
+                          }
+                          catchToast
+                          action={async () => {
+                            'use server'
+                            return gameAction({
+                              gameId: game.id,
+                              action: async ({ ctx }) => {
+                                const { id, rarity } = item
+                                if (!id || !rarity) {
                                   throw new Error('Cannot salvage this item')
                                 }
 
