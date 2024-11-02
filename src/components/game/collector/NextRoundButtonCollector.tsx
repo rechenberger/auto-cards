@@ -11,6 +11,7 @@ export const NextRoundButtonCollector = ({ game }: { game: Game }) => {
   }
 
   const status = dungeonData.status
+  const label = status === 'active' ? 'Next Room' : 'Exit Dungeon'
 
   return (
     <>
@@ -35,12 +36,13 @@ export const NextRoundButtonCollector = ({ game }: { game: Game }) => {
           })
         }}
         command={{
+          label,
           shortcut: {
             key: 'n',
           },
         }}
       >
-        {status === 'active' ? 'Next Room' : 'Exit Dungeon'}
+        {label}
       </ActionButton>
     </>
   )

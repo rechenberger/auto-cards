@@ -116,15 +116,14 @@ export const CollectorDungeonSelect = async ({ game }: { game: Game }) => {
                     variant="outline"
                     className="self-end"
                     catchToast
-                    command={
-                      isLast
+                    command={{
+                      label: `Enter ${capitalCase(access.name)}`,
+                      shortcut: isLast
                         ? {
-                            shortcut: {
-                              key: 'n',
-                            },
+                            key: 'n',
                           }
-                        : undefined
-                    }
+                        : undefined,
+                    }}
                     action={async () => {
                       'use server'
                       return gameAction({
