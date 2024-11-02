@@ -5,6 +5,7 @@ import { promiseSeqMap } from '@/lib/promiseSeqMap'
 import assert from 'assert'
 import { range } from 'lodash-es'
 import { AspectName } from '../aspects'
+import { COLLECTOR_UPGRADE_SCALING_MULTIPLIER } from '../config'
 import { randomRarityByWeight } from '../randomRarityByWeight'
 import { rngFloat, rngGenerator, rngItem } from '../seed'
 import { DungeonDefinition, DungeonRoom } from './DungeonDefinition'
@@ -86,7 +87,9 @@ export const adventureTrail: DungeonDefinition = {
             giveAspect({
               item,
               aspect: 'heroPower',
-              multiplier: 1.2 ** (level - 1 - heroAspectMinLevel),
+              multiplier:
+                COLLECTOR_UPGRADE_SCALING_MULTIPLIER **
+                (level - 1 - heroAspectMinLevel),
             }),
           )
         }
@@ -123,7 +126,7 @@ export const adventureTrail: DungeonDefinition = {
               item,
               seed,
               rarity,
-              // multiplier: 1.2 ** level,
+              // multiplier: COLLECTOR_UPGRADE_SCALING_MULTIPLIER ** level,
             })
 
             return itemData
