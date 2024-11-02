@@ -78,6 +78,9 @@ export const CollectorItemGrid = async ({
 
   const allItems = await getAllItems()
 
+  const separateWorkshopTab = false
+  const showWorkshopStuff = !separateWorkshopTab || tab === 'workshop'
+
   return (
     <>
       <div className="flex flex-col gap-4">
@@ -100,10 +103,14 @@ export const CollectorItemGrid = async ({
                   value: 'inventory',
                   label: `Inventory (${inventoryItems.length})`,
                 },
-                {
-                  value: 'workshop',
-                  label: `Workshop`,
-                },
+                ...(separateWorkshopTab
+                  ? [
+                      {
+                        value: 'workshop',
+                        label: `Workshop`,
+                      },
+                    ]
+                  : []),
               ]}
             />
             <div className="flex-1" />
@@ -129,10 +136,10 @@ export const CollectorItemGrid = async ({
               ]}
             />
           </div>
-          {tab === 'workshop' && (
+          {showWorkshopStuff && (
             <CollectorSalvageButtons
               game={game}
-              itemsShown={itemsShown}
+              inventoryItems={inventoryItems}
               loadoutItems={loadoutItems}
             />
           )}
@@ -165,7 +172,7 @@ export const CollectorItemGrid = async ({
                   <ItemCard
                     itemData={item}
                     size={tab === 'inventory' ? '120' : '160'}
-                    onlyTop
+                    // onlyTop
                     tooltipOnClick
                     tooltipOnHover
                     // showPrice
@@ -262,7 +269,7 @@ export const CollectorItemGrid = async ({
                       />
                     </SimpleTooltip>
                   </div>
-                  {tab === 'workshop' && (
+                  {showWorkshopStuff && (
                     <div
                       className={cn(
                         'flex flex-row gap-1',

@@ -16,11 +16,11 @@ import { ItemData } from '../ItemData'
 
 export const CollectorSalvageButtons = ({
   game,
-  itemsShown,
+  inventoryItems,
   loadoutItems,
 }: {
   game: Game
-  itemsShown: ItemData[]
+  inventoryItems: ItemData[]
   loadoutItems: ItemData[]
 }) => {
   return (
@@ -29,7 +29,7 @@ export const CollectorSalvageButtons = ({
       <div className="grid lg:grid-cols-5 gap-2">
         {reverse([...allRarityDefinitions]).map((rarity, idx) => {
           const itemIdsToSalvage = filter(
-            itemsShown,
+            inventoryItems,
             (i) =>
               i.rarity === rarity.name &&
               !!i.id &&
