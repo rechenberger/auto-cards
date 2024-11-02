@@ -1,13 +1,16 @@
+import { SimpleTooltip } from '@/components/simple/SimpleTooltip'
 import { Card } from '@/components/ui/card'
 import { Game } from '@/db/schema-zod'
+import { COLLECTOR_UPGRADE_COSTS_DIRECT } from '@/game/config'
 import { gameAction } from '@/game/gameAction'
 import { allRarityDefinitions } from '@/game/rarities'
 import { cn } from '@/lib/utils'
 import { streamToast } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
+import assert from 'assert'
 import { capitalCase } from 'change-case'
 import { filter, find, reverse } from 'lodash-es'
-import { Recycle } from 'lucide-react'
+import { ArrowUp, Recycle } from 'lucide-react'
 import { Fragment } from 'react'
 import { ItemData } from '../ItemData'
 
@@ -24,7 +27,7 @@ export const CollectorSalvageButtons = ({
     <>
       {' '}
       <div className="grid lg:grid-cols-5 gap-2">
-        {reverse([...allRarityDefinitions]).map((rarity) => {
+        {reverse([...allRarityDefinitions]).map((rarity, idx) => {
           const itemIdsToSalvage = filter(
             itemsShown,
             (i) =>
@@ -33,6 +36,13 @@ export const CollectorSalvageButtons = ({
               !i.favorite &&
               !find(loadoutItems, (li) => li.id === i.id),
           ).flatMap((i) => (i.id ? [i.id] : []))
+
+          const originalIdx = allRarityDefinitions.length - idx - 1
+          const nextRarity = allRarityDefinitions[originalIdx + 1]
+
+          const amount = game.data.salvagedParts?.[rarity.name] ?? 0
+          const upgrades = Math.floor(amount / COLLECTOR_UPGRADE_COSTS_DIRECT)
+
           return (
             <Fragment key={rarity.name}>
               <Card className="px-2 py-1 text-sm">
@@ -42,12 +52,52 @@ export const CollectorSalvageButtons = ({
                     rarity.textClass,
                   )}
                 >
+                  {!!nextRarity && (
+                    <SimpleTooltip
+                      tooltip={`Upgrade ${
+                        upgrades * COLLECTOR_UPGRADE_COSTS_DIRECT
+                      } ${capitalCase(
+                        rarity.name,
+                      )} Parts to ${upgrades} ${capitalCase(
+                        nextRarity.name,
+                      )} Parts`}
+                    >
+                      <ActionButton
+                        variant={'ghost'}
+                        disabled={upgrades <= 0}
+                        size="sm"
+                        className={cn(
+                          'rounded-none first:rounded-l-md last:rounded-r-md',
+                          'h-auto px-2 py-1',
+                        )}
+                        icon={<ArrowUp className="lg:-rotate-90" />}
+                        catchToast
+                        action={async () => {
+                          'use server'
+                          return gameAction({
+                            gameId: game.id,
+                            streamRevalidate: true,
+                            action: async ({ ctx }) => {
+                              const { salvagedParts } = ctx.game.data
+                              assert(salvagedParts, 'salvagedParts not found')
+                              const current = salvagedParts[rarity.name] ?? 0
+                              const newAmount =
+                                current -
+                                upgrades * COLLECTOR_UPGRADE_COSTS_DIRECT
+                              assert(newAmount >= 0, 'not enough parts')
+                              salvagedParts[rarity.name] = newAmount
+                              salvagedParts[nextRarity.name] =
+                                (salvagedParts[nextRarity.name] ?? 0) + upgrades
+                            },
+                          })
+                        }}
+                      />
+                    </SimpleTooltip>
+                  )}
                   <div className="flex-1 truncate">
                     {capitalCase(rarity.name)} Parts
                   </div>
-                  <div className="text-right">
-                    {game.data.salvagedParts?.[rarity.name] ?? 0}
-                  </div>
+                  <div className="text-right">{amount}</div>
                   <ActionButton
                     variant={'ghost'}
                     disabled={!itemIdsToSalvage.length}
