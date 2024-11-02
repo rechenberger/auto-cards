@@ -1,3 +1,4 @@
+import { getIsAdmin } from '@/auth/getIsAdmin'
 import { SimpleTooltipButton } from '@/components/simple/SimpleTooltipButton'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
@@ -14,6 +15,7 @@ import { gameAction } from '@/game/gameAction'
 import { createSeed } from '@/game/seed'
 import { fontLore } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
+import { streamToast } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { capitalCase } from 'change-case'
@@ -26,6 +28,8 @@ import { fightDungeon } from './fightDungeon'
 export const CollectorDungeonSelect = async ({ game }: { game: Game }) => {
   const accesses = game.data.dungeonAccesses
   if (!accesses) return null
+
+  const isAdmin = await getIsAdmin({ allowDev: true })
 
   return (
     <>
@@ -144,6 +148,73 @@ export const CollectorDungeonSelect = async ({ game }: { game: Game }) => {
                   >
                     Enter
                   </ActionButton>
+                  {isAdmin && (
+                    <ActionButton
+                      variant="outline"
+                      className="self-end"
+                      catchToast
+                      command={{
+                        label: `Turbo ${capitalCase(access.name)}`,
+                      }}
+                      hideButton
+                      action={async () => {
+                        'use server'
+                        return gameAction({
+                          gameId: game.id,
+                          checkUpdatedAt: game.updatedAt,
+                          streamRevalidate: true,
+                          action: async ({ ctx }) => {
+                            const dungeonName = access.name
+                            const noOfDungeons = 100
+                            let completed = 0
+                            let failed = 0
+                            for (let i = 0; i < noOfDungeons; i++) {
+                              const access =
+                                ctx.game.data.dungeonAccesses?.find(
+                                  (a) => a.name === dungeonName,
+                                )
+                              if (!access) return
+                              console.log('fightDungeon')
+                              await fightDungeon({
+                                game: ctx.game,
+                                dungeonInput: {
+                                  name: access.name,
+                                  level: access.levelCurrent,
+                                  seed: createSeed(),
+                                },
+                              })
+                              while (ctx.game.data.dungeon) {
+                                const dungeonData = ctx.game.data.dungeon
+                                const roomIdx = dungeonData.room.idx + 1
+                                console.log('fightDungeon', i, roomIdx)
+                                await fightDungeon({
+                                  game: ctx.game,
+                                  roomIdx: dungeonData.room.idx + 1,
+                                })
+                                const { status } = dungeonData
+                                if (status !== 'active') {
+                                  if (status === 'completed') {
+                                    completed++
+                                  } else if (status === 'failed') {
+                                    failed++
+                                  }
+                                  ctx.game.data.dungeon = undefined
+                                }
+                              }
+                            }
+                            streamToast({
+                              title: `${capitalCase(access.name)}`,
+                              description: `${
+                                completed + failed
+                              } of ${noOfDungeons} done, ${completed} completed, ${failed} failed`,
+                            })
+                          },
+                        })
+                      }}
+                    >
+                      Turbo
+                    </ActionButton>
+                  )}
                 </div>
               </Card>
             </Fragment>
