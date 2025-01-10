@@ -28,12 +28,12 @@ app.on('ready', () => {
     // mainWindow.loadURL('https://auto-cards.com')
     mainWindow.loadURL('http://localhost:3000/steam')
 
-    // mainWindow.webContents.on('did-finish-load', () => {
-    //   mainWindow.webContents.send('send-data', {
-    //     username: 'SteamUser123',
-    //     id: '123456',
-    //   })
-    // })
+    mainWindow.webContents.on('did-finish-load', () => {
+      mainWindow.webContents.send('main-to-renderer', {
+        username: 'SteamUser123',
+        id: '123456',
+      })
+    })
   }
 
   function handleSetTitle(event, title) {
