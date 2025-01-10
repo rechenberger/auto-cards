@@ -110,6 +110,7 @@
     "productName": "Auto Cards",
     "files": [
       "main.js",
+      "preload.js",
       "node_modules/**/*",
       "package.json"
     ],
