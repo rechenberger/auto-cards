@@ -1,7 +1,8 @@
 'use client'
 
+import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
 import { Button } from '@/components/ui/button'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 // import { ipcMain } from 'electron'
 // import Steamworks from 'steamworks.js'
 
@@ -9,6 +10,7 @@ import { useEffect } from 'react'
 // const steam = Steamworks.init(steamAppId)
 
 export const SteamClient = () => {
+  const [steamState, setSteamState] = useState<any>()
   useEffect(() => {
     // ipcMain.addListener('send-data', (evt, data) => {
     //   alert('Data Retrieved')
@@ -18,6 +20,7 @@ export const SteamClient = () => {
 
     electronApi.onMainEvent('main-to-renderer', (message) => {
       console.log('from main', message)
+      setSteamState(message)
     })
   }, [])
   return (
@@ -30,6 +33,7 @@ export const SteamClient = () => {
       >
         Test Steam Clientam
       </Button>
+      <SimpleDataCard data={steamState} />
     </>
   )
 }
