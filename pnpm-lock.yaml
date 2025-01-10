@@ -181,6 +181,9 @@ importers:
       seedrandom:
         specifier: ^3.0.5
         version: 3.0.5
+      steamworks.js:
+        specifier: ^0.4.0
+        version: 0.4.0
       tailwind-merge:
         specifier: ^1.14.0
         version: 1.14.0
@@ -5052,6 +5055,10 @@ packages:
 
   stats.js@0.17.0:
     resolution: {integrity: sha512-hNKz8phvYLPEcRkeG1rsGmV5ChMjKDAWU7/OJJdDErPBNChQXxCo3WZurGpnWc6gZhAzEPFad1aVgyOANH1sMw==}
+
+  steamworks.js@0.4.0:
+    resolution: {integrity: sha512-O5TTRs7ucCRql4IA/kYUIQYeghTsXqf3rAm81sC22RDId264LQYqQjuaMEUSqL60I5LdULiGu0W2/A+ZDcKBKA==}
+    engines: {node: '>= 14'}
 
   streamsearch@1.1.0:
     resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}
@@ -10928,6 +10935,10 @@ snapshots:
       '@types/three': 0.163.0
 
   stats.js@0.17.0: {}
+
+  steamworks.js@0.4.0:
+    dependencies:
+      '@types/node': 20.6.3
 
   streamsearch@1.1.0: {}
 
