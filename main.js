@@ -28,12 +28,18 @@ app.on('ready', () => {
     // mainWindow.loadURL('https://auto-cards.com')
     mainWindow.loadURL('http://localhost:3000/steam')
 
-    mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.on('did-finish-load', async () => {
+      const steamId = steam.localplayer.getSteamId()
+      const authTicket = await steam.auth.getAuthTicketForWebApi(
+        steamId.steamId32,
+      )
+
       mainWindow.webContents.send('main-to-renderer', {
         username: 'SteamUser123',
         id: '123456',
         steamName: steam.localplayer.getName(),
         steamId: steam.localplayer.getSteamId(),
+        authTicket: authTicket.getBytes().toString('hex'),
       })
     })
   }
