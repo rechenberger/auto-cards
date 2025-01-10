@@ -1,7 +1,8 @@
 {
-  "name": "party-starter",
+  "name": "auto-cards",
   "version": "0.1.0",
   "private": true,
+  "main": "main.js",
   "scripts": {
     "dev": "next dev",
     "dev:inspect": "NODE_OPTIONS='--inspect' next dev",
@@ -13,7 +14,8 @@
     "db:studio": "drizzle-kit studio",
     "db:copy": "turso db shell auto-cards-2 .dump | sqlite3 db.sqlite",
     "db:reset": "rm -rf db.sqlite && pnpm run db:copy",
-    "ts:check": "tsc --noEmit"
+    "ts:check": "tsc --noEmit",
+    "build:electron": "electron-builder"
   },
   "dependencies": {
     "@auth/core": "^0.37.2",
@@ -91,6 +93,8 @@
     "@types/three": "^0.167.1",
     "dotenv-flow": "^4.1.0",
     "drizzle-kit": "^0.24.0",
+    "electron": "^33.3.1",
+    "electron-builder": "^25.1.8",
     "prettier": "^3.1.1"
   },
   "pnpm": {
@@ -98,6 +102,24 @@
       "@types/react": "npm:types-react@19.0.0-rc.1",
       "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
       "react-is": "19.0.0-rc-28668d39-20241023"
+    }
+  },
+  "build": {
+    "appId": "com.auto-cards.app",
+    "productName": "Auto Cards",
+    "files": [
+      "main.js",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
     }
   }
 }
