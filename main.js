@@ -32,7 +32,8 @@ app.on('ready', () => {
       mainWindow.webContents.send('main-to-renderer', {
         username: 'SteamUser123',
         id: '123456',
-        steam: steam.localplayer.getName(),
+        steamName: steam.localplayer.getName(),
+        steamId: steam.localplayer.getSteamId(),
       })
     })
   }
