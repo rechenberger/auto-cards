@@ -1,9 +1,12 @@
 import { createServerContext } from '@sodefa/next-server-context'
 import {
+  isRedirectError,
+  type RedirectError,
+} from 'next/dist/client/components/redirect-error'
+import {
   getRedirectStatusCodeFromError,
   getRedirectTypeFromError,
   getURLFromRedirectError,
-  isRedirectError,
 } from 'next/dist/client/components/redirect'
 import { ReactNode } from 'react'
 import { z } from 'zod'
@@ -76,6 +79,7 @@ export const superAction = async <Result, Input>(
     })
     .catch((error: unknown) => {
       if (isRedirectError(error)) {
+        const redirectError = error as RedirectError
         if (firstPromise === next.promise) {
           next.reject(error)
         }
@@ -83,9 +87,9 @@ export const superAction = async <Result, Input>(
         // We send the redirect as a response instead for the client to handle
         complete({
           redirect: {
-            url: getURLFromRedirectError(error),
-            type: getRedirectTypeFromError(error),
-            statusCode: getRedirectStatusCodeFromError(error),
+            url: getURLFromRedirectError(redirectError),
+            type: getRedirectTypeFromError(redirectError),
+            statusCode: getRedirectStatusCodeFromError(redirectError),
           },
         })
         return
