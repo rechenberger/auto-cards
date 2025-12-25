@@ -1,5 +1,3 @@
-'use server'
-
 import { ReactNode } from 'react'
 
 interface StreamableUIWrapper {
@@ -15,7 +13,9 @@ interface StreamableUIWrapper {
  *
  * Based on the pattern from AI SDK v3 ai/rsc, adapted for v6 where this was removed.
  */
-export function createStreamableUI(initialValue?: ReactNode): StreamableUIWrapper {
+export function createStreamableUI(
+  initialValue?: ReactNode,
+): StreamableUIWrapper {
   let currentValue: ReactNode = initialValue ?? null
   let isDone = false
 
@@ -60,4 +60,3 @@ export function createStreamableUI(initialValue?: ReactNode): StreamableUIWrappe
 }
 
 export type StreamableUI = StreamableUIWrapper
-
