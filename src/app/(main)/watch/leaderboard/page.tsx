@@ -30,7 +30,7 @@ import {
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
 import { AutoActionClient } from '@/super-action/command/AutoActionClient'
-import { createStreamableUI } from 'ai/rsc'
+import { createStreamableUI } from '@/lib/streamableUI'
 import { eq } from 'drizzle-orm'
 import { countBy, omitBy, orderBy, range, uniqBy } from 'lodash-es'
 import { Delete, Plus, RotateCw } from 'lucide-react'

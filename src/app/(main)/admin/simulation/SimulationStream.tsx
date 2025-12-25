@@ -1,5 +1,5 @@
 import { getAllItems } from '@/game/allItems'
-import { createStreamableUI } from 'ai/rsc'
+import { createStreamableUI } from '@/lib/streamableUI'
 import { range } from 'lodash-es'
 import { simulate, SimulationInput, SimulationResult } from './simulate'
 import { SimulationDisplay } from './SimulationDisplay'
