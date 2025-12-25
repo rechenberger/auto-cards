@@ -5,7 +5,7 @@ import {
   superAction,
 } from '@/super-action/action/createSuperAction'
 import { ActionButton } from '@/super-action/button/ActionButton'
-import { createStreamableUI } from 'ai/rsc'
+import { createStreamableUI } from '@/lib/streamableUI'
 import { ExternalLink, PartyPopper } from 'lucide-react'
 import Link from 'next/link'
 import { Markdown } from './Markdown'

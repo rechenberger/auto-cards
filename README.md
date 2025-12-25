@@ -42,8 +42,12 @@ Setup your Admin User WITHOUT discord or email:
   - [Resend](https://resend.com/)
   - `EMAIL_FROM`: your-email@example.com
   - `AUTH_RESEND_KEY`: your resend api key
-- Setup AI
+- Setup AI Images
   - `LAUNCHPAD_IMAGES`: [Teampilot Public Launchpad Id](https://docs.teampilot.ai/getting-started/provide-a-public-launchpad)
+- Setup AI Playtesting (optional, admin-only feature)
+  - [Vercel AI Gateway](https://vercel.com/ai-gateway)
+  - `VERCEL_AI_GATEWAY_API_KEY`: Your Vercel AI Gateway API key
+  - `AI_PLAYTEST_MODEL`: (optional) Model ID to use (e.g., `openai/gpt-4.1`). Defaults to `openai/gpt-4o-mini`
 - `pnpm db:push` to push schema to DB
 
 ## Libraries

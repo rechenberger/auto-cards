@@ -264,3 +264,120 @@ export const leaderboardEntryRelations = relations(
     }),
   }),
 )
+
+// ==========================================
+// AI Playtest Tables
+// ==========================================
+
+import type {
+  AiAgentMemory,
+  AiPlaytestRunConfig,
+  AiPlaytestStepAction,
+  AiPlaytestStepObservation,
+  AiPlaytestStepResult,
+} from './schema-zod'
+
+/**
+ * AI Agent - persistent identity with memory
+ */
+export const aiAgent = sqliteTable(
+  'aiAgent',
+  {
+    ...baseStats(),
+    name: text('name').notNull(),
+    memory: text('memory', { mode: 'json' }).$type<AiAgentMemory>().notNull(),
+  },
+  (table) => ({
+    aiAgentNameIdx: index('aiAgentNameIdx').on(table.name),
+  }),
+)
+
+export const aiAgentRelations = relations(aiAgent, ({ many }) => ({
+  runs: many(aiPlaytestRun),
+}))
+
+/**
+ * AI Playtest Run - one complete run instance
+ */
+export const aiPlaytestRun = sqliteTable(
+  'aiPlaytestRun',
+  {
+    ...baseStats(),
+    aiAgentId: text('aiAgentId').notNull(),
+    config: text('config', { mode: 'json' })
+      .$type<AiPlaytestRunConfig>()
+      .notNull(),
+    model: text('model').notNull(),
+    seed: text('seed').notNull(),
+    status: text('status')
+      .$type<'running' | 'completed' | 'failed'>()
+      .notNull()
+      .default('running'),
+    // Results
+    wins: int('wins').notNull().default(0),
+    losses: int('losses').notNull().default(0),
+    finalRound: int('finalRound'),
+    // Reports (markdown)
+    summaryMarkdown: text('summaryMarkdown'),
+    suggestionsMarkdown: text('suggestionsMarkdown'),
+    // Error tracking
+    errorMessage: text('errorMessage'),
+  },
+  (table) => ({
+    aiPlaytestRunAgentIdIdx: index('aiPlaytestRunAgentIdIdx').on(
+      table.aiAgentId,
+    ),
+    aiPlaytestRunStatusIdx: index('aiPlaytestRunStatusIdx').on(table.status),
+    aiPlaytestRunCreatedAtIdx: index('aiPlaytestRunCreatedAtIdx').on(
+      table.createdAt,
+    ),
+  }),
+)
+
+export const aiPlaytestRunRelations = relations(
+  aiPlaytestRun,
+  ({ one, many }) => ({
+    agent: one(aiAgent, {
+      fields: [aiPlaytestRun.aiAgentId],
+      references: [aiAgent.id],
+    }),
+    steps: many(aiPlaytestStep),
+  }),
+)
+
+/**
+ * AI Playtest Step - individual action trace for debugging
+ */
+export const aiPlaytestStep = sqliteTable(
+  'aiPlaytestStep',
+  {
+    ...baseStats(),
+    runId: text('runId').notNull(),
+    roundNo: int('roundNo').notNull(),
+    stepNo: int('stepNo').notNull(),
+    // State snapshots
+    observation: text('observation', { mode: 'json' })
+      .$type<AiPlaytestStepObservation>()
+      .notNull(),
+    action: text('action', { mode: 'json' })
+      .$type<AiPlaytestStepAction>()
+      .notNull(),
+    result: text('result', { mode: 'json' })
+      .$type<AiPlaytestStepResult>()
+      .notNull(),
+  },
+  (table) => ({
+    aiPlaytestStepRunIdIdx: index('aiPlaytestStepRunIdIdx').on(table.runId),
+    aiPlaytestStepRoundNoIdx: index('aiPlaytestStepRoundNoIdx').on(
+      table.runId,
+      table.roundNo,
+    ),
+  }),
+)
+
+export const aiPlaytestStepRelations = relations(aiPlaytestStep, ({ one }) => ({
+  run: one(aiPlaytestRun, {
+    fields: [aiPlaytestStep.runId],
+    references: [aiPlaytestRun.id],
+  }),
+}))
