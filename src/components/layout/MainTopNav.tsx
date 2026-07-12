@@ -35,7 +35,7 @@ export function MainTopNav({
             key={entry.href}
             href={entry.href}
             className={cn(
-              'text-sm font-medium transition-colors hover:text-primary',
+              'flex min-h-11 touch-manipulation items-center text-sm font-medium transition-colors hover:text-primary',
               !isActive && 'text-muted-foreground',
             )}
           >

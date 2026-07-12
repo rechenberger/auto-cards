@@ -1,8 +1,10 @@
+'use client'
+
 import { ThemeId } from '@/game/themes'
-import { getItemAiImagePrompt } from '../game/getItemAiImagePrompt'
+import { getItemAiImagePrompt } from '@/game/itemAiImagePrompt'
 import { AiImage } from './AiImage'
 
-export const AiItemImage = async ({
+export const AiItemImage = ({
   className,
   itemName,
   themeId,
@@ -10,17 +12,11 @@ export const AiItemImage = async ({
   className: string
   itemName: string
   themeId: ThemeId
-}) => {
-  const prompt = await getItemAiImagePrompt({
-    name: itemName,
-    themeId,
-  })
-  return (
-    <AiImage
-      prompt={prompt}
-      className={className}
-      itemId={itemName}
-      themeId={themeId}
-    />
-  )
-}
+}) => (
+  <AiImage
+    prompt={getItemAiImagePrompt({ name: itemName, themeId })}
+    className={className}
+    itemId={itemName}
+    themeId={themeId}
+  />
+)

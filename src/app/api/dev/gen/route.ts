@@ -2,7 +2,6 @@ import { isDev } from '@/auth/dev'
 import { generateMatch } from '@/game/generateMatch'
 import { getLeaderboardRanked } from '@/game/getLeaderboard'
 
-export const revalidate = 0
 export const GET = async () => {
   if (!isDev()) {
     return new Response('Not allowed', { status: 403 })
@@ -40,5 +39,7 @@ export const GET = async () => {
     ms: end - start,
   }
 
-  return new Response(JSON.stringify(output, null, 2))
+  return new Response(JSON.stringify(output, null, 2), {
+    headers: { 'cache-control': 'no-store' },
+  })
 }

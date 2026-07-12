@@ -2,7 +2,8 @@ import { keyBy } from 'lodash-es'
 import { map } from 'remeda'
 import { z } from 'zod'
 import { ItemDefinition } from './ItemDefinition'
-import { GAME_VERSION, IGNORE_SPACE } from './config'
+import { DEFAULT_GAME_VERSION, GameVersion } from './gameVersion'
+import { IGNORE_SPACE } from './rules'
 
 const space = (space: number) => {
   return IGNORE_SPACE ? undefined : space
@@ -2252,20 +2253,41 @@ export type BetterItemDefinition = ItemDefinition & {
   name: ItemName
 }
 
-const allItems: BetterItemDefinition[] = allItemsConst.filter(
-  (i: ItemDefinition) => !i.version || i.version <= GAME_VERSION,
-)
+const itemCatalogByVersion = new Map<GameVersion, BetterItemDefinition[]>()
+const itemLookupByVersion = new Map<
+  GameVersion,
+  Partial<Record<ItemName, BetterItemDefinition>>
+>()
 
-export const allItemsForPerformance = allItems
+export const getAllItems = (
+  gameVersion: GameVersion = DEFAULT_GAME_VERSION,
+): BetterItemDefinition[] => {
+  const cached = itemCatalogByVersion.get(gameVersion)
+  if (cached) return cached
 
-export const getAllItems = async () => allItems
-
-const itemByName = keyBy(allItems, (i) => i.name)
-
-export const tryGetItemByName = async (name: string) => {
-  const item = itemByName[name]
-  return item
+  const items = allItemsConst.filter(
+    (item: ItemDefinition) => !item.version || item.version <= gameVersion,
+  ) as BetterItemDefinition[]
+  itemCatalogByVersion.set(gameVersion, items)
+  return items
 }
+
+/** Default ruleset catalog used by replay/simulation hot paths. */
+export const allItemsForPerformance = getAllItems()
+
+const getItemLookup = (gameVersion: GameVersion) => {
+  const cached = itemLookupByVersion.get(gameVersion)
+  if (cached) return cached
+
+  const lookup = keyBy(getAllItems(gameVersion), (item) => item.name)
+  itemLookupByVersion.set(gameVersion, lookup)
+  return lookup
+}
+
+export const tryGetItemByName = (
+  name: string,
+  gameVersion: GameVersion = DEFAULT_GAME_VERSION,
+) => getItemLookup(gameVersion)[name as ItemName]
 
 export const fallbackItemDef = (name: ItemName): BetterItemDefinition => ({
   name,
@@ -2275,10 +2297,11 @@ export const fallbackItemDef = (name: ItemName): BetterItemDefinition => ({
   description: 'Item was removed from the game',
 })
 
-export const getItemByName = async (
+export const getItemByName = (
   name: ItemName,
-): Promise<BetterItemDefinition> => {
-  const item = await tryGetItemByName(name)
+  gameVersion: GameVersion = DEFAULT_GAME_VERSION,
+): BetterItemDefinition => {
+  const item = tryGetItemByName(name, gameVersion)
   if (!item) {
     // throw new Error(`Item not found: ${name}`)
     // console.warn(`Item not found: ${name}`)

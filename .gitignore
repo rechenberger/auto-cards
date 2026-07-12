@@ -39,3 +39,6 @@ next-env.d.ts
 
 # sqlite
 *.sqlite
+
+# local production snapshots, migration rehearsals and sanitized fixtures
+/.db-artifacts/

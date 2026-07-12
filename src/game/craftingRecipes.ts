@@ -1,5 +1,5 @@
 import { ItemName } from './allItems'
-import { GAME_VERSION } from './config'
+import { DEFAULT_GAME_VERSION, GameVersion } from './gameVersion'
 
 type CraftingItem = {
   name: ItemName
@@ -162,11 +162,13 @@ export const craftingRecipes: CraftingRecipe[] = [
   },
 ]
 
-export const getCraftingRecipes = async () => {
+export const getCraftingRecipes = (
+  gameVersion: GameVersion = DEFAULT_GAME_VERSION,
+) => {
   let recipes = craftingRecipes
 
   recipes = recipes.filter((recipe) => {
-    return !recipe.version || recipe.version <= GAME_VERSION
+    return !recipe.version || recipe.version <= gameVersion
   })
 
   return recipes

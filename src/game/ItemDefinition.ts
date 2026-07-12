@@ -1,8 +1,8 @@
 import { z } from 'zod'
 import { GameMode } from './gameMode'
-import { Modifier } from './modifiers'
+import { Modifier } from './modifierSchema'
 import { Rarity } from './rarities'
-import { Stats } from './stats'
+import { Stats } from './statSchemas'
 import { Tag } from './tags'
 
 const triggerEvents = [

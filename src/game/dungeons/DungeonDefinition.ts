@@ -1,10 +1,10 @@
-import { ItemData } from '@/components/game/ItemData'
 import { Game } from '@/db/schema-zod'
 import { z } from 'zod'
+import { ItemData } from '../ItemData'
 import { LoadoutData } from '../LoadoutData'
 import { RarityWeights } from '../rarities'
 import { SeedArray } from '../seed'
-import { DungeonName } from './allDungeons'
+import { DungeonName } from './dungeonSchema'
 
 export const DungeonRoom = z.discriminatedUnion('type', [
   z.object({

@@ -4,9 +4,10 @@ import { getAllItems } from './allItems'
 import { countifyItems } from './countifyItems'
 import { getCraftingRecipes } from './craftingRecipes'
 
-export const getCraftingRecipesGame = async ({ game }: { game?: Game }) => {
-  const all = await getCraftingRecipes()
-  const allItems = await getAllItems()
+export const getCraftingRecipesGame = ({ game }: { game?: Game }) => {
+  const gameVersion = game?.version
+  const all = getCraftingRecipes(gameVersion)
+  const allItems = getAllItems(gameVersion)
   const myItems = countifyItems(game?.data.currentLoadout.items ?? [])
 
   let results = map(all, (recipe) => {

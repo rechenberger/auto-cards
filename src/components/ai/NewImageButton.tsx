@@ -1,74 +1,94 @@
-import { superAction } from '@/super-action/action/createSuperAction'
-import { ActionButton } from '@/super-action/button/ActionButton'
-import { range } from 'lodash-es'
-import { ChevronDown } from 'lucide-react'
-import { Fragment } from 'react'
-import { Button } from '../ui/button'
+'use client'
+
+import { useMeta } from '@/client/api/catalog'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu'
-import { generateAiImage, GenerateAiImageProps } from './generateAiImage.action'
+} from '@/components/ui/dropdown-menu'
+import { ChevronDown, LoaderCircle } from 'lucide-react'
+import { useAiGeneration } from './useAiGeneration'
 
-const numbers = [2, 3, 5, 10]
+export type GenerateAiImageProps = {
+  prompt: string
+  itemId?: string
+  themeId?: string
+  force?: boolean
+}
 
-export const NewImageButton = (props: GenerateAiImageProps) => {
+const counts = [2, 3, 5, 10]
+
+export const NewImageButton = ({
+  prompt,
+  itemId,
+  themeId,
+  force = true,
+}: GenerateAiImageProps) => {
+  const meta = useMeta()
+  const generation = useAiGeneration()
+  if (!meta.data?.viewer?.isAdmin) return null
+
+  const generate = (count: number) =>
+    generation.queue({
+      type: 'generate',
+      prompt,
+      itemId,
+      themeId,
+      force,
+      count,
+    })
+
   return (
-    <>
-      <div className="flex flex-row gap-1">
-        <ActionButton
-          className="rounded-r-none"
-          catchToast
-          hideIcon
-          size="sm"
-          action={async () => {
-            'use server'
-            return generateAiImage({
-              ...props,
-            })
-          }}
-        >
-          New Image
-        </ActionButton>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button size={'sm'} className="rounded-l-none">
-              <ChevronDown className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {numbers.map((number) => (
-              <Fragment key={number}>
-                <DropdownMenuItem asChild>
-                  <ActionButton
-                    variant={'ghost'}
-                    hideIcon
-                    className="w-full text-left"
-                    size={'sm'}
-                    catchToast
-                    action={async () => {
-                      'use server'
-                      return superAction(async () => {
-                        await Promise.all(
-                          range(number).map(() =>
-                            generateAiImage({
-                              ...props,
-                            }),
-                          ),
-                        )
-                      })
-                    }}
-                  >
-                    {number} images
-                  </ActionButton>
-                </DropdownMenuItem>
-              </Fragment>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </>
+    <div className="flex items-stretch">
+      <Button
+        type="button"
+        size="sm"
+        className="min-h-11 rounded-r-none touch-manipulation"
+        disabled={generation.running}
+        onClick={() => void generate(1)}
+      >
+        {generation.running && (
+          <LoaderCircle
+            className="mr-2 size-4 animate-spin motion-reduce:animate-none"
+            aria-hidden="true"
+          />
+        )}
+        {generation.running ? 'Generating…' : 'New image'}
+      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            type="button"
+            size="sm"
+            className="min-h-11 min-w-11 rounded-l-none px-3"
+            disabled={generation.running}
+            aria-label="Choose number of images"
+          >
+            <ChevronDown className="size-4" aria-hidden="true" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {counts.map((count) => (
+            <DropdownMenuItem key={count} asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                className="min-h-11 w-full justify-start"
+                onClick={() => void generate(count)}
+              >
+                Generate {count} images
+              </Button>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+      {generation.error && (
+        <span className="sr-only" role="alert">
+          {generation.error.message}
+        </span>
+      )}
+    </div>
   )
 }

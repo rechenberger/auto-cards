@@ -1,4 +1,4 @@
-import { generateCollectorItemByRarityWeight } from '@/components/game/collector/generateCollectorItemByRarityWeight'
+import { generateCollectorItemByRarityWeight } from '@/game/collector/items'
 import { LoadoutData } from '../LoadoutData'
 import { DungeonDefinition, DungeonRoom } from './DungeonDefinition'
 

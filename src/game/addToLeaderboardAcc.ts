@@ -82,6 +82,8 @@ export const addToLeaderboardAcc = async ({
         userId: latestEntry.userId,
         loadoutId: latestEntry.loadoutId,
         roundNo: latestEntry.roundNo,
+        version: latestEntry.version,
+        gameMode: latestEntry.gameMode,
       })
     }
   }

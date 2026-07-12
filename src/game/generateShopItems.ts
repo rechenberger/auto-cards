@@ -1,8 +1,8 @@
 import { Game } from '@/db/schema-zod'
 import { GameData } from './GameData'
-import { NO_OF_SHOP_ITEMS, SALE_CHANCE } from './config'
 import { generateShopItemsRaw } from './generateShopItemsRaw'
 import { getSpecialBuyRound } from './getSpecialBuyRound'
+import { NO_OF_SHOP_ITEMS, SALE_CHANCE } from './rules'
 import { rngFloat, rngItemsWithWeights } from './seed'
 
 export const generateShopItems = async ({

@@ -1,6 +1,7 @@
-import { ItemData } from '@/components/game/ItemData'
-import { generateCollectorItemAspects } from '@/components/game/collector/generateCollectorItemAspects'
-import { generateCollectorItemByRarityWeight } from '@/components/game/collector/generateCollectorItemByRarityWeight'
+import {
+  generateCollectorItemAspects,
+  generateCollectorItemByRarityWeight,
+} from '@/game/collector/items'
 import { promiseSeqMap } from '@/lib/promiseSeqMap'
 import assert from 'assert'
 import { range } from 'lodash-es'
@@ -8,6 +9,7 @@ import { AspectName } from '../aspects'
 import { COLLECTOR_UPGRADE_SCALING_MULTIPLIER } from '../config'
 import { randomRarityByWeight } from '../randomRarityByWeight'
 import { rngFloat, rngGenerator, rngItem } from '../seed'
+import { ItemData } from '../ItemData'
 import { DungeonDefinition, DungeonRoom } from './DungeonDefinition'
 import { allMonsterParties } from './monsterParties'
 
@@ -126,6 +128,7 @@ export const adventureTrail: DungeonDefinition = {
               item,
               seed,
               rarity,
+              rulesetVersion: game.version,
               // multiplier: COLLECTOR_UPGRADE_SCALING_MULTIPLIER ** level,
             })
 

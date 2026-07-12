@@ -1,32 +1,41 @@
+import { isDev } from '@/auth/dev'
 import { db } from '@/db/db'
+import { users } from '@/db/schema-auth'
+import { verifyImpersonationToken } from '@/server/auth/impersonationToken'
 import Credentials from '@auth/core/providers/credentials'
 import { CredentialsSignin } from 'next-auth'
+import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 
 export const ImpersonateProvider = Credentials({
   id: 'impersonate',
   credentials: {
-    userId: {},
-    secret: {},
+    token: {},
   },
   authorize: async (credentialsRaw) => {
     const parsed = z
       .object({
-        userId: z.string().min(1),
-        secret: z.string().min(1),
+        token: z.string().min(1),
       })
       .safeParse(credentialsRaw)
     if (!parsed.success) {
       throw new CredentialsSignin()
     }
-    const credentials = parsed.data
+    const token = verifyImpersonationToken(parsed.data.token)
+    if (!token) {
+      throw new CredentialsSignin()
+    }
 
-    if (credentials.secret !== process.env.AUTH_SECRET) {
+    const issuer = await db.query.users.findFirst({
+      columns: { id: true, isAdmin: true },
+      where: eq(users.id, token.issuedByUserId),
+    })
+    if (!issuer || (!issuer.isAdmin && !isDev())) {
       throw new CredentialsSignin()
     }
 
     const user = await db.query.users.findFirst({
-      where: (s, { eq }) => eq(s.id, credentials.userId),
+      where: (s, { eq }) => eq(s.id, token.targetUserId),
     })
 
     if (!user) {

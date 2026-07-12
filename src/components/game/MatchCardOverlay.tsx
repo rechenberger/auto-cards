@@ -1,7 +1,7 @@
 'use client'
 
 import { hasAnyStats, sumStats } from '@/game/calcStats'
-import { MATCH_CARD_ANIMATION_DURATION } from '@/game/config'
+import { MATCH_CARD_ANIMATION_DURATION } from '@/game/rules'
 import { MatchLog, MatchReport, NOT_ENOUGH_MSG } from '@/game/generateMatch'
 import { ThemeDefinition } from '@/game/themes'
 import { cn } from '@/lib/utils'

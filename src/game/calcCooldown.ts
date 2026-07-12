@@ -1,5 +1,5 @@
-import { COOLDOWN_PRECISION, MIN_COOLDOWN } from './config'
-import { Stats } from './stats'
+import { COOLDOWN_PRECISION, MIN_COOLDOWN } from './rules'
+import { Stats } from './statSchemas'
 import { Tag } from './tags'
 
 export const calcCooldown = ({

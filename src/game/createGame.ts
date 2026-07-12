@@ -1,29 +1,31 @@
-import { getMyUser } from '@/auth/getMyUser'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Game, LiveMatch } from '@/db/schema-zod'
-import { sendDiscordMessage } from '@/lib/discord'
 import { typedParse } from '@/lib/typedParse'
+import { enqueueDiscordNotification } from '@/server/jobs/discordJobs'
 import { createId } from '@paralleldrive/cuid2'
 import { first } from 'lodash-es'
+import { eq } from 'drizzle-orm'
 import { GAME_VERSION } from './config'
 import { startingDungeonAccesses } from './dungeons/DungeonAccess'
 import { GameData } from './GameData'
 import { DefaultGameMode, GameMode } from './gameMode'
 import { generateShopItems } from './generateShopItems'
 import { getUserName } from './getUserName'
-import { roundStats } from './roundStats'
+import { getRoundStats } from './roundStats'
 
 export const createGame = async ({
   userId,
   liveMatch,
   skipSave,
   gameMode = DefaultGameMode,
+  gameVersion = GAME_VERSION,
 }: {
   userId: string
   liveMatch?: LiveMatch
   skipSave?: boolean
   gameMode?: GameMode
+  gameVersion?: number
 }): Promise<Game> => {
   const id = createId()
 
@@ -31,8 +33,8 @@ export const createGame = async ({
     id,
     userId,
     data: typedParse(GameData, {
-      version: GAME_VERSION,
-      gold: first(roundStats)?.gold ?? 0,
+      version: gameVersion,
+      gold: first(getRoundStats(gameVersion))?.gold ?? 0,
       seed: liveMatch?.data.seed,
       shopItems: [],
       currentLoadout: {
@@ -51,8 +53,9 @@ export const createGame = async ({
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     liveMatchId: liveMatch?.id ?? null,
-    version: GAME_VERSION,
+    version: gameVersion,
     gameMode,
+    revision: 0,
   }
 
   game.data.shopItems = await generateShopItems({ game })
@@ -72,9 +75,12 @@ export const createGame = async ({
     throw new Error('Failed to save game')
   }
 
-  const user = await getMyUser()
+  const user = await db.query.users.findFirst({
+    where: eq(schema.users.id, userId),
+  })
   if (user && !user.isAdmin) {
-    await sendDiscordMessage({
+    await enqueueDiscordNotification({
+      idempotencyKey: `new-game:${game.id}`,
       content: `${getUserName({ user })} playing ${game.id}`,
     })
   }

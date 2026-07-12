@@ -1,14 +1,14 @@
+'use client'
+
+import { SimpleTooltip } from '@/components/simple/SimpleTooltip'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Info } from 'lucide-react'
-import { SimpleTooltipButton } from '../simple/SimpleTooltipButton'
 
 export const AlphaTag = () => {
   return (
     <>
-      <SimpleTooltipButton
-        hideIcon
-        variant="vanilla"
-        size="vanilla"
+      <SimpleTooltip
         tooltip={
           <>
             <div>👨‍💻 This game mode is still in development.</div>
@@ -21,17 +21,21 @@ export const AlphaTag = () => {
           </>
         }
       >
-        <div
+        <Button
+          type="button"
+          variant="vanilla"
+          size="vanilla"
+          aria-label="Collector mode development status"
           className={cn(
-            'rounded-full px-2.5 py-0.5 text-xs font-semibold inline-flex items-center',
+            'min-h-11 touch-manipulation rounded-full px-2.5 py-0.5 text-xs font-semibold inline-flex items-center',
             'bg-green-700 text-green-300',
             'font-mono',
           )}
         >
           <div>In Development</div>
           <Info className="size-3 ml-1" />
-        </div>
-      </SimpleTooltipButton>
+        </Button>
+      </SimpleTooltip>
     </>
   )
 }

@@ -1,7 +1,7 @@
 import { forEach } from 'lodash-es'
 import hash from 'object-hash'
 import { MatchReport, NOT_ENOUGH_MSG } from './generateMatch'
-import { Stat } from './stats'
+import { Stat } from './statSchemas'
 
 type DpsReportKey = {
   sourceSideIdx: number

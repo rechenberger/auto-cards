@@ -1,43 +1,10 @@
 import { floor } from 'lodash-es'
-import { z } from 'zod'
 import { cloneStats, hasAnyStats } from './calcStats'
-import { MatchState } from './generateMatch'
-import { Stat, Stats } from './stats'
-import { Tag } from './tags'
+import type { MatchState } from './generateMatch'
+import { ModifierTargetStats } from './modifierSchema'
+import { Stats } from './statSchemas'
 
-// Für jede Waffe oder Schild (bis zu 3) addiere 3 Damage
-// Für jedes Thorns addiere 1 Damage
-// Für jedes Food multipliziere die Damage mit 1.5
-
-export const ModifierTargetStats = z.enum([
-  'statsSelf',
-  'statsEnemy',
-  'statsTarget',
-  'statsItem',
-  'statsRequired',
-  'attack',
-  'statsForItem',
-  'statsRequiredTarget',
-])
-export type ModifierTargetStats = z.infer<typeof ModifierTargetStats>
-
-export const Modifier = z.object({
-  arithmetic: z.enum(['multiply', 'add', 'subtract', 'divide']),
-  targetStat: Stat,
-  targetStats: ModifierTargetStats,
-
-  sourceSide: z.enum(['self', 'enemy', 'target']),
-
-  valueBase: z.number().optional(), // value = base
-  valueAddingItems: z.array(z.string()).optional(), // value += count(item)
-  valueAddingTags: z.array(Tag).optional(), // value += count(tag)
-  valueAddingStats: z.array(Stat).optional(), // value += sum(stats)
-  valueMultiplier: z.number().optional(), // value *= multiplier
-  valueMax: z.number().optional(), // value = min(value, max)
-
-  description: z.string(),
-})
-export type Modifier = z.infer<typeof Modifier>
+export { Modifier, ModifierTargetStats } from './modifierSchema'
 
 export const getModifiedStats = (
   {

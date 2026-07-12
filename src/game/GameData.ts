@@ -1,16 +1,16 @@
-import { ItemData } from '@/components/game/ItemData'
 import { ItemName } from '@/game/allItems'
 import { ItemAspect } from '@/game/aspects'
-import { GAME_VERSION } from '@/game/config'
 import { DungeonAccess } from '@/game/dungeons/DungeonAccess'
 import { DungeonData } from '@/game/dungeons/DungeonData'
 import z from 'zod'
+import { DEFAULT_GAME_VERSION } from './gameVersion'
+import { ItemData } from './ItemData'
 import { LoadoutData } from './LoadoutData'
 import { RarityWeights } from './rarities'
 import { createSeed } from './seed'
 
 export const GameData = z.object({
-  version: z.number().default(GAME_VERSION),
+  version: z.number().default(DEFAULT_GAME_VERSION),
   seed: z.string().default(() => createSeed()),
   roundNo: z.number().default(0),
   gold: z.number().default(0),

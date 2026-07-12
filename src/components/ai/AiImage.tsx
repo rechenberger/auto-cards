@@ -1,8 +1,9 @@
+'use client'
+
+import { useAiImages } from '@/client/api/aiImages'
+import { useMeta } from '@/client/api/catalog'
 import { cn } from '@/lib/utils'
-import { ActionButton } from '@/super-action/button/ActionButton'
-import { Suspense } from 'react'
-import { generateAiImage } from './generateAiImage.action'
-import { getAiImage } from './getAiImage'
+import { NewImageButton } from './NewImageButton'
 
 export type AiImageProps = {
   prompt: string
@@ -12,63 +13,65 @@ export type AiImageProps = {
 }
 
 export const AiImage = ({
+  prompt,
   className = 'aspect-square',
-  ...props
+  itemId,
+  themeId,
 }: AiImageProps) => {
-  return (
-    <>
-      <Suspense fallback={<div className={cn('bg-slate-600', className)} />}>
-        <AiImageRaw className={className} {...props} />
-      </Suspense>
-    </>
-  )
-}
+  const images = useAiImages({ prompt, itemId, themeId, limit: 1 })
+  const meta = useMeta()
 
-export const AiImageRaw = async (props: AiImageProps) => {
-  const { prompt, className, itemId } = props
-  let aiImage = await getAiImage(props)
-  if (!aiImage) {
+  if (images.isPending) {
     return (
       <div
-        className={cn(className, 'flex flex-col items-center justify-center')}
+        className={cn(
+          'animate-pulse bg-muted motion-reduce:animate-none',
+          className,
+        )}
+        role="status"
+        aria-label="Loading image"
+      />
+    )
+  }
+
+  const image = images.data?.images[0]
+  if (!image) {
+    return (
+      <div
+        className={cn(
+          'flex flex-col items-center justify-center gap-2 bg-muted p-2',
+          className,
+        )}
       >
-        <ActionButton
-          catchToast
-          stopPropagation
-          variant={'outline'}
-          // command={{
-          //   label: `Generate Image for ${itemId || prompt}`,
-          // }}
-          action={async () => {
-            'use server'
-            return generateAiImage({ ...props, force: false })
-          }}
-          title={prompt}
-        >
-          Generate
-        </ActionButton>
+        {meta.data?.viewer?.isAdmin ? (
+          <NewImageButton
+            prompt={prompt}
+            itemId={itemId}
+            themeId={themeId}
+            force={false}
+          />
+        ) : (
+          <span className="sr-only">No image available</span>
+        )}
+        {images.error && (
+          <span className="text-xs text-destructive" role="alert">
+            {images.error.message}
+          </span>
+        )}
       </div>
     )
   }
+
   return (
-    <>
-      <ActionButton
-        catchToast
-        variant={'outline'}
-        action={async () => {
-          'use server'
-          return generateAiImage(props)
-        }}
-        title={prompt}
-        // command={{
-        //   label: `Re-Generate Image for ${itemId || prompt}`,
-        // }}
-        hideButton
-      >
-        Generate
-      </ActionButton>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={aiImage.url} alt={prompt} className={className} />
-    </>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={image.url}
+      alt={prompt}
+      className={className}
+      loading="lazy"
+      decoding="async"
+    />
   )
 }
+
+export const AiImageRaw = AiImage

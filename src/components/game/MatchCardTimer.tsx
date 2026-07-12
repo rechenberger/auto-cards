@@ -1,6 +1,6 @@
 'use client'
 
-import { BATTLE_CLOCK_TICK_MS } from '@/game/config'
+import { BATTLE_CLOCK_TICK_MS } from '@/game/rules'
 import { FutureActionItem } from '@/game/generateMatch'
 import { motion } from 'framer-motion'
 import { useAtom, useAtomValue } from 'jotai'

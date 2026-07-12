@@ -5,9 +5,11 @@ import { typedParse } from '@/lib/typedParse'
 import assert from 'assert'
 import { eq } from 'drizzle-orm'
 import { cloneDeep, first, range } from 'lodash-es'
-import { addToLeaderboard } from './addToLeaderboard'
 import { generateMatch } from './generateMatch'
 import { rngItem, rngOrder, seedToString } from './seed'
+import { enqueueLeaderboardScore } from '@/server/jobs/leaderboardJobs'
+import { getAllItems } from './allItems'
+import { invalidCommand } from '@/server/api/ApiError'
 
 export const fightLiveMatch = async ({
   liveMatchId,
@@ -23,153 +25,203 @@ export const fightLiveMatch = async ({
   })
 
   // SANITY CHECKS
-  assert(liveMatch, 'Live match not found')
-  assert(liveMatch.liveMatchParticipations.length > 1, 'Not enough players')
-  assert(
-    liveMatch.liveMatchParticipations.length === liveMatch.games.length,
-    'Live match participations and games mismatch',
-  )
-  assert(
-    liveMatch.liveMatchParticipations.every(
+  if (!liveMatch) throw invalidCommand('Live match not found')
+  if (liveMatch.liveMatchParticipations.length < 2) {
+    throw invalidCommand('At least two players are required')
+  }
+  if (liveMatch.liveMatchParticipations.length !== liveMatch.games.length) {
+    throw invalidCommand('Every player must start their game first')
+  }
+  if (
+    !liveMatch.liveMatchParticipations.every(
       (participation) => participation.data.ready,
-    ),
-    'All players must be ready',
-  )
+    )
+  ) {
+    throw invalidCommand('Every player must be ready')
+  }
   const roundNo = first(liveMatch.games)?.data.roundNo
-  assert(typeof roundNo === 'number', 'Round number not found')
-  assert(
-    liveMatch.games.every((game) => game.data.roundNo === roundNo),
-    'All games must have the same round number',
-  )
+  if (typeof roundNo !== 'number') {
+    throw invalidCommand('Round number not found')
+  }
+  if (!liveMatch.games.every((game) => game.data.roundNo === roundNo)) {
+    throw invalidCommand('All players must be in the same round')
+  }
+  const rulesetVersion = first(liveMatch.games)?.version
+  if (typeof rulesetVersion !== 'number') {
+    throw invalidCommand('Ruleset version not found')
+  }
+  if (!liveMatch.games.every((game) => game.version === rulesetVersion)) {
+    throw invalidCommand('All games must use the same ruleset version')
+  }
 
-  // DETERMINE MATCHUP
+  // Determine every matchup and winner before opening the write transaction.
+  // Only the compact seed is persisted; clients regenerate the same report.
   const seedLiveMatch = [liveMatch.data.seed, 'fightLiveMatch', roundNo]
   const games = rngOrder({
     seed: [seedLiveMatch, 'gameOrder'],
     items: liveMatch.games,
   })
+  const matchPlans = range(Math.ceil(games.length / 2)).map((matchIdx) => {
+    const seed = seedToString({ seed: [seedLiveMatch, 'match', matchIdx] })
+    const blue = games[matchIdx * 2]
+    let red = games[matchIdx * 2 + 1]
+    const redIsReal = Boolean(red)
+    if (!red) {
+      red = rngItem({
+        seed: [seed, 'red'],
+        items: games.filter((game) => game.id !== blue.id),
+      })
+    }
+    assert(red, 'No random red found')
+    const report = generateMatch({
+      participants: [
+        { loadout: cloneDeep(blue.data.currentLoadout) },
+        { loadout: cloneDeep(red.data.currentLoadout) },
+      ],
+      seed: [seed],
+      skipLogs: true,
+      allItems: getAllItems(rulesetVersion),
+      rulesetVersion,
+    })
+    return { blue, red, redIsReal, seed, winnerSideIdx: report.winner.sideIdx }
+  })
 
-  // SAVE LOADOUTS
-  const gamesAndLoadouts = await Promise.all(
-    games.map(async (game) => {
-      const loadout = await db
+  // Persisting a live round is one atomic unit. Together with the unique
+  // (gameId, roundNo) index this also turns concurrent host clicks into one
+  // committed round instead of partial or duplicate matches.
+  const gamesAndLoadouts = await db.transaction(async (tx) => {
+    // Acquire the lobby row before checking the snapshot. Join uses a matching
+    // open-state claim, so either the join commits first and is observed here,
+    // or this transition closes the lobby before that join can insert.
+    const lockedMatch = await tx
+      .update(schema.liveMatch)
+      .set({ status: 'locked' })
+      .where(eq(schema.liveMatch.id, liveMatchId))
+      .returning({ id: schema.liveMatch.id })
+      .then(first)
+    if (!lockedMatch) throw invalidCommand('Live match not found')
+
+    const currentParticipations = await tx
+      .select()
+      .from(schema.liveMatchParticipation)
+      .where(eq(schema.liveMatchParticipation.liveMatchId, liveMatchId))
+    const currentGames = await tx
+      .select()
+      .from(schema.game)
+      .where(eq(schema.game.liveMatchId, liveMatchId))
+    const expectedParticipationIds = new Set(
+      liveMatch.liveMatchParticipations.map((entry) => entry.id),
+    )
+    const expectedGames = new Map(
+      liveMatch.games.map((game) => [game.id, game]),
+    )
+    const snapshotStillCurrent =
+      currentParticipations.length === expectedParticipationIds.size &&
+      currentParticipations.every(
+        (participation) =>
+          expectedParticipationIds.has(participation.id) &&
+          participation.data.ready &&
+          currentGames.some(
+            (game) =>
+              game.userId === participation.userId &&
+              participation.data.readyRevision === game.revision,
+          ),
+      ) &&
+      currentGames.length === expectedGames.size &&
+      currentGames.every((game) => {
+        const expected = expectedGames.get(game.id)
+        return (
+          expected?.revision === game.revision &&
+          expected.data.roundNo === game.data.roundNo &&
+          expected.version === game.version
+        )
+      })
+    if (!snapshotStillCurrent) {
+      throw invalidCommand(
+        'The live match changed while the round was starting; try again',
+      )
+    }
+
+    const saved = []
+    for (const game of games) {
+      const loadout = await tx
         .insert(schema.loadout)
         .values({
           data: game.data.currentLoadout,
           roundNo: game.data.roundNo,
           userId: game.userId,
           gameId: game.id,
+          version: game.version,
+          gameMode: game.gameMode,
         })
         .returning()
         .then(first)
-
       assert(loadout, 'No loadout found after saving')
-      return { game, loadout }
-    }),
-  )
-
-  // FIGHT MATCHES
-  for (const matchIdx of range(Math.ceil(gamesAndLoadouts.length / 2))) {
-    const seedMatch = seedToString({
-      seed: [seedLiveMatch, 'match', matchIdx],
-    })
-
-    const blue = gamesAndLoadouts[matchIdx * 2]
-    let red = gamesAndLoadouts[matchIdx * 2 + 1]
-    const redIsReal = !!red
-    if (!red) {
-      red = rngItem({
-        seed: [seedMatch, 'red'],
-        items: gamesAndLoadouts.filter((g) => g.game.id !== blue.game.id),
-      })
-      assert(red, 'No random red found')
+      saved.push({ game, loadout })
     }
 
-    const matchReport = generateMatch({
-      participants: [
-        {
-          loadout: cloneDeep(blue.loadout.data),
-        },
-        {
-          loadout: cloneDeep(red.loadout.data),
-        },
-      ],
-      seed: [seedMatch],
-      skipLogs: true,
-    })
+    const loadoutByGameId = new Map(
+      saved.map(({ game, loadout }) => [game.id, loadout]),
+    )
+    for (const plan of matchPlans) {
+      const match = await tx
+        .insert(schema.match)
+        .values({
+          data: { seed: plan.seed },
+          liveMatchId,
+          gameMode: plan.blue.gameMode,
+        })
+        .returning()
+        .then(first)
+      assert(match, 'No match found after saving')
 
-    const sides = [blue, red].map((side, sideIdx) => {
-      return { ...side, sideIdx }
-    })
-
-    const match = await db
-      .insert(schema.match)
-      .values({
-        data: {
-          seed: seedMatch,
-        },
-      })
-      .returning()
-      .then(first)
-
-    assert(match, 'No match found after saving')
-
-    await Promise.all(
-      sides.map(async (side) => {
-        const hasWon = matchReport.winner.sideIdx === side.sideIdx
-        const matchParticipation = await db
+      for (const [sideIdx, game] of [plan.blue, plan.red].entries()) {
+        const loadout = loadoutByGameId.get(game.id)
+        assert(loadout, 'No saved loadout for live match side')
+        const participation = await tx
           .insert(schema.matchParticipation)
-          .values([
-            {
-              data: {},
-              matchId: match.id,
-              loadoutId: side.loadout.id,
-              sideIdx: side.sideIdx,
-              status: hasWon ? 'won' : 'lost',
-              userId: side.game.userId,
-            },
-          ])
+          .values({
+            data: {},
+            matchId: match.id,
+            loadoutId: loadout.id,
+            sideIdx,
+            status: plan.winnerSideIdx === sideIdx ? 'won' : 'lost',
+            userId: game.userId,
+          })
           .returning()
           .then(first)
+        assert(participation, 'No match participation found after saving')
 
-        assert(matchParticipation, 'No matchParticipation found after saving')
-
-        const isPrimary = side.sideIdx === 0 || redIsReal
-        if (isPrimary) {
-          const loadout = await db
+        if (sideIdx === 0 || plan.redIsReal) {
+          const updated = await tx
             .update(schema.loadout)
-            .set({
-              primaryMatchParticipationId: matchParticipation.id,
-            })
-            .where(eq(schema.loadout.id, side.loadout.id))
-            .returning()
-          assert(loadout, 'No loadout found after updating')
+            .set({ primaryMatchParticipationId: participation.id })
+            .where(eq(schema.loadout.id, loadout.id))
+            .returning({ id: schema.loadout.id })
+          assert(updated.length === 1, 'No loadout found after updating')
         }
-      }),
-    )
-  }
+      }
+    }
 
-  // SET ALL READY TO FALSE
-  await Promise.all(
-    liveMatch.liveMatchParticipations.map(async (p) => {
-      await db
+    for (const participation of liveMatch.liveMatchParticipations) {
+      await tx
         .update(schema.liveMatchParticipation)
         .set({
           data: typedParse(LiveMatchParticipationData, {
-            ...p.data,
+            ...participation.data,
             ready: false,
+            readyRevision: undefined,
           }),
         })
-        .where(eq(schema.liveMatchParticipation.id, p.id))
-    }),
-  )
+        .where(eq(schema.liveMatchParticipation.id, participation.id))
+    }
+    return saved
+  })
 
-  // Add to Leaderboard in the Background
-  // Don't await
-  Promise.all(
+  await Promise.all(
     gamesAndLoadouts.map(async ({ loadout, game }) => {
       if (game.gameMode === 'shopper') {
-        addToLeaderboard({ loadout })
+        await enqueueLeaderboardScore({ loadoutId: loadout.id })
       }
     }),
   )

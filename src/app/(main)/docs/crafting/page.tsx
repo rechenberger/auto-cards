@@ -1,14 +1,7 @@
-import { CraftingList } from '@/components/game/CraftingList'
-import { Metadata } from 'next'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Crafting',
-}
+import { DocsCraftingClient } from '@/features/docs/DocsCraftingClient'
 
-export default async function Page() {
-  return (
-    <>
-      <CraftingList />
-    </>
-  )
+export default function Page() {
+  return <DocsCraftingClient />
 }

@@ -1,18 +1,13 @@
-import { throwIfNotAdmin } from '@/auth/getIsAdmin'
-import { db } from '@/db/db'
-import { schema } from '@/db/schema-export'
+'use client'
+
+import { useActivateAiImage, useAiImages } from '@/client/api/aiImages'
+import { useMeta } from '@/client/api/catalog'
 import { tryGetItemByName } from '@/game/allItems'
 import { cn } from '@/lib/utils'
-import { ActionWrapper } from '@/super-action/button/ActionWrapper'
 import { capitalCase } from 'change-case'
-import { eq } from 'drizzle-orm'
-import { first, orderBy } from 'lodash-es'
-import { revalidatePath } from 'next/cache'
-import { Fragment } from 'react'
-import { ThemeSwitchButton } from '../game/ThemeSwitchButton'
-import { AiImageProps } from './AiImage'
-import { getAiImages } from './getAiImage'
+import { Check, LoaderCircle } from 'lucide-react'
 import { NewImageButton } from './NewImageButton'
+import { AiImageProps } from './AiImage'
 
 export type AiImageGalleryProps = AiImageProps & {
   tiny?: boolean
@@ -20,92 +15,115 @@ export type AiImageGalleryProps = AiImageProps & {
   limit?: number
 }
 
-export const AiImageGallery = async (props: AiImageGalleryProps) => {
-  const { itemId, prompt, className, themeId, tiny, cols = 3 } = props
-  const aiImages = await getAiImages({ ...props, limit: props.limit })
-
-  const item = itemId ? await tryGetItemByName(itemId) : undefined
-  const subTitle = item ? item.prompt || capitalCase(item.name) : prompt
-
-  const active = first(orderBy(aiImages, 'updatedAt', 'desc'))
+export const AiImageGallery = ({
+  itemId,
+  prompt,
+  className,
+  themeId,
+  tiny,
+  cols = 3,
+  limit,
+}: AiImageGalleryProps) => {
+  const query = useAiImages({ itemId, prompt, themeId, limit })
+  const activate = useActivateAiImage()
+  const meta = useMeta()
+  const item = itemId ? tryGetItemByName(itemId) : undefined
+  const subtitle = item ? item.prompt || capitalCase(item.name) : prompt
+  const images = query.data?.images ?? []
+  const active = images[0]
 
   return (
-    <>
-      <div
-        className={cn(
-          'flex flex-col gap-4',
-          tiny &&
-            'absolute bottom-0 inset-x-0 gap-2 opacity-0 hover:opacity-100 px-3 pt-6 pb-1 rounded-b-xl bg-gradient-to-t from-black/60 to-transparent from-80% flex-col-reverse',
+    <div
+      className={cn(
+        'flex flex-col gap-4',
+        tiny &&
+          'absolute inset-x-0 bottom-0 rounded-b-xl bg-gradient-to-t from-black/80 to-transparent px-3 pb-2 pt-8',
+      )}
+    >
+      <div className={cn('flex items-center gap-2', tiny && 'justify-center')}>
+        {!tiny && (
+          <div className="min-w-0 flex-1">
+            <h2 className="text-xl font-bold">AI image gallery</h2>
+            <p className="truncate text-sm text-muted-foreground">{subtitle}</p>
+          </div>
         )}
-      >
-        <div
-          className={cn(
-            'flex flex-row items-center gap-2',
-            tiny && 'justify-center',
-          )}
-        >
-          {!tiny && (
-            <div className="flex flex-col flex-1">
-              <h2 className="font-bold text-xl">AI Image Gallery</h2>
-              <h3 className="opacity-60">{subTitle}</h3>
-            </div>
-          )}
-          {!tiny && <ThemeSwitchButton />}
-          <NewImageButton
-            prompt={prompt}
-            itemId={itemId}
-            themeId={themeId}
-            force={!!aiImages.length}
-          />
-        </div>
-        <div
-          className={cn(
-            'grid gap-2 items-start',
-            cols === 3 && 'grid-cols-3',
-            cols === 4 && 'grid-cols-4',
-          )}
-        >
-          {aiImages.map((aiImage) => (
-            <Fragment key={aiImage.id}>
-              <ActionWrapper
-                action={async () => {
-                  'use server'
-                  await throwIfNotAdmin({ allowDev: true })
-                  await db
-                    .update(schema.aiImage)
-                    .set({
-                      updatedAt: new Date().toISOString(),
-                    })
-                    .where(eq(schema.aiImage.id, aiImage.id))
-                  revalidatePath('/', 'layout')
-                }}
-              >
-                <button className="relative">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={aiImage.url}
-                    alt={prompt}
-                    className={cn(
-                      active === aiImage && 'ring-4 ring-primary',
-                      className,
-                    )}
-                  />
-                  {aiImage.prompt !== prompt && (
-                    <div
-                      className={cn(
-                        'absolute top-2 right-2 bg-orange-500 text-white text-xs rounded-md',
-                        tiny ? 'size-3' : 'px-2 py-1',
-                      )}
-                    >
-                      {!tiny && <div>Old Prompt</div>}
-                    </div>
-                  )}
-                </button>
-              </ActionWrapper>
-            </Fragment>
-          ))}
-        </div>
+        <NewImageButton
+          prompt={prompt}
+          itemId={itemId}
+          themeId={themeId}
+          force={Boolean(images.length)}
+        />
       </div>
-    </>
+
+      {query.isPending ? (
+        <div
+          className="flex min-h-24 items-center justify-center"
+          role="status"
+        >
+          <LoaderCircle
+            className="size-5 animate-spin motion-reduce:animate-none"
+            aria-hidden="true"
+          />
+          <span className="sr-only">Loading image gallery</span>
+        </div>
+      ) : (
+        <div
+          className={cn(
+            'grid items-start gap-2',
+            cols === 3 ? 'grid-cols-3' : 'grid-cols-4',
+          )}
+        >
+          {images.map((image) => {
+            const isActive = active?.id === image.id
+            return (
+              <button
+                key={image.id}
+                type="button"
+                className="relative min-h-11 min-w-11 touch-manipulation rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                disabled={!meta.data?.viewer?.isAdmin || activate.isPending}
+                aria-label={`Use this image${
+                  image.prompt !== prompt ? ' with an older prompt' : ''
+                }`}
+                aria-pressed={isActive}
+                onClick={() => void activate.mutateAsync(image.id)}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={image.url}
+                  alt=""
+                  className={cn(
+                    'aspect-square w-full rounded-md object-cover',
+                    isActive && 'ring-4 ring-primary',
+                    className,
+                  )}
+                  loading="lazy"
+                  decoding="async"
+                />
+                {isActive && (
+                  <span className="absolute bottom-1 left-1 rounded-full bg-primary p-1 text-primary-foreground">
+                    <Check className="size-3" aria-hidden="true" />
+                  </span>
+                )}
+                {image.prompt !== prompt && (
+                  <span
+                    className={cn(
+                      'absolute right-1 top-1 rounded bg-orange-600 text-xs text-white',
+                      tiny ? 'size-3' : 'px-2 py-1',
+                    )}
+                  >
+                    {!tiny && 'Old prompt'}
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
+      )}
+      {(query.error || activate.error) && (
+        <p className="text-xs text-destructive" role="alert">
+          {(query.error ?? activate.error)?.message}
+        </p>
+      )}
+    </div>
   )
 }

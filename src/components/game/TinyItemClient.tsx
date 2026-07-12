@@ -3,8 +3,6 @@
 import { ItemDefinition } from '@/game/ItemDefinition'
 import { getTagDefinition } from '@/game/tags'
 import { cn } from '@/lib/utils'
-import { SuperAction } from '@/super-action/action/createSuperAction'
-import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
 import { atom, useAtom } from 'jotai'
 import { first } from 'lodash-es'
@@ -15,11 +13,9 @@ const itemHoverAtom = atom(null as string | null)
 export const TinyItemClient = ({
   itemDef,
   itemData,
-  action,
 }: {
   itemDef: ItemDefinition
   itemData: ItemData
-  action?: SuperAction<void, unknown>
 }) => {
   const [hoveredItem, setHoveredItem] = useAtom(itemHoverAtom)
 
@@ -31,11 +27,8 @@ export const TinyItemClient = ({
   }
   return (
     <>
-      <ActionButton
-        action={action ?? (async () => {})}
-        hideIcon
-        variant="vanilla"
-        size="vanilla"
+      <span
+        title={capitalCase(itemDef.name)}
         className={cn(
           'px-1 py-0.5 rounded truncate text-sm',
           'bg-gray-500',
@@ -50,7 +43,7 @@ export const TinyItemClient = ({
         }}
       >
         {label}
-      </ActionButton>
+      </span>
     </>
   )
 }

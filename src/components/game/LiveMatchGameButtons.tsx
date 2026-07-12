@@ -1,84 +1,54 @@
-import { getMyUserId } from '@/auth/getMyUser'
-import { db } from '@/db/db'
-import { schema } from '@/db/schema-export'
-import { LiveMatchParticipationData } from '@/db/schema-zod'
-import { fightLiveMatch } from '@/game/fightLiveMatch'
-import { LiveMatchStuff } from '@/game/getLiveMatchStuff'
-import { typedParse } from '@/lib/typedParse'
-import { superAction } from '@/super-action/action/createSuperAction'
-import { streamRevalidatePath } from '@/super-action/action/streamRevalidatePath'
-import { ActionButton } from '@/super-action/button/ActionButton'
-import { eq } from 'drizzle-orm'
+'use client'
 
-export const LiveMatchGameButtons = async ({
+import { useLiveMatchCommand } from '@/client/api/liveMatches'
+import { Button } from '@/components/ui/button'
+import { LiveMatchViewDto } from '@/contracts/live-api'
+
+export const LiveMatchGameButtons = ({
   liveMatch,
 }: {
-  liveMatch: LiveMatchStuff
+  liveMatch: LiveMatchViewDto
 }) => {
-  const userId = await getMyUserId()
+  const action = useLiveMatchCommand(liveMatch.id)
+  const me = liveMatch.me
+  if (!me) return null
 
-  const myParticipation = userId
-    ? liveMatch.liveMatchParticipations.find(
-        (participation) => participation.user.id === userId,
-      )
-    : undefined
+  if (liveMatch.canStartMatches) {
+    return (
+      <Button
+        type="button"
+        className="min-h-11 touch-manipulation"
+        disabled={action.isPending}
+        onClick={() => action.mutate({ command: { type: 'start-matches' } })}
+      >
+        {action.isPending ? 'Starting matches…' : 'Start Matches'}
+      </Button>
+    )
+  }
 
-  const allReady = liveMatch.liveMatchParticipations.every(
-    (participation) => participation.data.ready,
-  )
-
-  const isHost = myParticipation?.data.isHost
+  if (!me.ready) {
+    return (
+      <Button
+        type="button"
+        className="min-h-11 touch-manipulation"
+        disabled={action.isPending}
+        onClick={() => action.mutate({ command: { type: 'ready' } })}
+      >
+        {action.isPending ? 'Readying…' : 'Ready up!'}
+      </Button>
+    )
+  }
 
   return (
-    <>
-      {allReady && isHost && liveMatch.liveMatchParticipations.length > 1 ? (
-        <>
-          <ActionButton
-            catchToast
-            forceNeverStopLoading
-            action={async () => {
-              'use server'
-              return superAction(async () => {
-                await db
-                  .update(schema.liveMatch)
-                  .set({
-                    status: 'locked',
-                  })
-                  .where(eq(schema.liveMatch.id, liveMatch.id))
-                await fightLiveMatch({ liveMatchId: liveMatch.id })
-                streamRevalidatePath('/', 'layout')
-              })
-            }}
-          >
-            Start Matches
-          </ActionButton>
-        </>
-      ) : myParticipation && !myParticipation.data.ready ? (
-        <>
-          <ActionButton
-            catchToast
-            action={async () => {
-              'use server'
-              return superAction(async () => {
-                await db
-                  .update(schema.liveMatchParticipation)
-                  .set({
-                    data: typedParse(LiveMatchParticipationData, {
-                      ...myParticipation.data,
-                      ready: true,
-                    }),
-                  })
-                  .where(
-                    eq(schema.liveMatchParticipation.id, myParticipation.id),
-                  )
-                streamRevalidatePath('/', 'layout')
-              })
-            }}
-          >
-            Ready up!
-          </ActionButton>
-        </>
-      ) : null}
-    </>
+    <div
+      className="min-h-11 rounded-md border border-green-500/30 bg-green-500/10 px-3 py-2 text-center text-sm text-green-600 dark:text-green-400"
+      role="status"
+    >
+      {liveMatch.participants.length < 2
+        ? 'Ready — waiting for another player'
+        : !me.isHost && liveMatch.allReady
+          ? 'Ready — waiting for the host'
+          : 'Ready — waiting for the others'}
+    </div>
   )
 }

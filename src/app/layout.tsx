@@ -1,11 +1,10 @@
 import { isDev } from '@/auth/dev'
+import { AppClientProviders } from '@/client/AppClientProviders'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
 import { Toaster } from '@/components/ui/toaster'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { fontBody } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
-import { ActionCommandProvider } from '@/super-action/command/ActionCommandProvider'
-import { DialogProvider } from '@/super-action/dialog/DialogProvider'
 import type { Metadata } from 'next'
 import './globals.css'
 
@@ -33,14 +32,14 @@ export default function RootLayout({
           fontBody.className,
         )}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <TooltipProvider>
-            {children}
-            <ActionCommandProvider />
-            <Toaster />
-            <DialogProvider />
-          </TooltipProvider>
-        </ThemeProvider>
+        <AppClientProviders>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <TooltipProvider>
+              {children}
+              <Toaster />
+            </TooltipProvider>
+          </ThemeProvider>
+        </AppClientProviders>
       </body>
     </html>
   )

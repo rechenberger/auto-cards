@@ -1,4 +1,4 @@
-import { ItemData } from '@/components/game/ItemData'
+import { ItemData } from '../ItemData'
 
 export const allMonsterParties: {
   name: string

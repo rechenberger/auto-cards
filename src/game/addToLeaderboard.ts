@@ -5,8 +5,7 @@ import { and, eq } from 'drizzle-orm'
 import { addToLeaderboardAcc } from './addToLeaderboardAcc'
 import { GAME_VERSION, LEADERBOARD_TYPE } from './config'
 import { getLeaderboard } from './getLeaderboard'
-import { generateMatchByWorker } from './matchWorkerManager'
-import { revalidateLeaderboard } from './revalidateLeaderboard'
+import { generateMatch } from './generateMatch'
 import { seedToString } from './seed'
 
 export const addToLeaderboard = async ({
@@ -14,7 +13,7 @@ export const addToLeaderboard = async ({
   type = LEADERBOARD_TYPE,
   roundNo = loadout.roundNo,
   dryRun,
-  skipRevalidate,
+  skipRevalidate: _skipRevalidate,
 }: {
   loadout: Loadout
   type?: string
@@ -57,7 +56,7 @@ export const addToLeaderboard = async ({
       const seed = seedToString({
         seed: ['addToLeaderboard', type, roundNo, loadout.id, entry.id],
       })
-      const result = await generateMatchByWorker({
+      const result = generateMatch({
         participants: [
           {
             loadout: loadout.data,
@@ -68,6 +67,7 @@ export const addToLeaderboard = async ({
         ],
         seed: [seed],
         skipLogs: true,
+        rulesetVersion: loadout.version,
       })
 
       const win = result.winner.sideIdx === 0
@@ -125,16 +125,14 @@ export const addToLeaderboard = async ({
         score,
         userId: loadout.userId,
         gameId: loadout.gameId,
+        version: loadout.version,
+        gameMode: loadout.gameMode,
       })
     }
   }
 
   if (loadout.gameId) {
     await addToLeaderboardAcc({ gameId: loadout.gameId, roundNo })
-  }
-
-  if (!skipRevalidate) {
-    revalidateLeaderboard()
   }
 
   return {

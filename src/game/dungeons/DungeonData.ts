@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { DungeonRoom } from './DungeonDefinition'
-import { DungeonName } from './allDungeons'
+import { DungeonName } from './dungeonSchema'
 
 export const DungeonData = z.object({
   name: DungeonName,

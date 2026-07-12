@@ -1,8 +1,7 @@
-import { getMyUserOrLogin } from '@/auth/getMyUser'
-import { SimpleDataCard } from '@/components/simple/SimpleDataCard'
+'use client'
 
-export default async function Page() {
-  const user = await getMyUserOrLogin()
+import { MePageClient } from '@/auth/MePageClient'
 
-  return <SimpleDataCard data={user} />
+export default function Page() {
+  return <MePageClient />
 }

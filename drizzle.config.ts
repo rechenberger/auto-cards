@@ -1,12 +1,14 @@
 import 'dotenv-flow/config'
-import type { Config } from 'drizzle-kit'
+import { defineConfig } from 'drizzle-kit'
 
-export default {
+export default defineConfig({
   schema: './src/db/schema.ts',
-  driver: 'turso',
-  dialect: 'sqlite',
+  out: './drizzle',
+  dialect: 'turso',
   dbCredentials: {
-    url: process.env.DB_URL!,
-    authToken: process.env.DB_TOKEN!,
+    url: process.env.DB_URL ?? 'file:./db.sqlite',
+    authToken: process.env.DB_TOKEN,
   },
-} satisfies Config
+  strict: true,
+  verbose: true,
+})

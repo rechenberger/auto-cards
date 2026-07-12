@@ -1,5 +1,7 @@
 'use client'
 
+import { useUpdateMe } from '@/client/api/auth'
+import { QueryError, QueryLoading } from '@/components/api/QueryState'
 import { Button } from '@/components/ui/button'
 import { CardTitle } from '@/components/ui/card'
 import {
@@ -11,41 +13,48 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { MeDto, UpdateUsernameRequest } from '@/contracts/auth-api'
 import { createZodForm } from '@/lib/useZodForm'
-import { SuperActionWithInput } from '@/super-action/action/createSuperAction'
-import { useSuperAction } from '@/super-action/action/useSuperAction'
-import { z } from 'zod'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { normalizeClientRedirect } from './clientRedirect'
+import { useRequiredMe } from './useRequiredMe'
 
-const ChangeUsernameSchema = z.object({
-  username: z.string().min(1),
-})
-
-type ChangeUsernameSchema = z.infer<typeof ChangeUsernameSchema>
-
-const [useLoginForm] = createZodForm(ChangeUsernameSchema)
+const [useUsernameForm] = createZodForm(UpdateUsernameRequest)
 
 export const ChangeUsernameFormClient = ({
-  action,
-  username,
   redirectUrl,
 }: {
-  action: SuperActionWithInput<ChangeUsernameSchema>
-  username?: string
   redirectUrl?: string
 }) => {
-  const { trigger, isLoading } = useSuperAction({
-    action,
-    catchToast: true,
-  })
+  const me = useRequiredMe()
+  if (me.isLoading || me.data === null) {
+    return <QueryLoading label="Loading account…" />
+  }
+  if (me.isError || !me.data) {
+    return <QueryError error={me.error} retry={() => void me.refetch()} />
+  }
+  return <ChangeUsernameFormInner me={me.data} redirectUrl={redirectUrl} />
+}
 
-  const disabled = isLoading
+const ChangeUsernameFormInner = ({
+  me,
+  redirectUrl,
+}: {
+  me: MeDto
+  redirectUrl?: string
+}) => {
+  const updateMe = useUpdateMe()
+  const router = useRouter()
+  const [notice, setNotice] = useState<string | null>(null)
 
-  const form = useLoginForm({
+  const form = useUsernameForm({
     defaultValues: {
-      username,
+      type: 'username',
+      username: me.name ?? '',
     },
-    disabled,
   })
+  const disabled = form.formState.isSubmitting || updateMe.isPending
 
   return (
     <>
@@ -55,9 +64,25 @@ export const ChangeUsernameFormClient = ({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(async (values) => {
-            await trigger(values)
+            form.clearErrors('root')
+            setNotice(null)
+            try {
+              await updateMe.mutateAsync(values)
+              router.refresh()
+              if (redirectUrl) {
+                router.replace(normalizeClientRedirect(redirectUrl))
+              } else {
+                setNotice('Username updated.')
+              }
+            } catch (error) {
+              form.setError('root', {
+                message:
+                  error instanceof Error ? error.message : 'Please try again',
+              })
+            }
           })}
           className="flex flex-col gap-4"
+          noValidate
         >
           <FormField
             control={form.control}
@@ -66,15 +91,33 @@ export const ChangeUsernameFormClient = ({
               <FormItem>
                 <FormLabel>Username</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input
+                    autoComplete="username"
+                    spellCheck={false}
+                    className="text-base"
+                    disabled={disabled}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+          <div className="min-h-6 text-sm" aria-live="polite">
+            {form.formState.errors.root?.message && (
+              <p className="text-destructive" role="alert">
+                {form.formState.errors.root.message}
+              </p>
+            )}
+            {notice && <p className="text-muted-foreground">{notice}</p>}
+          </div>
           <div className="flex flex-row gap-2 mt-4 justify-end">
-            <Button type="submit" disabled={disabled}>
-              Change Username
+            <Button
+              type="submit"
+              className="min-h-11 touch-manipulation"
+              disabled={disabled}
+            >
+              {disabled ? 'Saving…' : 'Change username'}
             </Button>
           </div>
         </form>

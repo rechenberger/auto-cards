@@ -1,14 +1,12 @@
-import {
-  getThemeDefinition,
-  IMAGE_MODEL_PROMPT,
-  PLACEHOLDER_ITEM_PROMPT,
-  ThemeId,
-} from '@/game/themes'
+'use client'
+
+import { getMatchBackgroundPrompt } from '@/game/matchBackgroundPrompt'
+import { ThemeId } from '@/game/themes'
 import { cn } from '@/lib/utils'
 import { AiImage } from '../ai/AiImage'
 import { AiImageGallery } from '../ai/AiImageGallery'
 
-export const MatchBackground = async ({
+export const MatchBackground = ({
   themeIds,
   variant = 'fixed',
   showGallery,
@@ -17,57 +15,34 @@ export const MatchBackground = async ({
   variant?: 'fixed' | 'inline'
   showGallery?: boolean
 }) => {
-  if (themeIds.length !== 2) return null
-
-  const themes = await Promise.all(themeIds.map(getThemeDefinition))
-  const themePrompts = themes.map((theme) =>
-    theme.prompt
-      .replace(PLACEHOLDER_ITEM_PROMPT, 'world')
-      .replace(IMAGE_MODEL_PROMPT, ''),
-  )
-
-  const prompt = `Generate an image of two merging worlds. (Smooth Transition in the middle)
-
-The left side:
-${themePrompts[0]}
-Color this side blue.
-
-The right side:
-${themePrompts[1]}
-Color this side red.
-
-
-Make the two world merge into each other in the middle.
-Maybe a world is trying to break through the other world.
-Maybe there is a trail or river connecting the two worlds.
-
-Use Flux Schnell and make it 16:9 aspect ratio.`
+  const [leftThemeId, rightThemeId] = themeIds
+  if (!leftThemeId || !rightThemeId) return null
+  const prompt = getMatchBackgroundPrompt([leftThemeId, rightThemeId])
+  const combinedThemeId = `${leftThemeId}~${rightThemeId}`
 
   return (
-    <>
-      <div
-        className={cn('relative', variant === 'fixed' && 'fixed -z-10 inset-0')}
-      >
-        <AiImage
+    <div
+      className={cn('relative', variant === 'fixed' && 'fixed -z-10 inset-0')}
+    >
+      <AiImage
+        prompt={prompt}
+        className="h-full w-full bg-transparent object-cover brightness-90"
+        itemId="match-bg"
+        themeId={combinedThemeId}
+      />
+      {variant === 'fixed' && (
+        <div className="absolute inset-0 bg-black opacity-30" />
+      )}
+      {showGallery && (
+        <AiImageGallery
           prompt={prompt}
-          className="w-full h-full object-cover brightness-90 bg-transparent"
-          itemId={`match-bg`}
-          themeId={themeIds.join('~')}
+          itemId="match-bg"
+          themeId={combinedThemeId}
+          tiny
+          cols={4}
+          limit={8}
         />
-        {variant === 'fixed' && (
-          <div className="absolute inset-0 bg-black opacity-30"></div>
-        )}
-        {showGallery && (
-          <AiImageGallery
-            prompt={prompt}
-            itemId={`match-bg`}
-            themeId={themeIds.join('~')}
-            tiny
-            cols={4}
-            limit={8}
-          />
-        )}
-      </div>
-    </>
+      )}
+    </div>
   )
 }

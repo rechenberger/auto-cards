@@ -1,10 +1,36 @@
-import { randomBytes } from 'crypto'
 import { isArray, orderBy } from 'lodash-es'
 import hash from 'object-hash'
 import seedrandom from 'seedrandom'
 
+const BASE64_ALPHABET =
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+
+const bytesToBase64 = (bytes: Uint8Array) => {
+  let result = ''
+  for (let idx = 0; idx < bytes.length; idx += 3) {
+    const firstByte = bytes[idx]!
+    const secondByte = bytes[idx + 1]
+    const thirdByte = bytes[idx + 2]
+
+    result += BASE64_ALPHABET[firstByte >> 2]
+    result +=
+      BASE64_ALPHABET[((firstByte & 0b11) << 4) | ((secondByte ?? 0) >> 4)]
+    result +=
+      secondByte === undefined
+        ? '='
+        : BASE64_ALPHABET[
+            ((secondByte & 0b1111) << 2) | ((thirdByte ?? 0) >> 6)
+          ]
+    result +=
+      thirdByte === undefined ? '=' : BASE64_ALPHABET[thirdByte & 0b111111]
+  }
+  return result
+}
+
 export const createSeed = () => {
-  return randomBytes(16).toString('base64')
+  const bytes = new Uint8Array(16)
+  globalThis.crypto.getRandomValues(bytes)
+  return bytesToBase64(bytes)
 }
 
 export type SeedArray = (string | number | object)[]
