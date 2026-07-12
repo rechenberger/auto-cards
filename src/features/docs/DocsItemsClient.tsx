@@ -5,14 +5,12 @@ import { QueryError, QueryLoading } from '@/components/api/QueryState'
 import { AiImageGalleryItem } from '@/components/ai/AiImageGalleryItem'
 import { GenerateAllImagesButton } from '@/components/ai/GenerateAllImagesButton'
 import { TagDisplay } from '@/components/game/TagDisplay'
-import { Button } from '@/components/ui/button'
 import { allRarities, Rarity } from '@/game/rarities'
 import { ItemName } from '@/game/allItems'
 import { allTags, Tag } from '@/game/tags'
 import { ThemeId } from '@/game/themeSchema'
 import { ItemCardClient } from '@/features/game/ItemCardClient'
 import { capitalCase } from 'change-case'
-import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 
@@ -120,30 +118,24 @@ export const DocsItemsClient = () => {
         </div>
       )}
 
-      <div className="flex flex-row flex-wrap justify-center gap-4">
+      <div className="flex flex-row flex-wrap justify-center gap-2">
         {items.map((item) => (
-          <div key={item.name} className="flex flex-col items-center gap-2">
-            <div className="relative">
-              <ItemCardClient
-                itemData={{ name: ItemName.parse(item.name) }}
-                catalog={catalog.data}
-                size="320"
-                showPrice
+          <div key={item.name} className="group relative">
+            <ItemCardClient
+              itemData={{ name: ItemName.parse(item.name) }}
+              catalog={catalog.data}
+              size="320"
+              showPrice
+              href={`/docs/items/${encodeURIComponent(item.name)}`}
+            />
+            {meta.data?.viewer?.isAdmin && (
+              <AiImageGalleryItem
+                itemId={item.name}
+                themeId={catalog.data.imageThemeId}
+                className="rounded-md"
+                tiny
               />
-              {meta.data?.viewer?.isAdmin && (
-                <AiImageGalleryItem
-                  itemId={item.name}
-                  themeId={catalog.data.imageThemeId}
-                  className="rounded-md"
-                  tiny
-                />
-              )}
-            </div>
-            <Button asChild variant="outline" className="min-h-11">
-              <Link href={`/docs/items/${encodeURIComponent(item.name)}`}>
-                View {capitalCase(item.name)}
-              </Link>
-            </Button>
+            )}
           </div>
         ))}
       </div>

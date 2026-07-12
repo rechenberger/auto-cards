@@ -5,17 +5,21 @@ import { MetaResponse } from '@/contracts/meta'
 import { MatchReplayResponse } from '@/contracts/replay'
 import { Palette } from 'lucide-react'
 import Link from 'next/link'
+import { ReactNode } from 'react'
 import { Button } from '../ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import { DpsReportDisplay } from './DpsReportDisplay'
 import { MatchReportDisplay } from './MatchReportDisplay'
+import { MatchReportShowWhenDone } from './MatchReportShowWhenDone'
 
 export const MatchReplayTabs = ({
   replay,
   meta,
+  overviewContent,
 }: {
   replay: MatchReplayResponse
   meta: MetaResponse | null
+  overviewContent?: ReactNode
 }) => {
   const loadouts = replay.participants.map((participant) => participant.loadout)
 
@@ -27,7 +31,7 @@ export const MatchReplayTabs = ({
         <TabsTrigger value="metrics">Metrics</TabsTrigger>
       </TabsList>
       <TabsContent value="overview">
-        <div className="flex flex-col gap-2 items-center text-sm">
+        <div className="flex flex-col items-center gap-4 text-sm">
           {meta?.viewer?.isAdmin && (
             <Button variant="outline" asChild className="self-center">
               <Link
@@ -48,6 +52,9 @@ export const MatchReplayTabs = ({
               is {replay.currentRulesetVersion}. Historical outcomes may differ
               after balance changes.
             </div>
+          )}
+          {overviewContent && (
+            <MatchReportShowWhenDone>{overviewContent}</MatchReportShowWhenDone>
           )}
         </div>
       </TabsContent>

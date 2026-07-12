@@ -121,21 +121,6 @@ export const CollectorDungeonSelect = ({
               >
                 Enter
               </CollectorCommandButton>
-              {view.isAdmin && (
-                <CollectorCommandButton
-                  variant="outline"
-                  command={{
-                    type: 'admin-turbo-dungeon',
-                    dungeonName: access.name,
-                    count: 100,
-                  }}
-                  onCommand={onCommand}
-                  pending={pending}
-                  accessibleLabel={`Turbo ${capitalCase(access.name)}`}
-                >
-                  Turbo
-                </CollectorCommandButton>
-              )}
             </div>
           </Card>
         )

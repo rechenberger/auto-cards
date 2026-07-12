@@ -22,7 +22,10 @@ export const MatchBackground = ({
 
   return (
     <div
-      className={cn('relative', variant === 'fixed' && 'fixed -z-10 inset-0')}
+      className={cn(
+        'group relative',
+        variant === 'fixed' && 'fixed -z-10 inset-0',
+      )}
     >
       <AiImage
         prompt={prompt}

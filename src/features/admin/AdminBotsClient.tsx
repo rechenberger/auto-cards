@@ -7,7 +7,7 @@ import {
   useQueueBotGeneration,
 } from '@/client/api/admin'
 import { QueryError, QueryLoading } from '@/components/api/QueryState'
-import { Badge } from '@/components/ui/badge'
+import { TinyItem } from '@/components/game/TinyItem'
 import {
   Table,
   TableBody,
@@ -18,7 +18,6 @@ import {
 } from '@/components/ui/table'
 import { countifyItems } from '@/game/countifyItems'
 import { useQueryClient } from '@tanstack/react-query'
-import { capitalCase } from 'change-case'
 import { useEffect, useRef, useState } from 'react'
 import { AdminJobProgress } from './AdminJobProgress'
 import { ConfirmActionButton } from './ConfirmActionButton'
@@ -114,10 +113,7 @@ export const AdminBotsClient = () => {
                       round.loadouts.map((loadout) => (
                         <div key={loadout.id} className="flex flex-wrap gap-1">
                           {countifyItems(loadout.data.items).map((item) => (
-                            <Badge key={item.name} variant="secondary">
-                              {(item.count ?? 1) > 1 ? `${item.count}× ` : ''}
-                              {capitalCase(item.name)}
-                            </Badge>
+                            <TinyItem key={item.name} itemData={item} />
                           ))}
                         </div>
                       ))

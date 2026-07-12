@@ -15,13 +15,13 @@ export const PublicRoundBoard = ({
   }>
   numberOfRounds: number
 }) => (
-  <div className="grid grid-cols-5 gap-2 rounded-3xl bg-muted/50 p-2">
+  <div className="grid grid-cols-5 gap-2 rounded-3xl bg-gray-500/20 p-2 [@media(pointer:coarse)]:grid-cols-[repeat(5,2.75rem)]">
     {Array.from({ length: numberOfRounds }, (_, roundNo) => {
       const round = rounds.find((candidate) => candidate.roundNo === roundNo)
       const marker = (
         <span
           className={cn(
-            'flex size-8 items-center justify-center rounded-full text-white',
+            'flex size-6 items-center justify-center rounded-full text-white md:size-8',
             round?.status === 'won'
               ? 'bg-amber-300'
               : round?.status === 'lost'
@@ -35,9 +35,9 @@ export const PublicRoundBoard = ({
           }
         >
           {round?.status === 'won' ? (
-            <Crown className="size-5" aria-hidden="true" />
+            <Crown className="size-4 md:size-6" aria-hidden="true" />
           ) : round?.status === 'lost' ? (
-            <Skull className="size-5" aria-hidden="true" />
+            <Skull className="size-4 md:size-6" aria-hidden="true" />
           ) : null}
         </span>
       )
@@ -45,14 +45,14 @@ export const PublicRoundBoard = ({
         <Link
           key={roundNo}
           href={`/match/${round.matchId}`}
-          className="flex size-11 touch-manipulation items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="inline-flex touch-manipulation items-center justify-center justify-self-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [@media(pointer:coarse)]:size-11"
         >
           {marker}
         </Link>
       ) : (
         <span
           key={roundNo}
-          className="flex size-11 items-center justify-center"
+          className="inline-flex items-center justify-center justify-self-center [@media(pointer:coarse)]:size-11"
         >
           {marker}
         </span>

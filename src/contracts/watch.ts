@@ -4,6 +4,13 @@ import { GameMode } from '@/game/gameMode'
 import { ThemeId } from '@/game/themeSchema'
 import { z } from 'zod'
 
+export const LeaderboardSummaryDto = z.object({
+  rank: z.number().int().positive(),
+  score: z.number(),
+  isTop: z.boolean(),
+})
+export type LeaderboardSummaryDto = z.infer<typeof LeaderboardSummaryDto>
+
 export const PublicParticipantDto = z.object({
   sideIdx: z.number().int(),
   status: z.enum(['won', 'lost']),
@@ -37,6 +44,7 @@ export const RecentGameDto = z.object({
   gameMode: GameMode,
   dungeonAccesses: z.array(DungeonAccess).optional(),
   rounds: z.array(PublicRoundDto),
+  leaderboard: LeaderboardSummaryDto.nullable(),
 })
 
 export const RecentGamesDto = z.object({ games: z.array(RecentGameDto) })

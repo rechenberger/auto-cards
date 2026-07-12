@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { CatalogResponse } from '@/contracts/catalog'
 import { GameDto } from '@/contracts/game-api'
 import { ItemCardClient } from '@/features/game/ItemCardClient'
+import { checkCollectorLoadout } from '@/game/collector/checkCollectorLoadout'
 import { countifyItems } from '@/game/countifyItems'
 import { ItemData } from '@/game/ItemData'
 import { orderItems } from '@/game/orderItems'
@@ -16,7 +17,7 @@ import { allTags, Tag } from '@/game/tags'
 import { cn } from '@/lib/utils'
 import { capitalCase } from 'change-case'
 import { last, orderBy } from 'lodash-es'
-import { ArrowUp, Check, Circle, Recycle, Star } from 'lucide-react'
+import { ArrowUp, Check, Recycle, Star } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import {
@@ -74,6 +75,10 @@ export const CollectorItemGrid = ({
   const loadoutIds = new Set(
     loadoutItems.flatMap((item) => (item.id ? [item.id] : [])),
   )
+  const loadoutCheck = checkCollectorLoadout({
+    loadout: game.data.currentLoadout,
+    rulesetVersion: game.version,
+  })
   const upgradeItem = inventoryItems.find((item) => item.id === upgradeItemId)
   const separateWorkshopTab = false
   const showWorkshop = !separateWorkshopTab || tab === 'workshop'
@@ -146,28 +151,28 @@ export const CollectorItemGrid = ({
           const selectable = Boolean(item.id)
           const inLoadout = item.id ? loadoutIds.has(item.id) : true
           const itemId = item.id
+          const tooMany =
+            inLoadout &&
+            loadoutCheck.countTooMany.some(
+              (candidate) => candidate.name === item.name,
+            )
 
           return (
             <div
               key={item.id ?? `${item.name}-${index}`}
-              className="flex flex-col items-center gap-2"
+              className={cn(
+                'flex flex-col items-center gap-2 rounded-md',
+                tooMany && 'ring ring-red-500',
+              )}
             >
               <ItemCardClient
                 itemData={item}
                 catalog={catalog}
                 size={tab === 'inventory' ? '120' : '160'}
               />
-              {!!itemDefinition.price && (
-                <StatsDisplay
-                  stats={{ weight: itemDefinition.price }}
-                  size="sm"
-                  showZero
-                  disableTooltip
-                />
-              )}
               <div
                 className={cn(
-                  'flex min-h-11 flex-row gap-1',
+                  'flex flex-row gap-1',
                   !selectable && 'invisible',
                 )}
                 aria-hidden={!selectable}
@@ -175,9 +180,10 @@ export const CollectorItemGrid = ({
                 <CollectorCommandButton
                   variant="secondary"
                   className={cn(
-                    'gap-2 px-3 text-xs',
+                    'gap-2 rounded-none px-2 py-1 text-xs first:rounded-l-md last:rounded-r-md',
                     !inLoadout && 'grayscale opacity-60',
                   )}
+                  compact
                   disabled={!itemId}
                   tabIndex={selectable ? undefined : -1}
                   pending={pending}
@@ -192,12 +198,23 @@ export const CollectorItemGrid = ({
                       : `Add ${capitalCase(item.name)} to loadout`
                   }
                 >
-                  {inLoadout ? (
-                    <Check className="size-4" aria-hidden="true" />
-                  ) : (
-                    <Circle className="size-4" aria-hidden="true" />
+                  <span
+                    className={cn(
+                      'flex size-4 shrink-0 items-center justify-center rounded-sm border border-primary',
+                      inLoadout && 'bg-primary text-primary-foreground',
+                    )}
+                    aria-hidden="true"
+                  >
+                    {inLoadout && <Check className="size-4" />}
+                  </span>
+                  {!!itemDefinition.price && (
+                    <StatsDisplay
+                      stats={{ weight: itemDefinition.price }}
+                      size="sm"
+                      showZero
+                      disableTooltip
+                    />
                   )}
-                  {inLoadout ? 'Equipped' : 'Equip'}
                 </CollectorCommandButton>
                 <SimpleTooltip
                   tooltip={
@@ -208,10 +225,12 @@ export const CollectorItemGrid = ({
                     variant="secondary"
                     size="icon"
                     className={cn(
+                      'rounded-none p-1 first:rounded-l-md last:rounded-r-md',
                       item.favorite
                         ? 'text-yellow-500'
                         : 'grayscale opacity-60',
                     )}
+                    compact
                     disabled={!itemId}
                     tabIndex={selectable ? undefined : -1}
                     pending={pending}
@@ -238,7 +257,7 @@ export const CollectorItemGrid = ({
               {showWorkshop && (
                 <div
                   className={cn(
-                    'flex min-h-11 flex-row gap-1',
+                    'flex flex-row gap-1',
                     !selectable && 'invisible',
                   )}
                   aria-hidden={!selectable}
@@ -249,7 +268,7 @@ export const CollectorItemGrid = ({
                         type="button"
                         variant="secondary"
                         size="icon"
-                        className="min-h-11 min-w-11 touch-manipulation"
+                        className="!size-7 min-h-0 touch-manipulation rounded-none p-1 first:rounded-l-md last:rounded-r-md [@media(pointer:coarse)]:!size-11 [@media(pointer:coarse)]:min-h-11"
                         disabled={!itemId || pending}
                         tabIndex={selectable ? undefined : -1}
                         aria-label={`Upgrade ${capitalCase(item.name)}`}
@@ -263,6 +282,8 @@ export const CollectorItemGrid = ({
                     <CollectorCommandButton
                       variant="secondary"
                       size="icon"
+                      compact
+                      className="rounded-none p-1 first:rounded-l-md last:rounded-r-md"
                       disabled={!itemId}
                       tabIndex={selectable ? undefined : -1}
                       pending={pending}

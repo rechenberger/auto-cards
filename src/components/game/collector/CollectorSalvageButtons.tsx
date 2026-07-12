@@ -50,7 +50,7 @@ export const CollectorSalvageButtons = ({
           <Card key={rarity.name} className="px-2 py-1 text-sm">
             <div
               className={cn(
-                'flex min-h-11 flex-row items-center gap-1',
+                'flex flex-row items-center gap-1',
                 rarity.textClass,
               )}
             >
@@ -65,7 +65,8 @@ export const CollectorSalvageButtons = ({
                   <CollectorCommandButton
                     variant="ghost"
                     size="icon"
-                    className="shrink-0"
+                    className="shrink-0 rounded-none p-1 first:rounded-l-md last:rounded-r-md"
+                    compact
                     accessibleLabel={`Convert ${capitalCase(
                       rarity.name,
                     )} parts`}
@@ -88,7 +89,8 @@ export const CollectorSalvageButtons = ({
               <SimpleTooltip tooltip="Salvage unequipped, non-favorite items.">
                 <CollectorCommandButton
                   variant="ghost"
-                  className="gap-1 px-2"
+                  className="gap-1 rounded-none px-2 py-1 first:rounded-l-md last:rounded-r-md"
+                  compact
                   accessibleLabel={`Salvage ${salvageCount} ${rarity.name} items`}
                   disabled={!salvageCount}
                   pending={pending}

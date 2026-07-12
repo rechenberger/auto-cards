@@ -60,6 +60,7 @@ export const MatchReplayCards = ({
                   imageUrl={imageUrl}
                   size="80"
                   sideIdx={participant.sideIdx}
+                  itemIdx={itemIdx}
                 />
                 {hasInterval && (
                   <MatchCardTimer

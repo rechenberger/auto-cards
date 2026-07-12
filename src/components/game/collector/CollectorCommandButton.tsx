@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { CollectorCommand } from '@/contracts/collector-api'
+import { cn } from '@/lib/utils'
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 
 export type CollectorCommandHandler = (
@@ -23,6 +24,7 @@ export const CollectorCommandButton = ({
   confirm,
   shortcut,
   accessibleLabel,
+  compact = false,
   children,
   ...buttonProps
 }: Omit<ButtonProps, 'onClick'> & {
@@ -32,6 +34,7 @@ export const CollectorCommandButton = ({
   confirm?: { title: string; description?: ReactNode; action?: string }
   shortcut?: string
   accessibleLabel?: string
+  compact?: boolean
 }) => {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const run = useCallback(async () => {
@@ -70,7 +73,17 @@ export const CollectorCommandButton = ({
           shortcut ? `${accessibleLabel ?? 'Action'} (${shortcut})` : undefined
         }
         disabled={buttonProps.disabled || pending}
-        className={`min-h-11 touch-manipulation ${buttonProps.className ?? ''}`}
+        className={cn(
+          compact
+            ? [
+                '!min-h-0 touch-manipulation [@media(pointer:coarse)]:!min-h-11',
+                buttonProps.size === 'icon'
+                  ? '!size-7 [@media(pointer:coarse)]:!size-11'
+                  : '!h-auto [@media(pointer:coarse)]:!h-11',
+              ]
+            : 'min-h-11 touch-manipulation',
+          buttonProps.className,
+        )}
         onClick={() => {
           if (confirm) setConfirmOpen(true)
           else void run()

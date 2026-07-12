@@ -1,4 +1,5 @@
 import { GameViewDto } from '@/contracts/game-api'
+import type { LeaderboardSummaryDto } from '@/contracts/watch'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { Game } from '@/db/schema-zod'
@@ -6,8 +7,19 @@ import { GAME_VERSION, NO_OF_ROUNDS } from '@/game/config'
 import { and, eq } from 'drizzle-orm'
 import { forbidden, notFound } from '@/server/api/ApiError'
 import { ApiPrincipal } from '@/server/auth/apiPrincipal'
+import { getLeaderboardSummary } from '@/server/application/leaderboard/getLeaderboardSummary'
 
 type GameWithRevision = Game & { revision?: number }
+
+const getLoadoutsForGame = (gameId: string) =>
+  db.query.loadout.findMany({
+    where: eq(schema.loadout.gameId, gameId),
+    with: { primaryMatchParticipation: true },
+  })
+
+export type GameViewLoadout = Awaited<
+  ReturnType<typeof getLoadoutsForGame>
+>[number]
 
 export const getCurrentMatchId = async ({
   gameId,
@@ -50,21 +62,31 @@ export const getGameForPrincipal = async ({
 export const buildGameView = async ({
   game,
   principal,
+  loadouts: prefetchedLoadouts,
+  leaderboardSummaries,
 }: {
   game: GameWithRevision
   principal: ApiPrincipal
+  loadouts?: GameViewLoadout[]
+  leaderboardSummaries?: ReadonlyMap<string, LeaderboardSummaryDto>
 }): Promise<GameViewDto> => {
   const isOldVersion = game.version !== GAME_VERSION
-  const loadouts = await db.query.loadout.findMany({
-    where: eq(schema.loadout.gameId, game.id),
-    with: { primaryMatchParticipation: true },
-  })
+  const loadouts = prefetchedLoadouts ?? (await getLoadoutsForGame(game.id))
   const currentLoadout = loadouts.find(
     (loadout) => loadout.roundNo === game.data.roundNo,
   )
   const currentMatchId =
     currentLoadout?.primaryMatchParticipation?.matchId ?? null
   const latestLoadout = loadouts.toSorted((a, b) => b.roundNo - a.roundNo)[0]
+  const leaderboard =
+    !isOldVersion &&
+    game.gameMode === 'shopper' &&
+    game.data.roundNo >= NO_OF_ROUNDS - 1 &&
+    latestLoadout
+      ? leaderboardSummaries
+        ? leaderboardSummaries.get(latestLoadout.id) ?? null
+        : await getLeaderboardSummary({ loadout: latestLoadout })
+      : null
 
   const phase = isOldVersion
     ? 'ended'
@@ -97,6 +119,7 @@ export const buildGameView = async ({
       loadoutId: loadout.id,
     })),
     latestLoadoutId: latestLoadout?.id ?? null,
+    leaderboard,
     isAdmin: principal.isAdmin,
     isOldVersion,
   })

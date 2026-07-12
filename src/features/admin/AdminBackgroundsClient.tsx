@@ -34,7 +34,7 @@ export const AdminBackgroundsClient = () => {
         <div
           className="grid w-max min-w-full gap-px bg-border"
           style={{
-            gridTemplateColumns: `10rem repeat(${themes.length}, minmax(16rem, 1fr))`,
+            gridTemplateColumns: `10rem repeat(${themes.length}, minmax(44rem, 1fr))`,
           }}
         >
           <div className="sticky left-0 top-0 z-20 bg-background p-3 font-semibold">
@@ -68,9 +68,9 @@ export const AdminBackgroundsClient = () => {
               return (
                 <div
                   key={themeId}
-                  className="flex min-h-64 flex-col gap-3 bg-background p-3"
+                  className="flex flex-col gap-3 bg-background p-3"
                 >
-                  <div className="relative aspect-video overflow-hidden rounded-md bg-muted">
+                  <div className="relative h-96 overflow-hidden rounded-md bg-muted">
                     {active ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img

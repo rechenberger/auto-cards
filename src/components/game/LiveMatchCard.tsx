@@ -44,7 +44,7 @@ export const LiveMatchCard = ({
   if (me.isLoading || liveMatch.isLoading || unauthenticated) {
     return (
       <Card
-        className="flex w-64 flex-col gap-3 p-3"
+        className="flex w-56 flex-col gap-2 p-2"
         aria-label="Loading live match"
       >
         <Skeleton className="h-11 w-full" />
@@ -68,7 +68,7 @@ export const LiveMatchCard = ({
   const view = liveMatch.data
 
   return (
-    <Card className="flex w-64 flex-col gap-3 p-3">
+    <Card className="flex w-56 flex-col gap-2 p-2">
       <div className="flex items-center gap-1">
         <Zap className="size-4 text-amber-500" aria-hidden="true" />
         <div className="flex-1 font-semibold">Live Match</div>

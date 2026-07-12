@@ -9,9 +9,35 @@ import { ItemDefinition } from '@/game/ItemDefinition'
 import { ItemName } from '@/game/allItems'
 import { Stat } from '@/game/stats'
 import { ItemCardClient } from '@/features/game/ItemCardClient'
-import { capitalCase } from 'change-case'
 import { flatMap, keys, map, uniq } from 'lodash-es'
-import Link from 'next/link'
+import { ThemeId } from '@/game/themeSchema'
+
+const ThemeItemCard = ({
+  itemName,
+  themeId,
+}: {
+  itemName: string
+  themeId: ThemeId
+}) => {
+  const catalog = useCatalog(themeId)
+  if (!catalog.data) return null
+  return (
+    <div className="group relative">
+      <ItemCardClient
+        itemData={{ name: ItemName.parse(itemName) }}
+        catalog={catalog.data}
+        size="320"
+        showPrice
+      />
+      <AiImageGalleryItem
+        itemId={itemName}
+        themeId={themeId}
+        className="rounded-md"
+        tiny
+      />
+    </div>
+  )
+}
 
 const getItemStats = (item: ItemDefinition) => {
   const triggers = item.triggers ?? []
@@ -63,51 +89,48 @@ export const DocsItemDetailClient = ({ itemName }: { itemName: string }) => {
     return (
       <div className="flex flex-col items-center gap-4 py-12 text-center">
         <h1 className="text-xl font-bold">Item not found</h1>
-        <Link
-          className="min-h-11 rounded-md border px-4 py-3"
-          href="/docs/items"
-        >
-          Back to items
-        </Link>
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <Link
-        className="flex min-h-11 touch-manipulation items-center self-start text-sm text-muted-foreground underline"
-        href="/docs/items"
-      >
-        Back to all items
-      </Link>
-      <div className="flex flex-col items-center gap-6 lg:flex-row lg:items-start">
+    <>
+      <div className="flex flex-col gap-4 lg:flex-row">
         <ItemCardClient
           itemData={{ name: ItemName.parse(item.name) }}
           catalog={catalog.data}
-          size="320"
+          size="480"
           showPrice
         />
-        <div className="flex w-full flex-1 flex-col gap-4">
+        <div className="flex flex-1 flex-col gap-4">
           <section className="rounded-lg bg-border p-4">
-            <h1 className="mb-4 text-xl font-bold">{capitalCase(item.name)}</h1>
             <StatDescriptions stats={getItemStats(item)} />
           </section>
           {meta.data?.viewer?.isAdmin && (
-            <section className="flex flex-col gap-4 rounded-lg bg-border p-4">
-              <GenerateAllImagesButton
-                itemId={item.name}
-                themeId={catalog.data.imageThemeId}
-              />
+            <section className="flex-1 rounded-lg bg-border p-4">
               <AiImageGalleryItem
                 itemId={item.name}
                 themeId={catalog.data.imageThemeId}
-                className="rounded-md"
+                className="rounded-lg border-2 border-black"
               />
             </section>
           )}
         </div>
       </div>
-    </div>
+      {meta.data?.viewer?.isAdmin && (
+        <div className="flex flex-col gap-4 rounded-lg bg-border p-4">
+          <GenerateAllImagesButton itemId={item.name} />
+          <div className="flex flex-row flex-wrap justify-center gap-2">
+            {catalog.data.themes.map((theme) => (
+              <ThemeItemCard
+                key={theme.name}
+                itemName={item.name}
+                themeId={theme.name}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   )
 }

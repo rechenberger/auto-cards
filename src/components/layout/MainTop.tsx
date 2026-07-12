@@ -15,19 +15,15 @@ import { MainTopNav } from './MainTopNav'
 export const MainTop = () => {
   const me = useMe()
   const meta = useMeta()
+  const isAuthPending = me.isPending
   const isLoggedIn = Boolean(me.data)
   const isAdminOrDev = Boolean(me.data?.isAdmin)
 
   const entries = [
     {
-      name: 'Home',
-      href: '/',
-      hidden: isLoggedIn,
-    },
-    {
-      name: 'Game',
-      href: '/game',
-      hidden: !isLoggedIn,
+      name: isLoggedIn ? 'Game' : 'Home',
+      href: isLoggedIn ? '/game' : '/',
+      placeholder: isAuthPending,
     },
     {
       name: 'Watch',

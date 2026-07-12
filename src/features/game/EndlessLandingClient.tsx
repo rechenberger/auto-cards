@@ -6,7 +6,10 @@ import { useMeta } from '@/client/api/catalog'
 import { useGames } from '@/client/api/games'
 import { QueryError, QueryLoading } from '@/components/api/QueryState'
 import { AlphaTag } from '@/components/game/AlphaTag'
+import { TitleScreen } from '@/components/game/TitleScreen'
 import { Button } from '@/components/ui/button'
+import { fontHeading, fontLore } from '@/lib/fonts'
+import { cn } from '@/lib/utils'
 import Link from 'next/link'
 
 export const EndlessLandingClient = () => {
@@ -19,30 +22,44 @@ export const EndlessLandingClient = () => {
     (view) => view.game.gameMode === 'collector',
   )
   return (
-    <div className="flex flex-1 flex-col items-center justify-center py-8 mb-20 lg:mb-80">
-      <div className="flex flex-col items-center gap-4 rounded-lg bg-background/90 p-6 text-center">
-        <AlphaTag />
-        <h1 className="text-3xl font-bold">Endless Mode</h1>
-        <p className="text-sm text-muted-foreground">
-          Build your own collection of unique items.
-          <br />
-          Delve into increasingly difficult dungeons. Legendary loot awaits.
-        </p>
-        {meta.data?.viewer ? (
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <NewGameButton variant="outline" gameMode="collector" />
-            {latest && (
-              <Button asChild className="min-h-11">
-                <Link href={`/game/${latest.game.id}`}>
-                  Resume Endless Game
-                </Link>
-              </Button>
-            )}
+    <>
+      <div className="mb-20 flex flex-1 flex-col items-center justify-center py-8 lg:mb-80">
+        <div className="flex flex-col items-center gap-2 rounded-lg bg-background/80 p-4 lg:gap-4">
+          <div className="my-4 flex flex-col items-center">
+            <AlphaTag />
+            <h1 className={cn(fontHeading.className, 'mt-2 text-3xl')}>
+              Endless Mode
+            </h1>
+            <p
+              className={cn(
+                fontLore.className,
+                'text-center text-sm opacity-80',
+              )}
+            >
+              Build your own collection of unique items.
+              <br />
+              Delve into increasingly difficult dungeons.
+              <br />
+              Legendary loot awaits.
+            </p>
           </div>
-        ) : (
-          <UserButton />
-        )}
+          {meta.data?.viewer ? (
+            <div className="flex flex-col gap-2 lg:flex-row">
+              <NewGameButton variant="outline" gameMode="collector" />
+              {latest && (
+                <Button asChild>
+                  <Link href={`/game/${latest.game.id}`}>
+                    Resume Endless Game
+                  </Link>
+                </Button>
+              )}
+            </div>
+          ) : (
+            <UserButton />
+          )}
+        </div>
       </div>
-    </div>
+      <TitleScreen />
+    </>
   )
 }

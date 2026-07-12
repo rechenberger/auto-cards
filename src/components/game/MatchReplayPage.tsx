@@ -5,6 +5,7 @@ import { MetaResponse } from '@/contracts/meta'
 import { MatchReplayResponse } from '@/contracts/replay'
 import { AlertCircle, LoaderCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { ReactNode } from 'react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { Button } from '../ui/button'
 import { MatchReplayView } from './MatchReplayView'
@@ -26,7 +27,15 @@ const isNotReplayable = (error: unknown) => {
   )
 }
 
-export const MatchReplayPage = ({ matchId }: { matchId: string }) => {
+export const MatchReplayPage = ({
+  matchId,
+  controls,
+  overviewContent,
+}: {
+  matchId: string
+  controls?: ReactNode
+  overviewContent?: ReactNode
+}) => {
   const [retry, setRetry] = useState(0)
   const [state, setState] = useState<ReplayState>({ status: 'loading' })
 
@@ -77,30 +86,49 @@ export const MatchReplayPage = ({ matchId }: { matchId: string }) => {
         : 'The match could not be loaded.'
 
     return (
-      <Alert>
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle>
-          {notReplayable ? 'Old Match' : notFound ? 'Match not found' : 'Error'}
-        </AlertTitle>
-        <AlertDescription className="flex flex-col items-start gap-3">
-          <span>
+      <div className="flex flex-1 flex-col gap-6">
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>
             {notReplayable
-              ? 'Game has changed too much to replay this match'
-              : message}
-          </span>
-          {!notReplayable && !notFound && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setRetry((value) => value + 1)}
-            >
-              Try again
-            </Button>
-          )}
-        </AlertDescription>
-      </Alert>
+              ? 'Old Match'
+              : notFound
+                ? 'Match not found'
+                : 'Error'}
+          </AlertTitle>
+          <AlertDescription className="flex flex-col items-start gap-3">
+            <span>
+              {notReplayable
+                ? 'Game has changed too much to replay this match'
+                : message}
+            </span>
+            {!notReplayable && !notFound && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setRetry((value) => value + 1)}
+              >
+                Try again
+              </Button>
+            )}
+          </AlertDescription>
+        </Alert>
+        {notReplayable && controls && (
+          <div className="flex flex-1 items-center justify-center">
+            {controls}
+          </div>
+        )}
+      </div>
     )
   }
 
-  return <MatchReplayView replay={state.replay} meta={state.meta} />
+  return (
+    <MatchReplayView
+      replay={state.replay}
+      meta={state.meta}
+      overviewContent={overviewContent}
+    >
+      {controls}
+    </MatchReplayView>
+  )
 }

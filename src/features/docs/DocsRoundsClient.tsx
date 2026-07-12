@@ -28,29 +28,25 @@ export const DocsRoundsClient = () => {
 
   const rounds = getRoundStats(meta.data.rulesetVersion)
   return (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div className="flex flex-row flex-wrap items-start gap-2 gap-y-8 xl:grid xl:grid-cols-5 xl:self-center">
       {rounds.map((round, index) => {
         const nextRound = rounds[index + 1]
         return (
-          <section
-            key={round.roundNo}
-            className="flex flex-col gap-3 rounded-xl border p-4"
-          >
-            <h1 className="text-center font-semibold">
-              Round {round.roundNo + 1}
-            </h1>
-            <div className="rounded-md bg-border px-4 py-2">
-              <div className="mb-1 text-center font-bold">Shop chances</div>
+          <section key={round.roundNo} className="flex flex-col gap-2">
+            <h1 className="text-center">Round {round.roundNo + 1}</h1>
+            <div className="flex flex-col gap-0 rounded-md bg-border px-4 py-2">
+              <div className="mb-1 self-center font-bold">Shop Chances</div>
               <RarityWeightsDisplay rarityWeights={round.rarityWeights} />
             </div>
             {nextRound && (
-              <div className="flex flex-col items-center gap-2 rounded-md bg-border px-4 py-2">
-                <div className="text-center">Next round gain</div>
+              <div className="flex flex-col items-center gap-2 self-center rounded-md bg-border px-4 py-2">
+                <div className="text-center">Next Round Gain</div>
                 <StatsDisplay stats={{ gold: nextRound.gold }} />
                 <ItemCardClient
                   itemData={{ name: 'experience', count: nextRound.experience }}
                   catalog={catalog.data}
-                  size="120"
+                  size="160"
+                  onlyTop
                 />
               </div>
             )}

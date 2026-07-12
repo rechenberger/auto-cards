@@ -5,7 +5,7 @@ import { QueryError, QueryLoading } from '@/components/api/QueryState'
 import { Card } from '@/components/ui/card'
 import { getCraftingRecipes } from '@/game/craftingRecipes'
 import { ItemCardClient } from '@/features/game/ItemCardClient'
-import { ArrowRight, Plus } from 'lucide-react'
+import { ArrowDown, Plus } from 'lucide-react'
 
 export const DocsCraftingClient = () => {
   const meta = useMeta()
@@ -28,44 +28,39 @@ export const DocsCraftingClient = () => {
 
   const recipes = getCraftingRecipes(meta.data.rulesetVersion)
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4">
+    <div className="mx-auto flex flex-col gap-4">
       {recipes.map((recipe, recipeIndex) => (
         <Card key={recipeIndex} className="bg-border/50 p-4">
-          <div className="flex flex-col items-center gap-3 lg:flex-row">
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              {recipe.input.map((item, index) => (
-                <div
-                  key={`${item.name}-${index}`}
-                  className="flex items-center gap-2"
-                >
-                  {index > 0 && <Plus className="size-6" aria-hidden="true" />}
+          <div className="flex flex-col items-center gap-2 lg:flex-row">
+            {recipe.input.map((item, index) => (
+              <div key={`${item.name}-${index}`} className="contents">
+                {index > 0 && <Plus className="size-8" aria-hidden="true" />}
+                <div className="flex flex-col items-center gap-2 self-start">
                   <ItemCardClient
                     itemData={item}
                     catalog={catalog.data}
-                    size="120"
+                    size="160"
+                    onlyTop
                   />
                 </div>
-              ))}
-            </div>
-            <ArrowRight
-              className="size-7 rotate-90 lg:rotate-0"
-              aria-hidden="true"
-            />
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              {recipe.output.map((item, index) => (
-                <div
-                  key={`${item.name}-${index}`}
-                  className="flex items-center gap-2"
-                >
-                  {index > 0 && <Plus className="size-6" aria-hidden="true" />}
+              </div>
+            ))}
+            <div className="flex-1" />
+            <ArrowDown className="size-8 lg:-rotate-90" aria-hidden="true" />
+            <div />
+            {recipe.output.map((item, index) => (
+              <div key={`${item.name}-${index}`} className="contents">
+                {index > 0 && <Plus className="size-8" aria-hidden="true" />}
+                <div className="flex flex-col items-center gap-2 self-start">
                   <ItemCardClient
                     itemData={item}
                     catalog={catalog.data}
-                    size="120"
+                    size="160"
+                    onlyTop
                   />
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </Card>
       ))}

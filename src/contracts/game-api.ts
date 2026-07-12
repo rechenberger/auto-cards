@@ -2,6 +2,7 @@ import { GameData } from '@/game/GameData'
 import { ItemName } from '@/game/allItems'
 import { ItemAspect } from '@/game/aspects'
 import { GameMode } from '@/game/gameMode'
+import { LeaderboardSummaryDto } from './watch'
 import { z } from 'zod'
 
 export const GameDto = z.object({
@@ -33,6 +34,7 @@ export const GameViewDto = z.object({
     }),
   ),
   latestLoadoutId: z.string().nullable(),
+  leaderboard: LeaderboardSummaryDto.nullable(),
   isAdmin: z.boolean(),
   isOldVersion: z.boolean(),
 })

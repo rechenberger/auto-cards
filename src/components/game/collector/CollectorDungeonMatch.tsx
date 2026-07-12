@@ -81,28 +81,34 @@ export const CollectorDungeonMatch = ({
         />
         {room.type === 'reward' && (
           <>
-            <h2 className="text-lg font-semibold">Reward</h2>
-            <div className="flex flex-row flex-wrap items-start justify-center gap-2">
+            <div>Reward</div>
+            <div className="flex flex-1 flex-row flex-wrap items-start justify-center gap-1">
               {room.items.map((item, index) => (
                 <ItemCardClient
                   key={`${item.name}-${index}`}
                   itemData={item}
                   catalog={catalog}
-                  size="160"
+                  size="200"
                 />
               ))}
             </div>
+            <NextRoundButtonCollector
+              game={game}
+              onCommand={onCommand}
+              pending={pending}
+            />
           </>
         )}
       </div>
-      {replay && <MatchReplayView replay={replay} meta={null} />}
-      <div className="sticky bottom-4 z-20 self-center rounded-xl bg-background/90 p-2 shadow-lg backdrop-blur-sm">
-        <NextRoundButtonCollector
-          game={game}
-          onCommand={onCommand}
-          pending={pending}
-        />
-      </div>
+      {replay && (
+        <MatchReplayView replay={replay} meta={null}>
+          <NextRoundButtonCollector
+            game={game}
+            onCommand={onCommand}
+            pending={pending}
+          />
+        </MatchReplayView>
+      )}
     </div>
   )
 }

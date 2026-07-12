@@ -39,14 +39,14 @@ export const CollectorStartingOptionsSelect = ({
     </div>
     <div className="flex flex-col gap-4 self-center xl:flex-row">
       {collectorStartingOptions.map((option) => (
-        <Card key={option.id} className="flex max-w-md flex-col">
+        <Card key={option.id}>
           <CardHeader>
             <CardTitle>{option.name}</CardTitle>
             <CardDescription className={fontLore.className}>
               {option.description}
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-1 flex-col items-center gap-4">
+          <CardContent className="flex flex-col items-center gap-4">
             <div className="flex flex-1 flex-wrap items-center justify-center gap-2">
               {option.previewItems.map((item, index) => (
                 <ItemCardClient
@@ -61,7 +61,6 @@ export const CollectorStartingOptionsSelect = ({
               command={{ type: 'choose-starter', starterId: option.id }}
               onCommand={onCommand}
               pending={pending}
-              className="w-full"
             >
               Start as {option.name}
             </CollectorCommandButton>

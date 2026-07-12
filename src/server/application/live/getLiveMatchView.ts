@@ -7,9 +7,11 @@ import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
 import { GAME_VERSION } from '@/game/config'
 import { getUserName } from '@/game/getUserName'
+import { ItemData } from '@/game/ItemData'
 import { rankByScore } from '@/game/rankByScore'
 import { notFound } from '@/server/api/ApiError'
 import type { ApiPrincipal } from '@/server/auth/apiPrincipal'
+import { getLeaderboardSummaries } from '@/server/application/leaderboard/getLeaderboardSummary'
 import { desc, eq, inArray } from 'drizzle-orm'
 
 const resolveRulesetVersion = ({
@@ -157,16 +159,30 @@ export const getLiveMatchResults = async ({
       })
     : []
 
+  const gameLoadouts = new Map(
+    gameIds.map((gameId) => [
+      gameId,
+      loadouts
+        .filter((loadout) => loadout.gameId === gameId)
+        .toSorted((left, right) => left.roundNo - right.roundNo),
+    ]),
+  )
+  const latestLoadouts = [...gameLoadouts.values()].flatMap((items) => {
+    const latest = items.at(-1)
+    return latest ? [latest] : []
+  })
+  const leaderboardSummaries = await getLeaderboardSummaries({
+    loadouts: latestLoadouts,
+  })
+
   const entries = liveMatch.liveMatchParticipations.flatMap((participation) => {
     const game = liveMatch.games.find(
       (candidate) => candidate.userId === participation.userId,
     )
     if (!game) return []
 
-    const gameLoadouts = loadouts
-      .filter((loadout) => loadout.gameId === game.id)
-      .toSorted((a, b) => a.roundNo - b.roundNo)
-    const rounds = gameLoadouts.map((loadout) => {
+    const loadoutsForGame = gameLoadouts.get(game.id) ?? []
+    const rounds = loadoutsForGame.map((loadout) => {
       const status = loadout.primaryMatchParticipation?.status ?? null
       return {
         roundNo: loadout.roundNo,
@@ -175,7 +191,7 @@ export const getLiveMatchResults = async ({
         points: status === 'won' ? loadout.roundNo + 1 : 0,
       }
     })
-    const latestLoadout = gameLoadouts.at(-1)
+    const latestLoadout = loadoutsForGame.at(-1)
 
     return [
       {
@@ -190,8 +206,17 @@ export const getLiveMatchResults = async ({
           ? {
               id: latestLoadout.id,
               roundNo: latestLoadout.roundNo,
-              items: latestLoadout.data.items,
+              // Old rulesets can contain retired item names. The public live
+              // dashboard should still render their results; unsupported cards
+              // are simply omitted from the optional latest-loadout preview.
+              items: latestLoadout.data.items.flatMap((item) => {
+                const parsed = ItemData.safeParse(item)
+                return parsed.success ? [parsed.data] : []
+              }),
             }
+          : null,
+        leaderboard: latestLoadout
+          ? leaderboardSummaries.get(latestLoadout.id) ?? null
           : null,
       },
     ]

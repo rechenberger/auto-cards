@@ -64,7 +64,7 @@ export const CollectorUpgradeDialog = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Upgrade {capitalCase(item.name)}</DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="sr-only">
             Increase its rarity and add a random compatible aspect.
           </DialogDescription>
         </DialogHeader>
@@ -101,11 +101,14 @@ export const CollectorUpgradeDialog = ({
                 >
                   <Button
                     type="button"
-                    variant="ghost"
-                    className="min-h-11 gap-2"
+                    variant="vanilla"
+                    size="vanilla"
+                    className="relative gap-2 p-1 text-sm touch-manipulation after:absolute after:-inset-2 after:content-['']"
                   >
                     <Info className="size-4" aria-hidden="true" />
-                    +1 of {possibleAspects.length} random aspects
+                    {possibleAspects.length > 1
+                      ? `+1 of ${possibleAspects.length} random aspects`
+                      : '+1 random aspect'}
                   </Button>
                 </SimpleTooltip>
               </div>

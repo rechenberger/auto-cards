@@ -1,5 +1,6 @@
 import { ItemData } from '@/game/ItemData'
 import { z } from 'zod'
+import { LeaderboardSummaryDto } from './watch'
 
 export const LiveMatchStatusDto = z.enum(['open', 'locked'])
 export type LiveMatchStatusDto = z.infer<typeof LiveMatchStatusDto>
@@ -76,6 +77,7 @@ export const LiveMatchResultEntryDto = z.object({
       items: z.array(ItemData),
     })
     .nullable(),
+  leaderboard: LeaderboardSummaryDto.nullable(),
 })
 export type LiveMatchResultEntryDto = z.infer<typeof LiveMatchResultEntryDto>
 

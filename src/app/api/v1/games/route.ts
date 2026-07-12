@@ -1,12 +1,13 @@
 import { CreateGameRequest } from '@/contracts/game-api'
 import { db } from '@/db/db'
 import { schema } from '@/db/schema-export'
-import { GAME_VERSION, LIMIT_GAME_OVERVIEW } from '@/game/config'
+import { GAME_VERSION, LIMIT_GAME_OVERVIEW, NO_OF_ROUNDS } from '@/game/config'
 import { createGame } from '@/game/createGame'
 import { badRequest } from '@/server/api/ApiError'
 import { apiData, apiRoute, parseJson } from '@/server/api/route'
 import { withIdempotency } from '@/server/api/idempotency'
 import { buildGameView } from '@/server/application/games/getGameView'
+import { getLeaderboardSummaries } from '@/server/application/leaderboard/getLeaderboardSummary'
 import { requireApiPrincipal } from '@/server/auth/apiPrincipal'
 import { and, desc, eq } from 'drizzle-orm'
 import { after } from 'next/server'
@@ -25,11 +26,33 @@ export const GET = apiRoute(async (_context, request: Request) => {
     ),
     orderBy: desc(schema.game.updatedAt),
     limit: LIMIT_GAME_OVERVIEW,
+    with: {
+      loadouts: { with: { primaryMatchParticipation: true } },
+    },
+  })
+
+  const leaderboardSummaries = await getLeaderboardSummaries({
+    loadouts: games.flatMap((game) => {
+      if (game.gameMode !== 'shopper' || game.data.roundNo < NO_OF_ROUNDS - 1) {
+        return []
+      }
+      const latestLoadout = game.loadouts.toSorted(
+        (left, right) => right.roundNo - left.roundNo,
+      )[0]
+      return latestLoadout ? [latestLoadout] : []
+    }),
   })
 
   return apiData({
     games: await Promise.all(
-      games.map((game) => buildGameView({ game, principal })),
+      games.map((game) =>
+        buildGameView({
+          game,
+          principal,
+          loadouts: game.loadouts,
+          leaderboardSummaries,
+        }),
+      ),
     ),
     isAdmin: principal.isAdmin,
   })

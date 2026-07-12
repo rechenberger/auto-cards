@@ -14,6 +14,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { GameMatchBoardClient } from './GameMatchBoardClient'
 import { ItemCardClient } from './ItemCardClient'
+import { TitleScreen } from '@/components/game/TitleScreen'
+import { LeaderboardRankBadge } from '@/components/game/LeaderboardRankBadge'
 
 export const GamesPageClient = () => {
   const router = useRouter()
@@ -46,9 +48,10 @@ export const GamesPageClient = () => {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col items-center gap-3 md:flex-row">
-        <h1 className="flex-1 text-xl font-bold">My Games</h1>
+    <>
+      <TitleScreen />
+      <div className="flex flex-col items-center gap-2 md:flex-row">
+        <div className="flex-1 font-bold">My Games</div>
         <div className="flex flex-wrap justify-center gap-2">
           <Button asChild variant="outline" className="min-h-11">
             <Link href="/live/new">Start Live Match</Link>
@@ -92,7 +95,12 @@ export const GamesPageClient = () => {
                 className="flex flex-col items-center gap-4 p-4"
               >
                 {view.game.gameMode === 'shopper' ? (
-                  <GameMatchBoardClient view={view} />
+                  <div className="flex flex-row items-center justify-center gap-4">
+                    <GameMatchBoardClient view={view} />
+                    {view.leaderboard && (
+                      <LeaderboardRankBadge summary={view.leaderboard} tiny />
+                    )}
+                  </div>
                 ) : (
                   <div>Endless Mode</div>
                 )}
@@ -103,6 +111,7 @@ export const GamesPageClient = () => {
                       itemData={item}
                       catalog={catalog.data}
                       size="80"
+                      onlyTop
                     />
                   ))}
                 </div>
@@ -140,6 +149,6 @@ export const GamesPageClient = () => {
           })}
         </div>
       )}
-    </div>
+    </>
   )
 }

@@ -4,7 +4,7 @@ import {
   AdminLeaderboardCommand,
   AdminLeaderboardResult,
 } from '@/contracts/admin-leaderboard'
-import { useCatalog, useMeta } from '@/client/api/catalog'
+import { useMeta } from '@/client/api/catalog'
 import { useLeaderboard } from '@/client/api/watch'
 import { fetchApi } from '@/client/api/fetchApi'
 import { QueryError, QueryLoading } from '@/components/api/QueryState'
@@ -17,10 +17,13 @@ import { countifyItems } from '@/game/countifyItems'
 import { DEFAULT_GAME_VERSION, getNumberOfRounds } from '@/game/gameVersion'
 import { orderItems } from '@/game/orderItems'
 import { LEADERBOARD_TYPE, LEADERBOARD_TYPE_ACC } from '@/game/rules'
-import { ItemCardClient } from '@/features/game/ItemCardClient'
+import { TinyItem } from '@/components/game/TinyItem'
 import { useMutation } from '@tanstack/react-query'
 import { RotateCw, Trash2 } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { Fragment } from 'react'
+import { getOrdinalSuffix } from '@/lib/getOrdinalSuffix'
+import { cn } from '@/lib/utils'
 
 export const LeaderboardClient = () => {
   const router = useRouter()
@@ -39,7 +42,6 @@ export const LeaderboardClient = () => {
   const type = hasValidRound ? LEADERBOARD_TYPE : LEADERBOARD_TYPE_ACC
   const view = params.get('view') === 'user' ? 'user' : 'all'
   const leaderboard = useLeaderboard({ round, type })
-  const catalog = useCatalog(meta.data?.viewer?.themeId)
   const adminCommand = useMutation({
     mutationFn: (command: typeof AdminLeaderboardCommand._type) =>
       fetchApi('/api/v1/admin/leaderboard', AdminLeaderboardResult, {
@@ -53,22 +55,14 @@ export const LeaderboardClient = () => {
     onSuccess: () => leaderboard.refetch(),
   })
 
-  if (leaderboard.isLoading || catalog.isLoading) {
+  if (leaderboard.isLoading) {
     return <QueryLoading label="Loading leaderboard…" />
   }
-  if (
-    leaderboard.error ||
-    catalog.error ||
-    !leaderboard.data ||
-    !catalog.data
-  ) {
+  if (leaderboard.error || !leaderboard.data) {
     return (
       <QueryError
-        error={leaderboard.error ?? catalog.error}
-        retry={() => {
-          leaderboard.refetch()
-          catalog.refetch()
-        }}
+        error={leaderboard.error}
+        retry={() => leaderboard.refetch()}
       />
     )
   }
@@ -92,9 +86,11 @@ export const LeaderboardClient = () => {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col items-start gap-3 xl:flex-row xl:items-center">
-        <h1 className="flex-1 text-xl font-bold">Leaderboard</h1>
+    <>
+      <div className="flex flex-col items-center gap-2 xl:flex-row">
+        <div className="flex flex-1 flex-col gap-2">
+          <h2 className="text-xl font-bold">Leaderboard</h2>
+        </div>
         {leaderboard.data.isAdmin && (
           <div className="flex gap-2">
             <ConfirmButton
@@ -126,7 +122,7 @@ export const LeaderboardClient = () => {
           </div>
         )}
         <label className="flex items-center gap-2 text-sm">
-          <span>Round</span>
+          <span className="sr-only">Round</span>
           <select
             className="min-h-11 rounded-md border bg-background px-3 text-base"
             value={hasValidRound && roundParam ? roundParam : 'all'}
@@ -164,29 +160,54 @@ export const LeaderboardClient = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4 xl:grid-cols-[auto_auto_1fr_auto]">
         {entries.map((entry) => {
           const items = orderItems(
             countifyItems(entry.loadout.items),
             meta.data?.rulesetVersion,
           )
+          const top3Class = cn(
+            entry.rank === 1 &&
+              'bg-gradient-to-bl from-amber-100 to-amber-500 text-black',
+            entry.rank === 2 &&
+              'border-gray-300 bg-gradient-to-bl from-gray-100 to-gray-500 text-black',
+            entry.rank === 3 &&
+              'border-orange-300 bg-gradient-to-bl from-orange-100 to-orange-500 text-black',
+          )
+          const repeated = leaderboard.data.entries.filter(
+            (candidate) => candidate.displayName === entry.displayName,
+          ).length
           return (
-            <div
-              key={entry.id}
-              className="grid items-center gap-3 rounded-xl border p-3 md:grid-cols-[auto_1fr_auto]"
-            >
-              <div className="flex size-12 items-center justify-center rounded-full bg-muted text-lg font-bold tabular-nums">
-                {entry.rank}
+            <Fragment key={entry.id}>
+              <div
+                className={cn(
+                  'flex w-24 flex-col items-center justify-center rounded-md border-2 border-amber-300 px-2 py-1 text-amber-300',
+                  top3Class,
+                )}
+              >
+                <div className="font-sans text-4xl font-bold tabular-nums">
+                  {entry.rank}
+                  <span className="ordinal">
+                    {getOrdinalSuffix(entry.rank)}
+                  </span>
+                </div>
+                <div className="font-sans tabular-nums">
+                  {entry.score.toFixed(2)}%
+                </div>
               </div>
               <div>
-                <div className="font-medium">{entry.displayName}</div>
-                <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                  <span className="tabular-nums">
-                    {entry.score.toFixed(2)}%
-                  </span>
-                  {entry.createdAt && (
+                <div>{entry.displayName}</div>
+                {view === 'user' && (
+                  <div className="text-sm">
+                    {repeated}x in Top {leaderboard.data.entries.length}
+                  </div>
+                )}
+                {entry.createdAt && (
+                  <div className="text-sm opacity-60">
                     <TimeAgo date={new Date(entry.createdAt)} />
-                  )}
+                  </div>
+                )}
+                <div className="flex flex-row">
                   <StatsDisplay
                     stats={{
                       gold: calcLoadoutPrice(
@@ -197,38 +218,40 @@ export const LeaderboardClient = () => {
                     size="sm"
                   />
                 </div>
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {items.map((item, index) => (
-                    <ItemCardClient
-                      key={`${item.name}-${index}`}
-                      itemData={item}
-                      catalog={catalog.data}
-                      size="80"
-                    />
-                  ))}
-                </div>
               </div>
-              {leaderboard.data.isAdmin && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="size-11"
-                  aria-label={`Recalculate ${entry.displayName}`}
-                  onClick={() =>
-                    adminCommand.mutate({
-                      type: 'score-loadout',
-                      loadoutId: entry.loadoutId,
-                    })
-                  }
-                >
-                  <RotateCw className="size-4" aria-hidden="true" />
-                </Button>
-              )}
-            </div>
+              <div className="hidden flex-wrap items-start justify-start gap-1 xl:flex">
+                {items.map((item, index) => (
+                  <TinyItem key={`${item.name}-${index}`} itemData={item} />
+                ))}
+              </div>
+              <div className="flex items-center gap-2">
+                {leaderboard.data.isAdmin && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="size-11"
+                    aria-label={`Recalculate ${entry.displayName}`}
+                    onClick={() =>
+                      adminCommand.mutate({
+                        type: 'score-loadout',
+                        loadoutId: entry.loadoutId,
+                      })
+                    }
+                  >
+                    <RotateCw className="size-4" aria-hidden="true" />
+                  </Button>
+                )}
+              </div>
+              <div className="col-span-3 flex flex-wrap items-start justify-start gap-1 xl:hidden">
+                {items.map((item, index) => (
+                  <TinyItem key={`${item.name}-${index}`} itemData={item} />
+                ))}
+              </div>
+            </Fragment>
           )
         })}
       </div>
-    </div>
+    </>
   )
 }

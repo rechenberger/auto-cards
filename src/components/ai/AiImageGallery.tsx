@@ -37,7 +37,7 @@ export const AiImageGallery = ({
       className={cn(
         'flex flex-col gap-4',
         tiny &&
-          'absolute inset-x-0 bottom-0 rounded-b-xl bg-gradient-to-t from-black/80 to-transparent px-3 pb-2 pt-8',
+          'absolute inset-x-0 bottom-0 z-20 flex-col-reverse gap-2 rounded-b-xl bg-gradient-to-t from-black/80 to-transparent px-3 pb-2 pt-8 transition-opacity motion-reduce:transition-none [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:focus-within:opacity-100',
       )}
     >
       <div className={cn('flex items-center gap-2', tiny && 'justify-center')}>

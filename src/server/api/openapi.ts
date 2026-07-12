@@ -269,7 +269,7 @@ export const openApiDocument = {
         summary: 'Get public live match standings and round results',
         parameters: [pathId('liveMatchId', 'Live match id')],
         responses: {
-          '200': json(data({ type: 'object', additionalProperties: true })),
+          '200': json(data(ref('LiveMatchResults'))),
           '404': json(ref('ApiError'), 'Live match not found'),
         },
       },
@@ -304,7 +304,7 @@ export const openApiDocument = {
         operationId: 'getRecentGames',
         summary: 'Get recent public games',
         responses: {
-          '200': json(data({ type: 'object', additionalProperties: true })),
+          '200': json(data(ref('RecentGames'))),
         },
       },
     },
@@ -977,6 +977,7 @@ export const openApiDocument = {
           'currentMatchId',
           'rounds',
           'latestLoadoutId',
+          'leaderboard',
           'isAdmin',
           'isOldVersion',
         ],
@@ -1013,8 +1014,89 @@ export const openApiDocument = {
             items: { type: 'object', additionalProperties: true },
           },
           latestLoadoutId: { type: ['string', 'null'] },
+          leaderboard: {
+            anyOf: [ref('LeaderboardSummary'), { type: 'null' }],
+          },
           isAdmin: { type: 'boolean' },
           isOldVersion: { type: 'boolean' },
+        },
+      },
+      LeaderboardSummary: {
+        type: 'object',
+        required: ['rank', 'score', 'isTop'],
+        properties: {
+          rank: {
+            type: 'integer',
+            minimum: 1,
+            description:
+              'Rank in the current top leaderboard, or 99 for a scored entry outside that list.',
+          },
+          score: { type: 'number' },
+          isTop: {
+            type: 'boolean',
+            description:
+              'Whether rank is a position in the active top leaderboard.',
+          },
+        },
+      },
+      RecentGames: {
+        type: 'object',
+        required: ['games'],
+        properties: {
+          games: { type: 'array', items: ref('RecentGame') },
+        },
+      },
+      RecentGame: {
+        type: 'object',
+        required: [
+          'id',
+          'displayName',
+          'updatedAt',
+          'version',
+          'gameMode',
+          'rounds',
+          'leaderboard',
+        ],
+        properties: {
+          id: { type: 'string' },
+          displayName: { type: 'string' },
+          updatedAt: { type: ['string', 'null'] },
+          version: { type: 'integer' },
+          gameMode: { type: 'string', enum: ['shopper', 'collector'] },
+          dungeonAccesses: {
+            type: 'array',
+            items: {
+              type: 'object',
+              required: ['name', 'levelMin', 'levelMax', 'levelCurrent'],
+              properties: {
+                name: {
+                  type: 'string',
+                  enum: ['trainingGrounds', 'adventureTrail'],
+                },
+                levelMin: { type: 'number' },
+                levelMax: { type: 'number' },
+                levelCurrent: { type: 'number' },
+              },
+            },
+          },
+          rounds: {
+            type: 'array',
+            items: {
+              type: 'object',
+              required: ['roundNo', 'status', 'matchId'],
+              properties: {
+                roundNo: { type: 'integer', minimum: 0 },
+                status: {
+                  type: ['string', 'null'],
+                  enum: ['won', 'lost', null],
+                },
+                matchId: { type: ['string', 'null'] },
+              },
+            },
+          },
+          leaderboard: {
+            anyOf: [ref('LeaderboardSummary'), { type: 'null' }],
+          },
         },
       },
       CreateGameRequest: {
@@ -1142,6 +1224,102 @@ export const openApiDocument = {
           required: ['type'],
           properties: { type: { const: type } },
         })),
+      },
+      LiveMatchResults: {
+        type: 'object',
+        required: ['liveMatchId', 'rulesetVersion', 'entries'],
+        properties: {
+          liveMatchId: { type: 'string' },
+          rulesetVersion: { type: 'integer', minimum: 1 },
+          entries: {
+            type: 'array',
+            items: ref('LiveMatchResultEntry'),
+          },
+        },
+      },
+      LiveMatchResultEntry: {
+        type: 'object',
+        required: [
+          'participationId',
+          'displayName',
+          'gameId',
+          'rank',
+          'score',
+          'currentRoundNo',
+          'rounds',
+          'latestLoadout',
+          'leaderboard',
+        ],
+        properties: {
+          participationId: { type: 'string' },
+          displayName: { type: 'string' },
+          gameId: { type: 'string' },
+          rank: { type: 'integer', minimum: 1 },
+          score: { type: 'integer', minimum: 0 },
+          currentRoundNo: { type: 'integer', minimum: 0 },
+          rounds: {
+            type: 'array',
+            items: ref('LiveMatchRoundResult'),
+          },
+          latestLoadout: {
+            anyOf: [ref('LiveMatchLatestLoadout'), { type: 'null' }],
+          },
+          leaderboard: {
+            anyOf: [ref('LeaderboardSummary'), { type: 'null' }],
+            description:
+              'Active-season leaderboard summary. Null for legacy rulesets and unscored loadouts.',
+          },
+        },
+      },
+      LiveMatchRoundResult: {
+        type: 'object',
+        required: ['roundNo', 'status', 'matchId', 'points'],
+        properties: {
+          roundNo: { type: 'integer', minimum: 0 },
+          status: {
+            type: ['string', 'null'],
+            enum: ['won', 'lost', null],
+          },
+          matchId: { type: ['string', 'null'] },
+          points: { type: 'integer', minimum: 0 },
+        },
+      },
+      LiveMatchLatestLoadout: {
+        type: 'object',
+        required: ['id', 'roundNo', 'items'],
+        properties: {
+          id: { type: 'string' },
+          roundNo: { type: 'integer', minimum: 0 },
+          items: { type: 'array', items: ref('ItemData') },
+        },
+      },
+      ItemData: {
+        type: 'object',
+        required: ['name'],
+        properties: {
+          id: { type: 'string' },
+          name: { type: 'string' },
+          count: { type: 'number' },
+          aspects: {
+            type: 'array',
+            items: ref('ItemAspect'),
+          },
+          rarity: {
+            type: 'string',
+            enum: ['common', 'uncommon', 'rare', 'epic', 'legendary'],
+          },
+          favorite: { type: 'boolean' },
+          createdAt: { type: 'string' },
+        },
+      },
+      ItemAspect: {
+        type: 'object',
+        required: ['name', 'rnd'],
+        properties: {
+          name: { type: 'string' },
+          rnd: { type: 'number' },
+          multiplier: { type: 'number' },
+        },
       },
       Replay: {
         type: 'object',

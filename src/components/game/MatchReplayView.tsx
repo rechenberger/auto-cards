@@ -5,6 +5,7 @@ import { MatchReplayResponse } from '@/contracts/replay'
 import { cn } from '@/lib/utils'
 import { Swords } from 'lucide-react'
 import { useMemo } from 'react'
+import { ReactNode } from 'react'
 import { MatchReportPlaybackControls } from './MatchReportPlaybackControls'
 import { MatchReportProvider } from './MatchReportProvider'
 import { MatchReplayBackground } from './MatchReplayBackground'
@@ -15,9 +16,13 @@ import { MatchReplayTabs } from './MatchReplayTabs'
 export const MatchReplayView = ({
   replay,
   meta,
+  children,
+  overviewContent,
 }: {
   replay: MatchReplayResponse
   meta: MetaResponse | null
+  children?: ReactNode
+  overviewContent?: ReactNode
 }) => {
   const input = useMemo(
     () => ({
@@ -85,8 +90,13 @@ export const MatchReplayView = ({
           style={{ gridArea: 'middle' }}
         >
           <MatchReportPlaybackControls />
-          <MatchReplayTabs replay={replay} meta={meta} />
+          <MatchReplayTabs
+            replay={replay}
+            meta={meta}
+            overviewContent={overviewContent}
+          />
           <div className="flex-1" />
+          {children}
         </div>
         <div style={{ gridArea: 'stats' }}>
           <div className="flex flex-row gap-2 justify-center relative">

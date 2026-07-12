@@ -13,7 +13,7 @@ export const GameMatchBoardClient = ({
   view: GameViewDto
   showScore?: boolean
 }) => (
-  <div className="grid grid-cols-5 gap-2 rounded-3xl bg-gray-500/20 p-2 self-center">
+  <div className="grid grid-cols-5 gap-2 self-center rounded-3xl bg-gray-500/20 p-2">
     {Array.from(
       { length: getNumberOfRounds(view.game.version) },
       (_, roundNo) => {
@@ -24,8 +24,8 @@ export const GameMatchBoardClient = ({
         const inner = (
           <div
             className={cn(
-              'size-8 rounded-full flex items-center justify-center',
-              'font-bold leading-none text-center text-lg text-white',
+              'flex size-6 items-center justify-center rounded-full md:size-8',
+              'text-center text-sm font-bold leading-none text-white md:text-lg',
               status === 'won'
                 ? 'bg-amber-300'
                 : status === 'lost'
@@ -42,17 +42,15 @@ export const GameMatchBoardClient = ({
             }
           >
             {showScore ? (
-              status === 'won' ? (
-                roundNo + 1
-              ) : status === 'lost' ? (
-                0
-              ) : null
+              <div className="mt-0.5">
+                {status === 'won' ? roundNo + 1 : status === 'lost' ? 0 : null}
+              </div>
             ) : status === 'won' ? (
-              <Crown className="size-5" aria-hidden="true" />
+              <Crown className="size-4 md:size-6" aria-hidden="true" />
             ) : status === 'lost' ? (
-              <Skull className="size-5" aria-hidden="true" />
+              <Skull className="size-4 md:size-6" aria-hidden="true" />
             ) : roundNo === view.game.data.roundNo ? (
-              roundNo + 1
+              <div className="mt-0.5">{roundNo + 1}</div>
             ) : null}
           </div>
         )
@@ -64,17 +62,12 @@ export const GameMatchBoardClient = ({
             target="_blank"
             rel="noreferrer"
             aria-label={`Open replay for round ${roundNo + 1}`}
-            className="flex size-11 touch-manipulation items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="relative block touch-manipulation rounded-full after:absolute after:-inset-2 after:rounded-full after:content-[''] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {inner}
           </Link>
         ) : (
-          <div
-            key={roundNo}
-            className="flex size-11 items-center justify-center"
-          >
-            {inner}
-          </div>
+          <div key={roundNo}>{inner}</div>
         )
       },
     )}

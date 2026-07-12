@@ -26,6 +26,7 @@ import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { Fragment } from 'react'
 import { ItemCardClient } from '@/features/game/ItemCardClient'
+import { LeaderboardRankBadge } from './LeaderboardRankBadge'
 
 const ResultBoard = ({
   entry,
@@ -113,6 +114,7 @@ const ResultLoadouts = ({
                     itemData={item}
                     catalog={catalog.data}
                     size="80"
+                    onlyTop
                   />
                 ),
               )}
@@ -164,10 +166,17 @@ const ResultsContent = ({
             <div className="truncate text-right md:text-left">
               {entry.displayName}
             </div>
-            <ResultBoard
-              entry={entry}
-              rulesetVersion={results.rulesetVersion}
-            />
+            <div className="flex items-center gap-2">
+              <ResultBoard
+                entry={entry}
+                rulesetVersion={results.rulesetVersion}
+              />
+              {entry.leaderboard && (
+                <div className="-mx-6 hidden scale-50 flex-col xl:flex">
+                  <LeaderboardRankBadge summary={entry.leaderboard} tiny />
+                </div>
+              )}
+            </div>
             <div className="text-right font-bold tabular-nums">
               {entry.score}&nbsp;Pt.
             </div>

@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 export type MainTopNavEntry = {
   name: string
   href: string
+  placeholder?: boolean
 }
 
 export function MainTopNav({
@@ -26,6 +27,18 @@ export function MainTopNav({
       )}
     >
       {entries.map((entry) => {
+        if (entry.placeholder) {
+          return (
+            <span
+              key={entry.href}
+              className="invisible flex min-h-11 min-w-10 items-center text-sm font-medium"
+              aria-hidden="true"
+            >
+              {entry.name}
+            </span>
+          )
+        }
+
         const isActive =
           entry.href === '/'
             ? pathname === entry.href

@@ -2,6 +2,7 @@
 
 import { AsyncButton } from '@/components/ui/async-button'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -13,7 +14,10 @@ import {
 import { CatalogResponse } from '@/contracts/catalog'
 import { GameCommand, GameViewDto } from '@/contracts/game-api'
 import { getCraftingRecipesGame } from '@/game/getCraftingRecipesGame'
-import { ArrowRight, Plus } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Check, ExternalLink, Plus, X } from 'lucide-react'
+import Link from 'next/link'
+import { useState } from 'react'
 import { ItemCardClient } from './ItemCardClient'
 
 export const CraftingClient = ({
@@ -28,86 +32,120 @@ export const CraftingClient = ({
   disabled?: boolean
 }) => {
   const recipes = getCraftingRecipesGame({ game: view.game })
+  const countReady = recipes.filter((recipe) => recipe.hasAll).length
+  const [open, setOpen] = useState(false)
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           type="button"
           variant="outline"
-          className="min-h-11"
+          className="relative min-h-11 gap-2"
           disabled={disabled}
         >
           Crafting
+          {recipes.length > 0 && (
+            <span
+              className={cn(
+                'flex size-5 items-center justify-center rounded-full text-xs font-bold text-primary-foreground tabular-nums',
+                countReady > 0 ? 'bg-primary' : 'bg-border',
+              )}
+              aria-label={`${countReady || recipes.length} crafting ${
+                countReady > 0 ? 'recipes ready' : 'recipes discovered'
+              }`}
+            >
+              {countReady || recipes.length}
+            </span>
+          )}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-5xl">
+      <DialogContent className="lg:max-w-5xl">
         <DialogHeader>
           <DialogTitle>Crafting</DialogTitle>
           <DialogDescription>
-            Combine items from your current loadout. The server validates every
-            recipe before applying it.
+            Combine items from your current loadout.
           </DialogDescription>
         </DialogHeader>
         {recipes.length === 0 ? (
-          <div className="py-8 text-center text-muted-foreground">
+          <div className="py-8 text-center">
             Buy more items to discover crafting recipes.
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
+          <div className="mx-auto flex max-h-[calc(100vh-14rem)] w-min max-w-full flex-col gap-4 overflow-auto px-1">
             {recipes.map((recipe, recipeIndex) => (
-              <div
-                key={recipeIndex}
-                className="flex flex-col items-center gap-3 rounded-xl border bg-muted/30 p-4 lg:flex-row"
-              >
-                <div className="flex flex-wrap items-center justify-center gap-2">
+              <Card key={recipeIndex} className="bg-border/50 p-4">
+                <div className="flex flex-col items-center gap-2 lg:flex-row">
                   {recipe.input.map((item, index) => (
-                    <div
-                      key={`${item.name}-${index}`}
-                      className="flex items-center gap-2"
-                    >
+                    <div key={`${item.name}-${index}`} className="contents">
                       {index > 0 && (
-                        <Plus className="size-5" aria-hidden="true" />
+                        <Plus className="size-8" aria-hidden="true" />
                       )}
-                      <div className="flex flex-col items-center gap-1">
+                      <div className="flex flex-col items-center gap-2 self-start">
                         <ItemCardClient
                           itemData={item}
                           catalog={catalog}
-                          size="120"
+                          size="160"
+                          onlyTop
                         />
-                        <span className="text-xs text-muted-foreground">
-                          {item.countCurrent}/{item.count ?? 1}
-                        </span>
+                        <div className="flex items-center gap-1 text-sm text-gray-500">
+                          {item.hasEnough ? (
+                            <Check
+                              className="size-4 text-green-500"
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <X
+                              className="size-4 text-red-500"
+                              aria-hidden="true"
+                            />
+                          )}
+                          <span>
+                            {item.countCurrent} of {item.count ?? 1}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="flex-1" />
+                  <AsyncButton
+                    disabled={disabled || !recipe.hasAll}
+                    variant={recipe.hasAll ? 'default' : 'outline'}
+                    className="min-h-11 min-w-24 lg:mb-12"
+                    onAction={async () => {
+                      await command({ type: 'craft', recipeIndex })
+                      setOpen(false)
+                    }}
+                  >
+                    Craft
+                  </AsyncButton>
+                  <div />
+                  {recipe.output.map((item, index) => (
+                    <div key={`${item.name}-${index}`} className="contents">
+                      {index > 0 && (
+                        <Plus className="size-8" aria-hidden="true" />
+                      )}
+                      <div className="flex flex-col items-center gap-2 self-start">
+                        <ItemCardClient
+                          itemData={item}
+                          catalog={catalog}
+                          size="160"
+                          onlyTop
+                        />
                       </div>
                     </div>
                   ))}
                 </div>
-                <ArrowRight
-                  className="size-6 rotate-90 lg:rotate-0"
-                  aria-hidden="true"
-                />
-                <div className="flex flex-wrap items-center justify-center gap-2">
-                  {recipe.output.map((item) => (
-                    <ItemCardClient
-                      key={item.name}
-                      itemData={item}
-                      catalog={catalog}
-                      size="120"
-                    />
-                  ))}
-                </div>
-                <div className="flex-1" />
-                <AsyncButton
-                  disabled={disabled || !recipe.hasAll}
-                  className="min-h-11 min-w-28"
-                  onAction={() => command({ type: 'craft', recipeIndex })}
-                >
-                  Craft
-                </AsyncButton>
-              </div>
+              </Card>
             ))}
           </div>
         )}
+        <Button asChild variant="outline" className="mx-auto min-h-11">
+          <Link href="/docs/crafting" target="_blank" rel="noreferrer">
+            View All Recipes
+            <ExternalLink className="ml-2 size-4" aria-hidden="true" />
+          </Link>
+        </Button>
       </DialogContent>
     </Dialog>
   )

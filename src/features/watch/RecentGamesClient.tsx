@@ -13,6 +13,7 @@ import {
 import { capitalCase } from 'change-case'
 import { getNumberOfRounds } from '@/game/gameVersion'
 import { PublicRoundBoard } from './PublicRoundBoard'
+import { LeaderboardRankBadge } from '@/components/game/LeaderboardRankBadge'
 
 export const RecentGamesClient = () => {
   const games = useRecentGames()
@@ -32,10 +33,15 @@ export const RecentGamesClient = () => {
           </CardHeader>
           <CardContent className="flex flex-1 flex-col items-center gap-4">
             {game.gameMode === 'shopper' ? (
-              <PublicRoundBoard
-                rounds={game.rounds}
-                numberOfRounds={getNumberOfRounds(game.version)}
-              />
+              <div className="flex flex-row flex-wrap items-center justify-center gap-4">
+                <PublicRoundBoard
+                  rounds={game.rounds}
+                  numberOfRounds={getNumberOfRounds(game.version)}
+                />
+                {game.leaderboard && (
+                  <LeaderboardRankBadge summary={game.leaderboard} tiny />
+                )}
+              </div>
             ) : (
               <div className="flex flex-col gap-2 text-left">
                 {game.dungeonAccesses?.map((access) => (
