@@ -1,28 +1,11 @@
-import { LoginForm } from '@/auth/LoginForm'
-import { getIsLoggedIn } from '@/auth/getMyUser'
-import { Card, CardContent } from '@/components/ui/card'
-import { redirect } from 'next/navigation'
+'use client'
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: Promise<{ redirect?: string }>
-}) {
-  const { redirect: redirectRaw } = await searchParams
+import { LoginPageClient } from '@/auth/LoginPageClient'
+import { useSearchParams } from 'next/navigation'
 
-  const redirectUrl = redirectRaw && decodeURIComponent(redirectRaw)
-  const isLoggedIn = await getIsLoggedIn()
-  if (isLoggedIn) {
-    redirect(redirectUrl ?? '/')
-  }
-
+export default function Page() {
+  const searchParams = useSearchParams()
   return (
-    <>
-      <Card className="self-center w-full max-w-md flex flex-col gap-4">
-        <CardContent className="flex flex-col gap-4 pt-6">
-          <LoginForm redirectUrl={redirectUrl} />
-        </CardContent>
-      </Card>
-    </>
+    <LoginPageClient redirectUrl={searchParams.get('redirect') ?? undefined} />
   )
 }

@@ -1,16 +1,18 @@
 import { first, indexOf, map, orderBy } from 'lodash-es'
 import { ItemDefinition } from './ItemDefinition'
 import { ItemName, getItemByName } from './allItems'
+import { DEFAULT_GAME_VERSION, GameVersion } from './gameVersion'
 import { allRarities } from './rarities'
 import { allTags } from './tags'
 
-export const orderItems = async <T extends { name: ItemName }>(items: T[]) => {
-  let withItems = await Promise.all(
-    items.map(async (item) => ({
-      item,
-      def: await getItemByName(item.name),
-    })),
-  )
+export const orderItems = <T extends { name: ItemName }>(
+  items: T[],
+  gameVersion: GameVersion = DEFAULT_GAME_VERSION,
+) => {
+  let withItems = items.map((item) => ({
+    item,
+    def: getItemByName(item.name, gameVersion),
+  }))
   withItems = orderBy(
     withItems,
     (i) => indexOf(allRarities, i.def.rarity),

@@ -1,8 +1,8 @@
 import { filter, mapValues, some, times } from 'lodash-es'
 import { tryAddStats } from './calcStats'
-import { RandomStat, randomStatDefinitions } from './randomStats'
+import { RandomStat, randomStatRules } from './randomStatRules'
 import { rngItem, SeedRng } from './seed'
-import { Stats } from './stats'
+import { HeroStat, Stats } from './statSchemas'
 
 export const randomStatsResolve = ({
   stats,
@@ -13,7 +13,7 @@ export const randomStatsResolve = ({
   seed: SeedRng
   onRandomStat?: (props: { stats: Stats; randomStat: RandomStat }) => void
 }) => {
-  for (const randomStatDefinition of randomStatDefinitions) {
+  for (const randomStatDefinition of randomStatRules) {
     const randomStatValue = stats[randomStatDefinition.name]
     if (!randomStatValue) {
       continue
@@ -22,7 +22,8 @@ export const randomStatsResolve = ({
     delete stats[randomStatDefinition.name]
 
     const isNegative = randomStatValue < 0
-    let candidates = randomStatDefinition.randomStats
+    let candidates: readonly Partial<Record<HeroStat, number>>[] =
+      randomStatDefinition.randomStats
     times(Math.abs(randomStatValue), (idx) => {
       if (isNegative) {
         // Only pick stats that are already present
@@ -36,7 +37,7 @@ export const randomStatsResolve = ({
       if (!candidates.length) {
         return
       }
-      let pickedStats = rngItem({
+      let pickedStats: Stats = rngItem({
         seed,
         items: candidates,
       })

@@ -1,12 +1,12 @@
 import { Game } from '@/db/schema-zod'
 import { range } from 'lodash-es'
 import { getAllItems } from './allItems'
-import { SHOP_EFFECT_BOOST_MULTIPLIER } from './config'
 import { getSpecialBuyRound } from './getSpecialBuyRound'
-import { roundStats } from './roundStats'
+import { SHOP_EFFECT_BOOST_MULTIPLIER } from './rules'
+import { getRoundStats } from './roundStats'
 import { getTagDefinition } from './tags'
 
-export const generateShopItemsRaw = async ({
+export const generateShopItemsRaw = ({
   game,
   skipRarityWeights,
   skipSpecialBuyRound,
@@ -17,13 +17,13 @@ export const generateShopItemsRaw = async ({
   skipSpecialBuyRound?: boolean
   skipUniqueCheck?: boolean
 }) => {
-  const roundStat = roundStats[game.data.roundNo]
+  const roundStat = getRoundStats(game.version)[game.data.roundNo]
 
   const specialBuyRound = skipSpecialBuyRound
     ? undefined
     : getSpecialBuyRound({ game })
 
-  const allItems = await getAllItems()
+  const allItems = getAllItems(game.version)
   let itemsForSale = allItems.filter((item) => !!item.shop)
   itemsForSale = itemsForSale.filter(
     (item) => !item.gameModes || item.gameModes.includes(game.gameMode),

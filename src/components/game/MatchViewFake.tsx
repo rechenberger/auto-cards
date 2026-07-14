@@ -1,9 +1,13 @@
-import { Game, Match, User } from '@/db/schema-zod'
-import { LoadoutData } from '@/game/LoadoutData'
-import { GAME_VERSION } from '@/game/config'
-import { DefaultGameMode, GameMode } from '@/game/gameMode'
-import { MatchParticipant } from './MatchParticipants'
-import { MatchView } from './MatchView'
+'use client'
+
+import { useCatalog, useMeta } from '@/client/api/catalog'
+import { QueryError, QueryLoading } from '@/components/api/QueryState'
+import type { MatchReplayResponse } from '@/contracts/replay'
+import type { Game, User } from '@/db/schema-zod'
+import type { LoadoutData } from '@/game/LoadoutData'
+import { DefaultGameMode, type GameMode } from '@/game/gameMode'
+import { fallbackThemeId } from '@/game/themes'
+import { MatchReplayView } from './MatchReplayView'
 
 export const MatchViewFake = ({
   game,
@@ -19,49 +23,52 @@ export const MatchViewFake = ({
     user?: User
   }[]
 }) => {
-  const now = new Date().toISOString()
-  const match: Match = {
-    id: 'fake',
-    data: {
-      seed,
-    },
-    createdAt: now,
-    updatedAt: now,
-    liveMatchId: null,
-    gameMode,
+  const meta = useMeta()
+  const catalog = useCatalog(meta.data?.viewer?.themeId)
+
+  if (meta.isLoading || catalog.isLoading) {
+    return <QueryLoading label="Loading playground match…" />
+  }
+  if (meta.error || catalog.error || !meta.data || !catalog.data) {
+    return (
+      <QueryError
+        error={meta.error ?? catalog.error}
+        retry={() => {
+          meta.refetch()
+          catalog.refetch()
+        }}
+      />
+    )
+  }
+  if (sides.length !== 2) {
+    return <QueryError error={new Error('A match needs exactly two sides.')} />
   }
 
-  const participants: MatchParticipant[] = sides.map((side, sideIdx) => ({
-    id: `p-${sideIdx}`,
-    createdAt: now,
-    updatedAt: now,
-    status: 'won',
-    matchId: 'fake',
-    userId: side.user?.id ?? `u-${sideIdx}`,
-    loadoutId: `l-${sideIdx}`,
-    sideIdx,
-    user: side.user ?? null,
-    data: {},
-    loadout: {
-      createdAt: now,
-      updatedAt: now,
-      id: `l-${sideIdx}`,
-      data: side.loadoutData,
-      userId: null,
-      roundNo: 1,
-      gameId: `g-${sideIdx}`,
-      primaryMatchParticipationId: null,
-      version: GAME_VERSION,
+  const rulesetVersion = game?.version ?? meta.data.rulesetVersion
+  const replay: MatchReplayResponse = {
+    apiVersion: 'v1',
+    match: {
+      id: 'playground',
+      seed,
       gameMode,
+      createdAt: null,
     },
-  }))
+    rulesetVersion,
+    currentRulesetVersion: meta.data.rulesetVersion,
+    participants: sides.map((side, sideIdx) => ({
+      sideIdx,
+      status: sideIdx === 0 ? 'won' : 'lost',
+      displayName: side.user?.name ?? `Side ${sideIdx + 1}`,
+      themeId: fallbackThemeId(side.user?.themeId ?? catalog.data.imageThemeId),
+      loadoutId: `playground-${sideIdx}`,
+      loadout: side.loadoutData,
+    })) as MatchReplayResponse['participants'],
+    assets: {
+      itemDefinitions: catalog.data.items,
+      themes: catalog.data.themes,
+      images: catalog.data.images,
+    },
+  }
 
-  return (
-    <MatchView
-      game={game}
-      match={match}
-      forceParticipants={participants}
-      // calculateChangemakers
-    />
-  )
+  return <MatchReplayView replay={replay} meta={meta.data} />
 }

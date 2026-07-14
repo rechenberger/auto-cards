@@ -1,3 +1,5 @@
+'use client'
+
 import { MainTop } from '@/components/layout/MainTop'
 
 export default function Layout({ children }: { children: React.ReactNode }) {

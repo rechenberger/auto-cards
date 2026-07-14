@@ -1,22 +1,7 @@
-import { playgroundHref } from '@/app/(main)/admin/playground/playgroundHref'
-import { LoadoutData } from '@/game/LoadoutData'
-import {
-  rngFloat,
-  rngGenerator,
-  rngOrder,
-  SeedArray,
-  SeedRng,
-} from '@/game/seed'
-import {
-  cloneDeep,
-  first,
-  groupBy,
-  maxBy,
-  minBy,
-  orderBy,
-  range,
-} from 'lodash-es'
-import { allItemsForPerformance, fallbackItemDef } from './allItems'
+import { LoadoutData } from './LoadoutData'
+import { rngFloat, rngGenerator, rngOrder, SeedArray, SeedRng } from './seed'
+import { cloneDeep, groupBy, maxBy, minBy, orderBy, range } from 'lodash-es'
+import { fallbackItemDef, getAllItems } from './allItems'
 import { itemAspectsToTriggers } from './aspects'
 import { calcCooldown } from './calcCooldown'
 import {
@@ -31,15 +16,15 @@ import {
   BASE_TICK_TIME,
   FATIGUE_STARTS_AT,
   MAX_LOGS,
-  MAX_MATCH_MS,
   MAX_MATCH_TIME,
   MAX_THORNS_MULTIPLIER,
-} from './config'
+} from './rules'
 import { ItemDefinition, TriggerEventType } from './ItemDefinition'
+import { GameVersion } from './gameVersion'
 import { getAllModifiedStats, getModifiedStats } from './modifiers'
 import { orderItemsWithoutLookup } from './orderItems'
 import { randomStatsResolve } from './randomStatsResolve'
-import { Stats } from './stats'
+import { Stats } from './statSchemas'
 
 export type MatchLog = {
   logIdx: number
@@ -64,11 +49,31 @@ export type GenerateMatchInput = {
   }[]
   seed: SeedArray
   skipLogs: boolean
-  allItems?: ItemDefinition[]
+  rulesetVersion?: GameVersion
+  allItems?: readonly ItemDefinition[]
+}
+
+export type MatchLimitEvent = {
+  reason: 'maxLogs' | 'maxRuntime'
+  logCount: number
+  simulatedTime: number
+  elapsedMs?: number
+}
+
+export type GenerateMatchOptions = {
+  /**
+   * Optional non-deterministic safety valve for trusted server jobs. It is
+   * deliberately disabled by default so a fixed seed produces the same
+   * result on fast servers and slow clients.
+   */
+  maxRuntimeMs?: number
+  maxLogs?: number
+  now?: () => number
+  onLimitReached?: (event: MatchLimitEvent) => void
 }
 
 const generateMatchStateSides = (input: GenerateMatchInput) => {
-  const allItems = input.allItems ?? allItemsForPerformance
+  const allItems = input.allItems ?? getAllItems(input.rulesetVersion)
   const sides = input.participants.map((p, idx) => {
     let items = p.loadout.items.map((i) => {
       const def =
@@ -173,22 +178,22 @@ export type MatchState = Awaited<ReturnType<typeof generateMatchState>>
 
 export const NOT_ENOUGH_MSG = 'Not enough'
 
-export const generateMatch = ({
-  skipLogs,
-  participants,
-  seed: _seed,
-}: GenerateMatchInput) => {
+export const generateMatch = (
+  input: GenerateMatchInput,
+  options: GenerateMatchOptions = {},
+) => {
+  const { skipLogs, participants, seed: _seed } = input
   let time = 0
 
-  const state = generateMatchState({
-    participants,
-    seed: _seed,
-    skipLogs,
-  })
+  // Keep custom/versioned catalogs intact all the way through state creation.
+  const state = generateMatchState(input)
   const { sides, futureActions } = state
 
-  const startedAtMs = Date.now()
+  const now = options.now ?? Date.now
+  const startedAtMs = options.maxRuntimeMs === undefined ? undefined : now()
+  const maxLogs = options.maxLogs ?? MAX_LOGS
   let logCount = 0
+  let limitReached: MatchLimitEvent | undefined
 
   const seed = rngGenerator({ seed: _seed })
 
@@ -230,7 +235,7 @@ export const generateMatch = ({
     log({ msg: 'Game over', sideIdx: loser.sideIdx })
     log({ msg: 'Loses', sideIdx: loser.sideIdx })
     log({ msg: 'Wins!', sideIdx: winner.sideIdx, isDone: true })
-    return { logs, winner, loser, time }
+    return { logs, winner, loser, time, limitReached }
   }
 
   const baseTick = ({
@@ -866,25 +871,21 @@ export const generateMatch = ({
         return endOfMatch()
       }
 
-      const maxMatchMsReached = Date.now() - startedAtMs > MAX_MATCH_MS
-      const maxLogsReached = logCount > MAX_LOGS
-      if (maxMatchMsReached || maxLogsReached) {
-        const reason = maxMatchMsReached ? 'MAX_MATCH_MS' : 'MAX_LOGS'
-        const seed = first(_seed)
-        if (typeof seed !== 'string') {
-          throw new Error('seed is not a string')
+      const elapsedMs =
+        startedAtMs === undefined ? undefined : now() - startedAtMs
+      const maxRuntimeReached =
+        elapsedMs !== undefined &&
+        options.maxRuntimeMs !== undefined &&
+        elapsedMs > options.maxRuntimeMs
+      const maxLogsReached = logCount > maxLogs
+      if (maxRuntimeReached || maxLogsReached) {
+        limitReached = {
+          reason: maxRuntimeReached ? 'maxRuntime' : 'maxLogs',
+          logCount,
+          simulatedTime: time,
+          elapsedMs,
         }
-        const playground = playgroundHref({
-          loadouts: participants.map((p) => p.loadout),
-          seed,
-          mode: 'edit',
-        })
-        console.warn(
-          `${reason} reached`,
-          { logs: logCount, ms: Date.now() - startedAtMs },
-          `${process.env.NEXT_PUBLIC_BASE_URL}/${playground}`,
-        )
-        // throw new Error('MAX_MATCH_MS reached')
+        options.onLimitReached?.(limitReached)
         return endOfMatch()
       }
     }

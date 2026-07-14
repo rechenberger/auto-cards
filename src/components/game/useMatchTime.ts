@@ -1,4 +1,4 @@
-import { BATTLE_CLOCK_TICK_MS } from '@/game/config'
+import { BATTLE_CLOCK_TICK_MS } from '@/game/rules'
 import { useAtomValue } from 'jotai'
 import { useEffect, useState } from 'react'
 import {

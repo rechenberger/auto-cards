@@ -1,33 +1,30 @@
-import { getMyUserIdOrLogin } from '@/auth/getMyUser'
+'use client'
+
+import { useCreateGame } from '@/client/api/games'
+import { AsyncButton } from '@/components/ui/async-button'
 import { ButtonProps } from '@/components/ui/button'
-import { createGame } from '@/game/createGame'
 import { GameMode } from '@/game/gameMode'
-import { superAction } from '@/super-action/action/createSuperAction'
-import { ActionButton } from '@/super-action/button/ActionButton'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 export const NewGameButton = ({
   variant,
-  gameMode,
+  gameMode = 'shopper',
 }: {
   variant?: ButtonProps['variant']
   gameMode?: GameMode
 }) => {
+  const router = useRouter()
+  const createGame = useCreateGame()
   return (
-    <ActionButton
+    <AsyncButton
       variant={variant}
-      hideIcon
-      action={async () => {
-        'use server'
-
-        return superAction(async () => {
-          const userId = await getMyUserIdOrLogin()
-          const game = await createGame({ userId, gameMode })
-          redirect(`/game/${game.id}`)
-        })
+      className="min-h-11"
+      onAction={async () => {
+        const view = await createGame.mutateAsync({ gameMode })
+        router.push(`/game/${view.game.id}`)
       }}
     >
       {gameMode === 'collector' ? 'New Endless Game' : 'New Game'}
-    </ActionButton>
+    </AsyncButton>
   )
 }

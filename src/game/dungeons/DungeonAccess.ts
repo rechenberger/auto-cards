@@ -1,6 +1,6 @@
 import { Game } from '@/db/schema-zod'
 import { z } from 'zod'
-import { DungeonName } from './allDungeons'
+import { DungeonName } from './dungeonSchema'
 
 export const DungeonAccess = z.object({
   name: DungeonName,

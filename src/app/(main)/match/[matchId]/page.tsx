@@ -1,32 +1,9 @@
-import { MatchView } from '@/components/game/MatchView'
-import { db } from '@/db/db'
-import { schema } from '@/db/schema-export'
-import { eq } from 'drizzle-orm'
-import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Match',
-}
+import { MatchReplayPage } from '@/components/game/MatchReplayPage'
+import { useParams } from 'next/navigation'
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ matchId: string }>
-}) {
-  const { matchId } = await params
-
-  const match = await db.query.match.findFirst({
-    where: eq(schema.match.id, matchId),
-  })
-
-  if (!match) {
-    return notFound()
-  }
-
-  return (
-    <>
-      <MatchView match={match} />
-    </>
-  )
+export default function Page() {
+  const { matchId } = useParams<{ matchId: string }>()
+  return <MatchReplayPage matchId={matchId} />
 }

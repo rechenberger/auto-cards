@@ -1,58 +1,22 @@
-import { addToLeaderboard } from '@/game/addToLeaderboard'
-import { LEADERBOARD_CRON_CYCLES, NO_OF_ROUNDS } from '@/game/config'
-import { getLeaderboard } from '@/game/getLeaderboard'
-import { range } from 'lodash-es'
-import { headers } from 'next/headers'
+import { enqueueLeaderboardRefresh } from '@/server/jobs/leaderboardJobs'
+import { runDueJobs } from '@/server/jobs/runJobs'
 
-export const revalidate = 0
-export const maxDuration = 60 // 1 minute
+export const dynamic = 'force-dynamic'
+export const maxDuration = 60
 
-export const GET = async () => {
-  const cronSecret = process.env.CRON_SECRET
-  if (!cronSecret) {
-    throw new Error('CRON_SECRET is not set')
-  }
-
-  const authHeader = (await headers()).get('authorization')
-  if (authHeader !== `Bearer ${cronSecret}`) {
+export const GET = async (request: Request) => {
+  const secret = process.env.CRON_SECRET
+  if (!secret || request.headers.get('authorization') !== `Bearer ${secret}`) {
     return new Response('Unauthorized', { status: 401 })
   }
 
-  console.time(`Leaderboard Cron: Total Time`)
-
-  // console.time(`Leaderboard Cron: Delete ACC`)
-  // await db
-  //   .delete(schema.leaderboardEntry)
-  //   .where(eq(schema.leaderboardEntry.type, LEADERBOARD_TYPE_ACC))
-  // console.timeEnd(`Leaderboard Cron: Delete ACC`)
-
-  for (const roundNo of range(NO_OF_ROUNDS)) {
-    console.log(`Leaderboard Cron: Round ${roundNo}`)
-    console.log(
-      `Leaderboard Cron: Starting (round ${roundNo}, ${LEADERBOARD_CRON_CYCLES} cycles)`,
-    )
-
-    for (const cycle of range(1, LEADERBOARD_CRON_CYCLES + 1)) {
-      const leaderboard = await getLeaderboard({
-        roundNo,
-      })
-      console.log(
-        `Leaderboard Cron: Round ${roundNo} Cycle ${cycle}, ${leaderboard.length} Entries`,
-      )
-
-      for (const [idx, entry] of leaderboard.entries()) {
-        const msg = `Leaderboard Cron: Round ${roundNo} Cycle ${cycle} Rank ${idx + 1}`
-        console.time(msg)
-        await addToLeaderboard({ loadout: entry.loadout })
-        console.timeEnd(msg)
-      }
-    }
-
-    console.log(`Leaderboard Cron: Round ${roundNo} Done`)
-  }
-
-  console.log(`Leaderboard Cron: Done`)
-  console.timeEnd(`Leaderboard Cron: Total Time`)
-
-  return new Response('OK')
+  // One logical run per UTC day. Duplicate cron delivery therefore remains a
+  // no-op at the queue's idempotency boundary.
+  const runId = new Date().toISOString().slice(0, 10)
+  const queued = await enqueueLeaderboardRefresh({ runId })
+  const processed = await runDueJobs({
+    limit: 1_000,
+    deadline: Date.now() + 55_000,
+  })
+  return Response.json({ runId, ...queued, ...processed })
 }

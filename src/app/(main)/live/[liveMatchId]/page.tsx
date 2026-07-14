@@ -1,21 +1,13 @@
+'use client'
+
 import { LiveMatchCard } from '@/components/game/LiveMatchCard'
-import { Metadata } from 'next'
+import { useParams } from 'next/navigation'
 
-export const metadata: Metadata = {
-  title: 'Live Match',
-}
-
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ liveMatchId: string }>
-}) {
-  const { liveMatchId } = await params
+export default function Page() {
+  const params = useParams<{ liveMatchId: string }>()
   return (
-    <>
-      <div className="self-center">
-        <LiveMatchCard liveMatchId={liveMatchId} inGame={false} />
-      </div>
-    </>
+    <div className="self-center">
+      <LiveMatchCard liveMatchId={params.liveMatchId} inGame={false} />
+    </div>
   )
 }

@@ -1,96 +1,61 @@
-import { getMyUserIdOrLogin } from '@/auth/getMyUser'
-import { db } from '@/db/db'
-import { schema } from '@/db/schema-export'
-import { LiveMatchParticipationData } from '@/db/schema-zod'
-import { createGame } from '@/game/createGame'
-import { LiveMatchStuff } from '@/game/getLiveMatchStuff'
-import { typedParse } from '@/lib/typedParse'
-import {
-  streamToast,
-  superAction,
-} from '@/super-action/action/createSuperAction'
-import { streamRevalidatePath } from '@/super-action/action/streamRevalidatePath'
-import { ActionButton } from '@/super-action/button/ActionButton'
-import { and, eq } from 'drizzle-orm'
-import { redirect } from 'next/navigation'
+'use client'
 
-export const LiveMatchJoinButtons = async ({
+import { useLiveMatchCommand } from '@/client/api/liveMatches'
+import { Button } from '@/components/ui/button'
+import { LiveMatchViewDto } from '@/contracts/live-api'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+
+export const LiveMatchJoinButtons = ({
   liveMatch,
 }: {
-  liveMatch: LiveMatchStuff
+  liveMatch: LiveMatchViewDto
 }) => {
-  const liveMatchId = liveMatch.id
-  const userId = await getMyUserIdOrLogin()
+  const router = useRouter()
+  const action = useLiveMatchCommand(liveMatch.id)
 
-  const isParticipating = liveMatch.liveMatchParticipations.some(
-    (participation) => participation.user.id === userId,
-  )
+  if (!liveMatch.me) {
+    return (
+      <Button
+        type="button"
+        className="min-h-11 touch-manipulation"
+        disabled={liveMatch.status !== 'open' || action.isPending}
+        onClick={() => action.mutate({ command: { type: 'join' } })}
+      >
+        {action.isPending
+          ? 'Joining…'
+          : liveMatch.status === 'open'
+            ? 'Join Match'
+            : 'Match is closed'}
+      </Button>
+    )
+  }
 
-  const myGame = await db.query.game.findFirst({
-    where: and(
-      eq(schema.game.userId, userId),
-      eq(schema.game.liveMatchId, liveMatchId),
-    ),
-  })
+  if (liveMatch.me.gameId) {
+    return (
+      <Button asChild className="min-h-11 touch-manipulation">
+        <Link href={`/game/${liveMatch.me.gameId}`}>Resume Game</Link>
+      </Button>
+    )
+  }
 
   return (
-    <>
-      {!isParticipating ? (
-        <ActionButton
-          catchToast
-          disabled={liveMatch.status !== 'open'}
-          action={async () => {
-            'use server'
-            return superAction(async () => {
-              const liveMatch = await db.query.liveMatch.findFirst({
-                where: eq(schema.liveMatch.id, liveMatchId),
-              })
-              if (!liveMatch || liveMatch.status !== 'open') {
-                throw new Error('Live match is not open')
-              }
-              await db.insert(schema.liveMatchParticipation).values({
-                liveMatchId: liveMatch.id,
-                userId: userId,
-                data: typedParse(LiveMatchParticipationData, {}),
-              })
-              streamToast({
-                title: 'Joined Match',
-                description: 'You have joined the match',
-              })
-              streamRevalidatePath(`/live/${liveMatch.id}`)
-            })
-          }}
-        >
-          {liveMatch.status === 'open' ? 'Join Match' : 'Match is closed'}
-        </ActionButton>
-      ) : myGame ? (
-        <ActionButton
-          action={async () => {
-            'use server'
-            return superAction(async () => {
-              redirect(`/game/${myGame.id}`)
-            })
-          }}
-        >
-          Resume Game
-        </ActionButton>
-      ) : (
-        <ActionButton
-          catchToast
-          action={async () => {
-            'use server'
-            return superAction(async () => {
-              const myGame = await createGame({
-                userId,
-                liveMatch: liveMatch,
-              })
-              redirect(`/game/${myGame.id}`)
-            })
-          }}
-        >
-          Start Game
-        </ActionButton>
-      )}
-    </>
+    <Button
+      type="button"
+      className="min-h-11 touch-manipulation"
+      disabled={action.isPending}
+      onClick={() =>
+        action.mutate(
+          { command: { type: 'start-game' } },
+          {
+            onSuccess: (response) => {
+              if (response.redirectTo) router.push(response.redirectTo)
+            },
+          },
+        )
+      }
+    >
+      {action.isPending ? 'Starting…' : 'Start Game'}
+    </Button>
   )
 }

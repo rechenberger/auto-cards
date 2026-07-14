@@ -1,82 +1,90 @@
-import { getIsAdmin } from '@/auth/getIsAdmin'
-import { ThemeId } from '@/game/themes'
-import { superAction } from '@/super-action/action/createSuperAction'
-import { ActionButton } from '@/super-action/button/ActionButton'
-import { ChevronDown, RotateCcw } from 'lucide-react'
-import { Fragment } from 'react'
-import { Button } from '../ui/button'
+'use client'
+
+import { useMeta } from '@/client/api/catalog'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu'
-import { generateAllImages } from './generateAllImages.action'
+} from '@/components/ui/dropdown-menu'
+import { ItemName } from '@/game/allItems'
+import { ThemeId } from '@/game/themes'
+import { ChevronDown, LoaderCircle, RotateCcw } from 'lucide-react'
+import { useAiGeneration } from './useAiGeneration'
 
-export const GenerateAllImagesButton = async ({
+export const GenerateAllImagesButton = ({
   itemId,
   themeId,
 }: {
   itemId?: string
   themeId?: ThemeId
 }) => {
-  const isAdmin = await getIsAdmin({ allowDev: true })
-  if (!isAdmin) return null
+  const meta = useMeta()
+  const generation = useAiGeneration()
+  if (!meta.data?.viewer?.isAdmin) return null
 
-  const options = [
-    {
-      label: 'Fill Missing',
-      itemId,
+  const generate = (mode: 'missing' | 'prompt' | 'all') =>
+    generation.queue({
+      type: 'generate-batch',
+      itemId: itemId as ItemName | undefined,
       themeId,
-    },
-    {
-      label: 'Force Prompt',
-      themeId,
-      itemId,
-      forcePrompt: true,
-    },
-    {
-      label: 'Force All',
-      themeId,
-      itemId,
-      forceAll: true,
-    },
-  ]
+      mode,
+    })
 
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost">
-            <RotateCcw className="w-4 h-4 mr-2" />
-            <span>Generate All</span>
-            <ChevronDown className="w-4 h-4 ml-2" />
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          className="min-h-11 touch-manipulation"
+          disabled={generation.running}
+        >
+          {generation.running ? (
+            <LoaderCircle
+              className="mr-2 size-4 animate-spin motion-reduce:animate-none"
+              aria-hidden="true"
+            />
+          ) : (
+            <RotateCcw className="mr-2 size-4" aria-hidden="true" />
+          )}
+          <span>{generation.running ? 'Generating…' : 'Generate images'}</span>
+          <ChevronDown className="ml-2 size-4" aria-hidden="true" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem asChild>
+          <Button
+            type="button"
+            variant="ghost"
+            className="min-h-11 w-full justify-start"
+            onClick={() => void generate('missing')}
+          >
+            Fill missing
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          {options.map((props) => (
-            <Fragment key={props.label}>
-              <DropdownMenuItem asChild>
-                <ActionButton
-                  variant={'ghost'}
-                  hideIcon
-                  className="w-full text-left"
-                  size={'sm'}
-                  catchToast
-                  action={async () => {
-                    'use server'
-                    return superAction(async () => {
-                      return generateAllImages(props)
-                    })
-                  }}
-                >
-                  {props.label}
-                </ActionButton>
-              </DropdownMenuItem>
-            </Fragment>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Button
+            type="button"
+            variant="ghost"
+            className="min-h-11 w-full justify-start"
+            onClick={() => void generate('prompt')}
+          >
+            Refresh changed prompts
+          </Button>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Button
+            type="button"
+            variant="ghost"
+            className="min-h-11 w-full justify-start"
+            onClick={() => void generate('all')}
+          >
+            Regenerate all
+          </Button>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

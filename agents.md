@@ -1,306 +1,323 @@
-## Auto Cards — AI Agent Notes
+# Auto Cards — AI Agent Notes
 
-Auto Cards is a **deterministic auto-battler / auto-card battle** game built with **Next.js App Router**. Players build a loadout by buying items from a shop, then run a deterministic fight simulation that can be replayed from a stored seed. There is also a **Live Match** (multiplayer lobby) mode and an **admin-only “collector/endless” dungeon mode**.
+Always commit and push completed work unless the user explicitly says not to.
 
-This document is meant to be a **practical map** of the codebase for future AI agents: where core logic lives, how to run it locally, and which patterns you must follow when changing gameplay/UI/data.
+Auto Cards is a deterministic auto-battler built on Next.js App Router. The
+App Router remains the framework shell, but application pages are Client
+Components and all reads/mutations cross explicit JSON APIs. Do not introduce
+Server Actions, `next/cache`, path revalidation, or server-rendered business
+data back into the application.
 
----
+## Architecture at a glance
 
-## Tech stack
+- Next.js 15 App Router + React 19 + strict TypeScript
+- Client Components + TanStack Query for application state
+- Route Handlers under `/api/v1` for reads and commands
+- Zod contracts in `src/contracts/`
+- Application services in `src/server/application/`
+- Auth.js session auth plus scoped personal API tokens
+- Drizzle ORM with local SQLite or production Turso/libSQL
+- Durable DB-backed jobs for leaderboard, simulations, bots, images, and
+  optional notifications
+- A deterministic simulator that runs on both server and browser
 
-- **Next.js 15** (App Router), **React 19**
-- **TypeScript** (strict)
-- **Tailwind CSS** + **shadcn/ui** (Radix primitives)
-- **Auth.js / NextAuth v5 beta** with **Drizzle adapter**
-- **Drizzle ORM** + **SQLite** (local `file:`) or **Turso/libSQL** (prod)
-- **worker_threads** for parallel match simulation (optional)
-- **Teampilot SDK** for AI-generated images (items + match backgrounds)
+The root App Router layout is the unavoidable server framework shell. Leaf
+pages and application layouts are client-side. Static metadata is not a reason
+to move business state into RSC.
 
----
+## High-signal repository map
 
-## Repo map (high-signal directories)
+- `src/app/(main)/`: client page entry points
+- `src/app/api/v1/`: versioned JSON API Route Handlers
+- `src/app/api/cron/`: protected durable-job/leaderboard consumers
+- `src/client/api/`: typed fetch + React Query hooks
+- `src/contracts/`: API request/response Zod schemas
+- `src/features/`: game, watch, docs, and admin client views
+- `src/server/api/`: error envelope, idempotency, OpenAPI helpers
+- `src/server/application/`: authoritative use cases and mutations
+- `src/server/auth/`: session/token principals and impersonation grants
+- `src/server/jobs/`: durable queue, retries, lease recovery, processors
+- `src/game/`: deterministic rules, simulation, shop/dungeon domain code
+- `src/components/game/`: replay and reusable game presentation
+- `src/db/`: Drizzle schema/client and persisted JSON validation
+- `drizzle/`: committed forward-only migrations
+- `scripts/db/`: guarded baseline, migration, snapshot, fixture, and rehearsal
 
-- **`src/app/`**: Next.js routes (server components by default)
-  - **`src/app/(main)/game`**: “My Games” + per-game page (shop vs match view)
-  - **`src/app/(main)/match/[matchId]`**: standalone match replay page
-  - **`src/app/(main)/live/[liveMatchId]`**: live match lobby page
-  - **`src/app/(main)/watch/*`**: public dashboards (leaderboard, items, recent matches)
-  - **`src/app/(main)/admin/*`**: admin tools (users, playground, simulation, bot gen, images, backgrounds, migrations)
-  - **`src/app/api/*`**: route handlers
-- **`src/game/`**: **the simulation engine + game rules**
-  - shop generation, fight simulation, RNG/seed helpers, dungeons, leaderboards, workers
-- **`src/components/game/`**: UI for shop, match replay, loadouts, live match, etc.
-- **`src/db/`**: Drizzle client + schema + zod schemas
-- **`src/auth/`**: Auth.js config + helpers + credentials auth + impersonation
-- **`src/super-action/`**: “server actions with streamed UI” abstraction (toasts/dialogs/redirect)
-- **`public/`**: icons, PWA manifest, music
+`src/super-action/` no longer exists by design.
 
----
-
-## Local development (fast path)
-
-From `README.md`:
+## Local development
 
 ```bash
 pnpm install
-pnpm db:push
+pnpm db:migrate --database db.sqlite
 pnpm dev
 ```
 
-### Local DB expectations (important)
+For a local `file:` database, set `DB_TOKEN=""` if libSQL initialization needs
+the variable. `db.sqlite`, `.db-artifacts/`, `.env.local`, and generated build
+artifacts are ignored and must not be committed.
+
+Before handing off a change, run:
+
+```bash
+pnpm test
+pnpm ts:check
+pnpm lint
+pnpm build
+pnpm db:check
+pnpm db:verify --database db.sqlite
+```
+
+## API mental model
+
+All successful JSON responses use `{ "data": ... }`. Errors use:
+
+```json
+{
+  "error": {
+    "code": "INVALID_COMMAND",
+    "message": "...",
+    "requestId": "...",
+    "details": {}
+  }
+}
+```
+
+Every response has `x-request-id`. Mutating game/live/admin command endpoints
+require an `Idempotency-Key` header. Game and collector commands additionally
+send `expectedRevision`; stale writes return `409 STALE_REVISION` with the
+current revision.
+
+Important endpoints:
+
+- `GET /api/v1/meta`
+- `GET /api/v1/catalog`
+- `GET|POST /api/v1/games`
+- `GET|DELETE /api/v1/games/:gameId`
+- `POST /api/v1/games/:gameId/commands`
+- `POST /api/v1/games/:gameId/collector/commands`
+- `GET|POST /api/v1/live-matches`
+- `GET /api/v1/live-matches/:id`
+- `POST /api/v1/live-matches/:id/commands`
+- `GET /api/v1/live-matches/:id/results`
+- `GET /api/v1/matches/:id/replay`
+- `GET /api/v1/watch/*`
+- `GET|PATCH /api/v1/me`
+- `GET|POST /api/v1/me/tokens`
+- admin APIs under `/api/v1/admin/*` and AI images under `/api/v1/ai-images`
+
+The complete machine-readable contract is at `GET /api/openapi.json`.
+
+### Personal API tokens
+
+Users create tokens on `/auth/me`. A raw token starts with `acp_`, is shown
+once, and is never stored. The database stores only SHA-256, a display prefix,
+scopes, expiry, usage time, and revocation state.
+
+Scopes are:
+
+- `game:read`
+- `game:write`
+- `live:read`
+- `live:write`
+- `admin` (effective only for real DB admins)
+
+Pass tokens as `Authorization: Bearer acp_...`. Token management itself is
+session-only so a leaked token cannot mint replacements. Never log or persist
+raw token values in tests, receipts, screenshots, or fixtures.
+An admin-owned token without the `admin` scope has no elevated privileges.
+
+## Authentication and impersonation
+
+Auth.js providers are Credentials, Discord, Resend, and Impersonate. Keep
+impersonation: the admin API creates a short-lived HMAC grant, and the client
+redeems it through the Auth.js impersonation provider. The target session is a
+normal user session; the grant contains no reusable `AUTH_SECRET` material.
+Grant creation is admin-session-only and must never accept a bearer token.
+
+Development admin convenience still exists for interactive sessions. Personal
+API tokens deliberately do not inherit dev-admin escalation.
+
+## Gameplay and deterministic replay
+
+`generateMatch()` in `src/game/generateMatch.ts` is the combat engine. A fixed
+seed, ruleset version, item catalog, and pair of loadouts must produce the same
+result. Its deterministic default does not consult wall-clock time. Server-only
+runtime limits are opt-in options.
+
+Matches intentionally persist only `{ seed }`; loadouts live in their own rows.
+The replay API returns seed, loadouts, ruleset version, presentation assets, and
+no combat log. `MatchReportProvider`/`MatchReplayView` rebuild logs in the
+browser. Preserve this compact replay model.
+
+Rules are version-aware:
+
+- `src/game/gameVersion.ts` contains stable version helpers.
+- `src/game/rules.ts` contains browser/server static rule constants.
+- `src/game/config.ts` is the runtime environment adapter; do not import it
+  from Client Components.
+- Persist `version`/`gameMode` explicitly instead of trusting DB defaults.
+- Leaderboards are filtered by active version, providing the seasonal soft
+  reset.
 
-- Local `.env` currently contains:
-  - `DB_URL="file:./db.sqlite"`
-  - `AUTH_SECRET="..."`
-- **`src/db/db.ts` uses `process.env.DB_TOKEN!`**. For `file:` DB URLs, libSQL usually doesn’t need a token, but this code still passes one.
-  - If local boot fails, set **`DB_TOKEN=""`** in `.env.local`.
+Old replay outcomes may change after semantic balance patches, which is an
+accepted product tradeoff. Still pass the recorded version and versioned item
+catalog so compatibility is as good as the current code supports.
 
-### “Admin in dev” behavior
+## Shopper commands
 
-Many admin checks are called with `{ allowDev: true }` (see `src/auth/getIsAdmin.ts`).
-That means in `NODE_ENV=development` **admin pages/actions may be accessible even if your user is not marked admin**.
-In production, admin is controlled by the `user.isAdmin` DB field.
+The authoritative flow is:
 
----
+1. `GET /api/v1/games/:id` returns `GameViewDto` and `revision`.
+2. The client posts a discriminated command plus `expectedRevision`.
+3. `executeGameCommand()` validates owner/admin access, version, phase, live
+   ready lock, and revision.
+4. `mutateGame()` applies buy/reserve/reroll/sell/craft/next-round rules to a
+   clone.
+5. A compare-and-swap update persists revision + 1.
 
-## Environment variables (what matters)
+Fight persistence is transactional. `loadout(gameId, roundNo)` is unique, so a
+round cannot be persisted twice. Selling must identify aspect variants; never
+trust a client-provided price, stat, count, or item definition.
 
-### Required for running locally
+## Live Match
 
-- **`AUTH_SECRET`**: Auth.js secret.
-- **`DB_URL`**: `file:./db.sqlite` (local) or `libsql://...` (Turso).
-- **`DB_TOKEN`**: required by current code path (set to `""` for local file DB).
+Live commands are `join`, `start-game`, `ready`, and `start-matches`.
 
-### Auth providers (production)
+- `(liveMatchId, userId)` is unique for participations and games.
+- Ready atomically claims a new game revision and stores `readyRevision`.
+- Game commands are rejected while participation is ready.
+- Host start checks every ready revision, common round, and common ruleset.
+- All loadouts, matches, participations, and ready resets for a live round are
+  written in one transaction.
+- Odd player counts use the deterministic ghost-opponent rule.
 
-- **Discord OAuth**:
-  - `AUTH_DISCORD_ID`
-  - `AUTH_DISCORD_SECRET`
-- **Resend email login**:
-  - `EMAIL_FROM`
-  - `AUTH_RESEND_KEY`
+Do not weaken these concurrency boundaries when changing lobby UX.
 
-### App URLs / client-visible settings
+## Collector / endless
 
-- **`NEXT_PUBLIC_BASE_URL`**: used to print/share URLs (live match share links, playground debug link in simulation warnings).
-- **Dev convenience (optional)**:
-  - `NEXT_PUBLIC_AUTH_DEFAULT_EMAIL`
-  - `NEXT_PUBLIC_AUTH_DEFAULT_PASSWORD`
+Collector commands use the same game revision/idempotency boundary but their
+own contract and mutation service:
 
-### Admin automation / integrations
+- `src/contracts/collector-api.ts`
+- `src/server/application/games/executeCollectorCommand.ts`
+- `src/server/application/games/mutateCollectorGame.ts`
+- `src/game/collector/`
+- `src/features/game/collector/`
 
-- **Leaderboard cron protection**:
-  - `CRON_SECRET` (used by `GET /api/cron/leaderboard` via `Authorization: Bearer ...`)
-- **Discord webhook (optional)**:
-  - `DISCORD_WEBHOOK_URL` (used when non-admin starts playing a new game)
+Inventory items have authoritative IDs. Favorite, equip, salvage, upgrade, and
+dungeon commands must reference those IDs rather than trusting client copies.
+Dungeon replay also uses the seed-only replay UI.
 
-### AI images (Teampilot)
+## Jobs and Vercel deployment
 
-- **`LAUNCHPAD_IMAGES`**: launchpad slug id used for image generation (`generateAiImage.action.ts`)
-- Optional/related:
-  - `TEAMPILOT_DEFAULT_LAUNCHPAD_SLUG_ID`
-  - `NEXT_PUBLIC_TEAMPILOT_DEFAULT_LAUNCHPAD_SLUG_ID`
-  - `TEAMPILOT_TEAM_SLUG`
+Do not recreate long-lived worker pools or fire-and-forget promises. The `job`
+table is the provider-neutral queue. Jobs have unique logical keys, attempts,
+backoff, lease recovery after serverless termination, completion/error state,
+and retention cleanup.
 
----
+Current job families cover:
 
-## Core data model (DB)
+- leaderboard scoring/refresh
+- admin simulations
+- bot-pool generation
+- AI image generation
+- Discord notifications
 
-Drizzle schema: **`src/db/schema.ts`**, runtime validation: **`src/db/schema-zod.ts`**.
+Route Handlers use Next `after()` for opportunistic draining. Admin polling
+continues draining queued work. `/api/cron/jobs` is the general safety consumer
+and `/api/cron/leaderboard` queues the daily refresh. The committed schedules
+run once daily so they also deploy on Vercel Hobby; Pro deployments may increase
+the general consumer frequency. Both require
+`Authorization: Bearer $CRON_SECRET`; `vercel.json` defines schedules.
 
-Key tables:
+Simulation input has a 50,000 estimated-fight budget. Keep every individual job
+bounded enough for the configured Vercel function duration.
 
-- **`game`**: one row per player run
-  - `data` is JSON: **`GameData`** (`src/game/GameData.ts`)
-  - `gameMode`: `'shopper' | 'collector'`
-  - optional `liveMatchId`
-- **`loadout`**: snapshot of an item build for a round
-  - `userId` is nullable: `null` loadouts are used as **bots**
-- **`match`**: stores only `{ seed }` (replay is deterministic)
-- **`matchParticipation`**: joins loadouts to a match with `sideIdx` and win/loss
-- **`liveMatch`** + **`liveMatchParticipation`**: lobby and ready status
-- **`leaderboardEntry`**: cached scores for loadouts / games
-- **`aiImage`**: stored AI-generated images for item/theme prompts
+Match generation runs inline inside one bounded job. `worker_threads` must not
+be a production lifecycle dependency; the durable queue is the batch boundary.
 
----
+## Database baseline and migrations
 
-## Gameplay architecture (how a run works)
+Canonical schema: `src/db/schema.ts`; runtime persisted-JSON schemas:
+`src/db/schema-zod.ts` and domain schemas.
 
-### “Shopper” mode (main mode)
+Migration chain:
 
-High-level flow:
+- `0000_baseline`: accepted production schema snapshot from 2026-07-12
+- `0001_api_foundation`: game revisions, durable jobs, API idempotency
+- `0002_live_uniqueness`: live participation/game uniqueness
+- `0003_api_tokens`: personal token storage
+- `0004_live_round_atomicity`: unique game-round loadout snapshots
 
-1. **Create game**: `createGame()` (`src/game/createGame.ts`)
-   - initializes `GameData` with seed, gold, empty loadout, shop items
-2. **Shop phase**: UI is `ShopView` (`src/components/game/ShopView.tsx`)
-   - player buys/reserves/rerolls; this mutates `game.data`
-3. **Fight phase**: `fight()` (`src/game/fight.ts`)
-   - persists:
-     - a new `loadout` row (your build for this round)
-     - a new `match` row (only seed)
-     - 2 `matchParticipation` rows
-   - enemy is selected from recent loadouts at same round (plus bots), seeded via `rngItem`
-4. **Match replay**: `MatchView` uses `match.data.seed` to replay deterministically.
-5. **Next round**: `NextRoundButton` increments `roundNo`, adds gold/exp, regenerates shop.
+The local production-derived snapshot is private benchmark material. Use:
 
-### How game mutations are done (important pattern)
+```bash
+pnpm db:snapshot --database db.sqlite
+pnpm db:fixture --database db.sqlite --force
+pnpm db:verify --database .db-artifacts/snapshots/<snapshot>.sqlite
+```
 
-Use **`gameAction()`** (`src/game/gameAction.ts`) for “mutate game state then persist”:
+Verification copies the source with `VACUUM INTO`, checks its hash before and
+after, adopts `0000` only on the copy, applies all migrations twice, builds a
+fresh DB from zero, compares exact schema signatures, and preserves row counts
+and known legacy anomalies.
 
-- loads game fresh from DB
-- optional optimistic concurrency check via `checkUpdatedAt`
-- executes your mutation callback on a cloned `ctx.game`
-- saves via `updateGame()`
-- revalidates `/game` and `/game/[id]` (streaming optional)
+For production:
 
-If you are adding/changing shop actions, round transitions, etc., **follow this pattern**.
+1. Create a fresh Turso clone/export and confirm recovery.
+2. `pnpm db:baseline --url "$DB_URL"` (read-only validation).
+3. `pnpm db:baseline --url "$DB_URL" --apply --allow-remote` once.
+4. `pnpm db:migrate --url "$DB_URL" --allow-remote`.
 
-### Deterministic combat simulator
+Never use `drizzle-kit push` against production. `db:push:local` refuses remote
+URLs and is only for disposable experiments.
 
-The fight simulator is **`generateMatch()`** (`src/game/generateMatch.ts`).
+## Adding or changing gameplay
 
-Key points:
+### Items / combat
 
-- Determinism is driven by **seed arrays** (`src/game/seed.ts`) and `seedToString()`.
-- Items become “actions” via their trigger list; base tick applies regen/poison/fatigue/etc.
-- Performance guardrails:
-  - `MAX_MATCH_MS`, `MAX_LOGS`, `MAX_MATCH_TIME` in `src/game/config.ts`
-  - if exceeded, match ends early and logs a console warning + playground reproduction URL
-- For bot simulations / leaderboard scoring, `skipLogs: true` is used.
+- Definitions: `src/game/allItems.ts`
+- Trigger/stat resolution: `src/game/generateMatch.ts`
+- Shop eligibility: `src/game/generateShopItemsRaw.ts`
+- Fast reproduction: `/admin/playground`
 
-### Match replay UI
+Add a fixed-seed regression test when changing combat semantics.
 
-- `MatchView` is a server component, but it renders **`MatchReportProvider`** (`src/components/game/MatchReportProvider.tsx`) which is a client component that calls `generateMatch(input)` to produce logs for playback.
-- This means **replays can be CPU-heavy on the client** if logs are large.
+### Shop / economy
 
----
+- Contract: `src/contracts/game-api.ts`
+- Authoritative mutation: `src/server/application/games/mutateGame.ts`
+- Command orchestration: `executeGameCommand.ts`
+- Client: `src/features/game/ShopClient.tsx`
+- Rounds/economy: `src/game/roundStats.ts`
 
-## Live Match (multiplayer lobby)
+Update contract, server validation, client hook/UI, OpenAPI, and tests together.
 
-Core pieces:
+### Schema
 
-- Join/Start game: `LiveMatchJoinButtons` (`src/components/game/LiveMatchJoinButtons.tsx`)
-- Ready/Start matches: `LiveMatchGameButtons` (`src/components/game/LiveMatchGameButtons.tsx`)
-- Batch fight execution: `fightLiveMatch()` (`src/game/fightLiveMatch.ts`)
-  - asserts all players ready
-  - saves each player’s loadout
-  - pairs players (odd player count gets a seeded “ghost” opponent)
-  - writes matches + participations
-  - resets ready state to false
+Edit schema + runtime validation, then:
 
----
+```bash
+pnpm db:generate --name descriptive_name
+pnpm db:check
+pnpm db:verify --database db.sqlite
+```
 
-## “Collector” mode (endless/dungeons)
+Inspect generated SQL. Never hand-wave a uniqueness migration without first
+checking the production snapshot for duplicates.
 
-This is gated behind admin tooling in the UI.
+## Footguns
 
-- `GameMode = 'collector'` (see `src/game/gameMode.ts`)
-- `CollectorGamePage` (`src/components/game/collector/CollectorGamePage.tsx`) selects:
-  - starting options
-  - dungeon match view if `game.data.dungeon` exists
-  - overview otherwise
-- Dungeon combat uses the same `generateMatch()` (usually `skipLogs: true`), see `fightDungeon()` (`src/components/game/collector/fightDungeon.ts`)
-
----
-
-## Leaderboard + bots + simulations
-
-### Leaderboard
-
-- Entries are computed by **playing a candidate loadout vs the current leaderboard** and using win rate as score:
-  - `addToLeaderboard()` (`src/game/addToLeaderboard.ts`)
-- Public view: `src/app/(main)/watch/leaderboard/page.tsx`
-- Revalidation helper: `revalidateLeaderboard()` (`src/game/revalidateLeaderboard.ts`)
-- Cron endpoint: `GET /api/cron/leaderboard` (`src/app/api/cron/leaderboard/route.ts`) guarded by `CRON_SECRET`.
-
-### Worker threads (optional)
-
-- `generateMatchByWorker()` (`src/game/matchWorkerManager.ts`)
-  - uses `worker_threads` unless `DISABLE_WORKERS === 'true'`
-- Used by admin simulation (`/admin/simulation`) and bot match simulation.
-
-### Admin simulation + bot generation
-
-- `/admin/simulation`: explores balance by generating bots and running many matches
-- `/admin/bot`: persists “best bots” as `loadout` rows with `userId = null` for enemy pool
-
----
-
-## AI images + themes
-
-- Item images and match backgrounds are generated via Teampilot and stored in `aiImage`.
-- Themes live in **`src/game/themes.ts`**:
-  - Each theme has a prompt template with a placeholder `[ITEM_PROMPT]`
-- Item prompt is chosen in `getItemAiImagePrompt()` (`src/components/game/getItemAiImagePrompt.ts`)
-- Match background merges two theme prompts in `MatchBackground` (`src/components/game/MatchBackground.tsx`)
-- Admin pages:
-  - `/admin/images`: browse latest images
-  - `/admin/backgrounds`: gallery of match backgrounds by theme pairing
-
----
-
-## Operational endpoints
-
-- **`GET /api/status`**: simple health check (DB query with timeout)
-- **`GET /api/cron/leaderboard`**: leaderboard cron job (auth via bearer token)
-- **`GET /api/dev/gen`**: dev-only performance test for many generated matches
-
----
-
-## Conventions & patterns (follow these)
-
-- **Zod-first JSON**: persisted JSON columns are validated with zod (`GameData`, `LoadoutData`, etc.). Prefer updating schemas in one place and using `typedParse()` where appropriate.
-- **Server actions**:
-  - Many buttons use `ActionButton` + `superAction()` to stream toasts/dialogs and handle redirects.
-  - If you need to mutate a `Game`, prefer `gameAction()` so persistence + revalidation are consistent.
-- **Revalidation**:
-  - Pages depend heavily on `revalidatePath()` calls (and `streamRevalidatePath()` for streamed actions).
-- **Determinism**:
-  - Any gameplay change should preserve deterministic behavior for a fixed seed, unless intentionally breaking replays.
-- **Performance**:
-  - Be careful when increasing log volume or match complexity; client-side replay runs `generateMatch()` with `skipLogs: false`.
-
----
-
-## Where to make common changes
-
-### Add / change an item
-
-- Item definitions: **`src/game/allItems.ts`**
-  - fields: `name`, `tags`, `price`, `rarity`, `shop`, `unique`, `stats`, `triggers`, `shopEffects`, `prompt`
-- Combat effects: **`src/game/generateMatch.ts`** (how stats/triggers resolve)
-- Shop availability rules: **`src/game/generateShopItemsRaw.ts`**
-- Debug quickly in **`/admin/playground`** (edit a loadout + fight with a chosen seed)
-
-### Change shop rules
-
-- Shop generation: `generateShopItems()` + `generateShopItemsRaw()`
-- UI + actions:
-  - `Shop` / `ShopView` (`src/components/game/Shop*.tsx`)
-  - `BuyButton`, `ReRollButton`, reserve logic
-
-### Change round progression / economy
-
-- Round stats table: **`src/game/roundStats.ts`**
-- Next round logic: **`src/components/game/NextRoundButton.tsx`**
-
-### Change matchmaking
-
-- Single-player: `fight()` selects an enemy loadout from DB
-- Live match: `fightLiveMatch()` pairs players and writes multiple matches
-
-### Change DB schema
-
-- `src/db/schema.ts` + `src/db/schema-zod.ts`
-- Apply with `pnpm db:push`
-- For one-off data fixes, there’s an admin “migrations” page at `/admin/migrations`
-
----
-
-## Gotchas / footguns
-
-- **Local DB token**: `DB_TOKEN` is treated as required in code; set it to `""` locally if you use `file:` DB URLs.
-- **Replay stability**: matches are replayed by re-running the simulator. If you change items/stats/triggers semantics, old matches may become “Old Match” (see `MatchView` guard).
-- **Client CPU**: `MatchReportProvider` computes logs on the client; keep log growth and match runtime in mind.
-- **Admin allowDev**: in development, `{ allowDev: true }` effectively disables admin gating; don’t rely on it for prod behavior.
-
+- Replays run full logs in the browser; watch log growth and blocking CPU.
+- Public DTOs must project fields explicitly. Never expose active shop seeds,
+  auth records, token hashes, email addresses, or admin job payloads.
+- API token auth requires passing the incoming `Request` to
+  `requireApiPrincipal`/`requireApiAdmin`; otherwise only cookie sessions work.
+- A mutation without an idempotency key is unsafe for agents and retries. Token
+  creation is the intentional exception because storing a replayable response
+  would persist the one-time raw secret.
+- `DB_TOKEN=""` may be necessary for local file databases.
+- Legacy orphan/reference anomalies are benchmarked, not silently repaired.
+- Keep `.db-artifacts/` private; sanitized fixtures are still production-derived
+  gameplay data.

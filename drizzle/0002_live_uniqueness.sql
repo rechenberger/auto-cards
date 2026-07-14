@@ -1,0 +1,2 @@
+CREATE UNIQUE INDEX `gameLiveMatchIdUserIdUnique` ON `game` (`liveMatchId`,`userId`);--> statement-breakpoint
+CREATE UNIQUE INDEX `liveMatchParticipationLiveMatchIdUserIdUnique` ON `liveMatchParticipation` (`liveMatchId`,`userId`);

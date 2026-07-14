@@ -3,18 +3,21 @@ import { keys, map, omitBy, range, sumBy, uniq } from 'lodash-es'
 import { getItemByName } from './allItems'
 import { ItemDefinition } from './ItemDefinition'
 import { LoadoutData } from './LoadoutData'
-import { randomStats } from './randomStats'
-import { Stat, Stats } from './stats'
+import { DEFAULT_GAME_VERSION, GameVersion } from './gameVersion'
+import { randomStats } from './randomStatRules'
+import { Stat, Stats } from './statSchemas'
 
-export const calcStats = async ({ loadout }: { loadout: LoadoutData }) => {
-  const items = await Promise.all(
-    loadout.items.map(async (i) => {
-      return {
-        ...i,
-        ...(await getItemByName(i.name)),
-      }
-    }),
-  )
+export const calcStats = ({
+  loadout,
+  gameVersion = DEFAULT_GAME_VERSION,
+}: {
+  loadout: LoadoutData
+  gameVersion?: GameVersion
+}) => {
+  const items = loadout.items.map((item) => ({
+    ...item,
+    ...getItemByName(item.name, gameVersion),
+  }))
   return calcStatsFromItems({ items })
 }
 

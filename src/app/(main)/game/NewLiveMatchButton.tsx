@@ -1,54 +1,30 @@
-import { getMyUserIdOrLogin } from '@/auth/getMyUser'
-import { ButtonProps } from '@/components/ui/button'
-import { db } from '@/db/db'
-import { schema } from '@/db/schema-export'
-import { LiveMatchData, LiveMatchParticipationData } from '@/db/schema-zod'
-import { typedParse } from '@/lib/typedParse'
-import { superAction } from '@/super-action/action/createSuperAction'
-import { ActionButton } from '@/super-action/button/ActionButton'
-import { first } from 'lodash-es'
-import { redirect } from 'next/navigation'
+'use client'
+
+import { useCreateLiveMatch } from '@/client/api/liveMatches'
+import { Button, ButtonProps } from '@/components/ui/button'
+import { useRouter } from 'next/navigation'
 
 export const NewLiveMatchButton = ({
   variant,
 }: {
   variant?: ButtonProps['variant']
 }) => {
+  const router = useRouter()
+  const createLiveMatch = useCreateLiveMatch()
+
   return (
-    <ActionButton
+    <Button
+      type="button"
       variant={variant}
-      hideIcon
-      action={async () => {
-        'use server'
-        const userId = await getMyUserIdOrLogin()
-
-        return superAction(async () => {
-          const liveMatch = await db
-            .insert(schema.liveMatch)
-            .values({
-              data: typedParse(LiveMatchData, {}),
-              status: 'open',
-            })
-            .returning()
-            .then(first)
-
-          if (!liveMatch) {
-            throw new Error('Failed to create live match')
-          }
-
-          await db.insert(schema.liveMatchParticipation).values({
-            liveMatchId: liveMatch.id,
-            userId,
-            data: typedParse(LiveMatchParticipationData, {
-              isHost: true,
-            }),
-          })
-
-          redirect(`/live/${liveMatch.id}`)
+      className="min-h-11 touch-manipulation"
+      disabled={createLiveMatch.isPending}
+      onClick={() =>
+        createLiveMatch.mutate(undefined, {
+          onSuccess: (liveMatch) => router.push(`/live/${liveMatch.id}`),
         })
-      }}
+      }
     >
-      Start Live Match
-    </ActionButton>
+      {createLiveMatch.isPending ? 'Starting…' : 'Start Live Match'}
+    </Button>
   )
 }

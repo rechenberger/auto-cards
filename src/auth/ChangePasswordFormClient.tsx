@@ -1,5 +1,7 @@
 'use client'
 
+import { useUpdateMe } from '@/client/api/auth'
+import { QueryError, QueryLoading } from '@/components/api/QueryState'
 import { Button } from '@/components/ui/button'
 import { CardTitle } from '@/components/ui/card'
 import {
@@ -11,54 +13,50 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { MeDto, UpdatePasswordRequest } from '@/contracts/auth-api'
 import { createZodForm } from '@/lib/useZodForm'
-import { SuperActionWithInput } from '@/super-action/action/createSuperAction'
-import { useSuperAction } from '@/super-action/action/useSuperAction'
 import Link from 'next/link'
-import { z } from 'zod'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { normalizeClientRedirect } from './clientRedirect'
+import { useRequiredMe } from './useRequiredMe'
 
-const ChangePasswordSchema = z
-  .object({
-    password: z.string().min(1),
-    confirmPassword: z.string().min(1),
-  })
-  .superRefine((data, ctx) => {
-    if (data.password !== data.confirmPassword) {
-      ctx.addIssue({
-        path: ['confirmPassword'],
-        code: 'custom',
-        message: 'Passwords do not match',
-      })
-    }
-  })
-
-type ChangePasswordSchema = z.infer<typeof ChangePasswordSchema>
-
-const [useLoginForm] = createZodForm(ChangePasswordSchema)
+const [usePasswordForm] = createZodForm(UpdatePasswordRequest)
 
 export const ChangePasswordFormClient = ({
-  action,
-  email,
   redirectUrl,
 }: {
-  action: SuperActionWithInput<ChangePasswordSchema>
-  email?: string
   redirectUrl?: string
 }) => {
-  const { trigger, isLoading } = useSuperAction({
-    action,
-    catchToast: true,
-  })
+  const me = useRequiredMe()
+  if (me.isLoading || me.data === null) {
+    return <QueryLoading label="Loading account…" />
+  }
+  if (me.isError || !me.data) {
+    return <QueryError error={me.error} retry={() => void me.refetch()} />
+  }
+  return <ChangePasswordFormInner me={me.data} redirectUrl={redirectUrl} />
+}
 
-  const disabled = isLoading
-
-  const form = useLoginForm({
+const ChangePasswordFormInner = ({
+  me,
+  redirectUrl,
+}: {
+  me: MeDto
+  redirectUrl?: string
+}) => {
+  const updateMe = useUpdateMe()
+  const router = useRouter()
+  const [notice, setNotice] = useState<string | null>(null)
+  const form = usePasswordForm({
     defaultValues: {
+      type: 'password',
       password: '',
       confirmPassword: '',
     },
-    disabled,
   })
+  const disabled = form.formState.isSubmitting || updateMe.isPending
 
   return (
     <>
@@ -68,28 +66,58 @@ export const ChangePasswordFormClient = ({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(async (values) => {
-            await trigger(values)
+            form.clearErrors('root')
+            setNotice(null)
+            try {
+              await updateMe.mutateAsync(values)
+              form.reset({
+                type: 'password',
+                password: '',
+                confirmPassword: '',
+              })
+              router.refresh()
+              if (redirectUrl) {
+                router.replace(normalizeClientRedirect(redirectUrl))
+              } else {
+                setNotice('Password updated.')
+              }
+            } catch (error) {
+              form.setError('root', {
+                message:
+                  error instanceof Error ? error.message : 'Please try again',
+              })
+            }
           })}
           className="flex flex-col gap-4"
+          noValidate
         >
-          {!!email && (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input name="email" type="email" disabled value={email} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          <div className="space-y-2">
+            <Label htmlFor="account-email">Email</Label>
+            <Input
+              id="account-email"
+              name="email"
+              type="email"
+              autoComplete="username"
+              className="text-base"
+              disabled
+              value={me.email}
+            />
+          </div>
 
           <FormField
             control={form.control}
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>New password</FormLabel>
                 <FormControl>
-                  <Input type="password" {...field} />
+                  <Input
+                    type="password"
+                    autoComplete="new-password"
+                    className="text-base"
+                    disabled={disabled}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -101,24 +129,56 @@ export const ChangePasswordFormClient = ({
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Confirm Password</FormLabel>
+                <FormLabel>Confirm password</FormLabel>
                 <FormControl>
-                  <Input type="password" {...field} />
+                  <Input
+                    type="password"
+                    autoComplete="new-password"
+                    className="text-base"
+                    disabled={disabled}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
+          <div className="min-h-6 text-sm" aria-live="polite">
+            {form.formState.errors.root?.message && (
+              <p className="text-destructive" role="alert">
+                {form.formState.errors.root.message}
+              </p>
+            )}
+            {notice && <p className="text-muted-foreground">{notice}</p>}
+          </div>
+
           <div className="flex flex-row gap-2 mt-4 justify-end">
-            {!!redirectUrl && (
-              <Link href={redirectUrl} passHref>
-                <Button variant={'outline'} type="button" disabled={disabled}>
+            {redirectUrl &&
+              (disabled ? (
+                <Button
+                  variant="outline"
+                  type="button"
+                  className="min-h-11 touch-manipulation"
+                  disabled
+                >
                   Skip
                 </Button>
-              </Link>
-            )}
-            <Button type="submit" disabled={disabled}>
-              Change Password
+              ) : (
+                <Button
+                  variant="outline"
+                  className="min-h-11 touch-manipulation"
+                  asChild
+                >
+                  <Link href={normalizeClientRedirect(redirectUrl)}>Skip</Link>
+                </Button>
+              ))}
+            <Button
+              type="submit"
+              className="min-h-11 touch-manipulation"
+              disabled={disabled}
+            >
+              {disabled ? 'Saving…' : 'Change password'}
             </Button>
           </div>
         </form>

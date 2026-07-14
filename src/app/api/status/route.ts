@@ -9,7 +9,6 @@ const checks = [
   },
 ]
 
-export const revalidate = 0
 export const maxDuration = 20 // 20 seconds
 
 const TIMEOUT = 10_000
@@ -41,5 +40,6 @@ export const GET = async () => {
   const success = !results.some((r) => !r.success)
   return new Response(JSON.stringify({ success, checks: results }, null, 2), {
     status: success ? 200 : 500,
+    headers: { 'cache-control': 'no-store' },
   })
 }

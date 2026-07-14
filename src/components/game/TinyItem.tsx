@@ -1,17 +1,19 @@
-import { streamItemCard } from '@/components/game/streamItemCard'
+'use client'
+
 import { getItemByName } from '@/game/allItems'
-import { ItemData } from './ItemData'
+import type { ItemData } from './ItemData'
 import { TinyItemClient } from './TinyItemClient'
 
-export const TinyItem = async ({ itemData }: { itemData: ItemData }) => {
-  const itemDef = await getItemByName(itemData.name)
-  const action = async () => {
-    'use server'
-    return streamItemCard({ itemData })
-  }
-  return (
-    <>
-      <TinyItemClient itemDef={itemDef} itemData={itemData} action={action} />
-    </>
-  )
-}
+export const TinyItem = ({
+  itemData,
+  disableLinks,
+}: {
+  itemData: ItemData
+  disableLinks?: boolean
+}) => (
+  <TinyItemClient
+    itemDef={getItemByName(itemData.name)}
+    itemData={itemData}
+    disableLinks={disableLinks}
+  />
+)

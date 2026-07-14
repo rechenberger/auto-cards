@@ -1,11 +1,8 @@
+'use client'
+
 import { NavTabs } from '@/components/layout/NavTabs'
 
-export default function Layout({
-  children,
-  ...props
-}: {
-  children: React.ReactNode
-}) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <NavTabs

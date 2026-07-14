@@ -30,14 +30,15 @@ import {
   Target,
   Weight,
 } from 'lucide-react'
-import { map } from 'remeda'
-import { z } from 'zod'
 import {
   COLLECTOR_PRICE_LIMIT,
   IGNORE_SPACE,
   MAX_THORNS_MULTIPLIER,
-} from './config'
+} from './rules'
 import { randomStatDefinitionsRaw } from './randomStats'
+import { allHeroStats, allStats, HeroStat, Stat, Stats } from './statSchemas'
+
+export { allHeroStats, allStats, HeroStat, Stat, Stats }
 
 export type StatDefinitionPre = {
   name: string
@@ -233,10 +234,6 @@ const heroStats = [
     tooltip: 'Enemies attack the target with the highest priority first.',
   },
 ] as const satisfies StatDefinitionPre[]
-export const allHeroStats = map(heroStats, (stat) => stat.name)
-export const HeroStat = z.enum(allHeroStats)
-export type HeroStat = z.infer<typeof HeroStat>
-
 const attackStats = [
   {
     name: 'damage',
@@ -283,20 +280,3 @@ export const getStatDefinition = (stat: Stat) => {
   }
   return def as StatDefinitionPost
 }
-
-export const allStats = map(allStatsDefinitionConst, (def) => def.name)
-
-export const Stat = z.enum(allStats)
-export type Stat = (typeof allStats)[number]
-
-// Construct an object schema with all keys required
-const statsObjectSchema = allStats.reduce(
-  (schema, buff) => {
-    schema[buff] = z.number().optional()
-    return schema
-  },
-  {} as { [K in (typeof allStats)[number]]: z.ZodOptional<z.ZodNumber> },
-)
-
-export const Stats = z.object(statsObjectSchema).default({})
-export type Stats = z.infer<typeof Stats>

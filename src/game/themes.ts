@@ -7,8 +7,9 @@ import {
   fontViking,
 } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
-import { map } from 'remeda'
-import { z } from 'zod'
+import { defaultThemeId, nullThemeId, ThemeId } from './themeSchema'
+
+export { defaultThemeId, nullThemeId, ThemeId }
 
 export const PLACEHOLDER_ITEM_PROMPT = '[ITEM_PROMPT]' as const
 export const IMAGE_MODEL_PROMPT = 'Use Flux Schnell and make the image square.'
@@ -93,21 +94,13 @@ export type ThemeDefinition = ThemeDefinitionRaw & {
   name: ThemeId
 }
 
-export const nullThemeId: ThemeId = 'legacy' as any // Saved in DB as null
-export const defaultThemeId: ThemeId = 'cozy' // Default theme
-
-const allThemes = map(allThemeDefinitions, (theme) => theme.name)
-
-export const ThemeId = z.enum(allThemes)
-export type ThemeId = z.infer<typeof ThemeId>
-
-export const getAllThemes = async (): Promise<ThemeDefinition[]> => {
+export const getAllThemes = (): ThemeDefinition[] => {
   return allThemeDefinitions
 }
 
-export const getThemeDefinition = async (
+export const getThemeDefinition = (
   theme: ThemeId = defaultThemeId,
-): Promise<ThemeDefinition> => {
+): ThemeDefinition => {
   let def = allThemeDefinitions.find((b) => b.name === theme)
   if (!def) {
     def = allThemeDefinitions.find((b) => b.name === defaultThemeId)
@@ -118,9 +111,9 @@ export const getThemeDefinition = async (
   return def
 }
 
-export const fallbackThemeId = async (
+export const fallbackThemeId = (
   themeId: ThemeId | undefined | null,
-): Promise<ThemeId> => {
-  const theme = await getThemeDefinition(themeId ?? undefined)
+): ThemeId => {
+  const theme = getThemeDefinition(themeId ?? undefined)
   return theme.name
 }

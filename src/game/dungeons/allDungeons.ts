@@ -1,11 +1,9 @@
-import { z } from 'zod'
 import { adventureTrail } from './adventureTrail'
 import { DungeonDefinition } from './DungeonDefinition'
+import { DungeonName } from './dungeonSchema'
 import { trainingGrounds } from './trainingGrounds'
 
-const allDungeonNames = ['trainingGrounds', 'adventureTrail'] as const
-export const DungeonName = z.enum(allDungeonNames)
-export type DungeonName = z.infer<typeof DungeonName>
+export { DungeonName } from './dungeonSchema'
 
 export const allDungeons: DungeonDefinition[] = [
   trainingGrounds,

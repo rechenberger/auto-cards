@@ -1,10 +1,13 @@
-import { notFoundIfNotAdmin } from '@/auth/getIsAdmin'
+'use client'
+
+import { useMeta } from '@/client/api/catalog'
+import { QueryError, QueryLoading } from '@/components/api/QueryState'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { createSeed } from '@/game/seed'
 import { RotateCw } from 'lucide-react'
-import { Metadata } from 'next'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { PlaygroundEdit } from './PlaygroundEdit'
 import { PlaygroundMatchView } from './PlaygroundMatchView'
 import {
@@ -13,18 +16,22 @@ import {
   playgroundHref,
 } from './playgroundHref'
 
-export const metadata: Metadata = {
-  title: 'Playground',
-}
+export default function Page() {
+  const searchParams = useSearchParams()
+  const meta = useMeta()
+  if (meta.isLoading) return <QueryLoading label="Loading playground…" />
+  if (meta.error || !meta.data) {
+    return <QueryError error={meta.error} retry={() => void meta.refetch()} />
+  }
+  if (!meta.data.viewer?.isAdmin) {
+    return <QueryError error={new Error('Admin access required')} />
+  }
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: Promise<PlaygroundParams>
-}) {
-  await notFoundIfNotAdmin({ allowDev: true })
-
-  const options = decodePlaygroundParams((await searchParams) ?? {})
+  const options = decodePlaygroundParams({
+    loadouts: searchParams.get('loadouts') ?? undefined,
+    seed: searchParams.get('seed') ?? undefined,
+    mode: (searchParams.get('mode') as PlaygroundParams['mode']) ?? undefined,
+  })
 
   return (
     <>
@@ -50,7 +57,13 @@ export default async function Page({
           </Link>
         </Button>
       </div>
-      {options.mode === 'edit' && <PlaygroundEdit options={options} />}
+      {options.mode === 'edit' && (
+        <PlaygroundEdit
+          options={options}
+          rulesetVersion={meta.data.rulesetVersion}
+          numberOfRounds={meta.data.numberOfRounds}
+        />
+      )}
       {options.mode === 'fight' && <PlaygroundMatchView options={options} />}
     </>
   )

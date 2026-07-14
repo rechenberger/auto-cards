@@ -1,4 +1,5 @@
-import { TinyItem } from '@/components/game/TinyItem'
+'use client'
+
 import { getAllItems } from '@/game/allItems'
 import { allStatsDefinition } from '@/game/stats'
 import { allTagDefinitions } from '@/game/tags'
@@ -6,8 +7,11 @@ import { ReactNode } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { StatDisplay } from './StatsDisplay'
 import { TagDisplay } from './TagDisplay'
+import { TinyItem } from './TinyItem'
 
-export const TextKeywordDisplay = async ({
+const allItems = getAllItems()
+
+export const TextKeywordDisplay = ({
   text,
   disableTooltip,
   disableLinks,
@@ -15,52 +19,58 @@ export const TextKeywordDisplay = async ({
   text: string
   disableTooltip?: boolean
   disableLinks?: boolean
-}) => {
-  const items = await getAllItems()
-  return (
-    <ReactMarkdown
-      components={
-        {
-          strong: ({ children }: { children: ReactNode }) => (
-            <strong className="text-primary">{children}</strong>
-          ),
-          em: ({ children }: { children: ReactNode }) => {
-            if (typeof children === 'string') {
-              const text = children
-
-              const item = items.find((item) => item.name === text)
-              if (item) {
-                return <TinyItem itemData={{ name: item.name }} />
-              }
-
-              const tag = allTagDefinitions.find((tag) => tag.name === text)
-              if (tag) {
-                return <TagDisplay tag={tag.name} disableLinks={disableLinks} />
-              }
-
-              const stat = allStatsDefinition.find((stat) => stat.name === text)
-              if (stat) {
-                return (
-                  <span>
-                    <StatDisplay
-                      stat={stat}
-                      value={1}
-                      hideCount
-                      size="sm"
-                      statClassName="translate-y-0.5"
-                      disableTooltip={disableTooltip}
-                    />
-                  </span>
-                )
-              }
+}) => (
+  <ReactMarkdown
+    components={
+      {
+        strong: ({ children }: { children: ReactNode }) => (
+          <strong className="text-primary">{children}</strong>
+        ),
+        em: ({ children }: { children: ReactNode }) => {
+          if (typeof children === 'string') {
+            const item = allItems.find(
+              (candidate) => candidate.name === children,
+            )
+            if (item) {
+              return (
+                <TinyItem
+                  itemData={{ name: item.name }}
+                  disableLinks={disableLinks}
+                />
+              )
             }
 
-            return <em>{children}</em>
-          },
-        } as any // TODO: FIXME: react-markdown types look broken with react 19
-      }
-    >
-      {text}
-    </ReactMarkdown>
-  )
-}
+            const tag = allTagDefinitions.find(
+              (candidate) => candidate.name === children,
+            )
+            if (tag) {
+              return <TagDisplay tag={tag.name} disableLinks={disableLinks} />
+            }
+
+            const stat = allStatsDefinition.find(
+              (candidate) => candidate.name === children,
+            )
+            if (stat) {
+              return (
+                <span>
+                  <StatDisplay
+                    stat={stat}
+                    value={1}
+                    hideCount
+                    size="sm"
+                    statClassName="translate-y-0.5"
+                    disableTooltip={disableTooltip}
+                  />
+                </span>
+              )
+            }
+          }
+
+          return <em>{children}</em>
+        },
+      } as never // react-markdown's component types do not model React 19 yet
+    }
+  >
+    {text}
+  </ReactMarkdown>
+)

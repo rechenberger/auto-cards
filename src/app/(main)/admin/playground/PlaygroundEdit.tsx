@@ -1,10 +1,11 @@
+'use client'
+
 import { LeaderboardBenchmarkButton } from '@/components/game/LeaderboardBenchmarkButton'
 import { StatsDisplay } from '@/components/game/StatsDisplay'
 import { TinyItem } from '@/components/game/TinyItem'
 import { Button } from '@/components/ui/button'
 import { getAllItems } from '@/game/allItems'
 import { calcLoadoutPrice } from '@/game/calcLoadoutPrice'
-import { GAME_VERSION, NO_OF_ROUNDS } from '@/game/config'
 import { DefaultGameMode } from '@/game/gameMode'
 import { orderItems } from '@/game/orderItems'
 import { negativeItems, sumItems } from '@/game/sumItems'
@@ -13,13 +14,17 @@ import Link from 'next/link'
 import { Fragment } from 'react'
 import { PlaygroundOptions, playgroundHref } from './playgroundHref'
 
-export const PlaygroundEdit = async ({
+export const PlaygroundEdit = ({
   options,
+  rulesetVersion,
+  numberOfRounds,
 }: {
   options: PlaygroundOptions
+  rulesetVersion: number
+  numberOfRounds: number
 }) => {
-  let allItems = await getAllItems()
-  allItems = await orderItems(allItems)
+  let allItems = getAllItems()
+  allItems = orderItems(allItems)
   const loadouts = options.loadouts
   return (
     <>
@@ -30,9 +35,12 @@ export const PlaygroundEdit = async ({
               <Fragment key={sideIdx}>
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-row justify-between">
-                    {calcLoadoutPrice(loadout).then((gold) => (
-                      <StatsDisplay stats={{ gold }} showZero />
-                    ))}
+                    <StatsDisplay
+                      stats={{
+                        gold: calcLoadoutPrice(loadout, rulesetVersion),
+                      }}
+                      showZero
+                    />
                     <LeaderboardBenchmarkButton
                       loadout={{
                         id: 'fake',
@@ -41,9 +49,9 @@ export const PlaygroundEdit = async ({
                         userId: 'fake',
                         updatedAt: new Date().toISOString(),
                         gameId: null,
-                        roundNo: NO_OF_ROUNDS - 1,
+                        roundNo: numberOfRounds - 1,
                         primaryMatchParticipationId: null,
-                        version: GAME_VERSION,
+                        version: rulesetVersion,
                         gameMode: DefaultGameMode,
                       }}
                     />

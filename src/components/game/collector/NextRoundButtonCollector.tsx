@@ -1,49 +1,33 @@
-import { Game } from '@/db/schema-zod'
-import { gameAction } from '@/game/gameAction'
-import { ActionButton } from '@/super-action/button/ActionButton'
-import { fightDungeon } from './fightDungeon'
+'use client'
 
-export const NextRoundButtonCollector = ({ game }: { game: Game }) => {
-  const dungeonData = game.data.dungeon
+import { GameDto } from '@/contracts/game-api'
+import {
+  CollectorCommandButton,
+  CollectorCommandHandler,
+} from './CollectorCommandButton'
 
-  if (!dungeonData) {
-    throw new Error('NextRoundButtonCollector: No dungeon data')
-  }
-
-  const status = dungeonData.status
-  const label = status === 'active' ? 'Next Room' : 'Exit Dungeon'
-
+export const NextRoundButtonCollector = ({
+  game,
+  onCommand,
+  pending,
+}: {
+  game: GameDto
+  onCommand: CollectorCommandHandler
+  pending: boolean
+}) => {
+  const dungeon = game.data.dungeon
+  if (!dungeon) return null
+  const label = dungeon.status === 'active' ? 'Next Room' : 'Exit Dungeon'
   return (
-    <>
-      <ActionButton
-        catchToast
-        variant="outline"
-        action={async () => {
-          'use server'
-          return gameAction({
-            gameId: game.id,
-            checkUpdatedAt: game.updatedAt,
-            action: async ({ ctx }) => {
-              if (status === 'active') {
-                await fightDungeon({
-                  game: ctx.game,
-                  roomIdx: dungeonData.room.idx + 1,
-                })
-              } else {
-                ctx.game.data.dungeon = undefined
-              }
-            },
-          })
-        }}
-        command={{
-          label,
-          shortcut: {
-            key: 'n',
-          },
-        }}
-      >
-        {label}
-      </ActionButton>
-    </>
+    <CollectorCommandButton
+      variant="outline"
+      command={{ type: 'advance-dungeon' }}
+      onCommand={onCommand}
+      pending={pending}
+      shortcut="n"
+      accessibleLabel={label}
+    >
+      {label}
+    </CollectorCommandButton>
   )
 }

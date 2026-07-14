@@ -1,127 +1,81 @@
-import { isDev } from '@/auth/dev'
-import { Game } from '@/db/schema-zod'
-import { setDungeonAccess } from '@/game/dungeons/DungeonAccess'
-import { gameAction } from '@/game/gameAction'
-import { allRarities } from '@/game/rarities'
-import { createSeed, rngItem } from '@/game/seed'
-import { ActionButton } from '@/super-action/button/ActionButton'
+'use client'
+
 import { DoorOpen, Plus, Swords, Trash, Unlock } from 'lucide-react'
-import { addCollectorItem } from './addCollectorItem'
-import { fightDungeon } from './fightDungeon'
-import { generateCollectorItem } from './generateCollectorItem'
+import {
+  CollectorCommandButton,
+  CollectorCommandHandler,
+} from './CollectorCommandButton'
 
-export const CollectorAdminButtons = async ({ game }: { game: Game }) => {
-  // const isAdmin = await getIsAdmin({ allowDev: true })
-  // if (!isAdmin) return null
-  if (!isDev()) return null
-
+export const CollectorAdminButtons = ({
+  isAdmin,
+  onCommand,
+  pending,
+}: {
+  isAdmin: boolean
+  onCommand: CollectorCommandHandler
+  pending: boolean
+}) => {
+  if (!isAdmin) return null
   return (
-    <>
-      <div className="flex flex-row gap-2">
-        <ActionButton
-          icon={<Plus />}
-          variant="outline"
-          action={async () => {
-            'use server'
-            return gameAction({
-              gameId: game.id,
-              action: async ({ ctx }) => {
-                const noOfItems = 10
-                for (let i = 0; i < noOfItems; i++) {
-                  const rarity = rngItem({
-                    seed: [createSeed()],
-                    items: allRarities,
-                  })
-                  const item = await generateCollectorItem({
-                    game,
-                    seed: [createSeed()],
-                    rarity,
-                  })
-                  await addCollectorItem({
-                    game: ctx.game,
-                    item,
-                  })
-                }
-              },
-            })
-          }}
-        />
-        <ActionButton
-          icon={<Trash />}
-          variant="outline"
-          askForConfirmation={{
-            title: 'Reset Game?',
-            content: 'Loose all items and start over?',
-          }}
-          action={async () => {
-            'use server'
-            return gameAction({
-              gameId: game.id,
-              action: async ({ ctx }) => {
-                ctx.game.data.currentLoadout.items = []
-                ctx.game.data.inventory = {
-                  items: [],
-                }
-                ctx.game.data.dungeon = undefined
-              },
-            })
-          }}
-        />
-        <ActionButton
-          icon={<Swords />}
-          variant="outline"
-          action={async () => {
-            'use server'
-            return gameAction({
-              gameId: game.id,
-              action: async ({ ctx }) => {
-                await fightDungeon({
-                  game: ctx.game,
-                  dungeonInput: {
-                    name: 'adventureTrail',
-                    level: 1,
-                    seed: createSeed(),
-                  },
-                })
-              },
-            })
-          }}
-        />
-        <ActionButton
-          icon={<DoorOpen />}
-          variant="outline"
-          action={async () => {
-            'use server'
-            return gameAction({
-              gameId: game.id,
-              action: async ({ ctx }) => {
-                ctx.game.data.dungeon = undefined
-              },
-            })
-          }}
-        />
-        <ActionButton
-          icon={<Unlock />}
-          variant="outline"
-          action={async () => {
-            'use server'
-            return gameAction({
-              gameId: game.id,
-              action: async ({ ctx }) => {
-                setDungeonAccess({
-                  game: ctx.game,
-                  dungeonAccess: {
-                    name: 'adventureTrail',
-                    levelMin: 1,
-                    levelMax: 100,
-                    levelCurrent: 100,
-                  },
-                })
-              },
-            })
-          }}
-        />
-      </div>
-    </>
+    <div
+      className="flex flex-row flex-wrap gap-2"
+      aria-label="Collector admin tools"
+    >
+      <CollectorCommandButton
+        variant="outline"
+        size="icon"
+        accessibleLabel="Generate ten collector items"
+        command={{ type: 'admin-generate-items', count: 10 }}
+        onCommand={onCommand}
+        pending={pending}
+      >
+        <Plus className="size-4" aria-hidden="true" />
+      </CollectorCommandButton>
+      <CollectorCommandButton
+        variant="outline"
+        size="icon"
+        accessibleLabel="Reset collector game"
+        command={{ type: 'admin-reset' }}
+        onCommand={onCommand}
+        pending={pending}
+        confirm={{
+          title: 'Reset Game?',
+          description: 'Lose all items and start over?',
+          action: 'Reset game',
+        }}
+      >
+        <Trash className="size-4" aria-hidden="true" />
+      </CollectorCommandButton>
+      <CollectorCommandButton
+        variant="outline"
+        size="icon"
+        accessibleLabel="Enter a test dungeon"
+        command={{ type: 'admin-enter-dungeon' }}
+        onCommand={onCommand}
+        pending={pending}
+      >
+        <Swords className="size-4" aria-hidden="true" />
+      </CollectorCommandButton>
+      <CollectorCommandButton
+        variant="outline"
+        size="icon"
+        accessibleLabel="Exit the current dungeon"
+        command={{ type: 'admin-exit-dungeon' }}
+        onCommand={onCommand}
+        pending={pending}
+      >
+        <DoorOpen className="size-4" aria-hidden="true" />
+      </CollectorCommandButton>
+      <CollectorCommandButton
+        variant="outline"
+        size="icon"
+        accessibleLabel="Unlock all adventure trail levels"
+        command={{ type: 'admin-unlock-dungeon' }}
+        onCommand={onCommand}
+        pending={pending}
+      >
+        <Unlock className="size-4" aria-hidden="true" />
+      </CollectorCommandButton>
+    </div>
   )
 }

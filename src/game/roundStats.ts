@@ -1,5 +1,9 @@
 import { sumBy } from 'lodash-es'
-import { NO_OF_ROUNDS } from './config'
+import {
+  DEFAULT_GAME_VERSION,
+  GameVersion,
+  getNumberOfRounds,
+} from './gameVersion'
 import { RarityWeights } from './rarities'
 import { Tag } from './tags'
 
@@ -219,7 +223,14 @@ const allRoundStats: RoundStats[] = [
   },
 ]
 
-export const roundStats = allRoundStats.filter((r) => r.roundNo <= NO_OF_ROUNDS)
+export const getRoundStats = (
+  gameVersion: GameVersion = DEFAULT_GAME_VERSION,
+) =>
+  allRoundStats.filter(
+    (round) => round.roundNo <= getNumberOfRounds(gameVersion),
+  )
+
+export const roundStats = getRoundStats()
 
 export const getRoundStatsCumulative = (roundNo: number) => {
   const rounds = allRoundStats.filter((r) => r.roundNo <= roundNo)

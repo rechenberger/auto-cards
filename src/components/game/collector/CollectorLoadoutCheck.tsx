@@ -1,109 +1,76 @@
+'use client'
+
 import { SimpleTooltip } from '@/components/simple/SimpleTooltip'
 import { Card } from '@/components/ui/card'
-import { Game } from '@/db/schema-zod'
+import { GameDto } from '@/contracts/game-api'
+import { checkCollectorLoadout } from '@/game/collector/checkCollectorLoadout'
 import { cn } from '@/lib/utils'
 import { capitalCase } from 'change-case'
 import { CheckCircle, XCircle } from 'lucide-react'
-import { Fragment } from 'react'
-import { checkCollectorLoadout } from './checkCollectorLoadout'
 
-export const CollectorLoadoutCheck = async ({ game }: { game: Game }) => {
-  const check = await checkCollectorLoadout({
+export const CollectorLoadoutCheck = ({ game }: { game: GameDto }) => {
+  const check = checkCollectorLoadout({
     loadout: game.data.currentLoadout,
+    rulesetVersion: game.version,
   })
   return (
-    <>
-      <div className="flex flex-col xl:flex-row gap-2 flex-wrap xl:items-center">
-        <SimpleTooltip
-          tooltip={
-            check.priceInBudget ? (
-              <>
-                <div>
-                  The items in your loadout
-                  <br />
-                  have a total weight of <strong>{check.priceCurrent}</strong>.
-                </div>
-                <div>
-                  You can hold up to <strong>{check.priceLimit}</strong>.
-                </div>
-                <div>
-                  You can add{' '}
-                  <strong>{check.priceLimit - check.priceCurrent}</strong> more.
-                </div>
-              </>
+    <div className="flex flex-col flex-wrap gap-2 xl:flex-row xl:items-center">
+      <SimpleTooltip
+        tooltip={
+          <div>
+            <p>
+              Your loadout weighs <strong>{check.priceCurrent}</strong> of{' '}
+              <strong>{check.priceLimit}</strong>.
+            </p>
+            <p>
+              {check.priceInBudget
+                ? `You can add ${check.priceLimit - check.priceCurrent} more.`
+                : `Remove ${
+                    check.priceCurrent - check.priceLimit
+                  } to enter a dungeon.`}
+            </p>
+          </div>
+        }
+      >
+        <Card
+          className={cn(
+            'flex flex-col gap-1 px-2 py-1.5',
+            check.priceInBudget ? 'text-green-500' : 'bg-red-500 text-white',
+          )}
+        >
+          <div className="flex flex-row gap-2 text-sm tabular-nums">
+            {check.priceInBudget ? (
+              <CheckCircle className="size-4" aria-hidden="true" />
             ) : (
-              <>
-                <div>
-                  The items in your loadout
-                  <br />
-                  have a total weight of <strong>{check.priceCurrent}</strong>.
-                </div>
-                <div>
-                  You can only hold up to <strong>{check.priceLimit}</strong>
-                </div>
-                <div>
-                  You have to remove{' '}
-                  <strong>{check.priceCurrent - check.priceLimit}</strong> to
-                  fit.
-                </div>
-              </>
-            )
+              <XCircle className="size-4" aria-hidden="true" />
+            )}
+            <span className="flex-1">Weight</span>
+            <span>
+              {check.priceCurrent}/{check.priceLimit}
+            </span>
+          </div>
+        </Card>
+      </SimpleTooltip>
+      {check.countTooMany.map((item) => (
+        <SimpleTooltip
+          key={item.name}
+          tooltip={
+            item.def.unique
+              ? 'This item is unique and can only be held once.'
+              : `You can only hold up to ${item.countMax}.`
           }
         >
-          <Card
-            className={cn(
-              'px-2 py-1.5 flex flex-col gap-1',
-              check.priceInBudget ? 'text-green-500' : 'bg-red-500',
-            )}
-          >
-            <div className="flex flex-row gap-2 text-sm">
-              {check.priceInBudget ? (
-                <CheckCircle className="size-4" />
-              ) : (
-                <XCircle className="size-4" />
-              )}
-              <div className="flex-1">Weight</div>
-              <div>
-                {/* {check.priceLimit - check.priceCurrent}/{check.priceLimit} */}
-                {check.priceCurrent}/{check.priceLimit}
-              </div>
+          <Card className="flex flex-col gap-1 bg-red-500 px-2 py-1.5 text-white">
+            <div className="flex flex-row gap-2 text-sm tabular-nums">
+              <XCircle className="size-4" aria-hidden="true" />
+              <span className="flex-1">{capitalCase(item.name)}</span>
+              <span>
+                {item.count}/{item.countMax}
+              </span>
             </div>
           </Card>
         </SimpleTooltip>
-        {check.countTooMany.map((i) => (
-          <Fragment key={i.name}>
-            <SimpleTooltip
-              tooltip={
-                <>
-                  <div>
-                    You have {i.count}x {capitalCase(i.name)} in your loadout.
-                  </div>
-                  {i.def.unique ? (
-                    <div>This item is unique and can only be held once.</div>
-                  ) : (
-                    <div>You can only hold up to {i.countMax}.</div>
-                  )}
-                </>
-              }
-            >
-              <Card
-                className={cn(
-                  'px-2 py-1.5 flex flex-col gap-1',
-                  check.countInBudget ? 'text-green-500' : 'bg-red-500',
-                )}
-              >
-                <div className="flex flex-row gap-2 text-sm">
-                  <XCircle className="size-4" />
-                  <div className="flex-1">{capitalCase(i.name)}</div>
-                  <div>
-                    {i.count}/{i.countMax}
-                  </div>
-                </div>
-              </Card>
-            </SimpleTooltip>
-          </Fragment>
-        ))}
-      </div>
-    </>
+      ))}
+    </div>
   )
 }

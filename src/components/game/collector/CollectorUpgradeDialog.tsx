@@ -1,199 +1,148 @@
-import { SimpleTooltipButton } from '@/components/simple/SimpleTooltipButton'
+'use client'
+
+import { SimpleTooltip } from '@/components/simple/SimpleTooltip'
 import { Card } from '@/components/ui/card'
-import { Game } from '@/db/schema-zod'
-import { ItemAspect } from '@/game/aspects'
 import {
-  COLLECTOR_ASPECT_PRECISION,
-  COLLECTOR_UPGRADE_COSTS,
-} from '@/game/config'
-import { gameAction } from '@/game/gameAction'
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { CatalogResponse } from '@/contracts/catalog'
+import { GameDto } from '@/contracts/game-api'
+import { ItemData } from '@/game/ItemData'
+import { getPossibleCollectorAspects } from '@/game/collector/items'
 import {
   allRarities,
   allRarityDefinitions,
   getRarityDefinition,
 } from '@/game/rarities'
-import { createSeed, rngFloat, rngItem } from '@/game/seed'
+import { COLLECTOR_UPGRADE_COSTS } from '@/game/rules'
+import { ItemCardClient } from '@/features/game/ItemCardClient'
 import { cn } from '@/lib/utils'
-import {
-  streamDialog,
-  streamToast,
-} from '@/super-action/action/createSuperAction'
-import { ActionButton } from '@/super-action/button/ActionButton'
 import { capitalCase } from 'change-case'
-import { floor } from 'lodash-es'
 import { ArrowDown, Info } from 'lucide-react'
-import { ItemCard } from '../ItemCard'
-import { ItemData } from '../ItemData'
-import { getPossibleAspects } from './generateCollectorItemAspects'
+import {
+  CollectorCommandButton,
+  CollectorCommandHandler,
+} from './CollectorCommandButton'
 
-type CollectorUpgradeDialogProps = {
-  item: ItemData
-  game: Game
-}
-
-export const CollectorUpgradeDialog = async (
-  props: CollectorUpgradeDialogProps,
-) => {
-  const { item, game } = props
+export const CollectorUpgradeDialog = ({
+  item,
+  game,
+  catalog,
+  open,
+  onOpenChange,
+  onCommand,
+  pending,
+}: {
+  item: ItemData | undefined
+  game: GameDto
+  catalog: CatalogResponse
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onCommand: CollectorCommandHandler
+  pending: boolean
+}) => {
+  if (!item?.id || !item.rarity) return null
   const rarity = item.rarity
-  if (!rarity) {
-    throw new Error('Item has no rarity')
-  }
-  const rarityDef = getRarityDefinition(rarity)
+  const rarityDefinition = getRarityDefinition(rarity)
   const nextRarity = allRarityDefinitions[allRarities.indexOf(rarity) + 1]
-  if (!nextRarity) {
-    return (
-      <>
-        <div className="flex flex-col gap-4 items-center">
-          <ItemCard itemData={item} size="200" />
-          <div>Fully upgraded!</div>
-        </div>
-      </>
-    )
-  }
-  let possibleAspects = await getPossibleAspects(item)
-  possibleAspects = possibleAspects.filter(
-    (aspect) => !item.aspects?.some((a) => a.name === aspect.name),
+  const possibleAspects = getPossibleCollectorAspects(
+    item,
+    game.version,
+  ).filter(
+    (aspect) => !item.aspects?.some((current) => current.name === aspect.name),
   )
-  const possibleAspectNames = possibleAspects.map((a) => a.name)
-
-  const partsCosts = COLLECTOR_UPGRADE_COSTS
-  const partsCurrent = game.data.salvagedParts?.[rarity] ?? 0
-  const partsEnough = partsCurrent >= partsCosts
+  const currentParts = game.data.salvagedParts?.[rarity] ?? 0
+  const partsEnough = currentParts >= COLLECTOR_UPGRADE_COSTS
 
   return (
-    <>
-      <div className="flex flex-col gap-4 items-center">
-        <div className="flex flex-col lg:flex-row gap-8">
-          <ItemCard itemData={item} size="200" />
-          <ArrowDown className="size-8 lg:-rotate-90 self-center" />
-          <div className="flex flex-col gap-2 items-center">
-            <ItemCard
-              itemData={{ ...item, rarity: nextRarity.name }}
-              size="200"
-            />
-            <SimpleTooltipButton
-              tooltip={
-                <>
-                  <div className="flex flex-col gap-1">
-                    <div>Possible aspects:</div>
-                    {possibleAspects.map((aspect) => (
-                      <div key={aspect.name} className="text-sm opacity-80">
-                        {capitalCase(aspect.name)}
-                      </div>
-                    ))}
-                  </div>
-                </>
-              }
-              variant="vanilla"
-              size="vanilla"
-              icon={<Info />}
-              tabIndex={-1}
-            >
-              <div>
-                {possibleAspects.length > 1
-                  ? `+1 of ${possibleAspects.length} random aspects`
-                  : `+1 random aspect`}
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Upgrade {capitalCase(item.name)}</DialogTitle>
+          <DialogDescription className="sr-only">
+            Increase its rarity and add a random compatible aspect.
+          </DialogDescription>
+        </DialogHeader>
+        {!nextRarity ? (
+          <div className="flex flex-col items-center gap-4">
+            <ItemCardClient itemData={item} catalog={catalog} size="200" />
+            <p>Fully upgraded!</p>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col gap-8 lg:flex-row">
+              <ItemCardClient itemData={item} catalog={catalog} size="200" />
+              <ArrowDown
+                className="size-8 self-center lg:-rotate-90"
+                aria-hidden="true"
+              />
+              <div className="flex flex-col items-center gap-2">
+                <ItemCardClient
+                  itemData={{ ...item, rarity: nextRarity.name }}
+                  catalog={catalog}
+                  size="200"
+                />
+                <SimpleTooltip
+                  tooltip={
+                    <div className="flex flex-col gap-1">
+                      <span>Possible aspects:</span>
+                      {possibleAspects.map((aspect) => (
+                        <span key={aspect.name} className="text-sm opacity-80">
+                          {capitalCase(aspect.name)}
+                        </span>
+                      ))}
+                    </div>
+                  }
+                >
+                  <Button
+                    type="button"
+                    variant="vanilla"
+                    size="vanilla"
+                    className="relative gap-2 p-1 text-sm touch-manipulation after:absolute after:-inset-2 after:content-['']"
+                  >
+                    <Info className="size-4" aria-hidden="true" />
+                    {possibleAspects.length > 1
+                      ? `+1 of ${possibleAspects.length} random aspects`
+                      : '+1 random aspect'}
+                  </Button>
+                </SimpleTooltip>
               </div>
-            </SimpleTooltipButton>
-          </div>
-        </div>
-        <Card className="px-2 py-1 text-sm">
-          <div
-            className={cn(
-              'flex flex-row gap-1 items-center',
-              rarityDef.textClass,
-            )}
-          >
-            <div className="flex-1 truncate">{capitalCase(rarity)} Parts</div>
-            <div className="text-right">
-              {partsCosts} / {partsCurrent}
             </div>
+            <Card className="px-2 py-1 text-sm">
+              <div
+                className={cn(
+                  'flex flex-row items-center gap-1 tabular-nums',
+                  rarityDefinition.textClass,
+                )}
+              >
+                <span className="flex-1 truncate">
+                  {capitalCase(rarity)} Parts
+                </span>
+                <span>
+                  {COLLECTOR_UPGRADE_COSTS} / {currentParts}
+                </span>
+              </div>
+            </Card>
+            <CollectorCommandButton
+              disabled={!partsEnough || !possibleAspects.length}
+              pending={pending}
+              onCommand={onCommand}
+              command={{ type: 'upgrade-item', itemId: item.id }}
+            >
+              {!possibleAspects.length
+                ? 'No compatible aspect available'
+                : partsEnough
+                  ? 'Upgrade'
+                  : 'Not enough parts'}
+            </CollectorCommandButton>
           </div>
-        </Card>
-        <ActionButton
-          disabled={!partsEnough}
-          catchToast
-          action={async () => {
-            'use server'
-            const { id } = item
-            return gameAction({
-              gameId: game.id,
-              streamRevalidate: true,
-              action: async ({ ctx }) => {
-                const item = ctx.game.data.inventory?.items.find(
-                  (i) => i.id === id,
-                )
-                if (!item) {
-                  throw new Error('Item not found')
-                }
-                if (item.rarity !== rarity) {
-                  throw new Error('Item already upgraded')
-                }
-                const { salvagedParts } = ctx.game.data
-                if (!salvagedParts) {
-                  throw new Error('No salvaged parts')
-                }
-
-                const currentParts = salvagedParts[rarity]
-                if (!currentParts || currentParts < partsCosts) {
-                  throw new Error('Not enough parts')
-                }
-                salvagedParts[rarity] = currentParts - partsCosts
-
-                const seed = createSeed()
-                const aspectName = rngItem({
-                  seed,
-                  items: possibleAspectNames,
-                })
-                if (!aspectName) {
-                  throw new Error('No aspect found')
-                }
-
-                const newAspect: ItemAspect = {
-                  name: aspectName,
-                  rnd: floor(
-                    rngFloat({
-                      seed,
-                    }),
-                    COLLECTOR_ASPECT_PRECISION,
-                  ),
-                }
-                const aspects = [...(item.aspects ?? []), newAspect]
-
-                // Update item
-                item.aspects = aspects
-                item.rarity = nextRarity.name
-                const itemInLoadout = ctx.game.data.currentLoadout.items.find(
-                  (i) => i.id === id,
-                )
-                if (itemInLoadout) {
-                  itemInLoadout.aspects = aspects
-                  itemInLoadout.rarity = nextRarity.name
-                }
-
-                // const aspectDef = getAspectDef(aspectName)
-                streamToast({
-                  title: `Upgraded ${capitalCase(item.name)}`,
-                  description: `${capitalCase(aspectName)} added`,
-                })
-                streamCollectorUpgradeDialog({ item, game: ctx.game })
-              },
-            })
-          }}
-        >
-          {partsEnough ? 'Upgrade' : 'Not enough parts'}
-        </ActionButton>
-      </div>
-    </>
+        )}
+      </DialogContent>
+    </Dialog>
   )
-}
-
-export const streamCollectorUpgradeDialog = (
-  props: CollectorUpgradeDialogProps,
-) => {
-  return streamDialog({
-    title: `Upgrade ${capitalCase(props.item.name)}`,
-    content: <CollectorUpgradeDialog {...props} />,
-  })
 }
